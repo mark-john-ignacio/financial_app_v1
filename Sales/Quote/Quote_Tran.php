@@ -130,8 +130,8 @@
 					$msgz = "<b>SUCCESS: </b>Your transaction is successfully posted!";
 					$status = "Posted";
 
-					mysqli_query($con,"INSERT INTO logfile(`ctranno`, `cuser`, `ddate`, `cevent`, `module`, `cmachine`, `cremarks`) 
-					values('$tranno','$preparedby',NOW(),'POSTED','QUOTATION','$compname','Post Record')");
+					mysqli_query($con,"INSERT INTO logfile(`compcode`, `ctranno`, `cuser`, `ddate`, `cevent`, `module`, `cmachine`, `cremarks`) 
+					values('$company', '$tranno','$preparedby',NOW(),'POSTED','QUOTATION','$compname','Post Record')");
 
 					if((intval($cntfinalall) - intval($cntfinalapp)) == 1){ //pag 1 meaning last approver na sya.. set to posted na ang transaction
 
@@ -251,8 +251,8 @@
 					$msgz = "<b>SUCCESS: </b>Your transaction is successfully cancelled!";
 					$status = "Cancelled";
 
-					mysqli_query($con,"INSERT INTO logfile(`ctranno`, `cuser`, `ddate`, `cevent`, `module`, `cmachine`, `cremarks`) 
-					values('$tranno','$preparedby',NOW(),'CANCELLED','QUOTATION','$compname','Cancel Record')");
+					mysqli_query($con,"INSERT INTO logfile(`compcode`, `ctranno`, `cuser`, `ddate`, `cevent`, `module`, `cmachine`, `cremarks`, `cancel_rem`) 
+					values('$company', '$tranno','$preparedby',NOW(),'CANCELLED','QUOTATION','$compname','Cancel Record','".$_REQUEST['canmsg']."')");
 
 				}
 
@@ -275,8 +275,8 @@
 			$msgz = "<b>SUCCESS: </b>Your transaction is successfully opened!";
 			$status = "Opened";
 			
-			mysqli_query($con,"INSERT INTO logfile(`ctranno`, `cuser`, `ddate`, `cevent`,`module`, `cmachine`, `cremarks`) 
-		values('$tranno','$preparedby',NOW(),'OPEN','QUOTATION','$compname','Open Record')");
+			mysqli_query($con,"INSERT INTO logfile(`compcode`, `ctranno`, `cuser`, `ddate`, `cevent`,`module`, `cmachine`, `cremarks`) 
+		values('$company', '$tranno','$preparedby',NOW(),'OPEN','QUOTATION','$compname','Open Record')");
 
 		}
 
@@ -382,8 +382,8 @@
 				$msgz = "<b>SUCCESS: </b>Your transaction is successfully sent!";
 				$status = "SENT";
 
-				mysqli_query($con,"INSERT INTO logfile(`ctranno`, `cuser`, `ddate`, `cevent`, `module`, `cmachine`, `cremarks`) 
-				values('$tranno','$preparedby',NOW(),'SEND','QUOTATION','$compname','Cancel Record')");
+				mysqli_query($con,"INSERT INTO logfile(`compcode`, `ctranno`, `cuser`, `ddate`, `cevent`, `module`, `cmachine`, `cremarks`) 
+				values('$company', '$tranno','$preparedby',NOW(),'SEND','QUOTATION','$compname','Cancel Record')");
 
 				if($isemail==1){ //send emails to level 1
 
@@ -416,8 +416,8 @@
 			$msgz = "<b>SUCCESS: </b>Your transaction is successfully cancelled!";
 			$status = "Cancelled";
 		
-			mysqli_query($con,"INSERT INTO logfile(`ctranno`, `cuser`, `ddate`, `cevent`, `module`, `cmachine`, `cremarks`) 
-			values('$tranno','$preparedby',NOW(),'CANCELLED','QUOTATION','$compname','Cancel Record')");
+			mysqli_query($con,"INSERT INTO logfile(`compcode`, `ctranno`, `cuser`, `ddate`, `cevent`, `module`, `cmachine`, `cremarks`, `cancel_rem`) 
+			values('$company', '$tranno','$preparedby',NOW(),'CANCELLED','QUOTATION','$compname','Cancel Record','".$_REQUEST['canmsg']."')");
 		}
 
 		

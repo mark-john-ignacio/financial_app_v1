@@ -245,17 +245,17 @@
 
 				</div>
 
-				<?php
-					if($poststat == "True"){
-				?>
-
 				<br>
 				<table width="100%" border="0" cellpadding="3">
 					<tr>
 						<td rowspan="2">
 							<input type="hidden" name="hdnrowcnt" id="hdnrowcnt"> 
 				
-							<button type="button" class="btn btn-primary btn-sm" tabindex="6" onClick="window.location.href='SR.php?ix=<?=isset($_REQUEST['hdnsrchval']) ? $_REQUEST['hdnsrchval'] : ""?>';" id="btnMain" name="btnMain">
+							<?php
+								if($poststat == "True"){
+							?>
+							
+							<button type="button" class="btn btn-primary btn-sm" tabindex="6" onClick="window.location.href='SR.php?ix=<?=isset($_REQUEST['hdnsrchval']) ? $_REQUEST['hdnsrchval'] : ""?>&st=<?=isset($_REQUEST['hdnsrchsta']) ? $_REQUEST['hdnsrchsta'] : ""?>';" id="btnMain" name="btnMain">
 								Back to Main<br>(ESC)
 							</button>
 					
@@ -272,6 +272,8 @@
 							</button>
 
 							<?php
+								}
+
 								$sql = mysqli_query($con,"select * from users_access where userid = '".$_SESSION['employeeid']."' and pageid = 'SalesRet_print'");
 
 								if(mysqli_num_rows($sql) == 1){
@@ -284,6 +286,7 @@
 							<?php		
 								}
 
+								if($poststat == "True"){
 							?>
 						
 							<button type="button" class="btn btn-warning btn-sm" tabindex="6" onClick="enabled();" id="btnEdit" name="btnEdit">
@@ -293,7 +296,10 @@
 							<button type="button" class="btn btn-success btn-sm" tabindex="6" onClick="return chkform();" id="btnSave" name="btnSave">
 								Save<br>(F2)    
 							</button>
-							
+
+							<?php
+								}
+							?>
 						</td>
 					</tr>
 						<!--
@@ -310,9 +316,7 @@
 					</tr>
 					-->
 				</table>
-				<?php
-					}
-				?>
+				
 				
     </fieldset>
 	</form>

@@ -82,10 +82,10 @@
 				<div class="col-xs-2 text-right nopadwleft">
 					<select  class="form-control input-sm" name="selstats" id="selstats">
 						<option value=""> All Transactions</option>
-						<option value="post"> Posted </option>
-						<option value="cancel"> Cancelled </option>
-						<option value="void"> Voided </option>
-						<option value="pending"> Pending </option>
+						<option value="post" <?=(isset($_REQUEST['st'])) ? (($_REQUEST['st']=="post") ? "selected" : "" ) : "";?>> Posted </option>
+						<option value="cancel" <?=(isset($_REQUEST['st'])) ? (($_REQUEST['st']=="cancel") ? "selected" : "" ) : "";?>> Cancelled </option>
+						<option value="void" <?=(isset($_REQUEST['st'])) ? (($_REQUEST['st']=="void") ? "selected" : "" ) : "";?>> Voided </option>
+						<option value="pending" <?=(isset($_REQUEST['st'])) ? (($_REQUEST['st']=="pending") ? "selected" : "" ) : "";?>> Pending </option>
 					</select>
 				</div>
 			</div>
@@ -111,6 +111,7 @@
 	<form name="frmedit" id="frmedit" method="post" action="SI_edit.php">
 		<input type="hidden" name="txtctranno" id="txtctranno" />
 		<input type="hidden" name="hdnsrchval" id="hdnsrchval" />
+		<input type="hidden" name="hdnsrchsta" id="hdnsrchsta" />
 	</form>		
 
 	<!-- 1) Alert Modal -->
@@ -118,10 +119,23 @@
 		<div class="vertical-alignment-helper">
 			<div class="modal-dialog vertical-align-top">
 				<div class="modal-content">
-					<div class="alert-modal-danger">
-						<p id="AlertMsg"></p>
-						<p><center><button type="button" class="btn btn-primary btn-sm" data-dismiss="modal" id="alertbtnOK">Ok</button></center></p>
-					</div>
+				<div class="alert-modal-danger">
+					<p id="AlertMsg"></p>
+					<p>
+						<center>
+							<button type="button" class="btnmodz btn btn-primary btn-sm" id="OK">Ok</button>
+							<button type="button" class="btnmodz btn btn-danger btn-sm" id="Cancel">Cancel</button>
+							
+							
+							<button type="button" class="btn btn-primary btn-sm" data-dismiss="modal" id="alertbtnOK">Ok</button>
+							
+							<input type="hidden" id="typ" name="typ" value = "">
+							<input type="hidden" id="modzx" name="modzx" value = "">
+							<input type="hidden" id="modzid" name="modzid" value = "">
+							<input type="hidden" id="modzxcred" name="modzxcred" value = "">
+						</center>
+					</p>
+				</div> 
 				</div>
 			</div>
 		</div>
@@ -130,13 +144,14 @@
 </body>
 </html>
 
-  <link rel="stylesheet" type="text/css" href="../../Bootstrap/DataTable/DataTable.css"> 
+  	<link rel="stylesheet" type="text/css" href="../../Bootstrap/DataTable/DataTable.css"> 
 	<script type="text/javascript" language="javascript" src="../../Bootstrap/DataTable/jquery.dataTables.min.js"></script>
-	
+	<script type="text/javascript" src="../../global/plugins/bootbox/bootbox.min.js"></script>
+
 	<script>
 		$(document).ready(function() {
 
-			fill_datatable("<?=(isset($_REQUEST['ix'])) ? $_REQUEST['ix'] : "";?>");	
+			fill_datatable("<?=(isset($_REQUEST['ix'])) ? $_REQUEST['ix'] : "";?>",$('#selstats').val());	
 
 			$("#searchByName").keyup(function(){
 				var searchByName = $('#searchByName').val();
@@ -156,194 +171,251 @@
 
 			});
 
+			$(".btnmodz").on("click", function (){
+				if($('#AlertModal').hasClass('in')==true){
+					var idz = $(this).attr('id');
+					var x = $("#typ").val();
+					var num = $("#modzx").val();
+
+					if(idz=="OK"){
+						var id = $("#modzid").val();
+						var xcred = $("#modzxcred").val(); 
+						
+						if(x=="POST"){
+							var msg = "POSTED";
+
+							//generate GL ENtry muna
+							$.ajax ({
+								dataType: "text",
+								url: "../../include/th_toAcc.php",
+								data: { tran: num, type: "SI" },
+								async: false,
+								success: function( data ) {
+									//alert(data.trim());
+									if(data.trim()=="True"){
+										gotrans(num, x, msg, "");
+									}
+									else{
+										itmstat = data.trim();	
+									}
+								}
+							});
+
+						}else if(x=="CANCEL"){
+							var msg = "CANCELLED";
+							bootbox.prompt({
+								title: 'Enter reason for cancellation.',
+								inputType: 'text',
+								centerVertical: true,
+								callback: function (result) {
+									if(result!="" && result!=null){
+										gotrans(num, x, msg, result);
+									}else{
+										$("#AlertMsg").html("Reason for cancellation is required!");
+										$("#alertbtnOK").css("display", "inline");
+										$("#OK").css("display", "none");
+										$("#Cancel").css("display", "none");
+									}						
+								}
+							});
+
+						}
+
+					}else if(idz=="Cancel"){ //if(idz=="OK"){
+						
+						$("#AlertMsg").html("");
+						$("#AlertModal").modal('hide');
+							
+					}
+				}
+			});
+
+			$('body').tooltip({
+				selector: '.canceltool',
+				title: fetchData,
+				html: true,
+				placement: 'top'
+			});
+
+			function fetchData()
+			{
+				var fetch_data = '';
+				var element = $(this);
+				var id = element.attr("data-id");
+				var stat = element.attr("data-stat");
+				$.ajax({
+					url:"../../include/fetchcancel.php",
+					method:"POST",
+					async: false,
+					data:{id:id, stat:stat},
+					success:function(data)
+					{
+						fetch_data = data;
+					}
+				});   
+				return fetch_data;
+			}
+
 		});
+
+		function gotrans(num, x, msg, canmsg){
+			$.ajax ({
+				url: "SI_Tran.php",
+				data: { x: num, typ: x, canmsg: canmsg },
+				async: false,
+				dataType: "json",
+				beforeSend: function(){
+					$("#AlertMsg").html("&nbsp;&nbsp;<b>Processing " + num + ": </b> Please wait a moment...");
+					$("#alertbtnOK").hide();
+					$("#AlertModal").modal('show');
+				},
+				success: function( data ) {
+					
+					console.log(data);
+					$.each(data,function(index,item){
+						
+						itmstat = item.stat;
+						
+						if(itmstat!="False"){
+							varx0 = item.stat;
+							$("#msg"+num).html(varx0.toUpperCase());
+
+							$("#AlertMsg").html("&nbsp;&nbsp;<b>" + num + ": </b> Successfully "+msg+"...");
+							$("#alertbtnOK").show();
+							$("#OK").hide();
+							$("#Cancel").hide();
+							$("#AlertModal").modal('show');
+
+						}
+						else{
+							$("#AlertMsg").html(item.ms);
+							$("#alertbtnOK").show();
+							$("#OK").hide();
+							$("#Cancel").hide();
+							$("#AlertModal").modal('show');
+
+						}
+					});
+				}
+			});
+		}
 
 		
 		$(document).keydown(function(e) {		 
-				if(e.keyCode == 112) { //F2
-					e.preventDefault();
-					window.location = "SI_new.php";
-				}
+			if(e.keyCode == 112) { //F2
+				e.preventDefault();
+				window.location = "SI_new.php";
+			}
 		});
 
 
 		function editfrm(x){
 			$('#txtctranno').val(x); 
 			$('#hdnsrchval').val($('#searchByName').val()); 
+			$('#hdnsrchsta').val($('#selstats').val());
 			document.getElementById("frmedit").submit();
 		}
 
-		function trans(x,num,msg,id,xcred){
-			var itmstat = "";
+		function trans(x,num,stat,id,xcred){
+		
+			$("#typ").val(x);
+			$("#modzx").val(num);
+			$("#modzid").val(id);
+			$("#modzxcred").val(xcred); 
 
-			if(x=="POST"){
-					//generate GL ENtry muna
-					$.ajax ({
-						dataType: "text",
-						url: "../../include/th_toAcc.php",
-						data: { tran: num, type: "SI" },
-						async: false,
-						success: function( data ) {
-							//alert(data.trim());
-							if(data.trim()=="True"){
-								itmstat = "OK";
-							}
-							else{
-								itmstat = data.trim();	
-							}
-						}
-					});
-					//alert(itmstat);
-					
-					//Send SMS lng
-					
-					//$.ajax ({
-					//	dataType: "text",
-					//	url: "SI_SMS.php",
-					//	data: { x: num },
-					//	async: false,
-					//	success: function( data ) {
-							//WALA GAGAWIN
-					//	}
-					//});
-
-
-			}
-			else{
-				var itmstat = "OK";	
-			}
-
-			if(itmstat=="OK"){
-				$.ajax ({
-					url: "SI_Tran.php",
-					data: { x: num, typ: x },
-					async: false,
-					dataType: "json",
-					beforeSend: function(){
-						$("#AlertMsg").html("&nbsp;&nbsp;<b>Processing " + num + ": </b> Please wait a moment...");
-						$("#alertbtnOK").hide();
-						$("#AlertModal").modal('show');
-					},
-					success: function( data ) {
-						
-						console.log(data);
-						$.each(data,function(index,item){
-							
-							itmstat = item.stat;
-							
-							if(itmstat!="False"){
-								varx0 = item.stat;
-								$("#msg"+num).html(varx0.toUpperCase());
+			$("#AlertMsg").html("");
 								
-									$("#AlertMsg").html("");
-									
-									$("#AlertMsg").html("&nbsp;&nbsp;<b>" + num + ": </b> Successfully "+msg+"...");
-									$("#alertbtnOK").show();
-									$("#AlertModal").modal('show');
+			$("#AlertMsg").html("Are you sure you want to "+x+" SI No.: "+num);
+			$("#alertbtnOK").hide();
+			$("#OK").show();
+			$("#Cancel").show();
+			$("#AlertModal").modal('show');
 
-							}
-							else{
-								$("#AlertMsg").html("");
-								
-								$("#AlertMsg").html(item.ms);
-								$("#alertbtnOK").show();
-								$("#AlertModal").modal('show');
+	}
 
-							}
-						});
-					}
-				});
-			}else{				$("#AlertMsg").html("");
-
-								$("#AlertMsg").html("<b>ERROR: </b>There's a problem with your transaction!<br>"+itmstat);
-								$("#alertbtnOK").show();
-								$("#AlertModal").modal('show');
-
-			}
-		}
-
+		
 		
 		function fill_datatable(searchByName = '',  searchBystat = ''){
 			var dataTable = $('#example').DataTable( {
 				stateSave: true,
-		    "processing" : true,
-		    "serverSide" : true,
-		    "lengthChange": true,
-		    "order" : [],
-		    "searching" : false,
-		    "ajax" : {
+				"processing" : true,
+				"serverSide" : true,
+				"lengthChange": true,
+				"order" : [],
+				"searching" : false,
+				"ajax" : {
 					url:"th_datatable.php",
 					type:"POST",
 					data:{
 						searchByName: searchByName, searchBystat: searchBystat
 					}
-		    },
-					"columns": [
-						{ "data": null,
-								"render": function (data, type, full, row) {
-										var sts = "";
-										if (full[6] == 1 || full[11] == 1) {
-											sts="class='text-danger'";
-										}
-										return "<a "+sts+" href=\"javascript:;\" onclick=\"editfrm('"+full[0]+"')\">"+full[0]+"</a>";
-								}								
-						},
-						{ "data": 1 },
-						{ "data": 10 },
-						{ "data": null,
+				},
+				"columns": [
+					{ "data": null,
 							"render": function (data, type, full, row) {
-
-								return full[7]+" - "+full[2];
-									
-							}
-								
-						},
-						{ "data": 9 },
-						{ "data": 4 },	
-						{ "data": null,
-							"render": function (data, type, full, row) {
-		
-								if (full[5] == 1) {
-									
-									if(full[11] == 1){
-										return '<b>Voided</b>';
-									}else{										
-										return 'Posted';
+									var sts = "";
+									if (full[6] == 1 || full[11] == 1) {
+										sts="class='text-danger'";
 									}
-								
-								}
-								
-								else if (full[6] == 1) {
-								
-									return '<b>Cancelled</b>';
-								
-								}
-								
-								else{
+									return "<a "+sts+" href=\"javascript:;\" onclick=\"editfrm('"+full[0]+"')\">"+full[0]+"</a>";
+							}								
+					},
+					{ "data": 1 },
+					{ "data": 10 },
+					{ "data": null,
+						"render": function (data, type, full, row) {
 
-									return 	"<div id=\"msg"+full[0]+"\"> <a href=\"javascript:;\" onClick=\"trans('POST','"+full[0]+"','Posted','"+full[7]+"',"+full[8]+")\" class=\"btn btn-xs btn-default<?=($poststat!="True") ? " disabled" : ""?>\"><i class=\"fa fa-thumbs-up\" style=\"font-size:20px;color:Green ;\" title=\"Approve transaction\"></i></a> <a href=\"javascript:;\" onClick=\"trans('CANCEL','"+full[0]+"','Cancelled')\" class=\"btn btn-xs btn-default<?=($cancstat!="True") ? " disabled" : ""?>\"><i class=\"fa fa-thumbs-down\" style=\"font-size:20px;color:Red ;\" title=\"Cancel transaction\"></i></a> </div>";
-
+							return full[7]+" - "+full[2];
+								
+						}
+							
+					},
+					{ "data": 9 },
+					{ "data": 4 },	
+					{ "data": null,
+						"render": function (data, type, full, row) {
+	
+							if (full[5] == 1) {
+								
+								if(full[11] == 1){
+									return '<a href="#" class="canceltool" data-id="'+full[0]+'" data-stat="VOID" style="color: red !important"><b>Voided</b></a>';
+								}else{										
+									return 'Posted';
 								}
+							
+							}
+							
+							else if (full[6] == 1) {
+							
+								return '<a href="#" class="canceltool" data-id="'+full[0]+'" data-stat="CANCELLED" style="color: red !important"><b>Cancelled</b></a>';
+							
+							}
+							
+							else{
+
+								return 	"<div id=\"msg"+full[0]+"\"> <a href=\"javascript:;\" onClick=\"trans('POST','"+full[0]+"','Posted','"+full[7]+"',"+full[8]+")\" class=\"btn btn-xs btn-default<?=($poststat!="True") ? " disabled" : ""?>\"><i class=\"fa fa-thumbs-up\" style=\"font-size:20px;color:Green ;\" title=\"Approve transaction\"></i></a> <a href=\"javascript:;\" onClick=\"trans('CANCEL','"+full[0]+"','Cancelled')\" class=\"btn btn-xs btn-default<?=($cancstat!="True") ? " disabled" : ""?>\"><i class=\"fa fa-thumbs-down\" style=\"font-size:20px;color:Red ;\" title=\"Cancel transaction\"></i></a> </div>";
+
 							}
 						}
-					],
-					"columnDefs": [ 
-						{
-							"targets": 4,
-							"className": "text-right"
-						},
-						{
-							"targets": [5,6],
-							"className": "text-center dt-body-nowrap"
-						}
-					],
-					"createdRow": function( row, data, dataIndex ) {
-						// Set the data-status attribute, and add a class
-						if(data[6]==1 || data[11]==1){
-							$(row).addClass('text-danger');
-						}
-						
 					}
-				});
+				],
+				"columnDefs": [ 
+					{
+						"targets": 4,
+						"className": "text-right"
+					},
+					{
+						"targets": [5,6],
+						"className": "text-center dt-body-nowrap"
+					}
+				],
+				"createdRow": function( row, data, dataIndex ) {
+					// Set the data-status attribute, and add a class
+					if(data[6]==1 || data[11]==1){
+						$(row).addClass('text-danger');
+					}
+					
+				}
+			});
 		}
 	</script>

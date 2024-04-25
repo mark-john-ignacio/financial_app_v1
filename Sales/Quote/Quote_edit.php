@@ -3,7 +3,7 @@
 		session_start();
 	}
 
-	$_SESSION['pageid'] = "Quote_edit.php";
+	$_SESSION['pageid'] = "Quote.php";
 
 	include('../../Connection/connection_string.php');
 	include('../../include/denied.php');
@@ -12,15 +12,20 @@
 
 	$company = $_SESSION['companyid'];
 
+	//POST
+	$poststat = "True";
+	$sql = mysqli_query($con,"select * from users_access where userid = '$employeeid' and pageid = 'Quote_edit.php'");
+	if(mysqli_num_rows($sql) == 0){
+		$poststat = "False";
+	}
+
+
 	if(isset($_REQUEST['txtctranno'])){
 			$txtctranno = $_REQUEST['txtctranno'];
 	}
 	else{
 			$txtctranno = $_REQUEST['txtcsalesno'];
-		}
-		
-	$company = $_SESSION['companyid'];
-
+	}
 
 	$sqlhead = mysqli_query($con,"select a.*,b.cname,b.cpricever,c.cname as cdelname from quote a left join customers b on a.compcode=b.compcode and a.ccode=b.cempid left join customers_secondary c on a.compcode=c.compcode and a.cdelcode=c.ccode where a.ctranno = '$txtctranno' and a.compcode='$company'");
 
@@ -543,7 +548,12 @@ if (mysqli_num_rows($sqlhead)!=0) {
 
 		<div class="col-xs-12 nopadwtop2x">
 				<div class="col-xs-7">
-					<button type="button" class="btn btn-primary btn-sm" tabindex="6" onClick="window.location.href='Quote.php?ix=<?=isset($_REQUEST['hdnsrchval']) ? $_REQUEST['hdnsrchval'] : ""?>';" id="btnMain" name="btnMain">
+
+				<?php
+					if($poststat == "True"){
+				?>
+
+					<button type="button" class="btn btn-primary btn-sm" tabindex="6" onClick="window.location.href='Quote.php?ix=<?=isset($_REQUEST['hdnsrchval']) ? $_REQUEST['hdnsrchval'] : ""?>&st=<?=isset($_REQUEST['hdnsrchsta']) ? $_REQUEST['hdnsrchsta'] : ""?>';" id="btnMain" name="btnMain">
 						Back to Main<br>(ESC)
 					</button>
 		
@@ -580,7 +590,9 @@ if (mysqli_num_rows($sqlhead)!=0) {
 					<button type="button" class="btn btn-success btn-sm" tabindex="6" onClick="return chkform();" id="btnSave" name="btnSave">
 						Save<br>(F2)    
 					</button>
-
+				<?php
+					}
+				?>
 				</div>	
 
 				<div class="col-xs-2"  style="padding-top: 14px !important;">

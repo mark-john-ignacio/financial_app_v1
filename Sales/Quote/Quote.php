@@ -67,39 +67,39 @@ $company = $_SESSION['companyid'];
           </div>
         </div>
 
-				<div class="col-xs-12 nopadwdown">
-					<div class="col-xs-4 nopadding">
-						<button type="button" class="btn btn-primary btn-sm" onClick="location.href='Quote_new.php'"><span class="glyphicon glyphicon glyphicon-file"></span>&nbsp;Create New (F1)</button>
+		<div class="col-xs-12 nopadwdown">
+			<div class="col-xs-4 nopadding">
+				<button type="button" class="btn btn-primary btn-sm" onClick="location.href='Quote_new.php'"><span class="glyphicon glyphicon glyphicon-file"></span>&nbsp;Create New (F1)</button>
 
-						<?php
-							if($unpoststat=="True"){
-						?>
-						<button type="button" class="btn btn-danger btn-sm" onClick="location.href='Quote_void.php'"><span class="fa fa-times"></span>&nbsp;Void Transaction</button>
-						<?php
-							}
-						?>
+				<?php
+					if($unpoststat=="True"){
+				?>
+				<button type="button" class="btn btn-danger btn-sm" onClick="location.href='Quote_void.php'"><span class="fa fa-times"></span>&nbsp;Void Transaction</button>
+				<?php
+					}
+				?>
 
-						<button type="button" id="btnRecurr" class="btn btn-success btn-sm"><i class="fa fa-paste"></i>&nbsp;Recurring</button>
-					</div>
-					<!--<div class="col-xs-1 nopadding">
-						<div class="itmalert alert alert-danger" id="itmerr" style="display: none;"></div> <br><br>
-					</div>-->
-					<div class="col-xs-3 nopadwtop text-right" style="height:30px !important; padding-right: 10px !important">
-						<b> Search Customer / Trans. No:  </b>
-					</div>
-					<div class="col-xs-3 text-right nopadding">
-						<input type="text" name="searchByName" id="searchByName" value="<?=(isset($_REQUEST['ix'])) ? $_REQUEST['ix'] : ""?>" class="form-control input-sm" placeholder="Search Customer, Trans. No...">
-					</div>
-					<div class="col-xs-2 text-right nopadwleft">
-						<select  class="form-control input-sm" name="selstats" id="selstats">
-							<option value=""> All Transactions</option>
-							<option value="post"> Posted </option>
-							<option value="cancel"> Cancelled </option>
-							<option value="void"> Voided </option>
-							<option value="pending"> Pending </option>
-						</select>
-					</div>
-				</div>
+				<button type="button" id="btnRecurr" class="btn btn-success btn-sm"><i class="fa fa-paste"></i>&nbsp;Recurring</button>
+			</div>
+			<!--<div class="col-xs-1 nopadding">
+				<div class="itmalert alert alert-danger" id="itmerr" style="display: none;"></div> <br><br>
+			</div>-->
+			<div class="col-xs-3 nopadwtop text-right" style="height:30px !important; padding-right: 10px !important">
+				<b> Search Customer / Trans. No:  </b>
+			</div>
+			<div class="col-xs-3 text-right nopadding">
+				<input type="text" name="searchByName" id="searchByName" value="<?=(isset($_REQUEST['ix'])) ? $_REQUEST['ix'] : ""?>" class="form-control input-sm" placeholder="Search Customer, Trans. No...">
+			</div>
+			<div class="col-xs-2 text-right nopadwleft">
+				<select  class="form-control input-sm" name="selstats" id="selstats">
+					<option value=""> All Transactions</option>
+					<option value="post" <?=(isset($_REQUEST['st'])) ? (($_REQUEST['st']=="post") ? "selected" : "" ) : "";?>> Posted </option>
+					<option value="cancel" <?=(isset($_REQUEST['st'])) ? (($_REQUEST['st']=="cancel") ? "selected" : "" ) : "";?>> Cancelled </option>
+					<option value="void" <?=(isset($_REQUEST['st'])) ? (($_REQUEST['st']=="void") ? "selected" : "" ) : "";?>> Voided </option>
+					<option value="pending" <?=(isset($_REQUEST['st'])) ? (($_REQUEST['st']=="pending") ? "selected" : "" ) : "";?>> Pending </option>
+				</select>
+			</div>
+		</div>
 
     	<br><br>
 			<table id="MyTable" class="display" cellspacing="0" width="100%">
@@ -122,6 +122,7 @@ $company = $_SESSION['companyid'];
 <form name="frmedit" id="frmedit" method="post" action="Quote_edit.php">
 	<input type="hidden" name="txtctranno" id="txtctranno" />
 	<input type="hidden" name="hdnsrchval" id="hdnsrchval" />
+	<input type="hidden" name="hdnsrchsta" id="hdnsrchsta" />
 </form>		
 
 <form name="frmrecurr" id="frmrecurr" method="post" action="Quote_recurr.php">
@@ -145,7 +146,7 @@ $company = $_SESSION['companyid'];
                         
                         <input type="hidden" id="typ" name="typ" value = "">
                         <input type="hidden" id="modzx" name="modzx" value = ""> 
-												<input type="hidden" id="modqotyp" name="modqotyp" value = "">
+						<input type="hidden" id="modqotyp" name="modqotyp" value = "">
                     </center>
                 </p>
                </div> 
@@ -184,7 +185,7 @@ $company = $_SESSION['companyid'];
 <script type="text/javascript">
 $(document).ready(function() {
 
-	fill_datatable("<?=(isset($_REQUEST['ix'])) ? $_REQUEST['ix'] : "";?>");	
+	fill_datatable("<?=(isset($_REQUEST['ix'])) ? $_REQUEST['ix'] : "";?>", $('#selstats').val());	
 
 	$("#searchByName").keyup(function(){
 		var searchByName = $('#searchByName').val();
@@ -216,6 +217,32 @@ $(document).ready(function() {
 			}
 		});
 	});
+
+	$('body').tooltip({
+		selector: '.canceltool',
+		title: fetchData,
+		html: true,
+		placement: 'top'
+	});
+
+	function fetchData()
+	{
+		var fetch_data = '';
+		var element = $(this);
+		var id = element.attr("data-id");
+		var stat = element.attr("data-stat");
+		$.ajax({
+			url:"../../include/fetchcancel.php",
+			method:"POST",
+			async: false,
+			data:{id:id, stat:stat},
+			success:function(data)
+			{
+				fetch_data = data;
+			}
+		});   
+		return fetch_data;
+	}
 		
 });
 	
@@ -233,6 +260,7 @@ $(document).keydown(function(e) {
 function editfrm(x){
 	$('#txtctranno').val(x);
 	$('#hdnsrchval').val($('#searchByName').val()); 
+	$('#hdnsrchsta').val($('#selstats').val());
 	document.getElementById("frmedit").submit();
 }
 
@@ -266,29 +294,53 @@ function trans_send(idz){
 			
 			if(x=="POST"){
 				var msg = "POSTED";
+				gotrans(num, x, qotyp, "");
 			}
 			else if(x=="CANCEL"){
 				var msg = "CANCELLED";
-			}
-			else if(x=="SEND"){
-				var msg = "SENT";
-			}
 
-				$.ajax ({
-					url: "Quote_Tran.php",
-					data: { x: num, typ: x, qotyp: qotyp },
-					dataType: "json",
-					beforeSend: function() {
-						$("#AlertMsg").html("&nbsp;&nbsp;<b>Processing " + num + ": </b> Please wait a moment...");
-						$("#alertbtnOK").css("display", "none");
-						$("#OK").css("display", "none");
-						$("#Cancel").css("display", "none");
-					},
-					success: function( data ) {
-						console.log(data);
-						setmsg(data,num);
+				bootbox.prompt({
+					title: 'Enter reason for cancellation.',
+					inputType: 'text',
+					centerVertical: true,
+					callback: function (result) {
+						if(result!="" && result!=null){
+							gotrans(num, x, qotyp, result);
+						}else{
+							$("#AlertMsg").html("Reason for cancellation is required!");
+							$("#alertbtnOK").css("display", "inline");
+							$("#OK").css("display", "none");
+							$("#Cancel").css("display", "none");
+						}						
 					}
 				});
+
+			}else if(x=="REJECT"){
+				var msg = "REJECT";
+
+				bootbox.prompt({
+					title: 'Enter reason for rejection.',
+					inputType: 'text',
+					centerVertical: true,
+					callback: function (result) {
+						if(result!="" && result!=null){
+							gotrans(num, x, qotyp, result);
+						}else{
+							$("#AlertMsg").html("Reason for rejection is required!");
+							$("#alertbtnOK").css("display", "inline");
+							$("#OK").css("display", "none");
+							$("#Cancel").css("display", "none");
+						}						
+					}
+				});
+
+			} 
+			else if(x=="SEND"){
+				var msg = "SENT";
+				gotrans(num, x, qotyp, "");
+			}
+
+				
 			
 
 		}
@@ -299,6 +351,24 @@ function trans_send(idz){
 			
 		}
 
+}
+
+function gotrans(num, x, qotyp, canmsg){
+	$.ajax ({
+		url: "Quote_Tran.php",
+		data: { x: num, typ: x, qotyp: qotyp, canmsg: canmsg },
+		dataType: "json",
+		beforeSend: function() {
+			$("#AlertMsg").html("&nbsp;&nbsp;<b>Processing " + num + ": </b> Please wait a moment...");
+			$("#alertbtnOK").css("display", "none");
+			$("#OK").css("display", "none");
+			$("#Cancel").css("display", "none");
+		},
+		success: function( data ) {
+			console.log(data);
+			setmsg(data,num);
+		}
+	});
 }
 
 function setmsg(data,num){
@@ -395,12 +465,12 @@ function track(xno){
 							}else{
 								if(full[5]==1){
 									if(full[11] == 1){
-										return '<b>Voided</b>';
+										return '<a href="#" class="canceltool" data-id="'+full[0]+'" data-stat="VOID" style="color: red !important"><b>Voided</b></a>';
 									}else{										
 										return 'Posted';
 									}
 								}else if(full[6]==1){
-									return '<b>Cancelled</b>';
+									return '<a href="#" class="canceltool" data-id="'+full[0]+'" data-stat="CANCELLED" style="color: red !important"><b>Cancelled</b></a>';
 								}else{
 									return "Pending";
 								}
@@ -415,7 +485,7 @@ function track(xno){
 
 						var mgsx = "";
 
-						if(full[6] == 1){
+						if(full[6] == 1 && full[9]==0){
 							mgsx = mgsx = "-";
 						}else{
 							mgsx = "<div id=\"msg"+full[0]+"\"> ";

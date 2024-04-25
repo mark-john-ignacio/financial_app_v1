@@ -77,10 +77,10 @@
 				<div class="col-xs-2 text-right nopadwleft">
 					<select  class="form-control input-sm" name="selstats" id="selstats">
 						<option value=""> All Transactions</option>
-						<option value="post"> Posted </option>
-						<option value="cancel"> Cancelled </option>
-						<option value="void"> Voided </option>
-						<option value="pending"> Pending </option>
+						<option value="post" <?=(isset($_REQUEST['st'])) ? (($_REQUEST['st']=="post") ? "selected" : "" ) : "";?>> Posted </option>
+						<option value="cancel" <?=(isset($_REQUEST['st'])) ? (($_REQUEST['st']=="cancel") ? "selected" : "" ) : "";?>> Cancelled </option>
+						<option value="void" <?=(isset($_REQUEST['st'])) ? (($_REQUEST['st']=="void") ? "selected" : "" ) : "";?>> Voided </option>
+						<option value="pending" <?=(isset($_REQUEST['st'])) ? (($_REQUEST['st']=="pending") ? "selected" : "" ) : "";?>> Pending </option>
 					</select>
 				</div>
 			</div>
@@ -105,6 +105,7 @@
 <form name="frmedit" id="frmedit" method="post" action="SR_edit.php">
 	<input type="hidden" name="txtctranno" id="txtctranno" />
 	<input type="hidden" name="hdnsrchval" id="hdnsrchval" />
+	<input type="hidden" name="hdnsrchsta" id="hdnsrchsta" />
 </form>		
 
 
@@ -140,11 +141,12 @@
 
 	<link rel="stylesheet" type="text/css" href="../../Bootstrap/DataTable/DataTable.css"> 
 	<script type="text/javascript" language="javascript" src="../../Bootstrap/DataTable/jquery.dataTables.min.js"></script>
-
+	<script type="text/javascript" src="../../global/plugins/bootbox/bootbox.min.js"></script>
+	
 	<script type="text/javascript">
 		$(document).ready(function(e) {
 
-			fill_datatable("<?=(isset($_REQUEST['ix'])) ? $_REQUEST['ix'] : "";?>");	
+			fill_datatable("<?=(isset($_REQUEST['ix'])) ? $_REQUEST['ix'] : "";?>",$('#selstats').val());	
 
 			$("#searchByName").keyup(function(){
 				var searchByName = $('#searchByName').val();
@@ -165,126 +167,152 @@
 			});
 
 
-				var xBalance = 0;
-				var itmstat = "";
-				var x = "";
-				var num = "";
-				var id = "";
-				var xcred = ""; 
+			var xBalance = 0;
+			var itmstat = "";
+			var x = "";
+			var num = "";
+			var id = "";
+			var xcred = ""; 
 
-				$(".btnmodz").on("click", function (){
+			$(".btnmodz").on("click", function (){
 
-					if($('#AlertModal').hasClass('in')==true){
-						var idz = $(this).attr('id');
+				if($('#AlertModal').hasClass('in')==true){
+					var idz = $(this).attr('id');
+					
+					if(idz=="OK"){
+						var x = $("#typ").val();
+						var num = $("#modzx").val();
+						var id = $("#modzid").val();
+						var xcred = $("#modzxcred").val(); 
 						
-						if(idz=="OK"){
-							var x = $("#typ").val();
-							var num = $("#modzx").val();
-							var id = $("#modzid").val();
-							var xcred = $("#modzxcred").val(); 
-							
-							if(x=="POST"){
-								var msg = "POSTED";
-							}
-							else if(x=="CANCEL"){
-								var msg = "CANCELLED";
-							}
-							
-							$.ajax ({
-								url: "SR_Tran.php",
-								data: { x: num, typ: x},
-								async: false,
-								dataType: "json",
-								beforeSend: function(){
-									$("#AlertMsg").html("&nbsp;&nbsp;<b>Processing " + num + ": </b> Please wait a moment...");
-									$("#alertbtnOK").hide();
-									$("#OK").hide();
-									$("#Cancel").hide();
-									$("#AlertModal").modal('show');
-								},
-								success: function( data ) {
-									
-									console.log(data);
-									$.each(data,function(index,item){
-
-										itmstat = item.stat;
-
-										if(itmstat!="False"){
-											$("#msg"+num).html(item.stat);
-											
-											$("#AlertMsg").html("&nbsp;&nbsp;<b>" + num + ": </b> Successfully "+msg+"...");
-											$("#alertbtnOK").show();
-											$("#OK").hide();
-											$("#Cancel").hide();
-											$("#AlertModal").modal('show');
-										}
-										else{
-											$("#AlertMsg").html("");
-											
-											$("#AlertMsg").html(item.ms);
-											$("#alertbtnOK").show();
-											$("#OK").hide();
-											$("#Cancel").hide();
-											$("#AlertModal").modal('show');
-						
-										}
-									});
+						if(x=="POST"){
+							var msg = "POSTED";
+							gotrans(num, x, msg, "");
+						}
+						else if(x=="CANCEL"){
+							var msg = "CANCELLED";
+							bootbox.prompt({
+								title: 'Enter reason for cancellation.',
+								inputType: 'text',
+								centerVertical: true,
+								callback: function (result) {
+									if(result!="" && result!=null){
+										gotrans(num, x, msg, result);
+									}else{
+										$("#AlertMsg").html("Reason for cancellation is required!");
+										$("#alertbtnOK").css("display", "inline");
+										$("#OK").css("display", "none");
+										$("#Cancel").css("display", "none");
+									}						
 								}
 							});
-							
-							//----------------------------
+						}
 
-							if(itmstat=="Posted"){
-								//Pag Posted .. Insert to inventory table -MINUS
-						
+
+					}else if(idz=="Cancel"){ //if(idz=="OK"){
+							
+						$("#AlertMsg").html("");
+						$("#AlertModal").modal('hide');
+							
+					}
+				
+				}
+			});
+
+			$('body').tooltip({
+				selector: '.canceltool',
+				title: fetchData,
+				html: true,
+				placement: 'top'
+			});
+
+			function fetchData()
+			{
+				var fetch_data = '';
+				var element = $(this);
+				var id = element.attr("data-id");
+				var stat = element.attr("data-stat");
+				$.ajax({
+					url:"../../include/fetchcancel.php",
+					method:"POST",
+					async: false,
+					data:{id:id, stat:stat},
+					success:function(data)
+					{
+						fetch_data = data;
+					}
+				});   
+				return fetch_data;
+			}
+
+		});
+
+		function gotrans(num,x, msg, canmsg){
+			$.ajax ({
+				url: "SR_Tran.php",
+				data: { x: num, typ: x, canmsg: canmsg},
+				async: false,
+				dataType: "json",
+				beforeSend: function(){
+					$("#AlertMsg").html("&nbsp;&nbsp;<b>Processing " + num + ": </b> Please wait a moment...");
+					$("#alertbtnOK").hide();
+					$("#OK").hide();
+					$("#Cancel").hide();
+					$("#AlertModal").modal('show');
+				},
+				success: function( data ) {
+					
+					console.log(data);
+					$.each(data,function(index,item){
+
+						itmstat = item.stat;
+
+						if(itmstat!="False"){
+							$("#msg"+num).html(item.stat);
+
+							if(x=="POST"){
 								$.ajax ({
 									url: "../../include/th_toInv.php",
 									data: { tran: num, type: "SRet" },
 									async: false,
 									success: function( data ) {
-											itmstat = data.trim();
+										itmstat = data.trim();
 									}
 								});
-						
-								if(itmstat=="False"){ //Proceed sa insert Account Entry
-									
-									$("#AlertMsg").htm("");
-												
-									$("#AlertMsg").html("<b>ERROR: </b>There's a problem generating your inventory!");
-									$("#alertbtnOK").show();
-									$("#OK").hide();
-									$("#Cancel").hide();
-									$("#AlertModal").modal('show');
-
-								}
-						
 							}
 							
-							//------------------------------------
-	
-	
-						}else if(idz=="Cancel"){ //if(idz=="OK"){
-								
-							$("#AlertMsg").html("");
-							$("#AlertModal").modal('hide');
-								
+							$("#AlertMsg").html("&nbsp;&nbsp;<b>" + num + ": </b> Successfully "+msg+"...");
+							$("#alertbtnOK").show();
+							$("#OK").hide();
+							$("#Cancel").hide();
+							$("#AlertModal").modal('show');
 						}
-					
-					}
-				});
-
-		});
+						else{
+							$("#AlertMsg").html("");
+							
+							$("#AlertMsg").html(item.ms);
+							$("#alertbtnOK").show();
+							$("#OK").hide();
+							$("#Cancel").hide();
+							$("#AlertModal").modal('show');
+		
+						}
+					});
+				}
+			});
+		}
 
 		$(document).keydown(function(e) {	
 			
-				if(e.keyCode == 112) { //F2
+			if(e.keyCode == 112) { //F2
 				window.location = "SR_new.php";
-				}
+			}
 		});
 
 		function editfrm(x){
 			$('#txtctranno').val(x); 
 			$('#hdnsrchval').val($('#searchByName').val()); 
+			$('#hdnsrchsta').val($('#selstats').val());
 			document.getElementById("frmedit").submit();
 		}
 
@@ -344,7 +372,7 @@
 								if (full[4] == 1) {
 									
 									if(full[9] == 1){
-										return '<b>Voided</b>';
+										return '<a href="#" class="canceltool" data-id="'+full[0]+'" data-stat="VOID" style="color: red !important"><b>Voided</b></a>';
 									}else{										
 										return 'Posted';
 									}
@@ -353,7 +381,7 @@
 								
 								else if (full[5] == 1) {
 								
-									return '<b>Cancelled</b>';
+									return '<a href="#" class="canceltool" data-id="'+full[0]+'" data-stat="CANCELLED" style="color: red !important"><b>Cancelled</b></a>';
 								
 								}
 								

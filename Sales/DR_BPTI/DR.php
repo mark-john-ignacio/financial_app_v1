@@ -231,30 +231,30 @@
 							var xinvs = 0;
 							var xors = 0;
 							
-								$.ajax ({
-									url: "../th_creditlimit.php",
-									data: { id: $("#modzid").val() },
-									async: false,
-									dataType: "json",
-									success: function( data ) {
-																	
-										console.log(data);
-										$.each(data,function(index,item){
-											if(item.invs!=null){
-												xinvs = item.invs;
-											}
-											
-											if(item.ors!=null){
-												xors = item.ors;
-											}
-											
-										});
-									}
-								});
+							$.ajax ({
+								url: "../th_creditlimit.php",
+								data: { id: $("#modzid").val() },
+								async: false,
+								dataType: "json",
+								success: function( data ) {
+																
+									console.log(data);
+									$.each(data,function(index,item){
+										if(item.invs!=null){
+											xinvs = item.invs;
+										}
+										
+										if(item.ors!=null){
+											xors = item.ors;
+										}
+										
+									});
+								}
+							});
 							
-								//alert("("+parseFloat(xcred) +"-"+ parseFloat(xinvs)+") + "+parseFloat(xors));
+							//alert("("+parseFloat(xcred) +"-"+ parseFloat(xinvs)+") + "+parseFloat(xors));
 									
-								xBalance = (parseFloat(xcred) - parseFloat(xinvs)) + parseFloat(xors);						
+							xBalance = (parseFloat(xcred) - parseFloat(xinvs)) + parseFloat(xors);						
 						}
 
 						gotrans(num, x, msg, "", xBalance);
@@ -267,7 +267,7 @@
 							centerVertical: true,
 							callback: function (result) {
 								if(result!="" && result!=null){
-									gotrans(num,x, msg, result);
+									gotrans(num,x, msg, result, 0);
 								}else{
 									$("#AlertMsg").html("Reason for cancellation is required!");
 									$("#alertbtnOK").css("display", "inline");
@@ -279,77 +279,6 @@
 
 					}
 
-	
-					if(x=='POST'){
-						//alert( $("#modzid").val() );
-						
-					}
-
-
-
-					if(itmstat=="Posted"){
-						//Pag Posted .. Insert to inventory table -MINUS
-				
-						$.ajax ({
-							url: "../../include/th_toInv.php",
-							data: { tran: num, type: "DR" },
-							async: false,
-							success: function( data ) {
-									itmstat = data.trim();
-							}
-						});
-				
-						if(itmstat!="False"){ //Proceed sa insert Account Entry
-							<?php
-								if($ninvvalue=="perpetual")	{
-							?>
-
-							$.ajax ({
-								url: "../../include/th_toAcc.php",
-								data: { tran: num, type: "DR" },
-								async: false,
-								success: function( data ) {
-									if(data.trim()!="False"){
-										
-										$("#AlertMsg").html("&nbsp;&nbsp;<b>" + num + ": </b> Successfully Posted...");
-										$("#alertbtnOK").show();
-										$("#AlertModal").modal('show');
-				
-									}
-									else{
-										$("#AlertMsg").htm("");
-										
-										$("#AlertMsg").html("<b>ERROR: </b>There's a problem generating your account entry!");
-										$("#alertbtnOK").show();
-										$("#OK").hide();
-										$("#Cancel").hide();
-										$("#AlertModal").modal('show');
-					
-									}
-								}
-							});
-
-							<?php
-								}
-							?>
-
-						}
-						else{
-							$("#AlertMsg").htm("");
-										
-							$("#AlertMsg").html("<b>ERROR: </b>There's a problem generating your inventory!");
-							$("#alertbtnOK").show();
-							$("#OK").hide();
-							$("#Cancel").hide();
-							$("#AlertModal").modal('show');
-
-						}
-				
-					}
-					
-					//------------------------------------
-
-
 				}else if(idz=="Cancel"){ //if(idz=="OK"){
 						
 					$("#AlertMsg").html("");
@@ -360,6 +289,31 @@
 			}
 		});
 
+		$('body').tooltip({
+			selector: '.canceltool',
+			title: fetchData,
+			html: true,
+			placement: 'top'
+		});
+
+		function fetchData()
+		{
+			var fetch_data = '';
+			var element = $(this);
+			var id = element.attr("data-id");
+			var stat = element.attr("data-stat");
+			$.ajax({
+				url:"../../include/fetchcancel.php",
+				method:"POST",
+				async: false,
+				data:{id:id, stat:stat},
+				success:function(data)
+				{
+					fetch_data = data;
+				}
+			});   
+			return fetch_data;
+		}
 	});
 
 	function gotrans(num,x, msg, canmsg, xBalance){
@@ -384,6 +338,48 @@
 
 					if(itmstat!="False"){
 						$("#msg"+num).html(item.stat);
+
+						//insert sa Inventory
+						if(x=="POST"){
+							$.ajax ({
+								url: "../../include/th_toInv.php",
+								data: { tran: num, type: "DR" },
+								async: false,
+								success: function( data ) {
+									itmstat = data.trim();
+								}
+							});
+					
+							if(itmstat!="False"){ //Proceed sa insert Account Entry
+								<?php
+									if($ninvvalue=="perpetual")	{
+								?>
+
+								$.ajax ({
+									url: "../../include/th_toAcc.php",
+									data: { tran: num, type: "DR" },
+									async: false,
+									success: function( data ) {
+										
+									}
+								});
+
+								<?php
+									}
+								?>
+
+							}
+							else{
+								$("#AlertMsg").htm("");
+											
+								$("#AlertMsg").html("<b>ERROR: </b>There's a problem generating your inventory!");
+								$("#alertbtnOK").show();
+								$("#OK").hide();
+								$("#Cancel").hide();
+								$("#AlertModal").modal('show');
+
+							}
+						}
 						
 						$("#AlertMsg").html("&nbsp;&nbsp;<b>" + num + ": </b> Successfully "+msg+"...");
 						$("#alertbtnOK").show();
@@ -452,7 +448,7 @@
 								if (full[4] == 1) {
 									
 									if(full[9] == 1){
-										return '<b>Voided</b>';
+										return '<a href="#" class="canceltool" data-id="'+full[0]+'" data-stat="VOID" style="color: red !important"><b>Voided</b></a>';
 									}else{										
 										return 'Posted';
 									}
@@ -461,7 +457,7 @@
 								
 								else if (full[5] == 1) {
 								
-									return '<b>Cancelled</b>';
+									return '<a href="#" class="canceltool" data-id="'+full[0]+'" data-stat="CANCELLED" style="color: red !important"><b>Cancelled</b></a>';
 								
 								}
 								
@@ -493,6 +489,7 @@
 	function editfrm(x){
 		$('#txtctranno').val(x);
 		$('#hdnsrchval').val($('#searchByName').val()); 
+		$('#hdnsrchsta').val($('#selstats').val());
 		document.getElementById("frmedit").submit();
 	}
 
