@@ -68,13 +68,12 @@
 </center>
 
 <br><br>
-<table border="0" align="center" cellpadding="5px" id="BillTable" class="table table-sm table-hover">
+<table border="0" align="center" cellpadding="5px" id="BillTable" class="table table-sm table-hover" width="100%">
 	<tr>
-		<td colspan="11"><b>BILLING</b></td>
+		<td colspan="9"><b>BILLING</b></td>
 	</tr>
   <tr>
     <th nowrap>Transaction No.</th>
-	<th nowrap>Reference</th>
 	<th nowrap>Billing Date</th>
     <th nowrap>Due Date</th>
     <th nowrap colspan="2">Customer</th>
@@ -82,7 +81,6 @@
 	<th nowrap>Sales Type</th>
 	<th nowrap>VAT Type</th>
 	<th nowrap style="text-align: right">Total Amount</th>
-	<th nowrap style="text-align: right">Uninvoiced Amount</th>
   </tr>
   
 <?php
@@ -129,34 +127,30 @@
 	$ngross = 0;
 
 	$totbills = 0;
-	$totUnIn = 0;
 	foreach($finarray as $row)
 	{
 		if($row['quotetype']=="billing"){
-
-			if($row['lcancelled']==1 || $row['lvoid']==1){
-				$xycolor = "BlanchedAlmond";
-			}else{
-				if($row['lapproved']==1){
-					$xycolor = "White";
-				}else{
-					$xycolor = "LightCyan";
-				}
-			}
-
-			$totbills += floatval($row['ngross']);
 			if(@$allrefx[$row['ctranno']]['ref']=="" || @$allrefx[$row['ctranno']]['ref']==null){
-				$totUnIn += floatval($row['ngross']);
-			}
+
+				if($row['lcancelled']==1 || $row['lvoid']==1){
+					$xycolor = "BlanchedAlmond";
+				}else{
+					if($row['lapproved']==1){
+						$xycolor = "White";
+					}else{
+						$xycolor = "LightCyan";
+					}
+				}
 		
+				$totbills += floatval($row['ngross']);
 ?>  
 	<tr style="cursor: pointer; background-color:<?=$xycolor?> !important">
 		<td nowrap><a href="javascript:;" onclick="viewDets('BS','<?=$row['ctranno'];?>')"><?=$row['ctranno'];?></a></td>
-		<td nowrap>
+		<!--<td nowrap>
 
-			<a href="javascript:;" onclick="viewDets('<?=@$allrefx[$row['ctranno']]['typ'];?>','<?=@$allrefx[$row['ctranno']]['ref'];?>')"><?=@$allrefx[$row['ctranno']]['ref'];?></a>
+			<a href="javascript:;" onclick="viewDets('<?//=@$allrefx[$row['ctranno']]['typ'];?>','<?//=@$allrefx[$row['ctranno']]['ref'];?>')"><?//=@$allrefx[$row['ctranno']]['ref'];?></a>
 
-		</td>
+		</td>-->
 		<td nowrap><?=date_format(date_create($row['dtrandate']),"m/d/Y");?></td>
 		<td nowrap><?=date_format(date_create($row['dcutdate']),"m/d/Y");?></td>
 		<td nowrap><?= $row['ccode'];?></td>
@@ -164,25 +158,25 @@
 		<td nowrap><?=strtoupper($row['crecurrtype']);?></td> 
 		<td nowrap><?=$row['csalestype'];?></td>
 		<td nowrap><?=$row['cvattype'];?></td>
-		<td nowrap style="text-align: right"><?=number_format($row['ngross'],2)." ".$row['ccurrencycode']?>
+		<td nowrap style="text-align: right"><?=number_format($row['ngross'],2)?>
 		</td>
-		<td nowrap style="text-align: right">
+		<!--<td nowrap style="text-align: right">
 			<?php
-				if(@$allrefx[$row['ctranno']]['ref']=="" || @$allrefx[$row['ctranno']]['ref']==null){
-					echo number_format($row['ngross'],2)." ".$row['ccurrencycode'];
-				}
+				//if(@$allrefx[$row['ctranno']]['ref']=="" || @$allrefx[$row['ctranno']]['ref']==null){
+				//	echo number_format($row['ngross'],2)." ".$row['ccurrencycode'];
+				//}
 			?>
-		</td>
+		</td>-->
 	</tr>
 <?php 
+			}
 		}
 	}
 ?>
 
 	<tr>
-		<td colspan="9" align="right"><b>Total: </b></td>
+		<td colspan="8" align="right"><b>Total: </b></td>
 		<td nowrap style="text-align: right"><?=number_format($totbills,2)?>
-		<td nowrap style="text-align: right"><?=number_format($totUnIn,2)?>
 	</tr>
 
 </table>
@@ -195,14 +189,12 @@
 	</tr>
   <tr>
     <th nowrap>Transaction No.</th>
-	<th nowrap>Reference</th>
 	<th nowrap>Quote Date</th>
     <th nowrap>Effectivity Date</th>
     <th nowrap colspan="2">Customer</th>
 	<th nowrap>Sales Type</th>
 	<th nowrap>VAT Type</th>
 	<th nowrap style="text-align: right">Total Amount</th>
-	<th nowrap style="text-align: right">Uninvoiced Amount</th>
   </tr>
   
 <?php
@@ -216,49 +208,45 @@
 	$classcode="";
 	$totAmount=0;	
 	$ngross = 0;
+
+	$totbills = 0;
 	foreach($finarray as $row)
 	{
 		if($row['quotetype']=="quote"){
-
-			if($row['lcancelled']==1 || $row['lvoid']==1){
-				$xycolor = "BlanchedAlmond";
-			}else{
-				if($row['lapproved']==1){
-					$xycolor = "White";
+			if(@$allrefx[$row['ctranno']]['ref']=="" || @$allrefx[$row['ctranno']]['ref']==null){
+				if($row['lcancelled']==1 || $row['lvoid']==1){
+					$xycolor = "BlanchedAlmond";
 				}else{
-					$xycolor = "LightCyan";
+					if($row['lapproved']==1){
+						$xycolor = "White";
+					}else{
+						$xycolor = "LightCyan";
+					}
 				}
-			}
 		
+				$totbills += floatval($row['ngross']);
 ?>  
 	<tr style="cursor: pointer; background-color:<?=$xycolor?> !important">
 		<td nowrap><a href="javascript:;" onclick="viewDets('BS','<?=$row['ctranno'];?>')"><?=$row['ctranno'];?></a></td>
-		<td nowrap>
-			<a href="javascript:;" onclick="viewDets('<?=@$allrefx[$row['ctranno']]['typ'];?>','<?=@$allrefx[$row['ctranno']]['ref'];?>')"><?=@$allrefx[$row['ctranno']]['ref'];?></a>
-		</td>
+		<!--<td nowrap>
+			<a href="javascript:;" onclick="viewDets('<?//=@$allrefx[$row['ctranno']]['typ'];?>','<?//=@$allrefx[$row['ctranno']]['ref'];?>')"><?//=@$allrefx[$row['ctranno']]['ref'];?></a>
+		</td>-->
 		<td nowrap><?=date_format(date_create($row['dtrandate']),"m/d/Y");?></td>
 		<td nowrap><?=$row['dcutdate'];?></td>
 		<td nowrap><?=$row['ccode'];?></td>
 		<td nowrap><?=$row['cname'];?></td>   
 		<td nowrap><?=$row['csalestype'];?></td>
 		<td nowrap><?=$row['cvattype'];?></td>
-		<td nowrap style="text-align: right"><?=number_format($row['ngross'],2)." ".$row['ccurrencycode']?></td>
-		<td nowrap style="text-align: right">
-			<?php
-				if(@$allrefx[$row['ctranno']]['ref']=="" || @$allrefx[$row['ctranno']]['ref']==null){
-					echo number_format($row['ngross'],2)." ".$row['ccurrencycode'];
-				}
-			?>
-		</td>
+		<td nowrap style="text-align: right"><?=number_format($row['ngross'],2)?></td>
 		
 	</tr>
 
 	<tr>
 		<td colspan="9" align="right"><b>Total: </b></td>
 		<td nowrap style="text-align: right"><?=number_format($totbills,2)?>
-		<td nowrap style="text-align: right"><?=number_format($totUnIn,2)?>
 	</tr>
 <?php 
+			}
 		}
 	}
 ?>

@@ -111,11 +111,11 @@
 		->setCellValue('G6', 'Recurr')
 		->setCellValue('H6', 'Sales Type')
 		->setCellValue('I6', 'VAT Type')
-		->setCellValue('J6', 'Gross')
+		->setCellValue('J6', 'Total Amount')
 		->setCellValue('K6', 'Status');
 
 	$spreadsheet->getActiveSheet()->mergeCells("E6:F6");
-	$spreadsheet->getActiveSheet()->getStyle('A6:K6')->getFont()->setBold(true);
+	$spreadsheet->getActiveSheet()->getStyle('A6:L6')->getFont()->setBold(true);
 
 	$salesno = "";
 	$remarks = "";
@@ -185,11 +185,11 @@
 		->setCellValue('F'.$cnt, '')
 		->setCellValue('G'.$cnt, 'Sales Type')
 		->setCellValue('H'.$cnt, 'VAT Type')
-		->setCellValue('I'.$cnt, 'Gross')
+		->setCellValue('I'.$cnt, 'Total Amount')
 		->setCellValue('J'.$cnt, 'Status');
 
 	$spreadsheet->getActiveSheet()->mergeCells("E".$cnt.":F".$cnt);
-	$spreadsheet->getActiveSheet()->getStyle("A".$cnt.":K".$cnt)->getFont()->setBold(true);
+	$spreadsheet->getActiveSheet()->getStyle("A".$cnt.":J".$cnt)->getFont()->setBold(true);
 
 	$salesno = "";
 	$remarks = "";
