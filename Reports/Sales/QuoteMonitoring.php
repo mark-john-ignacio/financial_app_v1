@@ -70,7 +70,7 @@
 <br><br>
 <table border="0" align="center" cellpadding="5px" id="BillTable" class="table table-sm table-hover">
 	<tr>
-		<td colspan="10"><b>BILLING</b></td>
+		<td colspan="11"><b>BILLING</b></td>
 	</tr>
   <tr>
     <th nowrap>Transaction No.</th>
@@ -82,7 +82,7 @@
 	<th nowrap>Sales Type</th>
 	<th nowrap>VAT Type</th>
 	<th nowrap style="text-align: right">Total Amount</th>
-	<th nowrap style="text-align: right">Total Balance</th>
+	<th nowrap style="text-align: right">Uninvoiced Amount</th>
   </tr>
   
 <?php
@@ -201,7 +201,8 @@
     <th nowrap colspan="2">Customer</th>
 	<th nowrap>Sales Type</th>
 	<th nowrap>VAT Type</th>
-	<th nowrap style="text-align: right">Gross</th>
+	<th nowrap style="text-align: right">Total Amount</th>
+	<th nowrap style="text-align: right">Uninvoiced Amount</th>
   </tr>
   
 <?php
@@ -242,7 +243,20 @@
 		<td nowrap><?=$row['csalestype'];?></td>
 		<td nowrap><?=$row['cvattype'];?></td>
 		<td nowrap style="text-align: right"><?=number_format($row['ngross'],2)." ".$row['ccurrencycode']?></td>
+		<td nowrap style="text-align: right">
+			<?php
+				if(@$allrefx[$row['ctranno']]['ref']=="" || @$allrefx[$row['ctranno']]['ref']==null){
+					echo number_format($row['ngross'],2)." ".$row['ccurrencycode'];
+				}
+			?>
+		</td>
 		
+	</tr>
+
+	<tr>
+		<td colspan="9" align="right"><b>Total: </b></td>
+		<td nowrap style="text-align: right"><?=number_format($totbills,2)?>
+		<td nowrap style="text-align: right"><?=number_format($totUnIn,2)?>
 	</tr>
 <?php 
 		}
