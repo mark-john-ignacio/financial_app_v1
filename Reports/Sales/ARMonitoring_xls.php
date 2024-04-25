@@ -198,8 +198,6 @@
 			$phpewtamt = floatval($row['nvatgross']) * (floatval($ewtcode)/100);
 		}
 
-		$netvatamt = floatval($row['ngross']) - floatval($phpewtamt);
-
 		$npay = 0;
 		$cntofist = 0;
 		$nadjs = 0;
@@ -217,17 +215,18 @@
 				$npay = $npay + floatval($rxpymnts['napplied']);
 
 				if($rxpymnts['ndm']>1){
-					$nadjsdm = $nadjsdm + floatval($rxpymnts['napplied']);
+					$nadjsdm = $nadjsdm + floatval($rxpymnts['ndm']);
 				}
 
 				if($rxpymnts['ncm']>1){
-					$nadjscm = $nadjscm + floatval($rxpymnts['napplied']);
+					$nadjscm = $nadjscm + floatval($rxpymnts['ncm']);
 				}
 			}
 		}
 
 		$nadjs = ($nadjs + $nadjsdm) - $nadjscm;
 
+		$netvatamt = floatval($row['ngross']) - floatval($phpewtamt) + $nadjs;
 		$nbalace = floatval($netvatamt) - floatval($npay);
 
 		if($row['lcancelled']==1 || $row['lvoid']==1){

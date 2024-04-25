@@ -250,11 +250,11 @@
 					if($row['ctranno']==$rxpymnts['csalesno']){
 					
 						if($rxpymnts['ndm']>1){
-							$nadjsdm = $nadjsdm + floatval($rxpymnts['napplied']);
+							$nadjsdm = $nadjsdm + floatval($rxpymnts['ndm']);
 						}
 
 						if($rxpymnts['ncm']>1){
-							$nadjscm = $nadjscm + floatval($rxpymnts['napplied']);
+							$nadjscm = $nadjscm + floatval($rxpymnts['ncm']);
 						}
 						
 					}
@@ -267,7 +267,7 @@
 		</td>
 		<td nowrap style="text-align: right">
 			<?php
-				$netvatamt = floatval($row['ngross']) - floatval($phpewtamt);
+				$netvatamt = floatval($row['ngross']) - floatval($phpewtamt) + $nadjs;
 				echo number_format($netvatamt,2);
 
 				$ARBal += floatval($netvatamt);
