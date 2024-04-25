@@ -127,6 +127,8 @@
 	$totAmount=0;	
 	$ngross = 0;
 	$cnt = 6;
+
+	$totbills = 0;
 	foreach($finarray as $row)
 	{
 		if($row['quotetype']=="billing"){
@@ -150,6 +152,8 @@
 				}
 			}
 
+			$totbills += floatval($row['ngross']);
+
 			$spreadsheet->setActiveSheetIndex(0)
 			->setCellValue('A'.$cnt, $row['ctranno'])
 			->setCellValue('B'.$cnt, @$allrefx[$row['ctranno']]['ref'])
@@ -168,6 +172,15 @@
 		}
 		}
 	}
+
+	$cnt++;
+
+	$spreadsheet->setActiveSheetIndex(0)
+	->setCellValue('A'.$cnt, 'Total')
+	->setCellValue('J'.$cnt, $totbills);
+	$spreadsheet->getActiveSheet()->mergeCells("A".$cnt.":I".$cnt);
+	$spreadsheet->setActiveSheetIndex(0)->getStyle('J'.$cnt)->getNumberFormat()->setFormatCode("_(* #,##0.00_);_(* \(#,##0.00\);_(* \"-\"??_);_(@_)");	
+	$spreadsheet->getActiveSheet()->getStyle("A".$cnt.":J".$cnt)->getFont()->setBold(true);
 
 	$cnt++;
 	$cnt++;
@@ -202,6 +215,8 @@
 	$classcode="";
 	$totAmount=0;	
 	$ngross = 0;
+
+	$totbills = 0;
 	foreach($finarray as $row)
 	{
 		if($row['quotetype']=="quote"){
@@ -225,6 +240,8 @@
 				}
 			}
 
+			$totbills += floatval($row['ngross']);
+
 			$spreadsheet->setActiveSheetIndex(0)
 			->setCellValue('A'.$cnt, $row['ctranno'])
 			->setCellValue('B'.$cnt, @$allrefx[$row['ctranno']]['ref'])
@@ -241,6 +258,15 @@
 		}	
 		}
 	}	
+
+	$cnt++;
+
+	$spreadsheet->setActiveSheetIndex(0)
+	->setCellValue('A'.$cnt, 'Total')
+	->setCellValue('I'.$cnt, $totbills);
+	$spreadsheet->getActiveSheet()->mergeCells("A".$cnt.":H".$cnt);
+	$spreadsheet->setActiveSheetIndex(0)->getStyle('I'.$cnt)->getNumberFormat()->setFormatCode("_(* #,##0.00_);_(* \(#,##0.00\);_(* \"-\"??_);_(@_)");	
+	$spreadsheet->getActiveSheet()->getStyle("A".$cnt.":I".$cnt)->getFont()->setBold(true);
 
 
 // Rename worksheet
