@@ -138,9 +138,14 @@
 								</thead>
 								<tbody class="tbody">
 									<?php
+										$arrreslx = array();
 										$sql = "select X.*, A.citemdesc from mrp_jo_process X left join items A on X.compcode=A.compcode and X.citemno=A.cpartno where X.compcode='$company' and X.mrp_jo_ctranno = '$tranno' Order By X.nid";
 										$resultmain = mysqli_query ($con, $sql); 
 										while($row2 = mysqli_fetch_array($resultmain, MYSQLI_ASSOC)){
+											$arrreslx[] = $row2;
+										}
+
+										foreach($arrreslx as $row2){
 									?>
 										<tr id="tr<?=$row2['nid']?>">
 											<td><a href="javascript:;" onclick="getprocess('<?=$row2['ctranno']?>','<?=$row2['citemdesc']?>','tr<?=$row2['nid']?>')"><?=$row2['ctranno']?></a></td>

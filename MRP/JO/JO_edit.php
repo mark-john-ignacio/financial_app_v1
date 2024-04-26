@@ -369,6 +369,7 @@
 										<th style="border-bottom:1px solid #999">UOM</th>
 										<th style="border-bottom:1px solid #999; text-align: right">Qty Needed</th>
 										<th style="border-bottom:1px solid #999; text-align: right">Available Inv.</th>
+										<th style="border-bottom:1px solid #999; text-align: right">Buildable Qty</th>
 									</tr>
 								</thead>
 								<tbody class="tbody">
@@ -386,6 +387,19 @@
 												<?php
 													if(isset($arrinvv[$row2['citemno']])){
 														echo number_format($arrinvv[$row2['citemno']],2);
+													}else{
+														echo 0;
+													}
+												?>
+											</td>
+											<td style="text-align: right">
+												<?php
+													if(isset($arrinvv[$row2['citemno']])){
+														$dtotal = $arrmrpjo[0]['nqty'];
+														$qtyperpc = floatval($row2['nqty']) / floatval($dtotal);
+
+														$qtubuild = floatval($arrinvv[$row2['citemno']]) / floatval($qtyperpc);
+														echo number_format($qtubuild,2);
 													}else{
 														echo 0;
 													}
