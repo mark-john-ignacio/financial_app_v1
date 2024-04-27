@@ -45,7 +45,7 @@
 			$Remarks = $row['cremarks'];
 			$Date = $row['ddate'];
 			$DateNeeded = $row['dneeded'];
-			$Gross = $row['ngross'];
+			$Gross = $row['nbasegross'];
 
 			$delto = $row['cdelto'];  
 			$deladd = $row['ddeladd']; 
@@ -230,7 +230,7 @@ $sqldtlss = mysqli_query($con,"select A.*, B.citemdesc, B.cuserpic From quote_t 
 					<td align="center" class="tdpadx tddetz"><?php echo $rowdtls['cunit'];?></td>					
 					<td align="center" class="tdpadx tddetz"><?php echo $rowdtls['citemdesc'];?></td>
 					<td align="right" class="tdpadx tddetz tdright"><?php echo number_format($rowdtls['nprice'],2);?></td>
-					<td align="right" class="tdpadx tddetz tdright"><?php echo number_format($rowdtls['namount'],2);?></td>
+					<td align="right" class="tdpadx tddetz tdright"><?php echo number_format($rowdtls['nbaseamount'],2);?></td>
 					
 				</tr>
 
@@ -251,7 +251,7 @@ $sqldtlss = mysqli_query($con,"select A.*, B.citemdesc, B.cuserpic From quote_t 
 						?>
 					</td>
 					<td align="right" class="tdpadx" style="border: 1px solid;padding-right: 10px"><b>TOTAL</b></td>
-					<td align="right"  class="tdpadx" style="border: 1px solid;padding-right: 10px"><?php echo number_format($Gross,2);?></td>
+					<td align="right"  class="tdpadx" style="border: 1px solid;padding-right: 10px"><?php echo $CurrCode." ".number_format($Gross,2);?></td>
 					
 				</tr>
 
