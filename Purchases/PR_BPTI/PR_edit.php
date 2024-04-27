@@ -506,10 +506,14 @@ if (mysqli_num_rows($sqlhead)!=0) {
 						<p id="AlertMsg"></p>
 						<p>
 						<center>
+								<button type="button" class="btn btn-primary btn-sm" id="OK" onclick="trans_send('OK')">Ok</button>
+								<button type="button" class="btn btn-danger btn-sm" id="Cancel" onclick="trans_send('Cancel')">Cancel</button>
+								
+								
 								<button type="button" class="btn btn-primary btn-sm" data-dismiss="modal" id="alertbtnOK">Ok</button>
-
-								<button type="button" class="btn btn-primary btn-sm" data-dismiss="modal" id="OK">Ok</button>
-								<button type="button" class="btn btn-danger btn-sm" data-dismiss="modal" id="Cancel">Ok</button>
+								
+								<input type="hidden" id="typ" name="typ" value = "">
+								<input type="hidden" id="modzx" name="modzx" value = "">
 						</center>
 						</p>
 					</div>
@@ -518,7 +522,7 @@ if (mysqli_num_rows($sqlhead)!=0) {
 		</div>
 	</div>
 
-	<form method="post" name="frmedit" id="frmedit" action="PurchRet_edit.php">
+	<form method="post" name="frmedit" id="frmedit" action="PR_edit.php"> 
 		<input type="hidden" name="txtctranno" id="txtctranno" value="">
 	</form>
 
@@ -1033,4 +1037,75 @@ if (mysqli_num_rows($sqlhead)!=0) {
 		$("#AlertModal").modal('show');
 
 	}
+
+	function trans_send(idz){
+
+		var itmstat = "";
+		var x = "";
+		var num = "";
+		var msg = "";
+
+		var x = $("#typ").val();
+		var num = $("#modzx").val();
+
+		if(idz=="OK" && (x=="POST" || x=="SEND")){
+
+			$.ajax ({
+				url: "PR_Tran.php",
+				data: { x: num, typ: x, canmsg: "" },
+				dataType: "json",
+				beforeSend: function() {
+					$("#AlertMsg").html("&nbsp;&nbsp;<b>Processing " + num + ": </b> Please wait a moment...");
+					$("#alertbtnOK").css("display", "none");
+					$("#OK").css("display", "none");
+					$("#Cancel").css("display", "none");
+				},
+				success: function( data ) {
+					console.log(data);
+					//setmsg(data,num);
+					$("#txtctranno").val('<?=$cprno?>');
+					$("#frmedit").submit(); 
+				}
+			});
+			
+
+		}else if(idz=="OK" && (x=="CANCEL" || x=="CANCEL1")){
+			bootbox.prompt({
+				title: 'Enter reason for cancellation.',
+				inputType: 'text',
+				centerVertical: true,
+				callback: function (result) {
+					if(result!="" && result!=null){
+						$.ajax ({
+							url: "PR_Tran.php",
+							data: { x: num, typ: x, canmsg: result },
+							dataType: "json",
+							beforeSend: function() {
+								$("#AlertMsg").html("&nbsp;&nbsp;<b>Processing " + num + ": </b> Please wait a moment...");
+								$("#alertbtnOK").css("display", "none");
+								$("#OK").css("display", "none");
+								$("#Cancel").css("display", "none");
+							},
+							success: function( data ) {
+								console.log(data);
+								setmsg(data,num);
+							}
+						});
+					}else{
+						$("#AlertMsg").html("Reason for cancellation is required!");
+						$("#alertbtnOK").css("display", "inline");
+						$("#OK").css("display", "none");
+						$("#Cancel").css("display", "none");
+					}						
+				}
+			});
+		}else if(idz=="Cancel"){
+			
+			$("#AlertMsg").html("");
+			$("#AlertModal").modal('hide');
+			
+		}
+
+	}
+
 </script>
