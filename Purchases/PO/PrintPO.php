@@ -220,8 +220,8 @@ $sqldtlss = mysqli_query($con,"select A.*, B.citemdesc, B.cuserpic From quote_t 
 					<td align="center" class="tdpadx tddetz"><?php echo intval($rowdtls['nqty']);?></td>
 					<td align="center" class="tdpadx tddetz"><?php echo $rowdtls['cunit'];?></td>					
 					<td align="center" class="tdpadx tddetz"><?php echo $rowdtls['citemdesc'];?></td>
-					<td align="right" class="tdpadx tddetz tdright"><?php echo number_format($rowdtls['nprice'],2);?></td>
-					<td align="right" class="tdpadx tddetz tdright"><?php echo number_format($rowdtls['nbaseamount'],2);?></td>					
+					<td align="right" class="tdpadx tddetz tdright"><?php echo $CurrCode." ".number_format($rowdtls['nprice'],2);?></td>
+					<td align="right" class="tdpadx tddetz tdright"><?php echo $CurrCode." ".number_format($rowdtls['nbaseamount'],2);?></td>					
 				</tr>
 
 				<?php 
