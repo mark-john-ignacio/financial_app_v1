@@ -499,20 +499,23 @@ if (mysqli_num_rows($sqlhead)!=0) {
 
 	<!-- 1) Alert Modal -->
 	<div class="modal fade" id="AlertModal" tabindex="-1" role="dialog" data-keyboard="false" data-backdrop="static" aria-hidden="true">
-			<div class="vertical-alignment-helper">
-					<div class="modal-dialog vertical-align-top">
-							<div class="modal-content">
-								<div class="alert-modal-danger">
-										<p id="AlertMsg"></p>
-									<p>
-											<center>
-													<button type="button" class="btn btn-primary btn-sm" data-dismiss="modal" id="alertbtnOK">Ok</button>
-											</center>
-									</p>
-								</div>
-							</div>
+		<div class="vertical-alignment-helper">
+			<div class="modal-dialog vertical-align-top">
+				<div class="modal-content">
+					<div class="alert-modal-danger">
+						<p id="AlertMsg"></p>
+						<p>
+						<center>
+								<button type="button" class="btn btn-primary btn-sm" data-dismiss="modal" id="alertbtnOK">Ok</button>
+
+								<button type="button" class="btn btn-primary btn-sm" data-dismiss="modal" id="OK">Ok</button>
+								<button type="button" class="btn btn-danger btn-sm" data-dismiss="modal" id="Cancel">Ok</button>
+						</center>
+						</p>
 					</div>
+				</div>
 			</div>
+		</div>
 	</div>
 
 	<form method="post" name="frmedit" id="frmedit" action="PurchRet_edit.php">
@@ -950,6 +953,8 @@ if (mysqli_num_rows($sqlhead)!=0) {
 				
 				$("#AlertMsg").html("&nbsp;&nbsp;NO details found!");
 				$("#alertbtnOK").show();
+				$("#OK").hide();
+				$("#Cancel").hide();
 				$("#AlertModal").modal('show');
 
 			return false;
@@ -977,6 +982,8 @@ if (mysqli_num_rows($sqlhead)!=0) {
 				
 				$("#AlertMsg").html("&nbsp;&nbsp;Details Error: "+msgz);
 				$("#alertbtnOK").show();
+				$("#OK").hide();
+				$("#Cancel").hide();
 				$("#AlertModal").modal('show');
 
 				return false;
