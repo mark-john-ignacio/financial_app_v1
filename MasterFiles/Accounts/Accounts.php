@@ -98,7 +98,8 @@ include('../../include/access2.php');
 						<th>Description</th>
 						<th>Category</th>
 						<th>Type</th>
-						<th>Balance as of <?=date('Y', $date)?></th>
+						<th>Balance as of <?=date('Y', $date)?> (Dr)</th>
+						<th>Balance as of <?=date('Y', $date)?> (Cr)</th>
 					</tr>
 				</thead>
 			</table>
@@ -633,11 +634,13 @@ mysqli_close($con);
 				},
 				{ "data": 4 },
 				{ "data": 3 },
-				{ "data": 9 }		
+				{ "data": 9 },
+				{ "data": 10 }				
       ],
 			"columnDefs": [
 				{ "targets": 3, "className": "text-center" } ,
-				{ "targets": 4, "className": "text-right" } 
+				{ "targets": 4, "className": "text-right" },
+				{ "targets": 5, "className": "text-right" }  
 			],
 		} );
 			
