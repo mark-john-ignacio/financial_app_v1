@@ -252,7 +252,7 @@
 	function gotrans(num,x, msg, canmsg){
 		$.ajax ({
 			url: urlx,
-			data: { x: num, typ: x, , canmsg: canmsg },
+			data: { x: num, typ: x, canmsg: canmsg },
 			async: false,
 			dataType: "json",
 			beforeSend: function(){
