@@ -140,7 +140,6 @@ html,
 		<th>Particulars</th>
 		<th width="150px">Debit</th>
 		<th width="150px">Credit</th>
-		<th width="150px">Total Amount</th>
 	</tr>
 	<tr>
 		<td colspan="4">
@@ -150,7 +149,7 @@ html,
 		</td>
 	</tr>
 	<tr>
-        <td colspan="5"><b>Entry</b></td>
+        <td colspan="4"><b>Entry</b></td>
 	</tr>
     <?php
 	  
@@ -174,17 +173,15 @@ html,
 				}
 			?>
 		</td>
-		<td>&nbsp;</td>
 	</tr>
 	<?php
 		}
 	}
 	?>
 	<tr>
-        <td align="center"><b>Total Amount to Pay</b></td>
-		<td>&nbsp;</td>
-		<td>&nbsp;</td>
+        <td align="center"><b>Total</b></td>
 		<td align="right"><b><?=number_format($totdebit,2)?></b></td>
+		<td align="right"><b><?=number_format($totcredit,2)?></b></td>
 	</tr>
 </table>
 
