@@ -19,7 +19,7 @@ require_once "../../Connection/connection_string.php";
 
 	//get all existing SO
 	@$arrinv = array();
-	$resq = mysqli_query ($con, "Select creference, nrefident,citemno,sum(nqty) as nqty From so_t a left join so b on a.compcode=b.compcode and a.ctranno=b.ctranno where a.compcode='$company' and (b.lcancelled=0 or b.lvoid=0) group by creference, nrefident,citemno");
+	$resq = mysqli_query ($con, "Select creference, nrefident,citemno,sum(nqty) as nqty From so_t a left join so b on a.compcode=b.compcode and a.ctranno=b.ctranno where a.compcode='$company' and b.lcancelled=0 and b.lvoid=0 group by creference, nrefident,citemno");
 	if (mysqli_num_rows($resq)!=0){
 		while($row = mysqli_fetch_array($resq, MYSQLI_ASSOC)){
 			@$arrinv[]=$row;
