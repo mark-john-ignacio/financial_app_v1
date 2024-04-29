@@ -31,16 +31,16 @@
 	while($row = mysqli_fetch_array($resDR, MYSQLI_ASSOC)){
 		$findr[] = $row;
 		$acctslist[] = $row['cacctno'];
-		$begbalaz[$row['cacctno']] = $row['nbalance'];
+		//$begbalaz[$row['cacctno']] = $row['nbalance'];
 	}
 
 
 	$AmountTotBalance = 0;
 	//for begginning balance
 	
-	$resBeg=mysqli_query($con,"Select acctno, sum(ndebit) as ndebit, sum(ncredit) as ncredit from glactivity where compcode='$company' and ddate < STR_TO_DATE('$date1', '%m/%d/%Y')  and acctno in ('".implode("','",$acctslist)."') group by acctno order by acctno");
+	$resBeg=mysqli_query($con,"Select A.ccode, A.cname, A.cacctno, C.cacctdesc, IFNULL(sum(B.ndebit),0) as ndebit, IFNULL(sum(B.ncredit),0) as ncredit From bank A left join glactivity B on A.compcode=B.compcode and A.cacctno=B.acctno left join accounts C on A.compcode=C.compcode and A.cacctno=C.cacctid where A.compcode='$company' and ddate < STR_TO_DATE('$date1', '%m/%d/%Y') Group BY A.ccode, A.cname, A.cacctno, C.cacctdesc");
 	while($row = mysqli_fetch_array($resBeg, MYSQLI_ASSOC)){
-		$begbalaz[$row['acctno']] = (floatval($begbalaz[$row['acctno']]) + floatval($begbalaz[$row['ndebit']])) - floatval($begbalaz[$row['ncredit']]);
+		$begbalaz[$row['cacctno']] = floatval($row['ndebit']) -  floatval($row['ncredit']);
 	}
 
 	//for transactions
