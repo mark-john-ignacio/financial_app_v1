@@ -24,7 +24,7 @@ include('../../include/access2.php');
 		$cats[$r['mainacct']][] = [ 'id' => $r['cacctid'], 'name' => $r['cacctdesc'], 'typ' => $r['ccategory'] ];
 	}
 
-
+	$date = strtotime("-1 year", time());
 ?>
 <!DOCTYPE html>
 <html>
@@ -66,7 +66,7 @@ include('../../include/access2.php');
 
 						<a href="Accounts_xls.php" class="btn btn-success btn-sm"><i class="fa fa-file-excel-o"></i> &nbsp; Export To Excel</a>
 
-						<button type="button" class="btn btn-warning btn-sm" id="btnedt" name="btnedt"><i class="fa fa-pencil" aria-hidden="true"></i> &nbsp; Beg Balance</button>
+						<!--<button type="button" class="btn btn-warning btn-sm" id="btnedt" name="btnedt"><i class="fa fa-pencil" aria-hidden="true"></i> &nbsp; Beg Balance</button>-->
 					</div>
 
 					<div class="col-xs-1 nopadwtop" style="height:30px !important;">
@@ -98,7 +98,7 @@ include('../../include/access2.php');
 						<th>Description</th>
 						<th>Category</th>
 						<th>Type</th>
-						<th>Beg Balance</th>
+						<th>Balance as of <?=date('Y', $date)?></th>
 					</tr>
 				</thead>
 			</table>
