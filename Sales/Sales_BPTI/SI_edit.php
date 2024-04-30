@@ -1046,7 +1046,7 @@ $getdcnts = mysqli_query($con,"SELECT * FROM `discounts_list` where compcode='$c
 				<div class="modal-bodylong">
 					<button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>        
 			
-					<iframe id="myprintframe" name="myprintframe" scrolling="no" style="width:100%; height: 99%; display:block; margin:0px; padding:0px; border:0px"></iframe>
+					<iframe id="myprintframe" name="myprintframe" scrolling="no" style="width:100%; height:11in; display:block; margin:0px; padding:0px; border:0px"></iframe>
 				
 				</div>
 			</div><!-- /.modal-content -->
