@@ -73,7 +73,7 @@ if($postedtran!==""){
 	$qryposted = " and b.lapproved=".$postedtran."";
 }
 
-if($trantype=="Trade"){
+//if($trantype=="Trade"){
 
 	$sqlx = "select a.compcode, b.ccode, d.ctradename as cname, b.lapproved, d.ccustomertype as ctype, e.cdesc as typdesc, sum(a.nqty) as nqty, sum(A.namount) as nprice
 	From sales_t a	
@@ -86,7 +86,7 @@ if($trantype=="Trade"){
 	Group By a.compcode, b.ccode, d.ctradename, b.lapproved, d.ccustomertype, e.cdesc
 	order by d.ccustomertype, sum(A.namount) DESC";
 
-}elseif($trantype=="Non-Trade"){
+/*}elseif($trantype=="Non-Trade"){
 
 	$sqlx = "select a.compcode, b.ccode, d.ctradename as cname, b.lapproved, d.ccustomertype as ctype, e.cdesc as typdesc, sum(a.nqty) as nqty, sum(A.namount) as nprice
 	From ntsales_t a	
@@ -125,7 +125,7 @@ if($trantype=="Trade"){
 	) A 
 	Group By A.compcode, A.ccode, A.cname, A.lapproved, A.ctype, A.typdesc order by A.ctype, sum(A.nprice) DESC";
 
-}
+}*/
 
 	$result=mysqli_query($con,$sqlx);
 	while($row = mysqli_fetch_array($result, MYSQLI_ASSOC)){

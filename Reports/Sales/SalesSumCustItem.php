@@ -73,7 +73,7 @@ if($postedtran!==""){
 	$qryposted = " and b.lapproved=".$postedtran."";
 }
 
-if($trantype=="Trade"){
+//if($trantype=="Trade"){
 
 	$result=mysqli_query($con,"select d.ccustomertype as ctype, e.cdesc as typdesc, b.ccode, d.ctradename as cname, a.citemno, c.citemdesc, a.cunit, sum(a.nqty) as nqty, sum(a.namount) as namount
 	From sales_t a	
@@ -89,7 +89,7 @@ if($trantype=="Trade"){
 		$finarray[] = $row;
 	}
 
-}elseif($trantype=="Non-Trade"){
+/*}elseif($trantype=="Non-Trade"){
 
 	$result=mysqli_query($con,"select d.ccustomertype as ctype, e.cdesc as typdesc, b.ccode, d.ctradename as cname, a.citemno, c.citemdesc, a.cunit, sum(a.nqty) as nqty, sum(a.namount) as namount
 	From ntsales_t a	
@@ -135,7 +135,7 @@ if($trantype=="Trade"){
 	while($row = mysqli_fetch_array($result, MYSQLI_ASSOC)){
 		$finarray[] = $row;
 	}
-}
+}*/
 
 	$salesno = "";
 	$remarks = "";

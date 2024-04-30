@@ -71,18 +71,11 @@ if($postedtran!==""){
 	$qryposted = " and b.lapproved=".$postedtran."";
 }
 
-if($trantype=="Trade"){
-	$tblhdr = "so";
-	$tbldtl = "so_t";
-}elseif($trantype=="Non-Trade"){
-	$tblhdr = "ntso";
-	$tbldtl = "ntso_t";
-}
 
-if($trantype!==""){
+//if($trantype!==""){
 	$xsql = "select a.nident, b.dcutdate, a.ctranno, d.ccustomertype as ctype, e.cdesc as typdesc, b.ccode, d.ctradename as cname, b.lapproved, a.citemno, c.citemdesc, a.cunit, a.nqty, a.nprice, a.namount
-	From ".$tbldtl." a	
-	left join ".$tblhdr." b on a.ctranno=b.ctranno and a.compcode=b.compcode
+	From so_t a	
+	left join so b on a.ctranno=b.ctranno and a.compcode=b.compcode
 	left join items c on a.citemno=c.cpartno and a.compcode=c.compcode
 	left join customers d on b.ccode=d.cempid and b.compcode=d.compcode
 	left join groupings e on d.ccustomertype=e.ccode and c.compcode=e.compcode and e.ctype='CUSTYP'
@@ -91,7 +84,7 @@ if($trantype!==""){
 	order by a.ctranno, a.nident";
 
 
-}else{
+/*}else{
 	$xsql = "Select A.nident, A.dcutdate, A.ctranno, A.ctype, A.typdesc, A.ccode, A.cname, A.lapproved, A.citemno, A.citemdesc, A.cunit, A.nqty, A.nprice, A.namount
 	From (
 		select a.nident, b.dcutdate, a.ctranno, d.ccustomertype as ctype, e.cdesc as typdesc, b.ccode, d.ctradename as cname, b.lapproved, a.citemno, c.citemdesc, a.cunit, a.nqty, a.nprice, a.namount
@@ -116,15 +109,15 @@ if($trantype!==""){
 	) A 
 	order by A.ctranno, A.nident";
 	
-}
+}*/
 
-$resDR=mysqli_query($con,"Select A.ctranno, A.nident, A.creference, A.crefident, A.citemno, A.nqty from dr_t A left join dr B on A.compcode=B.compcode and A.ctranno=B.ctranno where A.compcode='$company' and B.lapproved=1 UNION ALL Select A.ctranno, A.nident, A.creference, A.crefident, A.citemno, A.nqty from ntdr_t A left join ntdr B on A.compcode=B.compcode and A.ctranno=B.ctranno where A.compcode='$company' and B.lapproved=1 and B.lvoid=0");
+$resDR=mysqli_query($con,"Select A.ctranno, A.nident, A.creference, A.crefident, A.citemno, A.nqty from dr_t A left join dr B on A.compcode=B.compcode and A.ctranno=B.ctranno where A.compcode='$company' and B.lapproved=1 and B.lvoid=0");
 $findr = array();
 while($row = mysqli_fetch_array($resDR, MYSQLI_ASSOC)){
 	$findr[] = $row;
 }
 
-$resSI=mysqli_query($con,"Select creference, nrefident, citemno, A.nprice, sum(nqty) as nqty, sum(A.nqtysr) as nqtysr from sales_t A left join sales B on A.compcode=B.compcode and A.ctranno=B.ctranno where A.compcode='$company' and B.lapproved=1 and B.lvoid=0 Group By creference, nrefident, citemno, A.nprice UNION ALL Select creference, nrefident, citemno, A.nprice, sum(nqty) as nqty, sum(A.nqtysr) as nqtysr from ntsales_t A left join ntsales B on A.compcode=B.compcode and A.ctranno=B.ctranno where A.compcode='$company' and B.lapproved=1 and B.lvoid=0 Group By creference, nrefident, citemno, A.nprice");
+$resSI=mysqli_query($con,"Select creference, nrefident, citemno, A.nprice, sum(nqty) as nqty, sum(A.nqtyreturned) as nqtysr from sales_t A left join sales B on A.compcode=B.compcode and A.ctranno=B.ctranno where A.compcode='$company' and B.lapproved=1 and B.lvoid=0 Group By creference, nrefident, citemno, A.nprice");
 $finsi = array();
 while($row = mysqli_fetch_array($resSI, MYSQLI_ASSOC)){
 	$finsi[] = $row;

@@ -54,7 +54,7 @@ $spreadsheet->getProperties()->setCreator('Myx Financials')
 	}
 
 	//and b.dcutdate between STR_TO_DATE('$date1', '%m/%d/%Y') and STR_TO_DATE('$date2', '%m/%d/%Y')
-	if($trantype=="Trade"){
+	//if($trantype=="Trade"){
 
 		$sqlx = "select MONTH(b.dcutdate) as mdate, YEAR(b.dcutdate) as ydate, a.compcode, a.citemno, c.citemdesc, c.cclass, e.cdesc as classdesc, 
 			sum(a.nqty) as nqty, sum(A.namount) as namount
@@ -67,7 +67,7 @@ $spreadsheet->getProperties()->setCreator('Myx Financials')
 			".$qryitm.$qrycust.$qryposted."
 			Group By MONTH(b.dcutdate), YEAR(b.dcutdate), a.compcode, a.citemno, c.citemdesc, c.cclass, e.cdesc
 			order by c.cclass, c.citemdesc, YEAR(b.dcutdate), MONTH(b.dcutdate)";
-	}elseif($trantype=="Non-Trade"){
+	/*}elseif($trantype=="Non-Trade"){
 
 		$sqlx = "select MONTH(b.dcutdate) as mdate, YEAR(b.dcutdate) as ydate, a.compcode, a.citemno, c.citemdesc, c.cclass, e.cdesc as classdesc, 
 		sum(a.nqty) as nqty, sum(A.namount) as namount
@@ -110,7 +110,7 @@ $spreadsheet->getProperties()->setCreator('Myx Financials')
 		Group By A.mdate, A.ydate, A.compcode, A.citemno, A.citemdesc, A.cclass, A.classdesc 
 		order by A.cclass, A.citemdesc, ydate, mdate";
 
-	}
+	}*/
 
 	//echo $sqlx;
 

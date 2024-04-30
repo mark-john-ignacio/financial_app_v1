@@ -70,7 +70,7 @@ if($postedtran!==""){
 	$qryposted = " and b.lapproved=".$postedtran."";
 }
 
-if($trantype=="Trade"){
+//if($trantype=="Trade"){
 	$sql = "select A.dcutdate, A.csalesno, A.ccode, A.cname, A.citemno, A.citemdesc, A.cunit, A.nqty, A.nprice, A.ndiscount,A.namount, A.lapproved
 	FROM
 	(
@@ -83,7 +83,7 @@ if($trantype=="Trade"){
 	) A
 	Where A.dcutdate between STR_TO_DATE('$date1', '%m/%d/%Y') and STR_TO_DATE('$date2', '%m/%d/%Y')
 	order by A.dcutdate, A.csalesno";
-}elseif($trantype=="Non-Trade"){
+/*}elseif($trantype=="Non-Trade"){
 	$sql = "select A.dcutdate, A.csalesno, A.ccode, A.cname, A.citemno, A.citemdesc, A.cunit, A.nqty, A.nprice, A.ndiscount,A.namount, A.lapproved
 	FROM
 	(
@@ -118,7 +118,7 @@ if($trantype=="Trade"){
 	) A
 	Where A.dcutdate between STR_TO_DATE('$date1', '%m/%d/%Y') and STR_TO_DATE('$date2', '%m/%d/%Y')
 	order by A.dcutdate, A.csalesno";
-}
+}*/
 
 //echo $sql;
 

@@ -70,7 +70,7 @@
 	}
 
 	//and b.dcutdate between STR_TO_DATE('$date1', '%m/%d/%Y') and STR_TO_DATE('$date2', '%m/%d/%Y') 
-	if($trantype=="Trade"){
+	//if($trantype=="Trade"){
 
 		$sqlx = "select MONTH(b.dcutdate) as mdate, YEAR(b.dcutdate) as ydate, a.compcode, b.ccode, d.ctradename as cname, d.ccustomertype as ctype, e.cdesc as typdesc, sum(a.nqty) as nqty, sum(A.namount) as nprice
 		From sales_t a	
@@ -83,7 +83,7 @@
 		Group By MONTH(b.dcutdate), YEAR(b.dcutdate), a.compcode, b.ccode, d.ctradename, d.ccustomertype, e.cdesc
 		order by d.ccustomertype, b.ccode, YEAR(b.dcutdate), MONTH(b.dcutdate)";
 
-	}elseif($trantype=="Non-Trade"){
+	/*}elseif($trantype=="Non-Trade"){
 
 		$sqlx = "select MONTH(b.dcutdate) as mdate, YEAR(b.dcutdate) as ydate, a.compcode, b.ccode, d.ctradename as cname, d.ccustomertype as ctype, e.cdesc as typdesc, sum(a.nqty) as nqty, sum(A.namount) as nprice
 		From ntsales_t a	
@@ -123,7 +123,7 @@
 		Group By A.mdate, A.ydate, A.compcode, A.ccode, A.cname, A.ctype, A.typdesc 
 		order by A.ctype, A.ccode, ydate, mdate";
 
-	}
+	}*/
 
 	//echo $sqlx;
 

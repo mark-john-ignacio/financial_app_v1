@@ -62,7 +62,7 @@ if($postedtran!==""){
 	$qryposted = " and b.lapproved=".$postedtran."";
 }
 
-if($trantype=="Trade"){
+//if($trantype=="Trade"){
 
 	$result=mysqli_query($con,"select a.compcode, a.ctranno, b.dcutdate, b.ccode, d.ctradename as cname, b.lapproved, 'Trade' as ctype, sum(A.namount) as nprice
 	From sales_t a	
@@ -77,7 +77,7 @@ if($trantype=="Trade"){
 		$finarray[] = $row;
 	}
 
-}elseif($trantype=="Non-Trade"){
+/*}elseif($trantype=="Non-Trade"){
 
 	$result=mysqli_query($con,"select a.compcode, a.ctranno, b.dcutdate, b.ccode, d.ctradename as cname, b.lapproved, 'Non-Trade' as ctype, sum(A.namount) as nprice
 	From ntsales_t a	
@@ -117,7 +117,7 @@ if($trantype=="Trade"){
 	while($row = mysqli_fetch_array($result, MYSQLI_ASSOC)){
 		$finarray[] = $row;
 	}
-}
+}*/
 	
 	$totPrice=0;	
 	$cnt = 2;
