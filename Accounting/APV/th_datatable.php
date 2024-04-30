@@ -8,7 +8,7 @@
 
 	$column = array('a.ctranno', 'c.cref', 'CONCAT(a.ccode,"-",b.cname)', 'a.captype', 'a.ngross', 'a.dapvdate', 'CASE WHEN a.lapproved=1 THEN CASE WHEN a.lvoid=1 THEN "Voided" ELSE "Posted" END WHEN a.lcancelled=1 THEN "Cancelled" ELSE "For Approval" END');
 
-	$query = "select a.*,b.cname, IFNULL(c.cref,'') as cref from apv a left join suppliers b on a.compcode=b.compcode and a.ccode=b.ccode left join (Select ctranno, GROUP_CONCAT(if(crefrr='', null, crefrr)) as cref from apv_t where compcode='".$_SESSION['companyid']."' Group By ctranno) c on a.ctranno=c.ctranno where a.compcode='".$_SESSION['companyid']."' ";
+	$query = "select a.*,b.cname, IFNULL(c.cref,'') as cref from apv a left join suppliers b on a.compcode=b.compcode and a.ccode=b.ccode left join (Select ctranno, GROUP_CONCAT(if(crefno='', null, crefno)) as cref from apv_d where compcode='".$_SESSION['companyid']."' Group By ctranno) c on a.ctranno=c.ctranno where a.compcode='".$_SESSION['companyid']."' ";
 
 	if(isset($_POST['searchByName']) && $_POST['searchByName'] != '')
 	{
