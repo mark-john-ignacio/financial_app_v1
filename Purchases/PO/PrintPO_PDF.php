@@ -48,6 +48,8 @@
 			$DateNeeded = $row['dneeded'];
 			$Gross = $row['ngrossbefore'];
 
+			$cTin = $row['ctin']; 
+
 			$delto = $row['cdelto'];  
 			$deladd = $row['ddeladd']; 
 			$delinfo = $row['ddelinfo']; 

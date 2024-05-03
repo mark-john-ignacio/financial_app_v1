@@ -56,6 +56,8 @@
 
 			$Conemail = $row['ccontactemail'];
 
+			$cTin = $row['ctin']; 
+
 			$Remarks = $row['cremarks'];
 			$Date = $row['ddate'];
 			$DateNeeded = $row['dneeded'];
