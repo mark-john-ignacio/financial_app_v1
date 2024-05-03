@@ -236,8 +236,8 @@ $sqldtlss = mysqli_query($con,"select A.*, B.citemdesc, B.cuserpic From quote_t 
 					<td align="center" class="tdpadx tddetz"><?php echo intval($rowdtls['nqty']);?></td>
 					<td align="center" class="tdpadx tddetz"><?php echo $rowdtls['cunit'];?></td>					
 					<td align="center" class="tdpadx tddetz"><?php echo $rowdtls['citemdesc'];?></td>
-					<td align="right" class="tdpadx tddetz tdright"><?php echo $CurrCode." ".number_format($rowdtls['nprice'],2);?></td>
-					<td align="right" class="tdpadx tddetz tdright"><?php echo $CurrCode." ".number_format($rowdtls['nbaseamount'],2);?></td>					
+					<td align="right" nowrap class="tdpadx tddetz tdright"><?php echo $CurrCode." ".number_format($rowdtls['nprice'],2);?></td>
+					<td align="right" nowrap class="tdpadx tddetz tdright"><?php echo $CurrCode." ".number_format($rowdtls['nbaseamount'],2);?></td>					
 				</tr>
 
 				<?php 
@@ -248,7 +248,7 @@ $sqldtlss = mysqli_query($con,"select A.*, B.citemdesc, B.cuserpic From quote_t 
 				?>
 
 				<tr>
-					<td colspan="3" class="tdpadx" style="border-top: 1px solid; border-left: 1px solid; border-bottom: 1px solid; padding-right: 10px">
+					<td colspan="4" class="tdpadx" style="border-top: 1px solid; border-left: 1px solid; border-bottom: 1px solid; padding-right: 10px">
 						<?php
 							if($xwithvat==1){
 								echo "<b><i>Note: Price inclusive of VAT</i></b>";
