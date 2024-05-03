@@ -232,7 +232,7 @@ $sqldtlss = mysqli_query($con,"select A.*, B.citemdesc, B.cuserpic From quote_t 
 				?>
 
 				<tr>
-					<td align="center" class="tdpadx tddetz"><?=$xref;?></td>
+					<td align="center" class="tdpadx tddetz"><?=$xrefP;?></td>
 					<td align="center" class="tdpadx tddetz"><?php echo intval($rowdtls['nqty']);?></td>
 					<td align="center" class="tdpadx tddetz"><?php echo $rowdtls['cunit'];?></td>					
 					<td align="center" class="tdpadx tddetz"><?php echo $rowdtls['citemdesc'];?></td>

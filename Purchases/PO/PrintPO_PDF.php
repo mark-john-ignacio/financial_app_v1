@@ -214,6 +214,7 @@ $sqldtlss = mysqli_query($con,"select A.*, B.citemdesc, B.cuserpic From quote_t 
 			<table border="0" align="center" width="100%" style="border-collapse: collapse;">
 	
 				<tr>
+					<th style="border: 1px solid" class="tdpadx">Reference</th>
 					<th style="border: 1px solid" class="tdpadx">Qty</th>
 					<th style="border: 1px solid" class="tdpadx">Unit</th>
 					<th style="border: 1px solid" class="tdpadx">Product Description/s</th>
@@ -225,23 +226,30 @@ $sqldtlss = mysqli_query($con,"select A.*, B.citemdesc, B.cuserpic From quote_t 
 				$sqlbody = mysqli_query($con,"select a.*,b.citemdesc, a.citemdesc as newdesc from purchase_t a left join items b on a.compcode=b.compcode and a.citemno=b.cpartno where a.compcode='$company' and a.cpono = '$csalesno' Order by a.nident");
 
 				if (mysqli_num_rows($sqlbody)!=0) {
-
+					$xref = "";
+					$xrefP = "";
 					while($rowdtls = mysqli_fetch_array($sqlbody, MYSQLI_ASSOC)){ 
 						if(floatval($rowdtls['nrate']) > 0){
 							$xwithvat = 1;
 						}
+						if($xref != $rowdtls['creference']){
+							$xref = $rowdtls['creference'];
+							$xrefP = $rowdtls['creference'];
+						}
 				?>
 
 				<tr>
+					<td align="center" class="tdpadx tddetz"><?=$xrefP;?></td>
 					<td align="center" class="tdpadx tddetz"><?php echo intval($rowdtls['nqty']);?></td>
 					<td align="center" class="tdpadx tddetz"><?php echo $rowdtls['cunit'];?></td>					
 					<td align="center" class="tdpadx tddetz"><?php echo $rowdtls['citemdesc'];?></td>
-					<td align="right" class="tdpadx tddetz tdright"><?php echo $CurrCode." ".number_format($rowdtls['nprice'],2);?></td>
-					<td align="right" class="tdpadx tddetz tdright"><?php echo $CurrCode." ".number_format($rowdtls['nbaseamount'],2);?></td>
+					<td align="right" nowrap class="tdpadx tddetz tdright"><?php echo $CurrCode." ".number_format($rowdtls['nprice'],2);?></td>
+					<td align="right" nowrap class="tdpadx tddetz tdright"><?php echo $CurrCode." ".number_format($rowdtls['nbaseamount'],2);?></td>
 					
 				</tr>
 
 				<?php 
+						$xrefP = "";
 					} 
 
 				}
