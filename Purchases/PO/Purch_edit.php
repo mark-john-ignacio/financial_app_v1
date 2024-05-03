@@ -122,7 +122,7 @@ if (mysqli_num_rows($sqlhead)!=0) {
 		$Remarks = $row['cremarks'];
 		$Date = $row['ddate'];
 		$DateNeeded = $row['dneeded'];
-		$Gross = $row['ngrossbefore'];
+		$Gross = $row['ngross'];
 
 		$nbasegross = $row['nbasegross'];
 		$ccurrcode = $row['ccurrencycode']; 

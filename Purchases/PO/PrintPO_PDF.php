@@ -45,7 +45,7 @@
 			$Remarks = $row['cremarks'];
 			$Date = $row['ddate'];
 			$DateNeeded = $row['dneeded'];
-			$Gross = $row['nbasegross'];
+			$Gross = $row['ngrossbefore'];
 
 			$delto = $row['cdelto'];  
 			$deladd = $row['ddeladd']; 

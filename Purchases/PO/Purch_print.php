@@ -42,7 +42,7 @@ if (mysqli_num_rows($sqlhead)!=0) {
 		$Remarks = $row['cremarks'];
 		$Date = $row['ddate'];
 		$DateNeeded = $row['dneeded'];
-		$Gross = $row['ngross'];
+		$Gross = $row['ngrossbefore'];
 		
 		$lCancelled = $row['lcancelled'];
 		$lPosted = $row['lapproved'];
