@@ -144,6 +144,8 @@ $sqldtlss = mysqli_query($con,"select A.*, B.citemdesc, B.cuserpic From quote_t 
 											<?=$CustName?>
 											<br>
 											<?=$CustAdd?>
+											<br>
+											<?=$cTin?>
 									</td>
 									<td width="100px" style="padding: 10px;" align="right">
 											<b>TERMS</b>

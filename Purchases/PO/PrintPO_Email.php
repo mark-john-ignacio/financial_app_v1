@@ -171,6 +171,8 @@
 											<?=$CustName?>
 											<br>
 											<?=$CustAdd?>
+											<br>
+											<?=$cTin?>
 									</td>
 									<td width="100px" style="padding: 10px;">
 											<b>TERMS</b>
