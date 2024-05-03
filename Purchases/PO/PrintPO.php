@@ -18,6 +18,7 @@ include('../../include/denied.php');
 			$logosrc = $rowcomp['clogoname'];
 			$logoaddrs = $rowcomp['compadd'];
 			$logonamz = $rowcomp['compname'];
+			$deltotin = $row['comptin'];
 		}
 
 	}
@@ -45,7 +46,7 @@ if (mysqli_num_rows($sqlhead)!=0) {
 		$deladd = $row['ddeladd']; 
 		$delinfo = $row['ddelinfo']; 
 		$billto = $row['cbillto'];  
-		$deltotin = $row['cdelto_tin'];
+		
 		
 		$lCancelled = $row['lcancelled'];
 		$lPosted = $row['lapproved'];
