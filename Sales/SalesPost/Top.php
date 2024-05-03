@@ -16,6 +16,8 @@
     Posting Transaction
     <br />
     <b><?php echo $_REQUEST['csalesno'];?></b> <br /> <?php echo $_REQUEST['dcutdate'];?>
+    <br />
+    <b><?php echo $_REQUEST['dcnt'];?></b>
     </font>
     
     </td>

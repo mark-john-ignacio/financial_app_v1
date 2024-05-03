@@ -83,7 +83,7 @@ function openpop(x){
 </head>
 
 <body style="padding:5px; height:600px">
-<form name="frmTran" id="frmTran" method="post" action="POS.php">
+	<form name="frmTran" id="frmTran" method="post" action="POS.php">
 
 			<button type="submit" class="btn btn-primary btn-md"><span class="glyphicon glyphicon glyphicon-file"></span>&nbsp;POST TRANSACTIONS</button>
             
@@ -103,7 +103,7 @@ function openpop(x){
             
             <tbody>
               	<?php
-				$sql = "select a.*,b.cname from sales a left join customers b on a.ccode=b.cempid where lcancelled=0 and lapproved=0 order by ctranno";
+				$sql = "select a.*,b.cname from sales a left join customers b on a.ccode=b.cempid where a.compcode='001' and lcancelled=0 and lapproved=0 and dcutdate between '2022-01-01' and '2022-12-31' and ctranno not in (Select ctranno from glactivity) order by ctranno";
 				$result=mysqli_query($con,$sql);
 				
 					if (!mysqli_query($con, $sql)) {

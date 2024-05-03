@@ -2,21 +2,12 @@
 	if(!isset($_SESSION)){
 		session_start();
 	}
-	$_SESSION['pageid'] = "ProdRun";
+	$_SESSION['pageid'] = "QCRejects";
 	include('../../Connection/connection_string.php');
 	include('../../include/denied.php');
 	include('../../include/access2.php');
 
 	$company = $_SESSION['companyid'];
-
-	/*
-	$unpoststat = "True";
-	$sql = mysqli_query($con,"select * from users_access where userid = '$employeeid' and pageid = 'SO_unpost.php'");
-	if(mysqli_num_rows($sql) == 0){
-		$unpoststat = "False";
-	}
-	*/
-
 ?>
 
 <!DOCTYPE html>
@@ -39,7 +30,7 @@
 		<section>
         <div>
         	<div style="float:left; width:50%">
-				<font size="+2"><u>Production Run (JO List)</u></font>	
+				<font size="+2"><u>QC Rejects (JO List)</u></font>	
             </div>
         </div>
 			<br><br>
@@ -50,12 +41,12 @@
 
 					
 				</div>
-        <div class="col-xs-3 nopadding">
+        		<div class="col-xs-3 nopadding">
 					<div class="itmalert alert alert-danger" id="itmerr" style="display: none;"></div> <br><br>
 				</div>
-        <div class="col-xs-2 nopadwtop" style="height:30px !important;">
-          <b> Search Customer/SO No/JO No: </b>
-        </div>
+				<div class="col-xs-2 nopadwtop" style="height:30px !important;">
+					<b> Search Customer/SO No/JO No: </b>
+				</div>
 				<div class="col-xs-3 text-right nopadding">
 					<input type="text" name="searchByName" id="searchByName" value="<?=(isset($_REQUEST['ix'])) ? $_REQUEST['ix'] : "";?>" class="form-control input-sm" placeholder="Enter Trans No or Customer or SO No....">
 				</div>
@@ -79,36 +70,36 @@
 		</section>
 	</div>		
     
-<form name="frmedit" id="frmedit" method="post" action="ProdRun_edit.php">
-	<input type="hidden" name="txtctranno" id="txtctranno" />
-	<input type="hidden" name="hdnsrchval" id="hdnsrchval" />
-</form>		
+	<form name="frmedit" id="frmedit" method="post" action="QCRejects_edit.php">
+		<input type="hidden" name="txtctranno" id="txtctranno" />
+		<input type="hidden" name="hdnsrchval" id="hdnsrchval" />
+	</form>		
 
 
-<!-- 1) Alert Modal -->
-<div class="modal fade" id="AlertModal" tabindex="-1" role="dialog" data-keyboard="false" data-backdrop="static" aria-hidden="true">
-    <div class="vertical-alignment-helper">
-        <div class="modal-dialog vertical-align-top">
-            <div class="modal-content">
-               <div class="alert-modal-danger">
-                  <p id="AlertMsg"></p>
-                <p>
-                    <center>
-                        <button type="button" class="btnmodz btn btn-primary btn-sm" id="OK">Ok</button>
-                        <button type="button" class="btnmodz btn btn-danger btn-sm" id="Cancel">Cancel</button>
-                        
-                        
-                        <button type="button" class="btn btn-primary btn-sm" data-dismiss="modal" id="alertbtnOK">Ok</button>
-                        
-                        <input type="hidden" id="typ" name="typ" value = "">
-                        <input type="hidden" id="modzx" name="modzx" value = "">
-                    </center>
-                </p>
-               </div> 
-            </div>
-        </div>
-    </div>
-</div>
+	<!-- 1) Alert Modal -->
+	<div class="modal fade" id="AlertModal" tabindex="-1" role="dialog" data-keyboard="false" data-backdrop="static" aria-hidden="true">
+		<div class="vertical-alignment-helper">
+			<div class="modal-dialog vertical-align-top">
+				<div class="modal-content">
+				<div class="alert-modal-danger">
+					<p id="AlertMsg"></p>
+					<p>
+						<center>
+							<button type="button" class="btnmodz btn btn-primary btn-sm" id="OK">Ok</button>
+							<button type="button" class="btnmodz btn btn-danger btn-sm" id="Cancel">Cancel</button>
+							
+							
+							<button type="button" class="btn btn-primary btn-sm" data-dismiss="modal" id="alertbtnOK">Ok</button>
+							
+							<input type="hidden" id="typ" name="typ" value = "">
+							<input type="hidden" id="modzx" name="modzx" value = "">
+						</center>
+					</p>
+				</div> 
+				</div>
+			</div>
+		</div>
+	</div>
 
 </body>
 </html>
@@ -133,14 +124,12 @@
 
 			$('#example').DataTable().destroy();
 			fill_datatable(searchByName);
-
 		});
 
 		var itmstat = "";
 		var x = "";
 		var num = "";
 		var msg = "";
-
 	});
 
 	function fill_datatable(searchByName){

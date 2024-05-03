@@ -1260,12 +1260,27 @@ xmlhttp.send();
               <div class="col-xs-2 nopadding">
                 <label><input type="checkbox" name="chkAcc[]" value="ProdRun_edit" <?=(in_array("ProdRun_edit",@$arrpgist)) ? "checked" : "";?>>&nbsp;Edit</label>
               </div>
-              <div class="col-xs-2 nopadding">
-                <label><input type="checkbox" name="chkAcc[]" value="ProdRun_post" <?=(in_array("ProdRun_post",@$arrpgist)) ? "checked" : "";?>>&nbsp;QC Posting</label>
+             <!-- <div class="col-xs-2 nopadding">
+                <label><input type="checkbox" name="chkAcc[]" value="ProdRun_post" <?//=(in_array("ProdRun_post",@$arrpgist)) ? "checked" : "";?>>&nbsp;QC Posting</label>-->
               </div>
             </div>
           </div>
 
+          <br>&nbsp;<br>
+          <b><u><i>QC Rejects</i></u></b>
+          <div style="padding-left:20px;"> 
+            <div class="col-xs-12 nopadwleft">
+              <div class="col-xs-2 nopadding">
+                <label><input type="checkbox" name="chkAcc[]" value="QCRejects" <?=(in_array("QCRejects",@$arrpgist)) ? "checked" : "";?>>&nbsp;View List</label>
+              </div>
+              <div class="col-xs-2 nopadding">
+                <label><input type="checkbox" name="chkAcc[]" value="QCRejects_edit" <?=(in_array("QCRejects_edit",@$arrpgist)) ? "checked" : "";?>>&nbsp;Edit</label>
+              </div>
+              <!--<div class="col-xs-2 nopadding">
+                <label><input type="checkbox" name="chkAcc[]" value="QCRejects_post" <?//=(in_array("ProdRun_post",@$arrpgist)) ? "checked" : "";?>>&nbsp;QC Posting</label>-->
+              </div>
+            </div>
+          </div>
         <?php
           }
         ?>

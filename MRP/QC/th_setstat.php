@@ -31,16 +31,8 @@
 		$compname = php_uname('n');
 		$preparedby = $_SESSION['employeeid'];
 
-		if($colval=="NULL"){
-			$msg = "Reset ".$colnme;
-			$xevent = "RESET";
-		}else{
-			$msg = "Updated Record";
-			$xevent = "UPDATED";
-		}
-
-		mysqli_query($con,"INSERT INTO logfile(`compcode`, `ctranno`, `cuser`, `ddate`, `cevent`, `module`, `cmachine`, `cremarks`, `cancel_rem`) 
-		values('$company','$code','$preparedby',NOW(),'$xevent','PRODUCTION RUN','$compname','$msg','".$_REQUEST['resetmsg']."')");
+		mysqli_query($con,"INSERT INTO logfile(`compcode`, `ctranno`, `cuser`, `ddate`, `cevent`, `module`, `cmachine`, `cremarks`) 
+		values('$company','$code','$preparedby',NOW(),'UPDATED','QC REJECTS','$compname','Updated Record')");
 			
 		echo "True";
 

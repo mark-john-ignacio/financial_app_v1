@@ -68,6 +68,8 @@
 
     function file_checker($dir){
         
+        $file_array = array();
+        
         $all_files = scandir($dir);
         $files = array_diff($all_files, array('.','..'));
         foreach($files as $file){

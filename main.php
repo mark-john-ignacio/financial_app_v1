@@ -681,6 +681,11 @@
 								<i class="fa fa-tasks"></i> Production Run 
 							</a>
             			</li>
+						<li>
+                			<a href="javascript:;" onClick="setpage('MRP/QC/QCRejects.php');"> 
+								<i class="fa fa-tasks"></i> QC Rejects
+							</a>
+            			</li>
 						<?php
 							}
 						?>

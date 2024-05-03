@@ -47,7 +47,7 @@
 
 
 	$arrmrpjo_pt = array();
-	$sql = "select X.*, IFNULL(Y.cdesc,'') as cmachinedesc from mrp_jo_process_t X left join mrp_machines Y on X.compcode=Y.compcode and X.nmachineid=Y.nid where X.compcode='$company' and X.ctranno in (Select ctranno from mrp_jo_process where compcode='$company' and mrp_jo_ctranno  = '$tranno')";
+	$sql = "select X.nid, X.ctranno, X.mrp_process_id, X.mrp_process_desc, X.nmachineid, IFNULL(X.ddatestart,'') as ddatestart, IFNULL(ddateend,'') as ddateend, X.nactualoutput, X.operator_id, X.nrejectqty, X.nscrapqty, IFNULL(Y.cdesc,'') as cmachinedesc, IFNULL(Z.cdesc,'') as operator_name, X.lpause from mrp_jo_process_t X left join mrp_machines Y on X.compcode=Y.compcode and X.nmachineid=Y.nid left join mrp_operators Z on X.compcode=Z.compcode and X.operator_id=Z.nid where X.compcode='$company' and X.ctranno in (Select ctranno from mrp_jo_process where compcode='$company' and mrp_jo_ctranno  = '$tranno')";
 	$resultmain = mysqli_query ($con, $sql); 
 	while($row2 = mysqli_fetch_array($resultmain, MYSQLI_ASSOC)){
 		$arrmrpjo_pt[] = $row2;				
@@ -91,9 +91,9 @@
 	<title>Myx Financials</title>
     
 	<link rel="stylesheet" type="text/css" href="../../Bootstrap/css/bootstrap.css?x=<?php echo time();?>">
-  <link rel="stylesheet" type="text/css" href="../../global/plugins/font-awesome/css/font-awesome.min.css?h=<?php echo time();?>"/>
+  	<link rel="stylesheet" type="text/css" href="../../global/plugins/font-awesome/css/font-awesome.min.css?h=<?php echo time();?>"/>
 	<link rel="stylesheet" type="text/css" href="../../Bootstrap/bs-icons/font/bootstrap-icons.css?h=<?php echo time();?>"/>
-  <link rel="stylesheet" type="text/css" href="../../Bootstrap/css/alert-modal.css">
+  	<link rel="stylesheet" type="text/css" href="../../Bootstrap/css/alert-modal.css">
 	<link rel="stylesheet" type="text/css" href="../../Bootstrap/css/bootstrap-datetimepicker.css">
 
 	<link href="../../Bootstrap/bs-file-input/css/fileinput.css" media="all" rel="stylesheet" type="text/css"/>
@@ -339,6 +339,7 @@
 							<table id="MyJOSubs" class="MyTable table table-condensed" width="100%">
 								<thead>
 									<tr>
+										<th style="border-bottom:1px solid #999">Action</th>
 										<th style="border-bottom:1px solid #999">Machine</th>
 										<th style="border-bottom:1px solid #999">Process</th>
 										<th style="border-bottom:1px solid #999">Date Started</th>
@@ -561,6 +562,7 @@
 
 <link rel="stylesheet" type="text/css" href="../../Bootstrap/DataTable/DataTable.css"> 
 <script type="text/javascript" language="javascript" src="../../Bootstrap/DataTable/jquery.dataTables.min.js"></script>
+<script type="text/javascript" src="../../global/plugins/bootbox/bootbox.min.js"></script>
 
 <script type="text/javascript">
 
@@ -760,6 +762,112 @@
 
 	});
 
+	$(document).on('click', 'button.nbtnpaused', function(e) {
+		let yx = $(this).data("val");
+
+		$xmsg = "";
+		$mstat = "";		
+
+		bootbox.prompt({
+			title: 'Enter reason for pause.',
+			inputType: 'text',
+			centerVertical: true,
+			callback: function (result) {
+				if(result==""){		
+					bootbox.alert({
+						message: "Reason for pause is required!",
+						size: "small",
+						className: "bootalert"
+					});
+				}else if(result!="" && result !=null){
+					$.ajax ({
+						url: "th_setpause.php",
+						data: { processid: yx, pausemsg: result },
+						async: false,
+						dataType: "json",
+						success: function( data ) {
+							console.log(data);
+							
+							$.each(data, function(index, element) {
+								$xmsg = data.msg;
+								$mstat = data.stat;					
+							});
+							
+							if($mstat!=""){
+								if($mstat=="True"){
+									$("#txpause"+yx).html("ON PAUSE");
+									$("#txpause"+yx).addClass("text-danger");
+
+									$("#tspause"+yx).html("<button type=\"button\" class=\"nbtnresume btn btn-success btn-xs btn-block\" id=\"btnUpResume"+yx+"\" data-val=\""+yx+"\">Resume</button>");
+								}
+								
+								bootbox.alert({
+									message: $xmsg,
+									size: "small",
+									className: "bootalert"
+								});
+							}
+						}			
+					});
+				}
+
+			}
+		});
+	});
+
+	$(document).on('click', 'button.nbtnresume', function(e) {
+		let yx = $(this).data("val");
+
+		$xmsg = "";
+		$mstat = "";		
+
+		bootbox.prompt({
+			title: 'Enter reason to resume.',
+			inputType: 'text',
+			centerVertical: true,
+			callback: function (result) {
+				if(result==""){		
+					bootbox.alert({
+						message: "Reason to resume is required!",
+						size: "small",
+						className: "bootalert"
+					});
+				}else if(result!="" && result !=null){
+					$.ajax ({
+						url: "th_setresume.php",
+						data: { processid: yx, pausemsg: result },
+						async: false,
+						dataType: "json",
+						success: function( data ) {
+							console.log(data);
+							
+							$.each(data, function(index, element) {
+								$xmsg = data.msg;
+								$mstat = data.stat;					
+							});
+							
+							if($mstat!=""){
+								if($mstat=="True"){
+									$("#txpause"+yx).html("");
+									$("#txpause"+yx).removeClass("text-danger");
+
+									$("#tspause"+yx).html("<button type=\"button\" class=\"nbtnpaused btn btn-warning btn-xs btn-block\" id=\"btnUpActual"+yx+"\" data-val=\""+yx+"\">Pause</button>");
+								}
+								
+								bootbox.alert({
+									message: $xmsg,
+									size: "small",
+									className: "bootalert"
+								});
+							}
+						}			
+					});
+				}
+
+			}
+		});
+	});
+
 	function getSO(){
 		$xcus = $('#txtcustid').val();
 
@@ -775,15 +883,15 @@
 			xstat = "YES";
 
 			$.ajax({
-        url: 'th_solist.php',
+				url: 'th_solist.php',
 				data: 'x='+$xcus,
-        dataType: 'json',
-        method: 'post',
-        success: function (data) {
-					   
-          console.log(data);
-          $.each(data,function(index,item){
-								
+				dataType: 'json',
+				method: 'post',
+				success: function (data) {
+							
+					console.log(data);
+					$.each(data,function(index,item){
+									
 						if(item.cpono=="NONE"){
 							$("#AlertMsg").html("No Sales Order Available");
 							$("#alertbtnOK").show();
@@ -805,22 +913,22 @@
 							$("#td"+item.csono).on("mouseover", function(){
 								$(this).css('cursor','pointer');
 							});
-					  }
+						}
 
-          });
-					   
+					});
+						
 					if(xstat=="YES"){
 						$("#mySIRef").modal("show");
 					}
 
-        },
-        error: function (req, status, err) {
-						console.log('Something went wrong', status, err);
-						$("#AlertMsg").html("Something went wrong<br>Status: "+status +"<br>Error: "+err);
-						$("#alertbtnOK").show();
-						$("#AlertModal").modal('show');
+				},
+				error: function (req, status, err) {
+					console.log('Something went wrong', status, err);
+					$("#AlertMsg").html("Something went wrong<br>Status: "+status +"<br>Error: "+err);
+					$("#alertbtnOK").show();
+					$("#AlertModal").modal('show');
 				}
-      });
+			});
 
 		}
 
@@ -928,12 +1036,26 @@
 			if(value.ctranno == $xtran){
 				//alert(value.mrp_process_desc);
 
+				if(value.lpause == 0){					
+					var tdpause = "<td id=\"tspause"+value.nid+"\"><button type=\"button\" class=\"nbtnpaused btn btn-warning btn-xs btn-block\" id=\"btnUpActual"+value.nid+"\" data-val=\""+value.nid+"\">Pause</button></td>";
+				}else{
+					var tdpause = "<td id=\"tspause"+value.nid+"\"><button type=\"button\" class=\"nbtnresume btn btn-success btn-xs btn-block\" id=\"btnUpResume"+value.nid+"\" data-val=\""+value.nid+"\">Resume</button></td>";
+				}
+
 				var tdmachine = "<td>"+value.cmachinedesc+"</td>";
 				var tdprocess = "<td>"+value.mrp_process_desc+"</td>";
 				var tddatest = "<td>"+value.ddatestart+"</td>";
-				var tddateen = "<td>&nbsp;</td>";
-				var tdactual = "<td>&nbsp;</td>";
-				var tdoperator = "<td>&nbsp;</td>";
+				
+
+				if(value.lpause == 0){					
+					var tddateen = "<td id=\"txpause"+value.nid+"\">"+value.ddateend+"</td>";
+				}else{
+					var tddateen = "<td id=\"txpause"+value.nid+"\" class=\"text-danger\">ON PAUSE</td>";
+				}
+
+
+				var tdactual = "<td>"+value.nactualoutput+"</td>";
+				var tdoperator = "<td>"+value.operator_name+"</td>";
 				var tdreject = "<td>&nbsp;</td>";
 				var tdscrap = "<td>&nbsp;</td>";
 				var tdqc = "<td>&nbsp;</td>";
@@ -941,7 +1063,7 @@
 
 				//alert(tdinfocode + "\n" + tdinfodesc + "\n" + tdinfofld + "\n" + tdinfoval + "\n" + tdinfodel);
 				
-				$('#MyJOSubs > tbody:last-child').append('<tr>'+tdmachine + tdprocess + tddatest + tddateen + tdactual + tdoperator + tdreject + tdscrap + tdqc + tdrems + '</tr>');
+				$('#MyJOSubs > tbody:last-child').append('<tr>'+tdpause+tdmachine + tdprocess + tddatest + tddateen + tdactual + tdoperator + tdreject + tdscrap + tdqc + tdrems + '</tr>');
 
 			}
 		}); 
