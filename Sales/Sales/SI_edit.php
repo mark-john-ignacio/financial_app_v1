@@ -41,7 +41,7 @@
 	}
 	*/
 
-$getdcnts = mysqli_query($con,"SELECT * FROM `discounts_list` where compcode='$company' order By nident"); 
+	$getdcnts = mysqli_query($con,"SELECT * FROM `discounts_list` where compcode='$company' order By nident"); 
 	if (mysqli_num_rows($getdcnts)!=0) {
 		while($row = mysqli_fetch_array($getdcnts, MYSQLI_ASSOC)){
 			@$arrdisclist[] = array('ident' => $row['nident'], 'ccode' => $row['ccode'], 'cdesc' => $row['cdesc'], 'acctno' => $row['cacctno']); 
@@ -99,6 +99,29 @@ $getdcnts = mysqli_query($con,"SELECT * FROM `discounts_list` where compcode='$c
 	if(file_exists($directory)){
 		@$arrname = file_checker($directory);
 	} 
+
+	$resprint = mysqli_query($con, "SELECT * FROM `nav_menu_prints` WHERE compcode='$company' and code = 'AR_PAYMENT_OR'");
+
+	$print_or_def = "";
+	$print_or_cus = "";
+	if(mysqli_num_rows($resprint) != 0){
+		while($row = mysqli_fetch_array($resprint, MYSQLI_ASSOC)){
+			if($row['code']=="AR_PAYMENT_OR" && $row['ldefault']==1){
+				$print_or_cus = $row['filename'];
+			}
+			if($row['code']=="AR_PAYMENT_OR" && $row['ldefault']==0){
+				$print_or_def = $row['filename'];
+			}
+		}
+	}
+
+	$result = mysqli_query($con, "SELECT * FROM `parameters` WHERE compcode='$company' and ccode = 'PRINT_VERSION_RP'");
+	if(mysqli_num_rows($result) != 0){
+		$verrow = mysqli_fetch_array($result, MYSQLI_ASSOC);
+		$version = $verrow['cvalue'];
+	} else {
+		$version =''; 
+	}
 
 ?>
 
@@ -622,9 +645,15 @@ if (mysqli_num_rows($sqlhead)!=0) {
 									if(mysqli_num_rows($sql) == 1){
 									
 								?>
-										<button type="button" class="btn btn-info btn-sm" tabindex="6" onClick="printchk('<?=$txtctranno;?>');" id="btnPrint" name="btnPrint">
-											Print<br>(CTRL+P)
-										</button>
+										<div class="dropdown" style="display:inline-block !important;">
+											<button type="button" data-toggle="dropdown" class="btn btn-info btn-sm dropdown-toggle" id="btnPrint" name="btnPrint">
+												Print<br>(CTRL+P) <span class="caret"></span>
+											</button>
+											<ul class="dropdown-menu">
+												<li><a href="javascript:;" onClick="printchk('si','<?= $txtctranno ?>');">Invoice</a></li>
+												<li><a href="javascript:;" onClick="printchk('receipt','<?= $txtctranno ?>');">Receipt</a></li>
+											</ul>
+										</div> 
 
 								<?php		
 									}
@@ -1080,9 +1109,8 @@ else{
             <div class="modal-bodylong">
 <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>        
         
-               <iframe id="myprintframe" name="myprintframe" scrolling="no" style="width:100%; height: 99%; display:block; margin:0px; padding:0px; border:0px"></iframe>
-    
-            	
+               <iframe id="myprintframe" name="myprintframe" scrolling="no" style="width:100%; height: 11in; display:block; margin:0px; padding:0px; border:0px"></iframe>
+             	
 			</div>
         </div><!-- /.modal-content -->
     </div><!-- /.modal-dialog -->
@@ -1180,7 +1208,7 @@ if(file_name.length != 0){
 	  else if(e.keyCode == 80 && e.ctrlKey){//CTRL P
 		if($("#btnPrint").is(":disabled")==false){
 			e.preventDefault();
-			printchk('<?=$txtctranno;?>');
+			printchk('si','<?=$txtctranno;?>');
 		}
 	  }
 	  else if(e.keyCode == 90 && e.ctrlKey){//CTRL Z
@@ -2683,20 +2711,26 @@ function enabled(){
 	}
 }
 
-function printchk(x){
+function printchk(typ,x){
 	if(document.getElementById("hdncancel").value==1){	
 		document.getElementById("statmsgz").innerHTML = "CANCELLED TRANSACTION CANNOT BE PRINTED!";
 		document.getElementById("statmsgz").style.color = "#FF0000";
 	}
 	else{
-
-		  var url = "SI_confirmprint.php?x="+x;
-		//   var url = "SI_printv1.php?tranno="+x;
+		var url = "";
+		if(typ=="si"){  
+			url = "SI_confirmprint.php?x="+x;
 		  
-		  $("#myprintframe").attr('src',url);
-
-
-		  $("#PrintModal").modal('show');
+		}else if(typ=="receipt"){
+			if(<?= $version ?> != 0){
+				url = "<?=$print_or_cus?>?tranno="+x;
+			} else {
+				url = "<?=$print_or_def?>?tranno="+x;
+			}
+		}
+	
+		$("#myprintframe").attr('src',url);
+		$("#PrintModal").modal('show');
 
 	}
 }

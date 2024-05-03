@@ -95,10 +95,10 @@ if (mysqli_num_rows($getewtcd)!=0) {
 
 	$result = mysqli_query($con, "SELECT * FROM `parameters` WHERE compcode='$company' and ccode = 'PRINT_VERSION_RP'");
 	if(mysqli_num_rows($result) != 0){
-	$verrow = mysqli_fetch_array($result, MYSQLI_ASSOC);
-	$version = $verrow['cvalue'];
+		$verrow = mysqli_fetch_array($result, MYSQLI_ASSOC);
+		$version = $verrow['cvalue'];
 	} else {
-	$version =''; 
+		$version =''; 
 	}
 ?>
 
@@ -1140,7 +1140,7 @@ if (mysqli_num_rows($getewtcd)!=0) {
             <div class="modal-bodylong">
 				<button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>        
         
-               <iframe id="myprintframe" name="myprintframe" scrolling="no" style="width:100%; height:98%; display:block; margin:0px; padding:0px; border:0px"></iframe>
+               <iframe id="myprintframe" name="myprintframe" scrolling="no" style="width:100%; height:11in; display:block; margin:0px; padding:0px; border:0px"></iframe>
 			</div>
         </div><!-- /.modal-content -->
     </div><!-- /.modal-dialog -->
