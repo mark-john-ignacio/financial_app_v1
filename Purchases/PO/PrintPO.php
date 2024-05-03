@@ -23,7 +23,7 @@ include('../../include/denied.php');
 	}
 	
 	$csalesno = $_REQUEST['hdntransid'];
-	$sqlhead = mysqli_query($con,"select a.*, b.cname, b.chouseno, b.ccity, b.cstate, b.ccountry, c.Fname, c.Minit, c.Lname, IFNULL(c.cusersign,'') as cusersign, d.cdesc as termsdesc from purchase a left join suppliers b on a.compcode=b.compcode and a.ccode=b.ccode left join users c on a.cpreparedby=c.Userid left join groupings d on a.compcode=b.compcode and a.cterms=d.ccode and d.ctype='TERMS' where a.compcode='$company' and a.cpono = '$csalesno'");
+	$sqlhead = mysqli_query($con,"select a.*, b.cname, b.chouseno, b.ccity, b.cstate, b.ccountry, c.Fname, c.Minit, c.Lname, IFNULL(c.cusersign,'') as cusersign, d.cdesc as termsdesc, IFNULL(b.ctin,'') as ctin from purchase a left join suppliers b on a.compcode=b.compcode and a.ccode=b.ccode left join users c on a.cpreparedby=c.Userid left join groupings d on a.compcode=b.compcode and a.cterms=d.ccode and d.ctype='TERMS' where a.compcode='$company' and a.cpono = '$csalesno'");
 
 if (mysqli_num_rows($sqlhead)!=0) {
 	while($row = mysqli_fetch_array($sqlhead, MYSQLI_ASSOC)){
@@ -33,6 +33,8 @@ if (mysqli_num_rows($sqlhead)!=0) {
 		$CustAdd = $row['chouseno']." ".$row['ccity']." ".$row['cstate']." ".$row['ccountry'];
 		$Terms = $row['termsdesc']; 
 		$CurrCode = $row['ccurrencycode'];
+
+		$cTin = $row['ctin']; 
 
 		$Remarks = $row['cremarks'];
 		$Date = $row['ddate'];
@@ -95,7 +97,7 @@ $sqldtlss = mysqli_query($con,"select A.*, B.citemdesc, B.cuserpic From quote_t 
 							<td><font style="font-size: 18px;"><?php echo $logonamz; ?></font></td>
 						</tr>
 						<tr align="center">
-							<td style="padding-bottom: 20px"><font><?php echo $logoaddrs; ?></font></td>
+							<td style="padding-bottom: 20px"><font><?php echo $logoaddrs; ?></font></td> 
 						</tr>
 				</table>
 
@@ -133,6 +135,8 @@ $sqldtlss = mysqli_query($con,"select A.*, B.citemdesc, B.cuserpic From quote_t 
 											<?=$CustName?>
 											<br>
 											<?=$CustAdd?>
+											<br>
+											<?=$cTin?>
 									</td>
 									<td width="100px" style="padding: 10px;" align="right">
 											<b>TERMS</b>
