@@ -25,6 +25,7 @@
 			$logosrc = $rowcomp['clogoname'];
 			$logoaddrs = $rowcomp['compadd'];
 			$logonamz = $rowcomp['compname'];
+			$deltotin = $rowcomp['comptin'];
 		}
 
 	}
@@ -164,6 +165,8 @@ $sqldtlss = mysqli_query($con,"select A.*, B.citemdesc, B.cuserpic From quote_t 
 										<?=$delto?>
 										<br>
 										<?=$deladd?>
+										<br>
+										<?=$deltotin?>
 									</td>
 									
 								</tr>

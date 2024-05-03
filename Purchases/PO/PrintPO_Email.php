@@ -30,6 +30,7 @@
 			$logoaddrs = $rowcomp['compadd'];
 			$logonamz = $rowcomp['compname'];
 			$compakey = $rowcomp['code'];
+			$deltotin = $rowcomp['comptin'];
 		}
 
 	}
@@ -193,6 +194,8 @@
 										<?=$delto?>
 										<br>
 										<?=$deladd?>
+										<br>
+										<?=$deltotin?>
 									</td>
 									
 								</tr>

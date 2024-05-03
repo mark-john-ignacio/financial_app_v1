@@ -18,13 +18,13 @@ include('../../include/denied.php');
 			$logosrc = $rowcomp['clogoname'];
 			$logoaddrs = $rowcomp['compadd'];
 			$logonamz = $rowcomp['compname'];
-			$deltotin = $row['comptin'];
+			$deltotin = $rowcomp['comptin'];
 		}
 
 	}
 	
 	$csalesno = $_REQUEST['hdntransid'];
-	$sqlhead = mysqli_query($con,"select a.*, b.cname, b.chouseno, b.ccity, b.cstate, b.ccountry, c.Fname, c.Minit, c.Lname, IFNULL(c.cusersign,'') as cusersign, d.cdesc as termsdesc, IFNULL(b.ctin,'') as ctin, IFNULL(e.ctin,'') as cdelto_tin from purchase a left join suppliers b on a.compcode=b.compcode and a.ccode=b.ccode left join users c on a.cpreparedby=c.Userid left join groupings d on a.compcode=b.compcode and a.cterms=d.ccode and d.ctype='TERMS' left join suppliers e on a.compcode=e.compcode and a.cdelto=e.ccode where a.compcode='$company' and a.cpono = '$csalesno'");
+	$sqlhead = mysqli_query($con,"select a.*, b.cname, b.chouseno, b.ccity, b.cstate, b.ccountry, c.Fname, c.Minit, c.Lname, IFNULL(c.cusersign,'') as cusersign, d.cdesc as termsdesc, IFNULL(b.ctin,'') as ctin from purchase a left join suppliers b on a.compcode=b.compcode and a.ccode=b.ccode left join users c on a.cpreparedby=c.Userid left join groupings d on a.compcode=b.compcode and a.cterms=d.ccode and d.ctype='TERMS' where a.compcode='$company' and a.cpono = '$csalesno'");
 
 if (mysqli_num_rows($sqlhead)!=0) {
 	while($row = mysqli_fetch_array($sqlhead, MYSQLI_ASSOC)){
