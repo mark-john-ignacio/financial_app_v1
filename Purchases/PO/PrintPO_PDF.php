@@ -256,7 +256,7 @@ $sqldtlss = mysqli_query($con,"select A.*, B.citemdesc, B.cuserpic From quote_t 
 				?>
 
 				<tr>
-					<td colspan="3" class="tdpadx" style="border-top: 1px solid; border-left: 1px solid; border-bottom: 1px solid; padding-right: 10px">
+					<td colspan="4" class="tdpadx" style="border-top: 1px solid; border-left: 1px solid; border-bottom: 1px solid; padding-right: 10px">
 						<?php
 							if($xwithvat==1){
 								echo "<b><i>Note: Price inclusive of VAT</i></b>";
