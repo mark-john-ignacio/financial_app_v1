@@ -100,7 +100,7 @@ $arrsupps = array();
 
 		//if($salestat!==""){
 			$sqlsuppinv = "Select A.ctranno, A.ngross, IFNULL(C.ncm,0) as ncm, IFNULL(C.ndm,0) as ndm, IFNULL(C.napplied,0) as napplied, A.ccode, A.dcutdate
-			from ".$tbl." A 
+			from sales A 
 			left JOIN
 				(
 					Select Z.csalesno, Sum(Z.napplied) as napplied, Sum(Z.ncm) as ncm, Sum(Z.ndm) as ndm
