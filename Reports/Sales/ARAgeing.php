@@ -21,13 +21,6 @@
 		$compname =  $row['compname'];
 	}
 
-	$arrsmanlist = array();
-	$sql = mysqli_query($con,"select * from users_salesman where UserID = '$employeeid'");
-	$rowdetloc = $sql->fetch_all(MYSQLI_ASSOC);
-	foreach($rowdetloc as $row0){
-		$arrsmanlist[] = $row0['salesman_ccode'];
-	}	
-
 	$date1 = $_POST["date1"];
 	$salestat = $_POST["selstat"];
 
@@ -93,7 +86,7 @@
 
 	//customers
 	$arrsuppx = array();
-	$sqlpay = "Select A.cempid as ccode, COALESCE(A.ctradename,A.cname) as cname, A.cterms, IFNULL(B.nallow,0) as nintval from customers A left join groupings B on A.compcode=B.compcode and A.cterms=B.ccode and B.ctype='TERMS' Where A.compcode='$company' and A.cempid in ('".implode("','", $arrsupplist)."') and A.csman in ('".implode("','",$arrsmanlist)."') Order by A.cname";
+	$sqlpay = "Select A.cempid as ccode, COALESCE(A.ctradename,A.cname) as cname, A.cterms, IFNULL(B.nallow,0) as nintval from customers A left join groupings B on A.compcode=B.compcode and A.cterms=B.ccode and B.ctype='TERMS' Where A.compcode='$company' and A.cempid in ('".implode("','", $arrsupplist)."') Order by A.cname";
 	$result=mysqli_query($con,$sqlpay);
 	while($row = mysqli_fetch_array($result, MYSQLI_ASSOC))
 	{
