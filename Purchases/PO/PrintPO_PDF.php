@@ -251,7 +251,6 @@ $sqldtlss = mysqli_query($con,"select A.*, B.citemdesc, B.cuserpic From quote_t 
 				<?php 
 						$xrefP = "";
 					} 
-
 				}
 				?>
 
