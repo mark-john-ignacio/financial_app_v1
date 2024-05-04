@@ -22,7 +22,7 @@
 	}
 
 	$date1 = $_POST["date1"];
-	$salestat = $_POST["selstat"];
+	//$salestat = $_POST["selstat"];
 
 	$arrinvs = array();
 	$arrsupplist = array();
