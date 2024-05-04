@@ -24,7 +24,6 @@ $company = $_SESSION['companyid'];
 
 $date1 = $_POST["date1"];
 $ccodex = $_POST["ccode"];
-$salestat = $_POST["selstat"];
 
 $arrunpaidlist = array();
 $arrwithapv = array();

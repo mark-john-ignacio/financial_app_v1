@@ -142,7 +142,7 @@
 		foreach($arrsuppx as $rws0){
 	?>
 	<tr>
-    <td nowrap onclick="funcset('<?=$rws0['ccode']?>','<?=$date1?>','<?=$salestat?>')" style="cursor: pointer "><?=$rws0['cname']?></td>
+    <td nowrap onclick="funcset('<?=$rws0['ccode']?>','<?=$date1?>')" style="cursor: pointer "><?=$rws0['cname']?></td>
 		<?php
 
 			 foreach($arrdays as $row){
@@ -263,11 +263,10 @@
 		});
 	});
 
-	function funcset(xcode, xdte, xstat){
+	function funcset(xcode, xdte){
 
 		document.getElementById("ccode").value = xcode;
 		document.getElementById("date1").value = xdte;
-		document.getElementById("selstat").value = xstat;
 	
 		document.getElementById("frmdet").submit(); 
 	}
