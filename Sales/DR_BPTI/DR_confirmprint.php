@@ -364,7 +364,7 @@ function PrintRed(x, version){
              
 	  ?>
         <div class="Row">
-          <div class="Column" style="width: 205px"><?php echo $rowbody['citemdesc'];?></div> 
+          <div class="Column" style="width: 250px"><?php echo $rowbody['citemdesc']." ".$rowbody['citempartname'];?></div> 
           <div class="Column" style="width: 162px"><?php echo $rowbody['citemno'];?></div>
           <div class="Column" style="width: 87px"><?php echo number_format($rowbody['nqty']);?>&nbsp;<?php echo $rowbody['cunit'];?></div>
         </div>

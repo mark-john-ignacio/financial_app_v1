@@ -11,13 +11,13 @@ require_once "../../Connection/connection_string.php";
 	$date1 = date("Y-m-d");
 	
 	if($avail==1){
-		$sql = "select X.crefident, X.creference as ctranno, X.citemno as cpartno, A.citemdesc, X.cunit, X.nqtyorig, X.nqty as totqty, 1 as nqty, X.nprice, X.nbaseamount, X.namount, A.cunit as qtyunit, X.nfactor, IFNULL(X.citemsysno,'') as citemsysno, IFNULL(X.citempono,'') as citempono
+		$sql = "select X.crefident, X.creference as ctranno, X.citemno as cpartno, A.citemdesc, X.cunit, X.nqtyorig, X.nqty as totqty, 1 as nqty, X.nprice, X.nbaseamount, X.namount, A.cunit as qtyunit, X.nfactor, IFNULL(X.citemsysno,'') as citemsysno, IFNULL(X.citempono,'') as citempono, IFNULL(X.citempartname,'') as citempartname
 		from dr_t X
 		left join items A on X.compcode=A.compcode and X.citemno=A.cpartno
 		where X.compcode='$company' and X.ctranno = '$csalesno' Order By X.nident";
 	}
 	else{
-		$sql = "select X.crefident, X.creference as ctranno, X.citemno as cpartno, A.citemdesc, X.cunit, X.nqtyorig, X.nqty as totqty, X.nprice, X.nbaseamount, X.namount, A.cunit as qtyunit, X.nfactor,(TRIM(TRAILING '.' FROM(CAST(TRIM(TRAILING '0' FROM B.nqty)AS char)))) AS nqty, IFNULL(X.citemsysno,'') as citemsysno, IFNULL(X.citempono,'') as citempono
+		$sql = "select X.crefident, X.creference as ctranno, X.citemno as cpartno, A.citemdesc, X.cunit, X.nqtyorig, X.nqty as totqty, X.nprice, X.nbaseamount, X.namount, A.cunit as qtyunit, X.nfactor,(TRIM(TRAILING '.' FROM(CAST(TRIM(TRAILING '0' FROM B.nqty)AS char)))) AS nqty, IFNULL(X.citemsysno,'') as citemsysno, IFNULL(X.citempono,'') as citempono, IFNULL(X.citempartname,'') as citempartname
 		from dr_t X
 		left join items A on X.compcode=A.compcode and X.citemno=A.cpartno 
 		left join 
@@ -38,6 +38,7 @@ require_once "../../Connection/connection_string.php";
 
 		$json['id'] = $row2['cpartno'];
 		$json['desc'] = $row2['citemdesc'];
+		$json['cpartname'] = $row2['citempartname'];
 		$json['cunit'] = strtoupper($row2['cunit']);
 		$json['nqtyorig'] = $row2['nqtyorig'];
 		$json['nqty'] = $row2['nqty'];

@@ -29,6 +29,8 @@
 
 	$cSystemno = chkgrp($_REQUEST['nitemsysno']);
 	$cSysPONo = chkgrp($_REQUEST['nitemposno']);
+
+	$cItemPartnme = chkgrp($_REQUEST['citmpartnme']);
 	
 	$cMainUOM = $_REQUEST['mainunit'];
 	$nFactor = $_REQUEST['nfactor'];
@@ -44,7 +46,7 @@
 
 	$refcidenttran = $cSINo."P".$indexz;
 	
-	if (!mysqli_query($con,"INSERT INTO dr_t(`compcode`, `cidentity`, `ctranno`, `creference`, `crefident`, `nident`, `citemno`, `nqty`, `nqtyorig`, `cunit`, `nprice`, `nbaseamount`, `namount`, `cmainunit`,`nfactor`,`cacctcode`,`cacctcost`, `citemsysno`, `citempono`) values('$company', '$refcidenttran', '$cSINo', $crefno, $crefnoident, '$indexz', '$cItemNo', '$nQty', '$nOrigQty', '$cUnit', '$nPrice', '$nTransAmount', '$nAmount', '$cMainUOM', $nFactor,$cacctcode,$cacctcost,$cSystemno,$cSysPONo)")){
+	if (!mysqli_query($con,"INSERT INTO dr_t(`compcode`, `cidentity`, `ctranno`, `creference`, `crefident`, `nident`, `citemno`, `nqty`, `nqtyorig`, `cunit`, `nprice`, `nbaseamount`, `namount`, `cmainunit`,`nfactor`,`cacctcode`,`cacctcost`, `citemsysno`, `citempono`, `citempartname`) values('$company', '$refcidenttran', '$cSINo', $crefno, $crefnoident, '$indexz', '$cItemNo', '$nQty', '$nOrigQty', '$cUnit', '$nPrice', '$nTransAmount', '$nAmount', '$cMainUOM', $nFactor,$cacctcode,$cacctcost,$cSystemno,$cSysPONo,$cItemPartnme)")){
 		echo "False";
 		
 		//echo mysqli_error($con);
