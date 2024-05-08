@@ -42,7 +42,8 @@
         $CustCode = $row['ccode'];
         $CustName = $row['cdelname'];
         $CustDelName = $row['cname'];
-        $Remarks = $row['cremarks'];
+        $Remarks = ($row['cremarks']==null || $row['cremarks']=="null") ? "" : $row['cremarks'];
+        $RemarksLow = ($row['clowremarks']==null || $row['clowremarks']=="null") ? "" : $row['clowremarks'];
         $Date = $row['dcutdate'];
         $Adds = $row['chouseno']." ". $row['ccity']." ". $row['cstate'];
         $cTin = $row['ctin'];
@@ -268,8 +269,7 @@
 
 	.Row{    
 		display: block;
-		left: 28px; /*Optional*/  
-		height:  16px;  
+		left: 28px; /*Optional*/   
 		/*border: 1px solid #000; 
 		letter-spacing: 11px;
 		border: 1px solid #000;*/
@@ -292,6 +292,17 @@
     letter-spacing: 11px;
     border: 1px solid #000;*/
 	}
+
+  .lowremarks{
+    position: absolute;
+    left: 190px;
+    top: 390px;
+    width: 200px;
+    height:  75px;  
+    text-align: center; 
+    /*border: 1px solid #000; 
+    letter-spacing: 11px;/
+  }
 
 </style>
 <head>
@@ -365,7 +376,7 @@ function PrintRed(x, version){
 	  ?>
         <div class="Row">
           <div class="Column" style="width: 250px"><?php echo $rowbody['citemdesc']." ".$rowbody['citempartname'];?></div> 
-          <div class="Column" style="width: 162px"><?php echo $rowbody['citemno'];?></div>
+          <div class="Column" style="width: 117px"><?php echo $rowbody['citemno'];?></div>
           <div class="Column" style="width: 87px"><?php echo number_format($rowbody['nqty']);?>&nbsp;<?php echo $rowbody['cunit'];?></div>
         </div>
    <?php
@@ -376,6 +387,9 @@ function PrintRed(x, version){
 
 
      <div class="xremarks"><?=nl2br($Remarks)?><br><?=$firstclass?></div>
+
+     <div class="lowremarks"><?=nl2br($RemarksLow)?></div>
+
   </div>
 
 <div align="center" id="menu" class="noPrint">

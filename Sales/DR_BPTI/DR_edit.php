@@ -110,6 +110,7 @@ if (mysqli_num_rows($sqlhead)!=0) {
 		$CustCode = $row['ccode'];
 		$CustName = $row['cname'];
 		$Remarks = $row['cremarks'];
+		$RemarksLow = $row['clowremarks'];
 		$Date = $row['dcutdate'];
 		$Gross = $row['ngross'];
 		$cDRPrintNo = $row['cdrprintno'];
@@ -257,7 +258,7 @@ if (mysqli_num_rows($sqlhead)!=0) {
 									<tH width="100">&nbsp;Lower Remarks:</tH>
 									<td style="padding:2px" rowspan="3">
 										<div class="col-xs-11 nopadding">
-											<textarea class="form-control input-sm" id="txtlowerremarks" name="txtlowerremarks" rows="4"></textarea>
+											<textarea class="form-control input-sm" id="txtlowerremarks" name="txtlowerremarks" rows="4"><?=$RemarksLow?></textarea>
 										</div>
 									</td>
 									<tH>&nbsp;</tH>

@@ -42,7 +42,8 @@
 			$CustCode = $row['ccode'];
 			$CustName = $row['cdelname'];
 			$CustDelName = $row['cname'];
-			$Remarks = $row['cremarks'];
+			$Remarks = ($row['cremarks']==null || $row['cremarks']=="null") ? "" : $row['cremarks'];
+			$RemarksLow = ($row['clowremarks']==null || $row['clowremarks']=="null") ? "" : $row['clowremarks'];
 			$Date = $row['dcutdate'];
 			$Adds = $row['chouseno']." ". $row['ccity']." ". $row['cstate'];
 			$cTin = $row['ctin'];
@@ -241,7 +242,6 @@
 	.Row{    
 		display: block;
 		left: 28px; /*Optional*/  
-		height:  16px;  
 		/*border: 1px solid #000; 
 		letter-spacing: 11px;
 		border: 1px solid #000;*/
@@ -263,6 +263,17 @@
 		/*border: 1px solid #000; 
 		letter-spacing: 11px;
 		border: 1px solid #000;*/
+	}
+
+	.lowremarks{
+		position: absolute;
+		left: 190px;
+		top: 390px;
+		width: 200px;
+		height:  75px;  
+		text-align: center; 
+		/*border: 1px solid #000; 
+		letter-spacing: 11px;*/
 	}
 
 </style>
@@ -330,6 +341,7 @@
      </div>
 
 	 <div class="xremarks"><?=nl2br($Remarks)?><br><?=$firstclass?></div>
+	 <div class="lowremarks"><?=nl2br($RemarksLow)?></div>
 
   </div>
 
