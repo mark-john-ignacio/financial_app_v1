@@ -63,6 +63,8 @@ $company = $_SESSION['companyid'];
 	<link rel="stylesheet" type="text/css" href="../../Bootstrap/css/bootstrap-datetimepicker.css">
 	<link rel="stylesheet" type="text/css" href="../../Bootstrap/select2/css/select2.css?h=<?php echo time();?>">
 
+	<link rel="stylesheet" type="text/css" href="../../Bootstrap/DataTable/DataTable.css">
+
 	<link href="../../global/css/components.css?t=<?php echo time();?>" id="style_components" rel="stylesheet" type="text/css"/>
 
 	<script src="../../Bootstrap/js/jquery-3.2.1.min.js"></script>
@@ -77,6 +79,8 @@ $company = $_SESSION['companyid'];
 	<script src="../../Bootstrap/js/moment.js"></script>
 	<script src="../../Bootstrap/js/bootstrap-datetimepicker.min.js"></script>
 	<script src="../../Bootstrap/select2/js/select2.full.min.js"></script>
+
+	<script type="text/javascript" language="javascript" src="../../Bootstrap/DataTable/jquery.dataTables.min.js"></script>
 	
 	<!--
 	-- 
@@ -447,44 +451,52 @@ $company = $_SESSION['companyid'];
 
 	<!-- FULL PO LIST REFERENCES-->
 	<div class="modal fade" id="mySIRef" role="dialog" data-keyboard="false" data-backdrop="static">
-		<div class="modal-dialog modal-lg">
+		<div class="modal-dialog modal-full">
 			<div class="modal-content">
 				<div class="modal-header">
-					<button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-					<h3 class="modal-title" id="InvListHdr">PO List</h3>
+					<div class="col-xs-12 nopadding">
+						<div class="col-xs-8">							
+							<h4 class="modal-title" id="InvListHdr">PO List</h4>
+						</div>
+						<div class="col-xs-4">
+							
+							<input type="text" class="form-control input-xs" id="txtSrchByDesc" name="txtSrchByDesc" placeholder="Search All PO by Item Description..." autocomplete="off" />
+												
+						</div>
+					</div>
 				</div>
 				
-				<div class="modal-body" style="height:40vh">
+				<div class="modal-body"  style="height:45vh">
 				
 					<div class="col-xs-12 nopadding">
 
 						<div class="form-group">
-							<div class="col-xs-3 nopadding pre-scrollable" style="height:37vh">
-								<table name='MyInvTbl' id='MyInvTbl' class="table table-small table-highlight small">
-								<thead>
-									<tr>
-									<th>PO No</th>
-									<th>Date</th>
-									</tr>
+							<div class="col-xs-4 pre-scrollable" style="height:42vh; border-right: 2px solid #ccc">
+								<table name='MyInvTbl' id='MyInvTbl' class="table table-small table-highlight">
+									<thead>
+										<tr>
+										<th>PO No</th>
+										<th>Date</th>
+										</tr>
 									</thead>
 									<tbody>
 									</tbody>
 								</table>
 							</div>
 
-							<div class="col-xs-9 nopadwleft pre-scrollable" style="height:37vh">
-								<table name='MyInvDetList' id='MyInvDetList' class="table table-small small">
-								<thead>
-									<tr>
-									<th align="center"> <input name="allbox" id="allbox" type="checkbox" value="Check All" /></th>
-									<th>Item No</th>
-									<th>Description</th>
-									<th>UOM</th>
-									<th>Qty</th>
-																	<!--<th>Price</th>
-																	<th>Amount</th>
-																	<th>Cur</th>-->
-									</tr>
+							<div class="col-xs-8 pre-scrollable" style="height:42vh; border-right: 2px solid #ccc">
+								<table name='MyInvDetList' id='MyInvDetList' class="table table-small">
+									<thead>
+										<tr>
+										<th align="center"> <input name="allbox" id="allbox" type="checkbox" value="Check All" /></th>
+										<th>Item No</th>
+										<th>Description</th>
+										<th>UOM</th>
+										<th>Qty</th>
+																		<!--<th>Price</th>
+																		<th>Amount</th>
+																		<th>Cur</th>-->
+										</tr>
 									</thead>
 									<tbody>
 										
@@ -718,6 +730,108 @@ $company = $_SESSION['companyid'];
 		
 		});
 
+		$('#txtSrchByDesc').typeahead({
+			autoSelect: true,
+			source: function(request, response) {
+				$.ajax({
+					url: "../th_product.php",
+					dataType: "json",
+					data: { query: $("#txtSrchByDesc").val() },
+					success: function (data) {
+						response(data);
+					}
+
+				});
+			},
+			displayText: function (item) {
+				return '<div style="border-top:1px solid gray; width: 300px"><span >'+item.cname+'</span</div>';
+			},
+			highlighter: Object,
+			afterSelect: function(item) { 					
+							
+				$('#MyInvTbl').DataTable().destroy();
+				$('#MyInvTbl tbody').empty(); 
+				$('#MyInvDetList tbody').empty();
+
+				$.ajax({
+					url: 'th_qolist_items.php',
+					data: 'x='+$('#txtcustid').val()+'&itm='+item.id,
+					dataType: 'json',
+					method: 'post',
+					success: function (data) {
+						// var classRoomsTable = $('#mytable tbody');
+						$("#allbox").prop('checked', false);
+						
+						console.log(data);
+						$.each(data,function(index,item){
+
+									
+							if(item.cpono=="NONE"){
+								$("#AlertMsg").html("No Purchase Order Available");
+								$("#alertbtnOK").show();
+								$("#AlertModal").modal('show');
+
+								xstat = "NO";
+								
+								$("#txtcustid").attr("readonly", false);
+								$("#txtcust").attr("readonly", false);
+
+							}
+							else{
+								$("<tr>").append(
+									$("<td id='td"+item.cpono+"'>").text(item.cpono), 
+									$("<td>").text(item.dneeded)
+								).appendTo("#MyInvTbl tbody");
+								
+								
+								$("#td"+item.cpono).on("click", function(){
+									opengetdet($(this).text());
+								});
+								
+								$("#td"+item.cpono).on("mouseover", function(){
+									$(this).css('cursor','pointer');
+								});
+							}
+
+						});
+
+						$('#MyInvTbl').DataTable({
+							"bPaginate": false,
+							"bLengthChange": false,
+							"bFilter": true,
+							"bInfo": false,
+							"bAutoWidth": false,
+							"dom": '<"pull-left"f><"pull-right"l>tip',
+							language: {
+								search: "",
+								searchPlaceholder: "Search SO "
+							}
+						});
+
+						$('.dataTables_filter input').addClass('form-control input-sm');
+						$('.dataTables_filter input').css(
+							{'width':'150%','display':'inline-block'}
+						);
+						
+
+						if(xstat=="YES"){
+							$('#mySIRef').modal('show');
+						}
+					},
+					error: function (req, status, err) {
+						//alert();
+						console.log('Something went wrong', status, err);
+						$("#AlertMsg").html("Something went wrong<br>Status: "+status +"<br>Error: "+err);
+						$("#alertbtnOK").show();
+						$("#AlertModal").modal('show');
+					}
+				});		
+
+				$('#txtSrchByDesc').val("").change(); 
+				
+			}
+		
+		});
 	});
 
 	//InsertToSerials(itmcode,itmdesc,lotno,packlist,uoms,qtys,locas,locasdesc,itmcoderefident,refnox);
@@ -1080,6 +1194,7 @@ $company = $_SESSION['companyid'];
 			$("#txtcust").attr("readonly", true);
 
 			//clear table body if may laman
+			$('#MyInvTbl').DataTable().destroy();
 			$('#MyInvTbl tbody').empty(); 
 			$('#MyInvDetList tbody').empty();
 			
@@ -1123,6 +1238,23 @@ $company = $_SESSION['companyid'];
 
 					});
 					
+					$('#MyInvTbl').DataTable({
+						"bPaginate": false,
+						"bLengthChange": false,
+						"bFilter": true,
+						"bInfo": false,
+						"bAutoWidth": false,
+						"dom": '<"pull-left"f><"pull-right"l>tip',
+						language: {
+							search: "",
+							searchPlaceholder: "Search SO "
+						}
+					});
+
+					$('.dataTables_filter input').addClass('form-control input-sm');
+					$('.dataTables_filter input').css(
+						{'width':'150%','display':'inline-block'}
+					);
 
 					if(xstat=="YES"){
 						$('#mySIRef').modal('show');
@@ -1150,6 +1282,8 @@ $company = $_SESSION['companyid'];
 
 		$('#InvListHdr').html("PO List: " + $('#txtcust').val() + " | PO Details: " + drno + "<div id='loadimg'><center><img src='../../images/cusload.gif' style='show:none;'> </center> </div>");
 		
+		$('#MyInvDetList').DataTable().destroy();
+
 		$('#MyInvDetList tbody').empty();
 		$('#MyDRDetList tbody').empty();
 			
@@ -1201,6 +1335,24 @@ $company = $_SESSION['companyid'];
 						).appendTo("#MyInvDetList tbody");
 					}
 				});
+
+				$('#MyInvDetList').DataTable({
+					"bPaginate": false,
+					"bLengthChange": false,
+					"bFilter": true,
+					"bInfo": false,
+					"bAutoWidth": false,
+					"dom": '<"pull-left"f><"pull-right"l>tip',
+					language: {
+						search: "",
+						searchPlaceholder: "Search Item "
+					}
+				});
+
+				$('.dataTables_filter input').addClass('form-control input-sm');
+				$('.dataTables_filter input').css(
+					{'width':'150%','display':'inline-block'}
+				);
 			},
 			complete: function(){
 				$('#loadimg').hide();
