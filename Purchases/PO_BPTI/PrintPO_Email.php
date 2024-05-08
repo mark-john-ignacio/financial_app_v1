@@ -246,7 +246,7 @@
 			</td>
 			<td width="30%" height = "150px" valign="top">
 				<div style="display: block"></b>REMARKS:</b></div>
-				<div style="display: block; height: 150px; width: 100%;">'.$Remarks.'</div>
+				<div style="display: block; height: 150px; width: 100%;">'.nl2br($Remarks).'</div>
 			</td>
 		</tr>
 	</table>
