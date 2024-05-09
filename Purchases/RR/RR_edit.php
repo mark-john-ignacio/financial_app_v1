@@ -1077,7 +1077,7 @@ function myFunctionadd(nqty,nqtyOrig,nfactor,cmainunit,xref,nident,detsku){
 	
 	if(xref == ""){							
 		var xz = $("#hdnitmfactors").val();
-		if(itmqtyunit==itmunit){
+		if(itmmainunit==itmunit){
 			isselctd = "selected";
 		}else{
 			isselctd = "";
