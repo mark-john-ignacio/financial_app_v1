@@ -8,7 +8,7 @@ require_once "../Connection/connection_string.php";
 	$preparedby = $_SESSION['employeeid'];
 	
 	$company = $_SESSION['companyid'];
-	$name = $_REQUEST['nme'];
+	$name = mysqli_real_escape_string($con, $_REQUEST['nme']);
 	$desc = mysqli_real_escape_string($con, $_REQUEST['desc']);
 	$add = mysqli_real_escape_string($con, $_REQUEST['add']);
 	$tin = mysqli_real_escape_string($con,  $_REQUEST['tin']);
