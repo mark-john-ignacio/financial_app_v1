@@ -36,7 +36,9 @@
 	while($row2 = mysqli_fetch_array($sqllabelnme, MYSQLI_ASSOC)){
 		$totdcount[$row2['citemno']] = $row2['nversion'];
 	}
-
+	//echo "<pre>";
+	//print_r($totdcount);
+	//echo "</pre>";
 	$getbomshrs = array();
 	$chbom = mysqli_query($con,"select * from mrp_items_parameters where compcode='$company'");
 	while($row2 = mysqli_fetch_array($chbom, MYSQLI_ASSOC)){
@@ -82,6 +84,7 @@
 		
 			$totqty = floatval($qty)*floatval($rs2['nqty1']);
 
+			//echo $itm."==".$rs2['cmainitemno']."&&". $rs2['nversion']."==".$xcver."<br><br>";
 			if($itm==$rs2['cmainitemno'] && $rs2['nversion']==$xcver){
 
 				//echo $rs2['cmainitemno'] ." : " . $rs2['citemno'] .": ".$rs2['ctype']." <br><br>";				

@@ -1044,8 +1044,7 @@
 
 				var tdmachine = "<td>"+value.cmachinedesc+"</td>";
 				var tdprocess = "<td>"+value.mrp_process_desc+"</td>";
-				var tddatest = "<td>"+value.ddatestart+"</td>";
-				
+				var tddatest = "<td>"+value.ddatestart+"</td>";				
 
 				if(value.lpause == 0){					
 					var tddateen = "<td id=\"txpause"+value.nid+"\">"+value.ddateend+"</td>";
@@ -1151,6 +1150,10 @@
 			success: function( data ) {
 				if(data.trim()=="False"){
 					$("#AlertMsg").html("<b>Error: </b> There's a problem generating your MRS!");
+					$("#alertbtnOK").show();
+					$("#AlertModal").modal('show');
+				}else if(data.trim()==0){
+					$("#AlertMsg").html("<b>Error: </b> There's no materials to generate MRS!");
 					$("#alertbtnOK").show();
 					$("#AlertModal").modal('show');
 				}else{
