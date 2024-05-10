@@ -1,16 +1,16 @@
 <?php
-if(!isset($_SESSION)){
-session_start();
-}
-$_SESSION['pageid'] = "users_access.php";
+  if(!isset($_SESSION)){
+    session_start();
+  }
+  $_SESSION['pageid'] = "users_access.php";
 
-include('../../Connection/connection_string.php');
-include('../../include/denied.php');
-include('../../include/access2.php');
+  include('../../Connection/connection_string.php');
+  include('../../include/denied.php');
+  include('../../include/access2.php');
 
-$company = $_SESSION['companyid'];
-$employeeid = $_REQUEST['empedit'];
-@$arrpgist = array();
+  $company = $_SESSION['companyid'];
+  $employeeid = $_REQUEST['empedit'];
+  @$arrpgist = array();
   $sql = mysqli_query($con,"select * from users_access where userid = '$employeeid'");
 	if (mysqli_num_rows($sql)!=0) {
 		while($row = mysqli_fetch_array($sql, MYSQLI_ASSOC)){
@@ -28,12 +28,12 @@ $employeeid = $_REQUEST['empedit'];
 
   $lallowMRP = 0;
 	$result=mysqli_query($con,"select * From company");								
-		while($row = mysqli_fetch_array($result, MYSQLI_ASSOC))
-		{
-			if($row['compcode'] == $company){
-				$lallowMRP =  $row['lmrpmodules'];
-			}
-		} 
+  while($row = mysqli_fetch_array($result, MYSQLI_ASSOC))
+  {
+    if($row['compcode'] == $company){
+      $lallowMRP =  $row['lmrpmodules'];
+    }
+  } 
   
 ?>
 <!DOCTYPE html>
@@ -43,77 +43,32 @@ $employeeid = $_REQUEST['empedit'];
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   
-    <link rel="stylesheet" type="text/css" href="../../Bootstrap/css/bootstrap.css"> 
-    <link href="../../global/plugins/font-awesome/css/font-awesome.min.css" rel="stylesheet" type="text/css"/>   
-    <script src="../../Bootstrap/js/jquery-3.2.1.min.js"></script>
-    <script src="../../Bootstrap/js/bootstrap.js"></script>
+  <link rel="stylesheet" type="text/css" href="../../Bootstrap/css/bootstrap.css"> 
+  <link href="../../global/plugins/font-awesome/css/font-awesome.min.css" rel="stylesheet" type="text/css"/>   
+  <script src="../../Bootstrap/js/jquery-3.2.1.min.js"></script>
+  <script src="../../Bootstrap/js/bootstrap.js"></script>
   
-<script type="text/javascript">
-function checkAll(field)
-{
-for (var i=0;i<field.length;i++){
-var e = field[i];
-	if (e.name == 'chkAcc[]'){
-		if (e.disabled != true){
-			e.checked = field.allbox.checked;
-		}
-	}
-}
-}
-
-function atleast_onecheckbox(e) {
-  if ($("input[type=checkbox]:checked").length === 0) {
-      e.preventDefault();
-      alert('Atleast one checkbox or access is required!');
-      return false;
-  }
-}
-
-
-function loadvalues(){
-	
-	var empid= document.getElementById("userid").value;
-	var inputs = document.getElementsByTagName('input');
-	var count = 0;
-	var hdntxt = "";
-	for(var cpt = 0; cpt < inputs.length; cpt++){
-		if (inputs[cpt].type == 'checkbox'){ 
-			count++;
-		}
-	}
-	alert(count);
-	
-	for (z=1; z<=count; z++){
-		hdntxt = document.getElementById("chkBox"+z).value;
-		getval(empid,z,hdntxt);
-	}
-}
-
-
-function getval(idz,namez,val) {
-	//alert(idz+":"+namez+":"+val);
-if (window.XMLHttpRequest)
-  {
-  xmlhttp=new XMLHttpRequest();
-  }
-else
-  {// code for IE6, IE5
-  xmlhttp=new ActiveXObject("Microsoft.XMLHTTP");
-  }
-xmlhttp.onreadystatechange=function()
-  {
-  if (xmlhttp.readyState==4 && xmlhttp.status==200)
-    {
-		if(xmlhttp.responseText=="true"){
-    		document.getElementById("chkBox"+namez).checked=xmlhttp.responseText;
-		}
+  <script type="text/javascript">
+    function checkAll(field){
+      for (var i=0;i<field.length;i++){
+        var e = field[i];
+        if (e.name == 'chkAcc[]'){
+          if (e.disabled != true){
+            e.checked = field.allbox.checked;
+          }
+        }
+      }
     }
-  }
-xmlhttp.open("GET","users_getval.php?emp="+idz+"&page="+val,false);
-xmlhttp.send();
-}
 
-</script>
+    function atleast_onecheckbox(e) {
+      if ($("input[type=checkbox]:checked").length === 0) {
+          e.preventDefault();
+          alert('Atleast one checkbox or access is required!');
+          return false;
+      }
+    }
+
+  </script>
 </head>
 <body>
 <form action="users_access_save.php" name="frmuser" id="frmuser" method="post" onsubmit="return atleast_onecheckbox(event)">
@@ -1277,8 +1232,8 @@ xmlhttp.send();
                 <label><input type="checkbox" name="chkAcc[]" value="QCRejects_edit" <?=(in_array("QCRejects_edit",@$arrpgist)) ? "checked" : "";?>>&nbsp;Edit</label>
               </div>
               <!--<div class="col-xs-2 nopadding">
-                <label><input type="checkbox" name="chkAcc[]" value="QCRejects_post" <?//=(in_array("ProdRun_post",@$arrpgist)) ? "checked" : "";?>>&nbsp;QC Posting</label>-->
-              </div>
+                <label><input type="checkbox" name="chkAcc[]" value="QCRejects_post" <?//=(in_array("ProdRun_post",@$arrpgist)) ? "checked" : "";?>>&nbsp;QC Posting</label>
+              </div>-->
             </div>
           </div>
         <?php
