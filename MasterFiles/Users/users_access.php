@@ -1216,8 +1216,8 @@
                 <label><input type="checkbox" name="chkAcc[]" value="ProdRun_edit" <?=(in_array("ProdRun_edit",@$arrpgist)) ? "checked" : "";?>>&nbsp;Edit</label>
               </div>
              <!-- <div class="col-xs-2 nopadding">
-                <label><input type="checkbox" name="chkAcc[]" value="ProdRun_post" <?//=(in_array("ProdRun_post",@$arrpgist)) ? "checked" : "";?>>&nbsp;QC Posting</label>-->
-              </div>
+                <label><input type="checkbox" name="chkAcc[]" value="ProdRun_post" <?//=(in_array("ProdRun_post",@$arrpgist)) ? "checked" : "";?>>&nbsp;QC Posting</label>
+              </div>-->
             </div>
           </div>
 
