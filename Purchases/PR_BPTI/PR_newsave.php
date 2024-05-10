@@ -1,48 +1,49 @@
 <?php
-if(!isset($_SESSION)){
-session_start();
-}
-include('../../Connection/connection_string.php');
-include('../../include/denied.php');
-
-$dmonth = date("m");
-$dyear = date("y");
-$company = $_SESSION['companyid'];
-$preparedby = $_SESSION['employeeid'];
-
-//echo "<pre>";
-//print_r($_REQUEST);
-//echo "</pre>";
-
-$chkSales = mysqli_query($con,"select * from purchrequest where compcode='$company' and YEAR(ddate) = YEAR(CURDATE()) Order By ctranno desc LIMIT 1");
-if (mysqli_num_rows($chkSales)==0) {
-	$cSINo = "PR".$dmonth.$dyear."00000";
-}
-else {
-	while($row = mysqli_fetch_array($chkSales, MYSQLI_ASSOC)){
-		$lastSI = $row['ctranno'];
+	if(!isset($_SESSION)){
+		session_start();
 	}
-	
-	//echo $lastSI."<br>";
-	//echo substr($lastSI,2,2)." <> ".$dmonth."<br>";
-	if(substr($lastSI,2,2) <> $dmonth){
-		$cSINo = "PR".$dmonth.$dyear."00000";
+	include('../../Connection/connection_string.php');
+	include('../../include/denied.php');
+
+	$dmonth = date("m");
+	$dyear = date("y");
+	$company = $_SESSION['companyid'];
+	$preparedby = $_SESSION['employeeid'];
+
+	//echo "<pre>";
+	//print_r($_REQUEST);
+	//echo "</pre>";
+
+	$chkSales = mysqli_query($con,"select * from purchrequest where compcode='$company' and YEAR(ddate) = YEAR(CURDATE()) Order By ddate desc LIMIT 1");
+	if (mysqli_num_rows($chkSales)==0) {
+		//$cSINo = "PR".$dmonth.$dyear."00000";
+		$cSINo = "PR".$dyear."000000001";
 	}
-	else{
-		$baseno = intval(substr($lastSI,6,5)) + 1;
-		$zeros = 5 - strlen($baseno);
-		$zeroadd = "";
-		
-		for($x = 1; $x <= $zeros; $x++){
-			$zeroadd = $zeroadd."0";
+	else {
+		while($row = mysqli_fetch_array($chkSales, MYSQLI_ASSOC)){
+			$lastSI = $row['ctranno'];
 		}
 		
-		$baseno = $zeroadd.$baseno;
-		$cSINo = "PR".$dmonth.$dyear.$baseno;
+		//echo $lastSI."<br>";
+		//echo substr($lastSI,2,2)." <> ".$dmonth."<br>";
+		if(substr($lastSI,2,2) <> $dyear){
+			//$cSINo = "PR".$dmonth.$dyear."00000";
+			$cSINo = "PR".$dyear."000000001";
+		}
+		else{
+			$baseno = intval(substr($lastSI,4,9)) + 1;
+			$zeros = 9 - strlen($baseno);
+			$zeroadd = "";
+			
+			for($x = 1; $x <= $zeros; $x++){
+				$zeroadd = $zeroadd."0";
+			}
+			
+			$baseno = $zeroadd.$baseno;
+			$cSINo = "PR".$dyear.$baseno;
+		}
 	}
-}
-
-	
+		
 	$cReqBy =  mysqli_real_escape_string($con, $_REQUEST['txtcustid']); 
 	$cCheckBy =  mysqli_real_escape_string($con, $_REQUEST['chkdby']);
 	$cApprvBy =  mysqli_real_escape_string($con, $_REQUEST['apprby']);

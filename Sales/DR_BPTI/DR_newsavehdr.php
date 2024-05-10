@@ -19,9 +19,9 @@ function chkgrp($valz) {
 }
 
 
-$chkSales = mysqli_query($con,"select * from dr where compcode='$company' and YEAR(ddate) = YEAR(CURDATE()) Order By ctranno desc LIMIT 1");
+$chkSales = mysqli_query($con,"select * from dr where compcode='$company' and YEAR(ddate) = YEAR(CURDATE()) Order By ddate desc LIMIT 1");
 if (mysqli_num_rows($chkSales)==0) {
-	$cSINo = "DR".$dmonth.$dyear."00000";
+	$cSINo = "DR".$dyear."000000001";
 }
 else {
 	while($row = mysqli_fetch_array($chkSales, MYSQLI_ASSOC)){
@@ -29,12 +29,12 @@ else {
 	}
 	
 	
-	if(substr($lastSI,2,2) <> $dmonth){
-		$cSINo = "DR".$dmonth.$dyear."00000";
+	if(substr($lastSI,2,2) <> $dyear){
+		$cSINo = "DR".$dyear."000000001";
 	}
 	else{
-		$baseno = intval(substr($lastSI,6,5)) + 1;
-		$zeros = 5 - strlen($baseno);
+		$baseno = intval(substr($lastSI,4,9)) + 1;
+		$zeros = 9 - strlen($baseno);
 		$zeroadd = "";
 		
 		for($x = 1; $x <= $zeros; $x++){
@@ -42,7 +42,7 @@ else {
 		}
 		
 		$baseno = $zeroadd.$baseno;
-		$cSINo = "DR".$dmonth.$dyear.$baseno;
+		$cSINo = "DR".$dyear.$baseno;
 	}
 }
 

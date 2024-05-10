@@ -9,22 +9,22 @@
 	$dyear = date("y");
 	$company = $_SESSION['companyid'];
 
-	$chkSales = mysqli_query($con,"select * from mrp_jo where compcode='$company' and YEAR(ddate) = YEAR(CURDATE()) Order By ctranno desc LIMIT 1");
+	$chkSales = mysqli_query($con,"select * from mrp_jo where compcode='$company' and YEAR(ddate) = YEAR(CURDATE()) Order By ddate desc LIMIT 1");
 
 	if (mysqli_num_rows($chkSales)==0) {
-		$cSINo = "JOR-".$dmonth.$dyear."00000";
+		$cSINo = "JO".$dyear."000000001";
 	}
 	else {
 		while($row = mysqli_fetch_array($chkSales, MYSQLI_ASSOC)){
 			$lastSI = $row['ctranno'];
 		}
 
-		if(substr($lastSI,4,2) <> $dmonth){
-			$cSINo = "JOR-".$dmonth.$dyear."00000";
+		if(substr($lastSI,2,2) <> $dyear){
+			$cSINo = "JO".$dyear."000000001";
 		}
 		else{
-			$baseno = intval(substr($lastSI,8,5)) + 1;
-			$zeros = 5 - strlen($baseno);
+			$baseno = intval(substr($lastSI,4,9)) + 1;
+			$zeros = 9 - strlen($baseno);
 			$zeroadd = "";
 					
 			for($x = 1; $x <= $zeros; $x++){
@@ -32,7 +32,7 @@
 			}
 					
 			$baseno = $zeroadd.$baseno;
-			$cSINo = "JOR-".$dmonth.$dyear.$baseno;
+			$cSINo = "JO".$dyear.$baseno;
 		}
 	}
 

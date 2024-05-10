@@ -1,52 +1,51 @@
 <?php
-if(!isset($_SESSION)){
-session_start();
-}
-include('../../Connection/connection_string.php');
-include('../../include/denied.php');
-require_once('../../Model/helper.php');
-
-$dmonth = date("m");
-$dyear = date("y");
-$company = $_SESSION['companyid'];
-
-function chkgrp($valz) {
-	if($valz==''){
-		return "NULL";
-	}else{
-    	return "'".$valz."'";
+	if(!isset($_SESSION)){
+		session_start();
 	}
-}
+	include('../../Connection/connection_string.php');
+	include('../../include/denied.php');
+	require_once('../../Model/helper.php');
+
+	$dmonth = date("m");
+	$dyear = date("y");
+	$company = $_SESSION['companyid'];
+
+	function chkgrp($valz) {
+		if($valz==''){
+			return "NULL";
+		}else{
+			return "'".$valz."'";
+		}
+	}
 
 
-$chkSales = mysqli_query($con,"select * from purchase where compcode='$company' and YEAR(ddate) = YEAR(CURDATE()) Order By cpono desc LIMIT 1");
-if (mysqli_num_rows($chkSales)==0) {
-	$cSINo = "PO".$dmonth.$dyear."00000";
-}
-else {
-	while($row = mysqli_fetch_array($chkSales, MYSQLI_ASSOC)){
-		$lastSI = $row['cpono'];
+	$chkSales = mysqli_query($con,"select * from purchase where compcode='$company' and YEAR(ddate) = YEAR(CURDATE()) Order By ddate desc LIMIT 1");
+	if (mysqli_num_rows($chkSales)==0) {
+		$cSINo = "PO".$dyear."000000001";
 	}
-	
-	//echo $lastSI."<br>";
-	//echo substr($lastSI,2,2)." <> ".$dmonth."<br>";
-	if(substr($lastSI,2,2) <> $dmonth){
-		$cSINo = "PO".$dmonth.$dyear."00000";
-	}
-	else{
-		$baseno = intval(substr($lastSI,6,5)) + 1;
-		$zeros = 5 - strlen($baseno);
-		$zeroadd = "";
-		
-		for($x = 1; $x <= $zeros; $x++){
-			$zeroadd = $zeroadd."0";
+	else {
+		while($row = mysqli_fetch_array($chkSales, MYSQLI_ASSOC)){
+			$lastSI = $row['cpono'];
 		}
 		
-		$baseno = $zeroadd.$baseno;
-		$cSINo = "PO".$dmonth.$dyear.$baseno;
+		//echo $lastSI."<br>";
+		//echo substr($lastSI,2,2)." <> ".$dmonth."<br>";
+		if(substr($lastSI,2,2) <> $dyear){
+			$cSINo = "PO".$dyear."000000001";
+		}
+		else{
+			$baseno = intval(substr($lastSI,4,9)) + 1;
+			$zeros = 9 - strlen($baseno);
+			$zeroadd = "";
+			
+			for($x = 1; $x <= $zeros; $x++){
+				$zeroadd = $zeroadd."0";
+			}
+			
+			$baseno = $zeroadd.$baseno;
+			$cSINo = "PO".$dyear.$baseno;
+		}
 	}
-}
-
 	
 	$cCustID = $_REQUEST['txtcustid'];
 	$dPODate = $_REQUEST['date_delivery'];
