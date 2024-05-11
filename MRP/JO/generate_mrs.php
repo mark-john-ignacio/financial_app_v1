@@ -43,7 +43,7 @@
 
 			$chkSales = mysqli_query($con,"select * from invtransfer where compcode='$company' and YEAR(ddatetime) = YEAR(CURDATE()) Order By ctranno desc LIMIT 1");
 			if (mysqli_num_rows($chkSales)==0) {
-				$cTranNo = "IT".$dmonth.$dyear."00000";
+				$cTranNo = "IT".$dyear."000000001";
 			}
 			else {
 				while($row = mysqli_fetch_array($chkSales, MYSQLI_ASSOC)){
@@ -51,12 +51,12 @@
 				}
 				
 				
-				if(substr($lastSI,2,2) <> $dmonth){
-					$cTranNo = "IT".$dmonth.$dyear."00000";
+				if(substr($lastSI,2,2) <> $dyear){
+					$cTranNo = "IT".$dyear."000000001";
 				}
 				else{
-					$baseno = intval(substr($lastSI,6,5)) + 1;
-					$zeros = 5 - strlen($baseno);
+					$baseno = intval(substr($lastSI,4,9)) + 1;
+					$zeros = 9 - strlen($baseno);
 					$zeroadd = "";
 					
 					for($x = 1; $x <= $zeros; $x++){
@@ -64,7 +64,7 @@
 					}
 					
 					$baseno = $zeroadd.$baseno;
-					$cTranNo = "IT".$dmonth.$dyear.$baseno;
+					$cTranNo = "IT".$dyear.$baseno;
 				}
 			}
 
