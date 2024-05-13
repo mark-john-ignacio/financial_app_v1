@@ -56,18 +56,18 @@
               
             </div>
             <?php
-              if($rowcount > 1){
+             // if($rowcount > 1){
             ?>
-            <div class="col-xs-5 nopadwleft">
+           <!-- <div class="col-xs-5 nopadwleft">
               
               <select id="selconso" name="selconso" class="form-control input-sm selectpicker"  tabindex="4">
                 <option value="1">Per Selected Company</option>   
                 <option value="2">Consolidate All Company</option>               
               </select>
               
-            </div>
+            </div>-->
             <?php
-              }
+             // }
             ?>
           </div>   
         </td>
