@@ -14,7 +14,7 @@
 	//print_r($_REQUEST);
 	//echo "</pre>";
 
-	$chkSales = mysqli_query($con,"select * from purchrequest where compcode='$company' and YEAR(ddate) = YEAR(CURDATE()) Order By ddate desc LIMIT 1");
+	$chkSales = mysqli_query($con,"select * from purchrequest where compcode='$company' and YEAR(ddate) = YEAR(CURDATE()) Order By ddate desc, ctranno desc LIMIT 1");
 	if (mysqli_num_rows($chkSales)==0) {
 		//$cSINo = "PR".$dmonth.$dyear."00000";
 		$cSINo = "PR".$dyear."000000001";

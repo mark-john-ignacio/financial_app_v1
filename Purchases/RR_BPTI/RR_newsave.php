@@ -18,7 +18,7 @@
 		}
 	}
 
-	$chkSales = mysqli_query($con,"select * from receive where compcode='$company' and YEAR(ddate) = YEAR(CURDATE()) Order By ddate desc LIMIT 1");
+	$chkSales = mysqli_query($con,"select * from receive where compcode='$company' and YEAR(ddate) = YEAR(CURDATE()) Order By ddate desc, ctranno desc LIMIT 1");
 	if (mysqli_num_rows($chkSales)==0) {
 		$cSINo = "RR".$dyear."000000001";
 	}

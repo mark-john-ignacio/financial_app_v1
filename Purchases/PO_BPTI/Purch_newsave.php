@@ -19,7 +19,7 @@
 	}
 
 
-	$chkSales = mysqli_query($con,"select * from purchase where compcode='$company' and YEAR(ddate) = YEAR(CURDATE()) Order By ddate desc LIMIT 1");
+	$chkSales = mysqli_query($con,"select * from purchase where compcode='$company' and YEAR(ddate) = YEAR(CURDATE()) Order By ddate desc, cpono desc LIMIT 1");
 	if (mysqli_num_rows($chkSales)==0) {
 		$cSINo = "PO".$dyear."000000001";
 	}
