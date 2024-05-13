@@ -1,11 +1,16 @@
 <?php
-if(!isset($_SESSION)){
-session_start();
-}
-$_SESSION['pageid'] = "TBal.php";
-include('../Connection/connection_string.php');
-include('../include/denied.php');
-include('../include/access.php');
+  if(!isset($_SESSION)){
+    session_start();
+  }
+  $_SESSION['pageid'] = "TBal.php";
+  include('../Connection/connection_string.php');
+  include('../include/denied.php');
+  include('../include/access.php');
+
+  $company = $_SESSION['companyid'];
+	$sql = "select * From company";
+	$result=mysqli_query($con,$sql);
+  $rowcount=mysqli_num_rows($result);
 
 ?><html>
 <head>
@@ -40,7 +45,7 @@ include('../include/access.php');
             <span class="glyphicon glyphicon-search"></span> View Report
           </button>
         </td>
-        <td width="90px" style="padding-left:10px"><b>Report Type: </b></td>
+        <td width="100px" style="padding-left:10px"><b>Report Type: </b></td>
         <td style="padding:2px">
           <div class="col-xs-12">
             <div class="col-xs-3 nopadding">
@@ -51,7 +56,20 @@ include('../include/access.php');
               </select>
               
             </div>
-            
+            <?php
+              if($rowcount > 1){
+            ?>
+            <div class="col-xs-5 nopadwleft">
+              
+              <select id="selconso" name="selconso" class="form-control input-sm selectpicker"  tabindex="4">
+                <option value="1">Per Selected Company</option>   
+                <option value="2">Consolidate All Company</option>               
+              </select>
+              
+            </div>
+            <?php
+              }
+            ?>
           </div>   
         </td>
       </tr>
@@ -61,7 +79,7 @@ include('../include/access.php');
             <i class="fa fa-file-excel-o"></i> To Excel
           </button>
         </td>
-        <td width="90px" style="padding-left:10px"><div id="dtelabel"><b>Date Range: </b></div></td>
+        <td width="100px" style="padding-left:10px"><div id="dtelabel"><b>Transaction Date: </b></div></td>
         <td style="padding:2px">
           <div id="dterange">
             <div class="form-group nopadding">
@@ -119,15 +137,53 @@ $(function(){
 
 
   $('#btnView').on("click", function(){
-    $dval = $("#selrpt").val();
-    $('#frmrep').attr("action", $dval+".php");
-    $('#frmrep').submit();
+      <?php
+         if($rowcount > 1){
+      ?>
+        $dval = $("#selrpt").val();
+
+          if($("#selconso").val()==2){
+            $('#frmrep').attr("action", $dval+"_Consolidated.php");
+            $('#frmrep').submit();
+          }else{
+            $('#frmrep').attr("action", $dval+".php");
+            $('#frmrep').submit();
+          }
+      <?php
+        }else{
+      ?>
+        $dval = $("#selrpt").val();
+        $('#frmrep').attr("action", $dval+".php");
+        $('#frmrep').submit();
+      <?php
+        }
+      ?>
   });
 
   $('#btnexcel').on("click", function(){
-    $dval = $("#selrpt").val();
-    $('#frmrep').attr("action", $dval+"_xls.php");
-    $('#frmrep').submit();
+
+    <?php
+         if($rowcount > 1){
+      ?>
+        $dval = $("#selrpt").val();
+
+          if($("#selconso").val()==2){
+            $('#frmrep').attr("action", $dval+"_Consolidated_xls.php");
+            $('#frmrep').submit();
+          }else{
+            $('#frmrep').attr("action", $dval+"_xls.php");
+            $('#frmrep').submit();
+          }
+      <?php
+        }else{
+      ?>
+        $dval = $("#selrpt").val();
+        $('#frmrep').attr("action", $dval+"_xls.php");
+        $('#frmrep').submit();
+      <?php
+        }
+      ?>
+
   });
 	
 });

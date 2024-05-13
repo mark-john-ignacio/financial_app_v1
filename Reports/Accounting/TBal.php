@@ -61,7 +61,7 @@ $date2 = $_POST["date2"];
     <th rowspan="2" style="text-align:center" width="100px">Account No. </th>
     <th rowspan="2" style="text-align:center">Account Title</th>
     <th colspan="2" style="text-align:center">Amount</th>
-		<th rowspan="2" style="text-align:center" width="150px">Balance</th>
+	<th rowspan="2" style="text-align:center" width="150px">Balance</th>
   </tr>
   <tr>
   	<th style="text-align:center"  width="150px">Debit</th>

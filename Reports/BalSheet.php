@@ -1,12 +1,16 @@
 <?php
-if(!isset($_SESSION)){
-session_start();
-}
-$_SESSION['pageid'] = "BalSheet.php";
-include('../Connection/connection_string.php');
-include('../include/denied.php');
-include('../include/access.php');
+  if(!isset($_SESSION)){
+    session_start();
+  }
+  $_SESSION['pageid'] = "BalSheet.php";
+  include('../Connection/connection_string.php');
+  include('../include/denied.php');
+  include('../include/access.php');
 
+  $company = $_SESSION['companyid'];
+  $sql = "select * From company";
+  $result=mysqli_query($con,$sql);
+  $rowcount=mysqli_num_rows($result);
 ?><html>
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
@@ -51,7 +55,20 @@ include('../include/access.php');
               </select>
               
             </div>
-            
+            <?php
+              if($rowcount > 1){
+            ?>
+            <div class="col-xs-5 nopadwleft">
+              
+              <select id="selconso" name="selconso" class="form-control input-sm selectpicker"  tabindex="4">
+                <option value="1">Per Selected Company</option>   
+                <option value="2">Consolidate All Company</option>               
+              </select>
+              
+            </div>
+            <?php
+              }
+            ?>
           </div>   
         </td>
       </tr>
