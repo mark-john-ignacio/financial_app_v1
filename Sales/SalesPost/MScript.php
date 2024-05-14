@@ -12,10 +12,10 @@ $dates = $_REQUEST["dcutdate"];
 $preparedby = $_SESSION['employeeid'];
 $compname = gethostbyaddr($_SERVER['REMOTE_ADDR']);
 
-mysqli_query($con,"Update sales set lapproved=1 where compcode='$company' and ctranno='$tranno'");
+//mysqli_query($con,"Update sales set lapproved=1 where compcode='$company' and ctranno='$tranno'");
 
-mysqli_query($con,"INSERT INTO logfile(`ctranno`, `cuser`, `ddate`, `cevent`, `module`, `cmachine`, `cremarks`) 
-	values('$tranno','$preparedby',NOW(),'POSTED','SALES INVOICE','$compname','Post Record')");
+//mysqli_query($con,"INSERT INTO logfile(`ctranno`, `cuser`, `ddate`, `cevent`, `module`, `cmachine`, `cremarks`) 
+	//values('$tranno','$preparedby',NOW(),'POSTED','SALES INVOICE','$compname','Post Record')");
 
 $status = "Posted";
 
