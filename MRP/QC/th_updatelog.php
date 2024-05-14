@@ -8,6 +8,8 @@
 	$processid = $_REQUEST['processid'];
 	$nreject = $_REQUEST['nreject'];
 	$nscrap = $_REQUEST['nscrap'];
+	$cqc = $_REQUEST['cqc'];
+	$cremarks = $_REQUEST['cremarks'];
 	$preparedby = $_SESSION['employeeid'];
 
 	$code = "";
@@ -18,7 +20,7 @@
 		}
 	}
 		
-	if (!mysqli_query($con,"INSERT INTO mrp_jo_process_logs_qc (`compcode`, `ctranno`, `nrefid`, `cuserid`, `ddateupdate`, `nrejectqty`, `nscrapqty`) VALUES ('$company', '$code', '$processid', '$preparedby', NOW(), '$nreject', '$nscrap')")) {
+	if (!mysqli_query($con,"INSERT INTO mrp_jo_process_logs_qc (`compcode`, `ctranno`, `nrefid`, `cuserid`, `ddateupdate`, `nrejectqty`, `nscrapqty`, `cqcpostedby`, `cremarks`) VALUES ('$company', '$code', '$processid', '$preparedby', NOW(), '$nreject', '$nscrap', '$cqc', '$cremarks')")) {
 		printf("Errormessage: %s\n", mysqli_error($con));
 	} 
 	else{
@@ -26,7 +28,7 @@
 		$compname = php_uname('n');
 		
 		mysqli_query($con,"INSERT INTO logfile(`compcode`, `ctranno`, `cuser`, `ddate`, `cevent`, `module`, `cmachine`, `cremarks`) 
-		values('$company','$code','$preparedby',NOW(),'UPDATED','QC REJECTS','$compname','Updated Reject and Scrap Qty')");
+		values('$company','$code','$preparedby',NOW(),'UPDATED','QC REJECTS','$compname','Updated QC Rejects Module')");
 		
 		echo "True";
 

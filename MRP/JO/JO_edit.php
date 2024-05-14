@@ -47,7 +47,7 @@
 
 
 	$arrmrpjo_pt = array();
-	$sql = "select X.nid, X.ctranno, X.mrp_process_id, X.mrp_process_desc, X.nmachineid, IFNULL(X.ddatestart,'') as ddatestart, IFNULL(ddateend,'') as ddateend, X.nactualoutput, X.operator_id, X.nrejectqty, X.nscrapqty, IFNULL(Y.cdesc,'') as cmachinedesc, IFNULL(Z.cdesc,'') as operator_name, X.lpause from mrp_jo_process_t X left join mrp_machines Y on X.compcode=Y.compcode and X.nmachineid=Y.nid left join mrp_operators Z on X.compcode=Z.compcode and X.operator_id=Z.nid where X.compcode='$company' and X.ctranno in (Select ctranno from mrp_jo_process where compcode='$company' and mrp_jo_ctranno  = '$tranno')";
+	$sql = "select X.nid, X.ctranno, X.mrp_process_id, X.mrp_process_desc, X.nmachineid, IFNULL(X.ddatestart,'') as ddatestart, IFNULL(ddateend,'') as ddateend, X.nactualoutput, X.operator_id, X.nrejectqty, X.nscrapqty, IFNULL(Y.cdesc,'') as cmachinedesc, IFNULL(Z.cdesc,'') as operator_name, IFNULL(ZY.cdesc,'') as qc_name, X.lpause, IFNULL(X.cremarks,'') as cremarks from mrp_jo_process_t X left join mrp_machines Y on X.compcode=Y.compcode and X.nmachineid=Y.nid left join mrp_operators Z on X.compcode=Z.compcode and X.operator_id=Z.nid left join mrp_operators ZY on X.compcode=ZY.compcode and X.cqcpostedby=ZY.nid where X.compcode='$company' and (X.ctranno in (Select ctranno from mrp_jo_process where X.compcode='$company' and mrp_jo_ctranno  = '$tranno') OR X.ctranno='$tranno')";
 	$resultmain = mysqli_query ($con, $sql); 
 	while($row2 = mysqli_fetch_array($resultmain, MYSQLI_ASSOC)){
 		$arrmrpjo_pt[] = $row2;				
@@ -152,9 +152,9 @@
 
 					<ul class="nav nav-tabs">
 						<li class="active"><a href="#apv">JO Details</a></li>
-						<li><a href="#attc">Attachments</a></li>
-						<li><a href="#subjo">Sub-Job Orders</a></li>
+						<li><a href="#subjo">Process Monitoring</a></li>
 						<li><a href="#mats">Materials Request</a></li>
+						<li><a href="#attc">Attachments</a></li>
 					</ul>
 
 					<div class="tab-content" style="overflow: inherit !important">  
@@ -285,23 +285,13 @@
 								<div class="col-xs-1 nopadwleft"><input type="text" id="txtcycletime" name="txtcycletime" class="form-control input-sm required text-right numeric" required placeholder="0.00"  value="<?=$arrmrpjo[0]['ncycletime']?>"></div>
 								<div class="col-xs-1 nopadwleft"><input type="text" id="txtntotal" name="txtntotal" class="form-control input-sm required text-right numeric" required placeholder="0.00" readonly  value="<?=$arrmrpjo[0]['ntottime']?>"></div>
 							</div>
-						
-							
-						</div>	
 
-						<div id="attc" class="tab-pane fade in" style="padding-left:5px; padding-top:10px;">
 
-							<div class="col-xs-12 nopadwdown"><b>Attachments:</b></div>
-							<div class="col-sm-12 nopadwdown"><i>Can attach a file according to the ff: file type: (jpg,png,gif,jpeg,pdf,txt,csv,xls,xlsx,doc,docx,ppt,pptx)</i></div> <br><br><br>
-							<input type="file" name="upload[]" id="file-0" multiple />
-
-						</div>
-
-						<div id="subjo" class="tab-pane fade in" style="padding-left:5px; padding-top:10px;">
+							<div class="row"><div class="col-xs-12"><br><br><b>Sub-JO Details</b></div></div>
 							<table id="TblJO" class="MyTable table table-condensed" width="100%">
 								<thead>
 									<tr>
-										<th style="border-bottom:1px solid #999">Sub JO No.</th>
+										<th style="border-bottom:1px solid #999">JO Nos.</th>
 										<th style="border-bottom:1px solid #999">Item</th>
 										<th style="border-bottom:1px solid #999">UOM</th>
 										<th style="border-bottom:1px solid #999; text-align: right">Qty</th>
@@ -318,7 +308,8 @@
 										while($row2 = mysqli_fetch_array($resultmain, MYSQLI_ASSOC)){
 									?>
 										<tr id="tr<?=$row2['nid']?>">
-											<td><a href="javascript:;" onclick="getprocess('<?=$row2['ctranno']?>','<?=$row2['citemdesc']?>','tr<?=$row2['nid']?>')"><?=$row2['ctranno']?></a></td>
+											<!--<td><a href="javascript:;" onclick="getprocess('<?//=$row2['ctranno']?>','<?//=$row2['citemdesc']?>','tr<?//=$row2['nid']?>')"><?//=$row2['ctranno']?></a></td>-->
+											<td><?=$row2['ctranno']?></td>
 											<td><?=$row2['citemdesc']?></td>
 											<td><?=$row2['cunit']?></td>
 											<td style="text-align: right"><?=number_format($row2['nqty'])?></td>
@@ -331,10 +322,20 @@
 										}
 									?>
 								</tbody>                    
-							</table>			
+							</table>
+					
 							
-							<hr>
-							<div class="col-xs-12 nopadwdown" id="subjodets"><h5>Sub-JO Details</h5></div>
+						</div>	
+
+						<div id="attc" class="tab-pane fade in" style="padding-left:5px; padding-top:10px;">
+
+							<div class="col-xs-12 nopadwdown"><b>Attachments:</b></div>
+							<div class="col-sm-12 nopadwdown"><i>Can attach a file according to the ff: file type: (jpg,png,gif,jpeg,pdf,txt,csv,xls,xlsx,doc,docx,ppt,pptx)</i></div> <br><br><br>
+							<input type="file" name="upload[]" id="file-0" multiple />
+
+						</div>
+
+						<div id="subjo" class="tab-pane fade in" style="padding-left:5px; padding-top:10px;">
 
 							<table id="MyJOSubs" class="MyTable table table-condensed" width="100%">
 								<thead>
@@ -344,7 +345,7 @@
 										<th style="border-bottom:1px solid #999">Process</th>
 										<th style="border-bottom:1px solid #999">Date Started</th>
 										<th style="border-bottom:1px solid #999">Date Ended</th>
-										<th style="border-bottom:1px solid #999">Actual Output</th>
+										<th style="border-bottom:1px solid #999; text-align: right">Actual Output</th>
 										<th style="border-bottom:1px solid #999">Operator</th>
 										<th style="border-bottom:1px solid #999; text-align: right">Reject Qty</th>
 										<th style="border-bottom:1px solid #999; text-align: right">Scrap Qty</th>
@@ -353,7 +354,47 @@
 									</tr>
 								</thead>
 								<tbody class="tbody">
+									<?php
+										$xctranx = "";
+										foreach($arrmrpjo_pt as $row){
+											if($xctranx!=$row['ctranno']){
+												$xctranx = $row['ctranno'];
+												echo "<tr><td colspan='12'>".$row['ctranno']."</td</tr>";
+											}
+									?>
+										<tr> 
+											<td id="tspause<?=$row['nid']?>"> 
+												<?php
+													if($row['lpause']==0){
+														echo "<button type=\"button\" class=\"nbtnpaused btn btn-warning btn-xs btn-block\" id=\"btnUpActual".$row['nid']."\" data-val=\"".$row['nid']."\">Pause</button>";
+													}else{
+														echo "<button type=\"button\" class=\"nbtnresume btn btn-success btn-xs btn-block\" id=\"btnUpResume".$row['nid']."\" data-val=\"".$row['nid']."\">Resume</button>";
+													}
+												?>
+											</td>
+											<td> <?=$row['cmachinedesc']?> </td>
+											<td> <?=$row['mrp_process_desc']?> </td>
+											<td> <?=$row['ddatestart']?> </td>
+											<td id="txpause<?=$row['nid']?>"> 											
+											<?php
+													if($row['lpause']==0){
+														echo $row['ddateend'];
+													}else{
+														echo "<span class='text-danger'> ON PAUSE</span>";
+													}
+											?>
+											</td>
+											<td align="right"> <?=($row['nactualoutput']>0) ? $row['nactualoutput'] : ""?></td>
+											<td> <?=$row['operator_name']?> </td> 
+											<td align="right"> <?=($row['nrejectqty']>0) ? $row['nactualoutput'] : ""?></td>
+											<td align="right"> <?=($row['nscrapqty']>0) ? $row['nactualoutput'] : ""?></td>
+											<td> <?=$row['qc_name']?> </td>
+											<td> <?=$row['cremarks']?> </td>
+										</tr>
 
+									<?php
+										}
+									?>
 								</tbody>
 							</table>
 
@@ -1021,8 +1062,8 @@
 
 	}
 
-	function getprocess($xtran,$xitms,$trid){
-		var file_name = '<?= json_encode($arrmrpjo_pt) ?>';
+	/*function getprocess($xtran,$xitms,$trid){
+		var file_name = '<?//= json_encode($arrmrpjo_pt) ?>';
 
 		$('tr').removeClass("selectedJO");
 
@@ -1066,7 +1107,7 @@
 
 			}
 		}); 
-	}
+	}*/
 
 	function disabled(){
 		$("#frmpos :input").attr("disabled", true);

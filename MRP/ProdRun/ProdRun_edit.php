@@ -30,11 +30,13 @@
 	}
 
 	$arrmrpjo_pt = array();
-	$sql = "select nid,ctranno,mrp_process_id,mrp_process_desc,nmachineid,DATE_FORMAT(ddatestart, \"%m/%d/%Y %h:%i:%s %p\") as ddatestart,DATE_FORMAT(ddateend, \"%m/%d/%Y %h:%i:%s %p\") as ddateend,nactualoutput,operator_id,nrejectqty,nscrapqty,lqcposted,cqcpostedby,dqcdateposted,X.lpause from mrp_jo_process_t X where X.compcode='$company' and X.ctranno in (Select ctranno from mrp_jo_process where compcode='$company' and mrp_jo_ctranno  = '$tranno')";
+	$sql = "select nid,ctranno,mrp_process_id,mrp_process_desc,nmachineid,DATE_FORMAT(ddatestart, \"%m/%d/%Y %h:%i:%s %p\") as ddatestart,DATE_FORMAT(ddateend, \"%m/%d/%Y %h:%i:%s %p\") as ddateend,nactualoutput,operator_id,nrejectqty,nscrapqty,cqcpostedby,cremarks,X.lpause from mrp_jo_process_t X where X.compcode='$company' and (X.ctranno in (Select ctranno from mrp_jo_process where compcode='$company' and mrp_jo_ctranno  = '$tranno') or X.ctranno='$tranno')";
+
 	$resultmain = mysqli_query ($con, $sql); 
 	while($row2 = mysqli_fetch_array($resultmain, MYSQLI_ASSOC)){
 		$arrmrpjo_pt[] = $row2;				
 	}
+	
 
 	$arrmachines = array();
 	$sqlmrpmach = mysqli_query($con,"select A.nid, A.cdesc From mrp_machines A Where A.compcode='$company' and A.cstatus='ACTIVE' Order By A.cdesc");
@@ -143,6 +145,25 @@
 									?>
 										<tr id="tr<?=$row2['nid']?>">
 											<td><a href="javascript:;" onclick="getprocess('<?=$row2['ctranno']?>','<?=$row2['citemdesc']?>','tr<?=$row2['nid']?>')"><?=$row2['ctranno']?></a></td>
+											<td><?=$row2['citemdesc']?></td>
+											<td><?=$row2['cunit']?></td>
+											<td style="text-align: right"><?=number_format($row2['nqty'])?></td>
+											<td style="text-align: right"><?=number_format($row2['nworkhrs'],2)?></td>
+											<td style="text-align: right"><?=number_format($row2['nsetuptime'],2)?></td>
+											<td style="text-align: right"><?=number_format($row2['ncycletime'],2)?></td>
+											<td style="text-align: right"><?=number_format($row2['ntottime'],2)?></td>
+										</tr>
+									<?php
+										}
+									?>
+									<!--MAIN -->
+									<?php
+										$sql = "select X.*, A.citemdesc from mrp_jo X left join items A on X.compcode=A.compcode and X.citemno=A.cpartno where X.compcode='$company' and X.ctranno = '$tranno' Order By X.nid";
+										$resultmain = mysqli_query ($con, $sql); 
+										while($row2 = mysqli_fetch_array($resultmain, MYSQLI_ASSOC)){
+									?>
+										<tr id="tr0">
+											<td><a href="javascript:;" onclick="getprocess('<?=$row2['ctranno']?>','<?=$row2['citemdesc']?>','tr0')"><?=$row2['ctranno']?></a></td>
 											<td><?=$row2['citemdesc']?></td>
 											<td><?=$row2['cunit']?></td>
 											<td style="text-align: right"><?=number_format($row2['nqty'])?></td>

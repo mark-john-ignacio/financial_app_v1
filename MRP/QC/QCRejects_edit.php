@@ -30,7 +30,7 @@
 	}
 
 	$arrmrpjo_pt = array();
-	$sql = "select X.nid,X.ctranno,X.mrp_process_id,X.mrp_process_desc,X.nmachineid,Y.cdesc as machine_desc,IFNULL(DATE_FORMAT(X.ddatestart, \"%m/%d/%Y %h:%i:%s %p\"),'') as ddatestart,IFNULL(DATE_FORMAT(X.ddateend, \"%m/%d/%Y %h:%i:%s %p\"),'') as ddateend,X.nactualoutput,X.operator_id,X.nrejectqty,X.nscrapqty,X.lqcposted,X.cqcpostedby,X.dqcdateposted,X.lpause from mrp_jo_process_t X left join mrp_machines Y on X.compcode=Y.compcode and X.nmachineid=Y.nid where X.compcode='$company' and X.ctranno in (Select ctranno from mrp_jo_process where compcode='$company' and mrp_jo_ctranno  = '$tranno')";
+	$sql = "select X.nid,X.ctranno,X.mrp_process_id,X.mrp_process_desc,X.nmachineid,IFNULL(Y.cdesc,'') as machine_desc,IFNULL(DATE_FORMAT(X.ddatestart, \"%m/%d/%Y %h:%i:%s %p\"),'') as ddatestart,IFNULL(DATE_FORMAT(X.ddateend, \"%m/%d/%Y %h:%i:%s %p\"),'') as ddateend,X.nactualoutput,X.operator_id,X.nrejectqty,X.nscrapqty,X.cqcpostedby,IFNULL(X.cremarks,'') as cremarks,X.lpause from mrp_jo_process_t X left join mrp_machines Y on X.compcode=Y.compcode and X.nmachineid=Y.nid where X.compcode='$company' and (X.ctranno in (Select ctranno from mrp_jo_process where compcode='$company' and mrp_jo_ctranno  = '$tranno') or X.ctranno='$tranno')";
 	$resultmain = mysqli_query ($con, $sql); 
 	while($row2 = mysqli_fetch_array($resultmain, MYSQLI_ASSOC)){
 		$arrmrpjo_pt[] = $row2;				
@@ -153,6 +153,25 @@
 									<?php
 										}
 									?>
+									<!--MAIN -->
+									<?php
+										$sql = "select X.*, A.citemdesc from mrp_jo X left join items A on X.compcode=A.compcode and X.citemno=A.cpartno where X.compcode='$company' and X.ctranno = '$tranno' Order By X.nid";
+										$resultmain = mysqli_query ($con, $sql); 
+										while($row2 = mysqli_fetch_array($resultmain, MYSQLI_ASSOC)){
+									?>
+										<tr id="tr0">
+											<td><a href="javascript:;" onclick="getprocess('<?=$row2['ctranno']?>','<?=$row2['citemdesc']?>','tr0')"><?=$row2['ctranno']?></a></td>
+											<td><?=$row2['citemdesc']?></td>
+											<td><?=$row2['cunit']?></td>
+											<td style="text-align: right"><?=number_format($row2['nqty'])?></td>
+											<td style="text-align: right"><?=number_format($row2['nworkhrs'],2)?></td>
+											<td style="text-align: right"><?=number_format($row2['nsetuptime'],2)?></td>
+											<td style="text-align: right"><?=number_format($row2['ncycletime'],2)?></td>
+											<td style="text-align: right"><?=number_format($row2['ntottime'],2)?></td>
+										</tr>
+									<?php
+										}
+									?>
 								</tbody>                    
 							</table>			
 							
@@ -176,6 +195,8 @@
 													<th width='158px' style="background-color: #fdb2b2; text-align: center; padding:1px"> Date Ended</th>
 													<th width='100px' style="background-color: #e5b2fd; text-align: center; padding:1px"> Rejects</th>
 													<th width='100px' style="background-color: #e5b2fd; text-align: center; padding:1px">Scrap</th>
+													<th width='200px' style="background-color: #e5b2fd; text-align: center; padding:1px">QC</th>
+													<th width='250px' style="background-color: #e5b2fd; text-align: center; padding:1px">Remarks</th>
 													<th width='80px' style="background-color: #e5b2fd; text-align: center; padding:1px">Update</th>
 												</tr>
 											</thead>
@@ -373,8 +394,11 @@
 		let yx = $(this).data("val");
 
 		setVals(yx,"nrejectqty",$("#txtnrejects"+yx).val());  
-		setVals(yx,"nscrapqty",$("#txtnscrap"+yx).val());
-		updateLog(yx, $("#txtnrejects"+yx).val(), $("#txtnscrap"+yx).val());
+		setVals(yx,"nscrapqty",$("#txtnscrap"+yx).val());     
+		setVals(yx,"cqcpostedby",$("#seloperator"+yx).val());
+		setVals(yx,"cremarks",$("#txtcremarks"+yx).val());
+
+		updateLog(yx, $("#txtnrejects"+yx).val(), $("#txtnscrap"+yx).val(),$("#seloperator"+yx).val(),$("#txtcremarks"+yx).val());
 
 		$("#AlertMsg").html("Reject and Scrap Quantity updated!");
 		$("#alertbtnOK").show();
@@ -424,6 +448,21 @@
 					drejects = "<input type=\"text\" class=\"form-control input-sm text-right\" id=\"txtnrejects"+lastRow+"\" data-val=\""+lastRow+"\" value=\""+value.nrejectqty+"\" "+entr_stat+">";
 					
 					dscraps = "<input type=\"text\" class=\"form-control input-sm text-right\" id=\"txtnscrap"+lastRow+"\" data-val=\""+lastRow+"\" value=\""+value.nscrapqty+"\" "+entr_stat+">";
+
+					//operators Select
+					opeoptions = "";
+					var xoperator = value.cqcpostedby;
+					$.each(jQuery.parseJSON(file_operators), function() { 
+						let xstat = "";
+						if(xoperator==this['nid']){
+							xstat = "selected";
+						}
+						opeoptions = opeoptions + "<option value='"+this['nid']+"' "+xstat+">"+this['cdesc']+"</option>"; 
+					}); 
+
+					tdoper = "<select class='form-control input-xs "+entr_stat+"' id=\"seloperator"+lastRow+"\" data-val=\""+lastRow+"\" "+entr_stat+"><option></option>" + opeoptions + "</select>";  
+
+					tdremrksj = "<input type=\"text\" class=\"form-control input-sm text-right\" id=\"txtcremarks"+lastRow+"\" data-val=\""+lastRow+"\" value=\""+value.cremarks+"\" "+entr_stat+">";
 					
 					dupdact = "<button type=\"button\" class=\"nbtnupactual btn btn-warning btn-sm btn-block "+entr_stat+" \" id=\"btnUpActual"+lastRow+"\" data-val=\""+lastRow+"\" "+entr_stat+">Update Output</button>";
 
@@ -439,11 +478,13 @@
 				var tdmachine = "<td style='padding:1px'>"+tdmach+"</td>";
 				var tddatest = "<td style='padding:1px' id=\"tdS"+lastRow+"\">"+dstart+"</td>";
 				var tddateen = "<td style='padding:1px' id=\"tdE"+lastRow+"\">"+deend+"</td>";
-				var tdactual = "<td style='padding:1px'>"+drejects+"</td>";
-				var tdoperator = "<td style='padding:1px'>"+dscraps+"</td>";
+				var tdrjects = "<td style='padding:1px'>"+drejects+"</td>";
+				var tdscraps = "<td style='padding:1px'>"+dscraps+"</td>";
+				var tdoperator = "<td style='padding:1px'>"+tdoper+"</td>"; 
+				var tdremrks = "<td style='padding:1px'>"+tdremrksj+"</td>";
 				var tdupdtebtn = "<td style='padding:1px'>"+dupdact+"</td>";
 				
-				$('#MyJOSubs > tbody:last-child').append('<tr>'+tdprocess + tdmachine + tddatest + tddateen + tdactual + tdoperator + tdupdtebtn + '</tr>');
+				$('#MyJOSubs > tbody:last-child').append('<tr>'+tdprocess + tdmachine + tddatest + tddateen + tdrjects + tdscraps + tdoperator + tdremrks + tdupdtebtn + '</tr>');
 
 
 				$("#selmachine"+lastRow).select2({
@@ -474,11 +515,11 @@
 		});
 	}
 
-	function updateLog(processid, nreject, nscrap){
+	function updateLog(processid, nreject, nscrap, cqc, cremarks){
 		var $issset = "False";
 		$.ajax ({
 			url: "th_updatelog.php",
-			data: { processid: processid, nreject: nreject, nscrap: nscrap },
+			data: { processid: processid, nreject: nreject, nscrap: nscrap, cqc: cqc, cremarks: cremarks },
 			async: false,
 			dataType: "text",
 			success: function( data ) {
