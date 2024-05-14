@@ -47,7 +47,7 @@
             $cnt++;
             mysqli_query($con,"DELETE FROM `glactivity` where compcode='002' and `ctranno` = '".$row['ctranno']."'");
 
-            mysqli_query($con,"INSERT INTO `glactivity`(`compcode`, `cmodule`, `ctranno`, `ddate`, `acctno`, `ctitle`, `ndebit`, `ncredit`, `lposted`, `dpostdate`, `ctaxcode`) Select '$company','APV','$tranno',A.dapvdate,B.cacctno,B.ctitle,B.ndebit,B.ncredit,0,NOW(),B.cewtcode From apv A left join apv_t B on  A.compcode=B.compcode and A.ctranno=B.ctranno where A.compcode='002' and A.ctranno='".$row['ctranno']."'");
+            mysqli_query($con,"INSERT INTO `glactivity`(`compcode`, `cmodule`, `ctranno`, `ddate`, `acctno`, `ctitle`, `ndebit`, `ncredit`, `lposted`, `dpostdate`, `ctaxcode`) Select '002','APV','".$row['ctranno']."',A.dapvdate,B.cacctno,B.ctitle,B.ndebit,B.ncredit,0,NOW(),B.cewtcode From apv A left join apv_t B on  A.compcode=B.compcode and A.ctranno=B.ctranno where A.compcode='002' and A.ctranno='".$row['ctranno']."'");
 
             echo $cnt.": ".$row['ctranno']."<br>";
         }
