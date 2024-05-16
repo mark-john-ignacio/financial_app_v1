@@ -7,7 +7,10 @@ include('../../Connection/connection_string.php');
 
 $column = array('A.cmainitemno', 'B.citemdesc', 'B.cunit');
 
-$query = "SELECT DISTINCT A.cmainitemno, B.citemdesc, B.cunit FROM mrp_bom A left join items B on A.compcode=B.compcode and A.cmainitemno=B.cpartno WHERE A.compcode='".$_SESSION['companyid']."' and B.cstatus='ACTIVE'";
+//$query = "SELECT DISTINCT A.cmainitemno, B.citemdesc, B.cunit FROM mrp_bom A left join items B on A.compcode=B.compcode and A.cmainitemno=B.cpartno WHERE A.compcode='".$_SESSION['companyid']."' and B.cstatus='ACTIVE'";
+
+$query = "SELECT A.cpartno as cmainitemno, A.citemdesc, A.cunit FROM items A WHERE A.compcode='".$_SESSION['companyid']."' and A.cstatus='ACTIVE' and cpartno in (Select cmainitemno from mrp_bom where compcode='".$_SESSION['companyid']."')";
+
 
 if(isset($_POST['searchByName']) && $_POST['searchByName'] != '')
 {
