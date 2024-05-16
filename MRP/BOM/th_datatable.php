@@ -14,7 +14,7 @@ $query = "SELECT A.cpartno as cmainitemno, A.citemdesc, A.cunit FROM items A WHE
 
 if(isset($_POST['searchByName']) && $_POST['searchByName'] != '')
 {
- $query .= " and (A.cmainitemno like '%".$_POST['searchByName']."%' OR B.citemdesc like '%".$_POST['searchByName']."%')";
+ $query .= " and (A.cpartno like '%".$_POST['searchByName']."%' OR A.citemdesc like '%".$_POST['searchByName']."%')";
 }
 
 if(isset($_POST['order']))
@@ -23,7 +23,7 @@ if(isset($_POST['order']))
 }
 else
 {
- $query .= ' ORDER BY B.citemdesc DESC ';
+ $query .= ' ORDER BY A.citemdesc DESC ';
 }
 
 $query1 = '';
