@@ -9,7 +9,7 @@ require_once "../../Connection/connection_string.php";
 	$sql = "select  A.cpartno, A.citemdesc, A.cunit, 0 as nident, 1 as nqty, IFNULL(B.nworkhrs,0) as nworkhrs, IFNULL(B.nsetuptime,0) as nsetuptime, IFNULL(B.ncycletime,0) as ncycletime
 		from items A 
 		left join mrp_items_parameters B on A.compcode=B.compcode and A.cpartno=B.citemno
-		where A.compcode='$company' and A.ctradetype='Trade' and (LOWER(A.citemdesc) LIKE '%".strtolower($_GET['query'])."%' OR LOWER(A.cpartno) LIKE '%".strtolower($_GET['query'])."%') and A.cstatus='ACTIVE' and A.csalestype='Goods'";
+		where A.compcode='$company' and A.ctradetype='Trade' and (LOWER(A.citemdesc) LIKE '%".strtolower($_GET['query'])."%' OR LOWER(A.cpartno) LIKE '%".strtolower($_GET['query'])."%') and A.cstatus='ACTIVE' and A.cpartno in (Select cmainitemno from mrp_bom where compcode='$company')";
 
 	$rsd = mysqli_query($con,$sql);
 	while($rs = mysqli_fetch_array($rsd, MYSQLI_ASSOC)) {
