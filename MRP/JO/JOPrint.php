@@ -83,7 +83,7 @@ include('../../include/denied.php');
 	</style>
 </head>
 
-<body > <!-- onLoad="window.print()" -->
+<body onLoad="window.print()"> <!-- onLoad="window.print()" -->
 
 <div id="imgcontent">
 	<img src="../<?=$logosrc?>" class="ribbon" alt="" width="150px"/>
