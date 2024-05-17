@@ -186,14 +186,14 @@ include('../../include/denied.php');
 		<tr> 
 				<td>&nbsp;</td>
 				<td> <b><?=$rsc['citemdesc']?><b></td>
-					<td>&nbsp;</td>
-					<td>&nbsp;</td>
-					<td>&nbsp;</td>
-					<td>&nbsp;</td>
-					<td>&nbsp;</td>
-					<td>&nbsp;</td>
-					<td>&nbsp;</td>
-					<td>&nbsp;</td>				
+				<td>&nbsp;</td>
+				<td>&nbsp;</td>
+				<td>&nbsp;</td>
+				<td>&nbsp;</td>
+				<td>&nbsp;</td>
+				<td>&nbsp;</td>
+				<td>&nbsp;</td>
+				<td>&nbsp;</td>				
 		</tr>
 
 		<?php
@@ -219,6 +219,8 @@ include('../../include/denied.php');
 		?>
 	<?php
 		}
+
+		if(count($arrmrpjoproc)>=1){
 	?>
 
 			<tr> 
@@ -235,6 +237,8 @@ include('../../include/denied.php');
 			</tr>
 
 		<?php
+		}
+		
 			foreach($arrmrpjo_ptmain as $bv){
 		?>
 
