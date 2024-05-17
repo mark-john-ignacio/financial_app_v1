@@ -38,10 +38,17 @@ include('../../include/denied.php');
 	}
 
 	$arrmrpjo_pt = array();
-	$sql = "select * from mrp_jo_process_t X where X.compcode='$company' and (X.ctranno in (Select ctranno from mrp_jo_process where compcode='$company' and mrp_jo_ctranno  = '$tranno') OR ctranno  = '$tranno')";
+	$sql = "select X.nid, X.ctranno, X.mrp_process_id, X.mrp_process_desc, X.nmachineid, IFNULL(X.ddatestart,'') as ddatestart, IFNULL(ddateend,'') as ddateend, X.nactualoutput, X.operator_id, X.nrejectqty, X.nscrapqty, IFNULL(Y.cdesc,'') as cmachinedesc, IFNULL(Z.cdesc,'') as operator_name, IFNULL(ZY.cdesc,'') as qc_name, X.lpause, IFNULL(X.cremarks,'') as cremarks from mrp_jo_process_t X left join mrp_machines Y on X.compcode=Y.compcode and X.nmachineid=Y.nid left join mrp_operators Z on X.compcode=Z.compcode and X.operator_id=Z.nid left join mrp_operators ZY on X.compcode=ZY.compcode and X.cqcpostedby=ZY.nid where X.compcode='$company' and (X.ctranno in (Select ctranno from mrp_jo_process where compcode='$company' and mrp_jo_ctranno  = '$tranno') OR ctranno  = '$tranno')";
 	$resultmain = mysqli_query ($con, $sql); 
 	while($row2 = mysqli_fetch_array($resultmain, MYSQLI_ASSOC)){
 		$arrmrpjo_pt[] = $row2;				
+	}
+
+	$arrmrpjo_ptmain = array();
+	$sql = "select X.nid, X.ctranno, X.mrp_process_id, X.mrp_process_desc, X.nmachineid, IFNULL(X.ddatestart,'') as ddatestart, IFNULL(ddateend,'') as ddateend, X.nactualoutput, X.operator_id, X.nrejectqty, X.nscrapqty, IFNULL(Y.cdesc,'') as cmachinedesc, IFNULL(Z.cdesc,'') as operator_name, IFNULL(ZY.cdesc,'') as qc_name, X.lpause, IFNULL(X.cremarks,'') as cremarks from mrp_jo_process_t X left join mrp_machines Y on X.compcode=Y.compcode and X.nmachineid=Y.nid left join mrp_operators Z on X.compcode=Z.compcode and X.operator_id=Z.nid left join mrp_operators ZY on X.compcode=ZY.compcode and X.cqcpostedby=ZY.nid where X.compcode='$company' and X.ctranno  = '$tranno'";
+	$resultmain = mysqli_query ($con, $sql); 
+	while($row2 = mysqli_fetch_array($resultmain, MYSQLI_ASSOC)){
+		$arrmrpjo_ptmain[] = $row2;				
 	}
 
 ?>
@@ -195,8 +202,28 @@ include('../../include/denied.php');
 		?>
 
 			<tr> 
-				<td>&nbsp;</td>
+				<td><?=$bv['cmachinedesc']?> </td> 
 				<td style="padding-left:10px"><?=$bv['mrp_process_desc']?> </td>
+				<td><?=$bv['ddatestart']?></td>
+				<td><?=$bv['ddateend']?></td>
+				<td style="text-align: center"><?=number_format($bv['nactualoutput'])?></td>
+				<td><?=$bv['operator_name']?></td>
+				<td style="text-align: center"><?=number_format($bv['nrejectqty'])?></td>
+				<td style="text-align: center"><?=number_format($bv['nscrapqty'])?></td>
+				<td><?=$bv['qc_name']?></td>
+				<td><?=$bv['cremarks']?></td>				
+			</tr>
+		<?php
+				}
+			}
+		?>
+	<?php
+		}
+	?>
+
+			<tr> 
+				<td>&nbsp;</td>
+				<td>&nbsp;</td>
 				<td>&nbsp;</td>
 				<td>&nbsp;</td>
 				<td>&nbsp;</td>
@@ -206,13 +233,27 @@ include('../../include/denied.php');
 				<td>&nbsp;</td>
 				<td>&nbsp;</td>				
 			</tr>
+
 		<?php
-				}
+			foreach($arrmrpjo_ptmain as $bv){
+		?>
+
+			<tr> 
+				<td><?=$bv['cmachinedesc']?> </td> 
+				<td style="padding-left:10px"><?=$bv['mrp_process_desc']?> </td>
+				<td><?=$bv['ddatestart']?></td>
+				<td><?=$bv['ddateend']?></td>
+				<td style="text-align: center"><?=number_format($bv['nactualoutput'])?></td>
+				<td><?=$bv['operator_name']?></td>
+				<td style="text-align: center"><?=number_format($bv['nrejectqty'])?></td>
+				<td style="text-align: center"><?=number_format($bv['nscrapqty'])?></td>
+				<td><?=$bv['qc_name']?></td>
+				<td><?=$bv['cremarks']?></td>				
+			</tr>
+		<?php
+
 			}
 		?>
-	<?php
-		}
-	?>
 </table>
 <!-- END MAIN JO PRINT --> 
 
