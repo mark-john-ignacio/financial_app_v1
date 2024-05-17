@@ -78,7 +78,7 @@
 	</style>
 </head>
 
-<body >
+<body onLoad="window.print()">
 	
 	<div id="imgcontent">
 		<img src="../<?=$logosrc?>" class="ribbon" alt="" width="150px"/>

@@ -59,7 +59,7 @@
 	</style>
 </head>
 
-<body >
+<body onLoad="window.print()">
 
 	<center><h2> MATERIAL ISSUANCE SLIP</h2></center>
 	<table border="1" width="100%" style="border-collapse:collapse" cellpadding="5px">
