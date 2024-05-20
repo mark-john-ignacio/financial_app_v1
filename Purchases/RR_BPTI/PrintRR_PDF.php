@@ -60,7 +60,7 @@
 		}
 	}
 
-	$sqlbody = mysqli_query($con,"SELECT a.*, b.cpartno, b.citemdesc, b.cunit FROM receive_t a
+	$sqlbody = mysqli_query($con,"SELECT a.*, b.cpartno, b.cunit FROM receive_t a
 	left join items b on a.compcode = b.compcode and b.cpartno = a.citemno
 	where a.compcode = '$company' and a.ctranno = '$csalesno' Order by a.nident");
 	$PRDet = array();
