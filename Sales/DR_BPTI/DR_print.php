@@ -340,7 +340,7 @@
     ?>
      </div>
 
-	 <div class="xremarks"><?=nl2br($Remarks)?><br><?=$firstclass?></div>
+	 <div class="xremarks"><?=nl2br($Remarks)?><?//=$firstclass?></div>
 	 <div class="lowremarks"><?=nl2br($RemarksLow)?></div>
 
   </div>

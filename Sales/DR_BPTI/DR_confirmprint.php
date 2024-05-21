@@ -386,7 +386,7 @@ function PrintRed(x, version){
      </div>
 
 
-     <div class="xremarks"><?=nl2br($Remarks)?><br><?=$firstclass?></div>
+     <div class="xremarks"><?=nl2br($Remarks)?><br><?//=$firstclass?></div>
 
      <div class="lowremarks"><?=nl2br($RemarksLow)?></div>
 
@@ -411,7 +411,7 @@ else{
 
 ?>
 
-<input type="button" value="<?php echo $valsub;?>" onClick="<?php echo $strqry;?>;" class="noPrint"/>
+<input type="button" value="<?//php echo $valsub;?>" onClick="<?//php echo $strqry;?>;" class="noPrint"/>
 
 
 </div>
