@@ -11,13 +11,49 @@
 	$session_id = isset($_SESSION['session_id']) ? $_SESSION['session_id'] : '';
 	$company = isset($_SESSION['companyid']) ? $_SESSION['companyid'] : ''; // Retrieve companyid from session
 
-	$pages = [];
-	$sql = "SELECT pageid FROM users_access WHERE userid = '$employeeid'";
+	$pages = array();
+	$mainidx = array();
+	$sql = "SELECT pageid, main_id, menu_id FROM users_access WHERE userid = '$employeeid'";
 	$query = mysqli_query($con, $sql);
 	while($list = $query -> fetch_assoc()) {
-		array_push($pages, $list["pageid"]);		
-	}		
+		array_push($pages, $list["pageid"]);
+		
+		if(!in_array($list["main_id"], $mainidx)){
+			if($list["main_id"]!="" && $list["main_id"]!=null){
+				$mainidx[] = $list["main_id"];
+			}
+		}
 
+		if(!in_array($list["menu_id"], $mainidx)){
+			if($list["menu_id"]!="" && $list["menu_id"]!=null && $list["main_id"]!="" && $list["main_id"]!=null  & $list["main_id"]!=0){
+				$mainidx[] = $list["menu_id"];
+			}
+		}
+	}	
+
+	//get main id of access
+	$getmains = array();
+	$sql = "SELECT * FROM nav_menu WHERE cstatus ='ACTIVE' and id in (".implode(",",$mainidx).")";
+	$query = mysqli_query($con, $sql);
+	while($list = $query -> fetch_assoc()) {
+		if($list["main_id"]!="" && $list["main_id"]!=null){
+			$mainidx[] = $list["main_id"];
+		}
+	}
+
+	$navmenu = array();
+	$navmain = array();
+
+	$sql = "SELECT * FROM nav_menu WHERE cstatus ='ACTIVE' and id in (".implode(",",$mainidx).") Order by menu_order";
+	$query = mysqli_query($con, $sql);
+	while($list = $query -> fetch_assoc()) {
+		
+		if($list["main"]==1){
+			$navmain[] = $list;
+		}else{
+			$navmenu[] = $list;
+		}
+	}
 ?>
 
 <!DOCTYPE html>
@@ -78,14 +114,12 @@
 			$arrcompz[] = $row;
 			if($row['compcode'] == $company){
 				$compname =  $row['compname'];
-				
 				$logoname =  str_replace("../","",$row['clogoname']);
-
 				$lallowNT =  $row['lallownontrade'];
 				$lallowMRP = $row['lmrpmodules'];
 				$durlSUB = $row['csubcode'];
 			}
-		}   
+		}    
 	?>
 
 <!-- BEGIN HEADER -->
@@ -240,504 +274,65 @@
 					<!-- END SIDEBAR TOGGLER BUTTON -->
 				</li>
 				<!-- DOC: To remove the search box from the sidebar you just need to completely remove the below "sidebar-search-wrapper" LI element -->
-				<li class="start">
-					<a href="javascript:;" onclick="setpage('./Dashboard/dashboard.php')">
-						<i class="icon-home"></i><span class="title">Dashboard</span><span class="selected"></span>
-					</a>
-				</li>
-				<li>
-					<a href="javascript:;">
-						<i class="icon-settings"></i><span class="title">Master Data Files</span><span class="arrow "></span>
-					</a>
-					<ul class="sub-menu">
-						
-						<li>
-							<a href="javascript:;" class="nav-link nav-toggle">
-                				<i class="icon-handbag"></i> Items <span class="arrow"></span> 
-							</a> <!-- Maintenance/Items.php -->
-                             
-							<ul class="sub-menu">
-								<li>
-								<a href="javascript:;" onClick="setpage('MasterFiles/Item/Items.php');"> <i class="fa fa-list-ul "></i> Master List </a>
-								</li>
-								<li>
-								<a href="javascript:;" onClick="setpage('MasterFiles/Items/UOM.php');"> <i class="fa fa-angle-double-right"></i> Unit of Measure </a>
-								</li>
-								<li>
-								<a href="javascript:;" onClick="setpage('MasterFiles/Items/TYPE.php?f=');"> <i class="fa fa-angle-double-right"></i> Types </a>
-								</li>
-								<li>
-								<a href="javascript:;" onClick="setpage('MasterFiles/Items/CLASS.php?f=');"> <i class="fa fa-angle-double-right"></i> Classification </a>
-								</li>
-								<li>
-								<a href="javascript:;" onClick="setpage('MasterFiles/Items/Groupings.php');"> <i class="fa fa-angle-double-right"></i> Groupings </a>
-								</li>								
-							</ul>
-						</li>
-						<li>
-							<a href="javascript:;" class="nav-link nav-toggle">
-               					<i class="fa fa-rub"></i> Price List <span class="arrow"></span>
-							</a>                            
-							<ul class="sub-menu">
-								<li>
-									<a href="javascript:;" onClick="setpage('MasterFiles/Items/PM.php');"> 
-										<i class="fa fa-angle-double-right"></i> Sale Pricelist 
-									</a>
-								</li>
-								<li>
-									<a href="javascript:;" onclick="setpage('MasterFiles/Items/PP.php');"> 
-										<i class="fa fa-angle-double-right"></i> Purchase Pricelist 
-									</a>
-								</li>
-								<li>
-									<a href="javascript:;" onclick="setpage('MasterFiles/Items/discmatrix.php')">
-										<i class="fa fa-angle-double-right"></i> Discount Matrix
-									</a>
-								</li>
-								<li>
-									<a href="javascript:;" onClick="setpage('MasterFiles/Items/DISC.php')">
-										<i class='fa fa-angle-double-right'></i> Special Discount
-									</a>
-								</li>
-								<li>
-									<a href="javascript:;" onclick="setpage('MasterFiles/Items/coupon.php')">
-										<i class="fa fa-angle-double-right"></i> Coupons
-									</a>
-								</li>-->
-							</ul>
-            			</li>
-						<li>
-							<a href="javascript:;" class="nav-link nav-toggle">
-                				<i class="icon-basket-loaded"></i> Customers<span class="arrow"></span>
-							</a>
-             				<ul class="sub-menu">
-								<li>
-									<a href="javascript:;" onClick="setpage('MasterFiles/Custs/Customers.php?f=');"> 
-										<i class="fa fa-list-ul "></i> Master List 
-									</a>
-								</li>
-								<li>
-									<a href="javascript:;" onClick="setpage('MasterFiles/Custs/TYPE.php');"> 
-										<i class="fa fa-angle-double-right"></i> Types 
-									</a>
-								</li>
-								<li>
-									<a href="javascript:;" onClick="setpage('MasterFiles/Custs/CLASS.php');"> 
-										<i class="fa fa-angle-double-right"></i> Classification 
-									</a>
-								</li>
-								<li>
-									<a href="javascript:;" onClick="setpage('MasterFiles/Custs/Groups/Groupings.php');"> 
-										<i class="fa fa-angle-double-right"></i> Groupings 
-									</a>
-								</li>
-							</ul>
-						</li>
-						<li>
-							<a href="javascript:;" class="nav-link nav-toggle">
-                				<i class="fa fa-truck"></i> Suppliers<span class="arrow"></span>
-							</a>
-							<ul class="sub-menu">
-								<li>
-									<a href="javascript:;" onClick="setpage('MasterFiles/Supp/Suppliers.php?f=');"> 
-										<i class="fa fa-list-ul "></i> Master List 
-									</a>
-								</li>
-								<li>
-									<a href="javascript:;" onClick="setpage('MasterFiles/Supp/TYPE.php');"> 
-										<i class="fa fa-angle-double-right"></i> Types 
-									</a>
-								</li>
-								<li>
-									<a href="javascript:;" onClick="setpage('MasterFiles/Supp/CLASS.php');"> 
-										<i class="fa fa-angle-double-right"></i> Classification 
-									</a>
-								</li>
-								<li>
-									<a href="javascript:;" onClick="setpage('MasterFiles/Supp/Groups/Groupings.php');"> 
-										<i class="fa fa-angle-double-right"></i> Groupings 
-									</a>
-								</li>
-							</ul>
-						</li>
-						<li>
-							<a href="javascript:;" class="nav-link nav-toggle">
-                				<i class="fa fa-bars"></i> Accounting Files <span class="arrow"></span> 
-							</a>
-							<ul class="sub-menu">
-								<li>
-								<a href="javascript:;" onClick="setpage('MasterFiles/Accounts/Accounts.php?f=');"> <i class="fa fa-angle-double-right"></i> Chart of Accounts </a>
-								</li>
-								<li>
-								<a href="javascript:;" onClick="setpage('MasterFiles/Banks/Bank.php');"> <i class="fa fa-angle-double-right"></i> Banks </a>
-								</li>
-								<li>
-								<a href="javascript:;" onClick="setpage('MasterFiles/Currency/currency.php?ix=');"> <i class="fa fa-angle-double-right"></i> Currency List </a>
-								</li>
-								<li>
-								<a href="javascript:;" onClick="setpage('MasterFiles/TaxTypes/taxtype.php?ix=');"> <i class="fa fa-angle-double-right"></i> TAX Types </a>
-								</li>
-								<li>
-								<a href="javascript:;" onClick="setpage('MasterFiles/EWTCodes/ewtcodes.php?ix=');"> <i class="fa fa-angle-double-right"></i> EWT Codes </a> 									
-								</li>
-								<li>
-								<a href="javascript:;" onClick="setpage('MasterFiles/Proforma/Proforma.php?ix=');"> <i class="fa fa-angle-double-right"></i> A/P Proforma </a> 									
-								</li>
-							</ul>
-						</li>
-						<li>
-							<a href="javascript:;" onClick="setpage('MasterFiles/Salesman/Salesman.php');">
-               					<i class="fa fa-user-secret"></i> Salesman
-							</a>
-						</li>
-						
-						<li>
-							<a href="javascript:;" onClick="setpage('MasterFiles/Locations/locations.php');">
-             					<i class="fa fa-sitemap"></i> Sections
-							</a>
-						</li>
-						<li>
-							<a href="javascript:;" onClick="setpage('MasterFiles/Users/users.php?f=');">
-                				<i class="fa fa-users"></i> System Users
-							</a>
-						</li>
-						<li>
-							<a href="javascript:;" onClick="setpage('System/');">
-                				<i class="fa fa-gears"></i> System Setup
-							</a>
-						</li>
-					</ul>
-				</li>
-				<li>
-					<a href="javascript:;">
-						<i class="fa fa-tags"></i><span class="title">Sales &amp; Delivery</span><span class="arrow "></span>
-					</a>
-					<ul class="sub-menu"> 
-						<!--<li>
-							<a href="javascript:;" onClick="setpage('Sales/Recurr/Recurring.php?ix=');">
-                				<i class="fa fa-refresh"></i> Recurring Transactions
-							</a>
-						</li>-->
-						
-						<li>
-							<a href="javascript:;" onClick="setpage('Sales/Quote/Quote.php?ix=');">
-                				<i class="fgly flaticon-020-receipt"></i> Quotation
-							</a>
-						</li>
-						<li>
-							<?php
-								//check if SO_subdomain exist
-								if ( file_exists( "Sales/SO_".$durlSUB ) || is_dir( "Sales/SO_".$durlSUB) ) {   
-									$SOLink = "Sales/SO_".$durlSUB."/SO.php?ix=";
-								}else{
-									$SOLink = "Sales/SO/SO.php?ix=";
-								}
-							?>
-							<a href="javascript:;" onClick="setpage('<?=$SOLink?>');">
-                				<i class="fgly-sm flaticon-003-shopping-list"></i> Sales Order
-							</a>
-						</li>
-
-						<?php
-							//check if SO_subdomain exist
-							if ( file_exists( "Sales/DR_".$durlSUB ) || is_dir( "Sales/DR_".$durlSUB) ) {   
-								$DRLink = "Sales/DR_".$durlSUB."/DR.php?ix=";
-							}else{
-								$DRLink = "Sales/DR/DR.php?ix=";
-							}
-						?>
-
-						<li>
-							<a href="javascript:;" onClick="setpage('<?=$DRLink?>');">
-                				<i class="fgly-sm flaticon-035-invoice"></i> Delivery Receipt
-							</a>
-						</li>
-
-						<?php
-							//check if SO_subdomain exist
-							if ( file_exists( "Sales/Sales_".$durlSUB ) || is_dir( "Sales/Sales_".$durlSUB) ) {   
-								$SILink = "Sales/Sales_".$durlSUB."/SI.php?ix=";
-							}else{
-								$SILink = "Sales/Sales/SI.php?ix=";
-							}
-						?>
-
-						<li>
-							<a href="javascript:;" onClick="setpage('<?=$SILink?>');">
-                				<i class="fgly-sm flaticon-065-bill"></i> Sales Invoice
-							</a>
-						</li>
-						<li>
-							<a href="javascript:;" onClick="setpage('Sales/Return/SR.php?ix=');">
-                				<i class="icon-action-undo"></i> Sales Return 
-							</a>
-						</li>
-						<!--
-						<li>
-							<a href="javascript:;" onClick="setpage('POS');">
-                				<i class="fgly flaticon-060-cash-register"></i> Point of Sale
-							</a>
-						</li>
-						-->						                  
-					</ul>
-				</li>
-				<li>
-					<a href="javascript:;">
-						<i class="fa fa-shopping-cart"></i><span class="title">Purchases</span><span class="arrow"></span>
-					</a>
-					<ul class="sub-menu">
-
-						<?php
-							//check if SO_subdomain exist
-							if ( file_exists( "Purchases/PR_".$durlSUB ) || is_dir( "Purchases/PR_".$durlSUB) ) {   
-								$SILink = "Purchases/PR_".$durlSUB."/PR.php?ix=";
-							}else{
-								$SILink = "Purchases/PR/PR.php?ix=";
-							}
-						?>
-
-						<li>
-							<a href="javascript:;" onClick="setpage('<?=$SILink?>');">
-								<i class="fa fa-cart-plus" ></i> Purchase Request
-							</a>
-						</li>
-
-
-						<?php
-							//check if SO_subdomain exist
-							if ( file_exists( "Purchases/PO_".$durlSUB ) || is_dir( "Purchases/PO_".$durlSUB) ) {   
-								$SILink = "Purchases/PO_".$durlSUB."/Purch.php?ix=";
-							}else{
-								$SILink = "Purchases/PO/Purch.php?ix=";
-							}
-						?>
-
-						<li>
-							<a href="javascript:;" onClick="setpage('<?=$SILink?>');">
-                				<i class="glyphicon glyphicon-list"> </i> Purchase Order
-							</a>
-						</li>
-
-						<?php
-							//check if SO_subdomain exist
-							if ( file_exists( "Purchases/RR_".$durlSUB ) || is_dir( "Purchases/RR_".$durlSUB) ) {   
-								$SILink = "Purchases/RR_".$durlSUB."/RR.php?ix=";
-							}else{
-								$SILink = "Purchases/RR/RR.php?ix=";
-							}
-						?>
-						<li>
-							<a href="javascript:;" onClick="setpage('<?=$SILink?>');">
-                				<i class="fa fa-download"> </i> Receiving
-							</a>
-						</li>
-						<?php
-							//check if SO_subdomain exist
-							if ( file_exists( "Purchases/PRet_".$durlSUB ) || is_dir( "Purchases/PRet_".$durlSUB) ) {   
-								$SILink = "Purchases/PRet_".$durlSUB."/PurchRet.php?ix=";
-							}else{
-								$SILink = "Purchases/PRet/PurchRet.php?ix=";
-							}
-						?>
-						<li>
-							<a href="javascript:;" onClick="setpage('<?=$SILink?>');">
-                				<i class="fa fa-upload"> </i> Purchase Return
-							</a>
-						</li>
-					</ul>
-				</li>
-				<li>
-					<a href="javascript:;">
-						<i class="icon-book-open "></i><span class="title">Accounting</span><span class="arrow "></span>
-					</a>
-					<ul class="sub-menu">
-						<!--<li>
-							<a href="javascript:;" onClick="setpage('Accounting/Journal/Journal.php?ix=');">
-                				<i class="fa fa-list-alt"> </i>Ledger Entry Templates
-							</a>
-						</li>	-->					
-						<li>
-							<a href="javascript:;" onClick="setpage('Accounting/Journal/Journal.php?ix=');">
-                				<i class="fa fa-book"> </i>Journal Entry
-							</a>
-						</li>
-						<li>
-							<a href="javascript:;" class="nav-link nav-toggle">
-                				<i class="fa fa-credit-card"> </i> Accounts Payable<span class="arrow"></span>
-							</a>
-             				<ul class="sub-menu">
-								<li>
-                  					<a href="javascript:;" onClick="setpage('Accounting/APInv/RR.php?ix=');"> 
-										<i class="fa fa-angle-double-right"></i> Supplier's Invoice 
-									</a>
-                				</li>	
-	              				<li>
-                 					<a href="javascript:;" onClick="setpage('Accounting/APAdj/APAdj.php?ix=');"> 
-										<i class="fa fa-angle-double-right"></i> Adjustments 
-									</a>
-                				</li>										
-                				<li>
-                  					<a href="javascript:;" onClick="setpage('Accounting/APV/APV.php?ix=');"> 
-										<i class="fa fa-angle-double-right"></i> AP Voucher 
-									</a>
-                				</li>
-
-								<?php
-									
-									$sql = "SELECT * FROM `parameters` WHERE compcode='$company' and ccode='RFPMODULE'";
-									$result=mysqli_query($con,$sql);
-																														
-									$crfpx = 0;                                       
-														
-									while($row = mysqli_fetch_array($result, MYSQLI_ASSOC))
-									{
-										$crfpx = $row['cvalue'];
-									}
-
-									if ($crfpx==1) {
+				<?php
+					foreach($navmain as $rs1){
+						if($rs1['url']=="#"){
+				?>
+					<li>
+						<a href="javascript:;">
+							<i class="<?=$rs1['icon']?>"></i><span class="title"><?=$rs1['title']?></span><span class="arrow "></span>
+						</a>
+						<ul class="sub-menu"> 
+					<?php
+						foreach($navmenu as $rs2){
+							if($rs2['main_id']==$rs1['id'] && $rs2['main']==2 && $rs2['report_list']==0){
 								?>
-									<li>
-										<a href="javascript:;" onClick="setpage('Accounting/RFP/RFP.php?ix=');"> <i class="fa fa-angle-double-right"></i> Request For Payment </a>
-									</li>
-								<?php
-									}
-								?>
-
-								<li>
-									<a href="javascript:;" onClick="setpage('Accounting/Pay/PayBill.php?ix=');"> <i class="fa fa-angle-double-right"></i> Bills Payment </a>
-								</li>
-              				</ul>
-						</li>
-
-						<li>
-							<a href="javascript:;" class="nav-link nav-toggle">
-               					<i class="fa fa-money"></i> Accounts Receivable<span class="arrow"></span>
-							</a>
-                			<ul class="sub-menu">
-								<li>
-                   					<a href="javascript:;" onClick="setpage('Accounting/ARAdj/ARAdj.php?ix=');"> 
-										<i class="fa fa-angle-double-right"></i> Adjustments 
-									</a>
-                  				</li>
-								<li>
-									<a href="javascript:;" onClick="setpage('Accounting/OR/OR.php?ix=');"> 
-										<i class="fa fa-angle-double-right"></i> AR Payments 
-									</a>
-								</li>
-                			</ul>
-						</li>
-
-						<li>
-							<a href="javascript:;" onClick="setpage('Accounting/Deposit/Deposit.php?ix=');">
-                				<i class="fa fa-bank"> </i> Bank Deposit
-							</a>
-						</li>
-						<!--<li>
-							<a href="javascript:;" onclick="setpage('Accounting/BankRecon/bank_recon.php')"><i class="fa fa-file-text"></i> Bank Reconciliation</a>
-						</li>-->
-					</ul>
-				</li>
-				<li>
-					<a href="javascript:;">
-						<i class="icon-puzzle"></i><span class="title"><?=($lallowMRP==1) ? "MES &amp; Inventory" : "Inventory";?></span><span class="arrow "></span>
-					</a>
-					<ul class="sub-menu">
-						<?php
-							if($lallowMRP==1){
-						?>
 							<li>
 								<a href="javascript:;" class="nav-link nav-toggle">
-									<i class="fa fa-file-archive-o"></i> Master Files <span class="arrow"></span> 
-								</a> <!-- Maintenance/Items.php -->
-															
+									<i class="<?=$rs2['icon']?>"></i> <?=$rs2['title']?> <span class="arrow"></span>
+								</a>
+								
 								<ul class="sub-menu">
-									<li> 
-										<a href="javascript:;" onClick="setpage('MRP/MasterFiles/PROCESS.php');"> <i class="fa fa-angle-double-right"></i> Production Processes </a>
-									</li>
-									<li>
-										<a href="javascript:;" onClick="setpage('MRP/MasterFiles/MACHINES.php');"> <i class="fa fa-angle-double-right"></i> Machines </a>
-									</li>
-									<li>
-										<a href="javascript:;" onClick="setpage('MRP/MasterFiles/LOCATIONS.php');"> <i class="fa fa-angle-double-right"></i> Locations </a>
-									</li>
-									<li>
-										<a href="javascript:;" onClick="setpage('MRP/MasterFiles/OPERATORS.php');"> <i class="fa fa-angle-double-right"></i> Employees </a>
-									</li>							
+									<?php
+										foreach($navmenu as $rs3){
+											if($rs3['main_id']==$rs2['id'] && $rs3['main']==0){
+										?>
+										<li>
+											<a href="javascript:;" onClick="setpage('<?=$rs3['url']?>','<?=$rs3['id']?>');">
+												<i class="<?=$rs3['icon']?>"></i> <?=$rs3['title']?>
+											</a>
+										</li>
+										<?php
+											}
+										}
+									?>
 								</ul>
-							</li>
-
-						<li>
-							<a href="javascript:;" onClick="setpage('MRP/BOM/items_list.php');">
-							<i class="fa fa-cubes"> </i> Material BOM</a>
-						</li>
-						
-						<li>
-                			<a href="javascript:;" onClick="setpage('MRP/JO/JO.php');"> 
-								<i class="fa fa-file-text-o"></i> Job Orders 
-							</a>
-            			</li>
-						<li>
-                			<a href="javascript:;" onClick="setpage('MRP/ProdRun/ProdRun.php');"> 
-								<i class="fa fa-tasks"></i> Production Run 
-							</a>
-            			</li>
-						<li>
-                			<a href="javascript:;" onClick="setpage('MRP/QC/QCRejects.php');"> 
-								<i class="fa fa-tasks"></i> QC Rejects
-							</a>
-            			</li>
-						<?php
+								<?php
+							}else if($rs2['main_id']==$rs1['id'] && $rs2['main']==0 && $rs2['report_list']==1){
+								echo "<li><a href=\"javascript:;\" onClick=\"setpage('".$rs2['url']."','".$rs2['id']."');\"><i class=\"".$rs2['icon']."\"></i>".$rs2['title']."</a></li>";
+							}else if($rs2['main_id']==$rs1['id'] && $rs2['main']==0){
+								?>
+									<li>
+										<a href="javascript:;" onClick="setpage('<?=$rs2['url']?>','<?=$rs2['id']?>');">
+											<i class="<?=$rs2['icon']?>"></i> <?=$rs2['title']?>
+										</a>
+									</li>
+								<?php
 							}
-						?>
-						<li>
-							<a href="javascript:;" onClick="setpage('Inventory/Count/Inv.php');">
-							 <i class="fa fa-barcode"> </i> Inventory Count
-							</a>
-						</li>   
-						<li>
-							<a href="javascript:;" onClick="setpage('Inventory/Transfers/Inv.php');">
-							 <i class="fa fa-exchange"> </i> Inventory Transfer
-							</a>
-						</li>  						
-						<li>
-							<a href="javascript:;" onClick="setpage('Inventory/Adjustment/Inv.php');">
-							 <i class="fa fa-calculator"> </i> Inventory Adjustment
-							</a>
-						</li>
-					</ul>
-				</li>
-				<li>
-					<a href="javascript:;">
-						<i class="fa  fa-bar-chart-o "></i><span class="title">Reports</span><span class="arrow "></span>
-					</a>
-					<ul class="sub-menu">
-						<li>
-							<a href="javascript:;" onClick="setpage('Reports/rptmenu.php?id=sales');">
-                				<i class="glyphicon glyphicon-file "> </i> Sales
-							</a>
-						</li>
-						<li>
-							<a href="javascript:;" onClick="setpage('Reports/rptmenu.php?id=purch');">
-                				<i class="glyphicon glyphicon-file "> </i> Purchases
-							</a>
-						</li>
-						<li>
-							<a href="javascript:;" onClick="setpage('Reports/rptmenu.php?id=acc');">
-                				<i class="glyphicon glyphicon-file "> </i> GL & BIR Reports
-							</a>
-						</li>
-						<li>
-							<a href="javascript:;" onClick="setpage('Reports/rptmenu.php?id=inv');">
-               					<i class="glyphicon glyphicon-file "> </i> Inventory
-							</a>
-						</li>
-					</ul>
-				</li>
-				<li>
-					<a href="javascript:;" onClick="setpage('MasterFiles/AuditTrail/AuditTrail.php');">
-						<i class="fa fa-search-plus" aria-hidden="true"></i><span class="title">Audit Trail</span>
-					</a>
-				</li>
+					?>
+
+					<?php
+						}
+					?>
+						</ul>
+					</li>
+				<?php
+						}else{
+							echo "<li><a href=\"javascript:;\" onClick=\"setpage('".$rs1['url']."');\"><i class=\"".$rs1['icon']."\"></i>".$rs1['title']."</a></li>";
+						}
+
+					}
+				?>
 			</ul>
 			<!-- END SIDEBAR MENU -->
 		</div>

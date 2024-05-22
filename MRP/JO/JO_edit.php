@@ -1204,7 +1204,7 @@
 
 					$("#myprintframe").attr("src","../../Inventory/Transfers/<?=$prntnme['INVTRANS_REQUEST']?>?id="+data.trim()+"&n=1");
 					$("#PrintModal").modal('show');
-				
+					
 				}
 			}
 		});
