@@ -2,11 +2,25 @@
     if(!isset($_SESSION)){
     session_start();
     }
-    $_SESSION['pageid'] = "DISC.php";
+    $_SESSION['pageid'] = "COUP";
 
     include('../../Connection/connection_string.php');
-    // include('../../include/accessinner.php');
+     include('../../include/accessinner.php');
     $company = $_SESSION['companyid'];
+
+	$poststat = "True";
+	$sql = mysqli_query($con,"select * from users_access where userid = '$employeeid' and pageid = 'COUP_post'");
+	if(mysqli_num_rows($sql) == 0){
+		$poststat = "False";
+	}
+
+	$cancstat = "True";
+	$sql = mysqli_query($con,"select * from users_access where userid = '$employeeid' and pageid = 'COUP_cancel'");
+	if(mysqli_num_rows($sql) == 0){
+		$cancstat = "False";
+	}
+
+
 	$coupon = [];
 
 
@@ -70,8 +84,8 @@
                         <th width="80">Label</th>
 						<th width="100">Effect Date</th>
                         <th width="80">Expired Date</th>
-                        <th width="80">Status</th>
-                        <th width='100'>Action</th>
+                        <th width="80" style="text-align: center">Status</th>
+                        <th width='100'  style="text-align: center">Action</th>
 					</tr>
 				</thead>
 
@@ -86,23 +100,27 @@
                         <td><?php echo $row['label'];?></td>
                         <td><?php echo $row['effective'];?></td>
                         <td><?php echo $row['expired'];?></td>
-						<td>
+						<td style="text-align: center">
                             <div class='nopadwdtop' id="itmstat<?= $row['CouponNo'] ?>">
 								<?php 
 									echo match($row['status']){
-										"ACTIVE" => "<span class='label label-success'>Active</span>&nbsp;&nbsp;<a id=\"popoverData1\" href=\"#\" data-content=\"Set as Inactive\" rel=\"popover\" data-placement=\"bottom\" data-trigger=\"hover\" onClick=\"setStat('". $row['CouponNo'] ."','INACTIVE')\" ><i class=\"fa fa-refresh\" style=\"color: #f0ad4e\"></i></a>",
+										"ACTIVE" => "<span class='label label-success'>Active</span>&nbsp;&nbsp;<a id=\"popoverData1\" href=\"#\" data-content=\"Set as Inactive\" rel=\"popover\" data-placement=\"bottom\" data-trigger=\"hover\" onClick=\"setStat('". $row['CouponNo'] ."','INACTIVE')\" ></a>",
 										"INACTIVE" => "<span class='label label-warning'>Inactive</span>&nbsp;&nbsp;<a id=\"popoverData2\" href=\"#\" data-content=\"Set as Active\" rel=\"popover\" data-placement=\"bottom\" data-trigger=\"hover\" onClick=\"setStat('". $row['CouponNo'] ."','ACTIVE')\"><i class=\"fa fa-refresh\" style=\"color: #5cb85c\"></i></a>",
 										"CLAIMED" =>"<span class='label label-danger'>Claimed</span>&nbsp;&nbsp;<a id=\"popoverData2\" href=\"#\" data-content=\"Set as Active\" rel=\"popover\" data-placement=\"bottom\" data-trigger=\"hover\"><i class=\"fa fa-refresh\" style=\"color: #5cb85c\"></i></a>"
 									}
 								?>
 								</div>
                         </td>
-                        <td>
+                        <td style="text-align: center">
                             <div class='nopadwdtop' id="msg<?php echo $row['CouponNo'];?>">
 								<?php 
 									if(intval($row['cancelled'])==intval(0) && intval($row['approved'])==intval(0)){
 									?>
-										<a href="javascript:;" onClick="trans('POST','<?php echo $row['CouponNo'];?>', 'Posted')">POST</a> | <a href="javascript:;" onClick="trans('CANCEL','<?php echo $row['CouponNo'];?>','Cancelled')">CANCEL</a>
+
+										<a href="javascript:;" onClick="trans('POST','<?php echo $row['CouponNo'];?>', 'Posted')" class="btn btn-xs btn-default<?=($poststat!="True") ? " disabled" : ""?>"><i class="fa fa-thumbs-up" style="font-size:20px;color:Green ;" title="Approve transaction"></i></a> 
+
+										<a href="javascript:;" onClick="trans('CANCEL','<?php echo $row['CouponNo'];?>','Cancelled')" class="btn btn-xs btn-default<?=($cancstat!="True") ? " disabled" : ""?>"><i class="fa fa-thumbs-down" style="font-size:20px;color:Red ;" title="Cancel transaction"></i></a> 
+
 									<?php
 									}
 									else{
@@ -258,7 +276,13 @@ mysqli_close($con);
         });
 
 		$('#btnmass').click(function(){
-			window.location="../../Coupon/mass_upload.php"
+			let access = chkAccess("COUP_New")
+			if(access.trim() == "True"){
+				window.location="../../Coupon/mass_upload.php";
+			} else {
+				$("#AlertMsg").html("<center><b>ACCESS DENIED!</b></center>");
+                $("#AlertModal").modal('show');
+			}
 		})
 
 		$("#btnadd").click(function(){
@@ -267,7 +291,7 @@ mysqli_close($con);
 			let month = today.getMonth();
 			let year = today.getFullYear();
 
-			let access = chkAccess("DISC_New")
+			let access = chkAccess("COUP_New")
 
 			if(day < 10){
 				day = "0" + day;
@@ -405,83 +429,94 @@ mysqli_close($con);
 		var isposted = 0;
 		var xcblabelz = "";
 
-		var access = chkAccess('DISC_Edit');
-		if(access.trim() == "True"){
-			console.log(data)
-			$.ajax({
-				url: "th_couponlist.php",
-				data: {coupon : data},
-				dataType: "json",
-				async: false,
-				success: function(res){
-					if(res.valid){
-						res.data.map((item, index)=>{
-							$("#btnSave").hide();
-							$("#searchitem").hide();
-							$("#btnUpdate").show();
-							console.log(item)
+		var access = chkAccess('COUP_Edit');
+		
+		console.log(data)
+		$.ajax({
+			url: "th_couponlist.php",
+			data: {coupon : data},
+			dataType: "json",
+			async: false,
+			success: function(res){
+				if(res.valid){
+					res.data.map((item, index)=>{
+						$("#btnSave").hide();
+						$("#searchitem").hide();
+						$("#btnUpdate").show();
+						console.log(item)
 
-							var isddfc ="";
-							if(item.approved != 0){
-								//return alert("Discount has been approved")
-								isposted = 1;
-								isddfc = "disabled";
-								xcblabelz = "<font style=\"color: red\">(POSTED)</font>";
-							}
+						var isddfc ="";
+						if(item.approved != 0){
+							//return alert("Discount has been approved")
+							isposted = 1;
+							isddfc = "disabled";
+							xcblabelz = "<font style=\"color: red\">(POSTED)</font>";
+						}
 
-							if(item.cancelled != 0){
-								//return alert("Discount has been cancelled")
-								isposted = 1;
-								isddfc = "disabled";
-								xcblabelz = "<font style=\"color: red\">(CANCELLED)</font>";
-							}
+						if(item.cancelled != 0){
+							//return alert("Discount has been cancelled")
+							isposted = 1;
+							isddfc = "disabled";
+							xcblabelz = "<font style=\"color: red\">(CANCELLED)</font>";
+						}
 
-							$("#tranno").val(item.CouponNo)
-							$('#remarks').val(item.remarks);	
-							$('#txtlabel').val(item.label);
-							$('#Price').val(item.price);
-							$("#days ").val(item.days);
-							$('#barcode').val(item.barcode);
-							$('#salesdracctnme').val(item.cacctdesc);
-							$('#salesdracct').val(item.cacctcode);
+						if(access.trim() != "True"){
+							isddfc = "disabled";
+						}
 
-							if(isposted==1){
-								$("#tranno").attr("readonly", true);
-								$("#remarks").attr("readonly", true);
-								$('#txtlabel').attr("readonly", true);	
-								$('#Price').attr("readonly", true);
-								$('#days').attr("readonly", true);
-								$('#barcode').attr("readonly", true);
-								$('#salesdracctnme').attr("readonly", true);
-							}else{
-								$("#tranno").attr("readonly", false);
-								$("#remarks").attr("readonly", false);
-								$('#txtlabel').attr("readonly", false);	
-								$('#Price').attr("readonly", false);
-								$('#days').attr("readonly", false);
-								$('#barcode').attr("readonly", false);
-								$('#salesdracctnme').attr("readonly", false);
-							}
-
-							$('#myModalLabel').html("<b>Update Coupon Detail</b> "+xcblabelz);
-							$('#myModal').modal('show');
-                        })
+						$("#tranno").val(item.CouponNo)
+						$('#remarks').val(item.remarks);	
+						$('#txtlabel').val(item.label);
+						$('#Price').val(item.price);
+						$("#days ").val(item.days);
+						$('#barcode').val(item.barcode);
+						$('#salesdracctnme').val(item.cacctdesc);
+						$('#salesdracct').val(item.cacctcode);
 
 						if(isposted==1){
-							$("#btnUpdate").attr("disabled", true);
+							$("#tranno").attr("readonly", true);
+							$("#remarks").attr("readonly", true);
+							$('#txtlabel').attr("readonly", true);	
+							$('#Price').attr("readonly", true);
+							$('#days').attr("readonly", true);
+							$('#barcode').attr("readonly", true);
+							$('#salesdracctnme').attr("readonly", true);
+						}else{
+							$("#tranno").attr("readonly", false);
+							$("#remarks").attr("readonly", false);
+							$('#txtlabel').attr("readonly", false);	
+							$('#Price').attr("readonly", false);
+							$('#days').attr("readonly", false);
+							$('#barcode').attr("readonly", false);
+							$('#salesdracctnme').attr("readonly", false);
 						}
-					} else {
-						console.log(res.msg)
-					}
-				},
-				error: function(res){
-					console.log(res)
-				}
-			})
 
-		} else {
-			$("#AlertMsg").html("<center><b>ACCESS DENIED!</b></center>");
-			$("#AlertModal").modal('show');
+						$('#myModalLabel').html("<b>Update Coupon Detail</b> "+xcblabelz);
+						$('#myModal').modal('show');
+					})
+
+					if(isposted==1){
+						$("#btnUpdate").attr("disabled", true);
+					}
+				} else {
+					console.log(res.msg)
+				}
+			},
+			error: function(res){
+				console.log(res)
+			}
+		})
+
+		if(access.trim() != "True"){
+			$("#btnUpdate").hide();
+
+			$("#tranno").attr("readonly", true);
+			$("#remarks").attr("readonly", true);
+			$('#txtlabel').attr("readonly", true);	
+			$('#Price').attr("readonly", true);
+			$('#days').attr("readonly", true);
+			$('#barcode').attr("readonly", true);
+			$('#salesdracctnme').attr("readonly", true);
 		}
 	}
 

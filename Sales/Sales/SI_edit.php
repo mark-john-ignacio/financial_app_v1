@@ -2770,7 +2770,7 @@ function loaddetails(){
 				$("#hdnunit").val("");
 				$("#hdnqty").val("");
 				$("#hdnqtyunit").val("");
-      	$("#hdncvat").val("");
+      			$("#hdncvat").val("");
 				$("#hdncewt").val("");
 
 
@@ -3128,50 +3128,50 @@ function chkform(){
 
 function convertCurrency(fromCurrency) {
   
-  toCurrency = $("#basecurrvalmain").val(); //statgetrate
-   $.ajax ({
-	 url: "../th_convertcurr.php",
-	 data: { fromcurr: fromCurrency, tocurr: toCurrency },
-	 async: false,
-	 beforeSend: function () {
-		 $("#statgetrate").html(" <i>Getting exchange rate please wait...</i>");
-	 },
-	 success: function( data ) {
+	toCurrency = $("#basecurrvalmain").val(); //statgetrate
+	$.ajax ({
+		url: "../th_convertcurr.php",
+		data: { fromcurr: fromCurrency, tocurr: toCurrency },
+		async: false,
+		beforeSend: function () {
+			$("#statgetrate").html(" <i>Getting exchange rate please wait...</i>");
+		},
+		success: function( data ) {
 
-		 $("#basecurrval").val(data);
-		 $("#hidcurrvaldesc").val($( "#selbasecurr option:selected" ).text()); 
-		 
-	 },
-	 complete: function(){
-		 $("#statgetrate").html("");
-		 recomputeCurr();
-	 }
- });
+			$("#basecurrval").val(data);
+			$("#hidcurrvaldesc").val($( "#selbasecurr option:selected" ).text()); 
+			
+		},
+		complete: function(){
+			$("#statgetrate").html("");
+			recomputeCurr();
+		}
+	});
 
 }
 
 
 function recomputeCurr(){
 
- var newcurate = $("#basecurrval").val();
- var rowCount = $('#MyTable tr').length;
-		 
- var gross = 0;
- var amt = 0;
+	var newcurate = $("#basecurrval").val();
+	var rowCount = $('#MyTable tr').length;
+			
+	var gross = 0;
+	var amt = 0;
 
- if(rowCount>1){
-	 for (var i = 1; i <= rowCount-1; i++) {
-		 amt = $("#txtntranamount"+i).val().replace(/,/g,'');			
-		 recurr = parseFloat(newcurate) * parseFloat(amt);
+	if(rowCount>1){
+		for (var i = 1; i <= rowCount-1; i++) {
+			amt = $("#txtntranamount"+i).val().replace(/,/g,'');			
+			recurr = parseFloat(newcurate) * parseFloat(amt);
 
-		 $("#txtnamount"+i).val(recurr);
-		 $("#txtnamount"+i).autoNumeric('destroy');
-		 $("#txtnamount"+i).autoNumeric('init',{mDec:2});
-	 }
- }
+			$("#txtnamount"+i).val(recurr);
+			$("#txtnamount"+i).autoNumeric('destroy');
+			$("#txtnamount"+i).autoNumeric('init',{mDec:2});
+		}
+	}
 
 
- ComputeGross();
+	ComputeGross();
 
 
 }
@@ -3259,8 +3259,7 @@ function chkCloseDiscs(){
 
 	$("#txtndisc"+idnum).val(vcvxg.toFixed(2));
 
-	ComputeAmt(idnum); 
-	
+	ComputeAmt(idnum); 	
 	ComputeGross();
 
 	$('#MyDiscModal').modal('hide');

@@ -2,7 +2,7 @@
 if(!isset($_SESSION)){
 session_start();
 }
-$_SESSION['pageid'] = "UOM.php";
+$_SESSION['pageid'] = "UOM";
 
 include('../../Connection/connection_string.php');
 include('../../include/accessinner.php');
@@ -71,7 +71,7 @@ a.info:hover span{ /*the span will display just on :hover state*/
 							<th width="100">UOM Code</th>
 							<th>UOM Description</th>
 							<th width="80">Status</th>
-							<th width="80">Delete</th>
+							<!--<th width="80">Delete</th>-->
 						</tr>
 					</thead>
 
@@ -110,9 +110,9 @@ a.info:hover span{ /*the span will display just on :hover state*/
 										?>
 									</div>
 								</td>
-								<td>
-									<input class='btn btn-danger btn-xs' type='button' id='row_<?php echo $row['ccode'];?>_delete' value='delete' onClick="deleteRow('<?php echo $row['ccode'];?>');"/>
-								</td>
+								<!--<td>
+									<input class='btn btn-danger btn-xs' type='button' id='row_<?//php echo $row['ccode'];?>_delete' value='delete' onClick="deleteRow('<?//php echo $row['ccode'];?>');"/>
+								</td>-->
 							</tr>
 						<?php 
 							}				
@@ -162,9 +162,9 @@ a.info:hover span{ /*the span will display just on :hover state*/
 		</div>
 			
 		<div class="modal-footer">
-									<button type="button" id="btnSave" name="Save" class="btn btn-primary btn-sm">Add Detail</button>
-									<button type="button" id="btnUpdate" name="Update" class="btn btn-success btn-sm">Update Detail</button>
-									<button type="button" class="btn btn-danger  btn-sm" data-dismiss="modal">Cancel</button>
+			<button type="button" id="btnSave" name="Save" class="btn btn-primary btn-sm">Add Detail</button>
+			<button type="button" id="btnUpdate" name="Update" class="btn btn-success btn-sm">Update Detail</button>
+			<button type="button" class="btn btn-danger  btn-sm" data-dismiss="modal">Cancel</button>
 		</div>
 			
 			</div>
@@ -210,7 +210,7 @@ a.info:hover span{ /*the span will display just on :hover state*/
 
 		// Adding new user
 		$("#btnadd").on("click", function() {
-		 var x = chkAccess('UOM_New.php');
+		 var x = chkAccess('UOM_New');
 		 
 		 if(x.trim()=="True"){
 			$("#btnSave").show();
@@ -325,7 +325,7 @@ a.info:hover span{ /*the span will display just on :hover state*/
 	 });
 	
 	function editgrp(code,desc){
-		 var x = chkAccess('UOM_Edit.php');
+		 var x = chkAccess('UOM_Edit');
 		 
 		 if(x.trim()=="True"){
 			$("#btnSave").hide();
@@ -347,31 +347,41 @@ a.info:hover span{ /*the span will display just on :hover state*/
 	}
 
 		function setStat(code, stat){
-			$.ajax ({
-				url: "th_itmsetstat.php",
-				data: { code: code,  stat: stat, typz: 'ITMUNIT' },
-				async: false,
-				success: function( data ) {
-					if(data.trim()!="True"){
-						$("#itm"+code).html("<b>Error: </b>"+ data);
-						$("#itm"+code).attr("class", "itmalert alert alert-danger nopadding")
-						$("#itm"+code).show();
-					}
-					else{
-					  if(stat=="ACTIVE"){
-						$("#itmstat"+code).html("<span class='label label-success'>Active</span>&nbsp;&nbsp;<a id=\"popoverData1\" href=\"#\" data-content=\"Set as Inactive\" rel=\"popover\" data-placement=\"bottom\" data-trigger=\"hover\" onClick=\"setStat('"+code+"','INACTIVE')\" ><i class=\"fa fa-refresh\" style=\"color: #f0ad4e\"></i></a>");
-					  }else{
-						 $("#itmstat"+code).html("<span class='label label-warning'>Inactive</span>&nbsp;&nbsp;<a id=\"popoverData2\" href=\"#\" data-content=\"Set as Active\" rel=\"popover\" data-placement=\"bottom\" data-trigger=\"hover\" onClick=\"setStat('"+code+"','ACTIVE')\"><i class=\"fa fa-refresh\" style=\"color: #5cb85c\"></i></a>");
-					  }
-						
-						$("#itm"+code).html("<b>SUCCESS: </b> Status changed to "+stat);
-						$("#itm"+code).attr("class", "itmalert alert alert-success nopadding")
-						$("#itm"+code).show();
 
+			var x = chkAccess('UOM_Edit');
+		 
+			if(x.trim()=="True"){
+				
+				$.ajax ({
+					url: "th_itmsetstat.php",
+					data: { code: code,  stat: stat, typz: 'ITMUNIT' },
+					async: false,
+					success: function( data ) {
+						if(data.trim()!="True"){
+							$("#itm"+code).html("<b>Error: </b>"+ data);
+							$("#itm"+code).attr("class", "itmalert alert alert-danger nopadding")
+							$("#itm"+code).show();
+						}
+						else{
+						if(stat=="ACTIVE"){
+							$("#itmstat"+code).html("<span class='label label-success'>Active</span>&nbsp;&nbsp;<a id=\"popoverData1\" href=\"#\" data-content=\"Set as Inactive\" rel=\"popover\" data-placement=\"bottom\" data-trigger=\"hover\" onClick=\"setStat('"+code+"','INACTIVE')\" ><i class=\"fa fa-refresh\" style=\"color: #f0ad4e\"></i></a>");
+						}else{
+							$("#itmstat"+code).html("<span class='label label-warning'>Inactive</span>&nbsp;&nbsp;<a id=\"popoverData2\" href=\"#\" data-content=\"Set as Active\" rel=\"popover\" data-placement=\"bottom\" data-trigger=\"hover\" onClick=\"setStat('"+code+"','ACTIVE')\"><i class=\"fa fa-refresh\" style=\"color: #5cb85c\"></i></a>");
+						}
+							
+							$("#itm"+code).html("<b>SUCCESS: </b> Status changed to "+stat);
+							$("#itm"+code).attr("class", "itmalert alert alert-success nopadding")
+							$("#itm"+code).show();
+
+						}
 					}
-				}
-			
-			});
+				
+				});
+			} else {
+				$("#AlertMsg").html("<center><b>ACCESS DENIED!</b></center>");
+				$("#AlertModal").modal('show');
+
+			}
 		}
 
 		function chkAccess(id){
@@ -389,7 +399,7 @@ a.info:hover span{ /*the span will display just on :hover state*/
 			return result;
 		}
 		
-		function deleteRow(xid){
+		/*function deleteRow(xid){
 			$.ajax ({
 				url: "../th_delete.php",
 				data: { code: xid,  id: "itemUOM" },
@@ -408,6 +418,6 @@ a.info:hover span{ /*the span will display just on :hover state*/
 				}
 			
 			});
-		}
+		}*/
 
 	</script>

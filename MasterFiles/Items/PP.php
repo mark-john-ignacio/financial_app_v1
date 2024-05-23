@@ -1,11 +1,23 @@
 <?php
-if(!isset($_SESSION)){
-session_start();
-}
-$_SESSION['pageid'] = "PP.php";
+	if(!isset($_SESSION)){
+		session_start();
+	}
+	$_SESSION['pageid'] = "PP";
 
-include('../../Connection/connection_string.php');
-include('../../include/accessinner.php');
+	include('../../Connection/connection_string.php');
+	include('../../include/accessinner.php');
+
+	$poststat = "True";
+	$sql = mysqli_query($con,"select * from users_access where userid = '$employeeid' and pageid = 'PP_post'");
+	if(mysqli_num_rows($sql) == 0){
+		$poststat = "False";
+	}
+
+	$cancstat = "True";
+	$sql = mysqli_query($con,"select * from users_access where userid = '$employeeid' and pageid = 'PP_cancel'");
+	if(mysqli_num_rows($sql) == 0){
+		$cancstat = "False";
+	}
 ?>
 <!DOCTYPE html>
 <html>
@@ -27,90 +39,94 @@ include('../../include/accessinner.php');
 
 <body style="padding:5px">
 
-        <div>
-        	<div style="float:left; width:50%">
-				<font size="+2"><u>Purchase Pricelist</u></font>	
-            </div>
-            
-        </div>
-			<br><br>
-            <button type="button" class="btn btn-primary btn-sm" id="btnadd" name="btnadd"><span class="glyphicon glyphicon glyphicon-file"></span>&nbsp;Create New (F1)</button>
-			<button type="button" class="btn btn-warning btn-sm" id="btnmass" name="btnmass"><span class="glyphicon glyphicon glyphicon-file"></span>&nbsp;Mass Upload</button>
-<br><br>    
+	<div>
+		<div style="float:left; width:50%">
+			<font size="+2"><u>Purchase Pricelist</u></font>	
+		</div>            
+	</div>
+
+	<br><br>
+
+	<button type="button" class="btn btn-primary btn-sm" id="btnadd" name="btnadd"><span class="glyphicon glyphicon glyphicon-file"></span>&nbsp;Create New (F1)</button>
+	<button type="button" class="btn btn-warning btn-sm" id="btnmass" name="btnmass"><span class="glyphicon glyphicon glyphicon-file"></span>&nbsp;Mass Upload</button>
+
+	<br><br>    
                 
-                <table id="example" class="display" cellspacing="0" width="100%">
-                    <thead>
-                        <tr>
-                            <th width="100">PM Batch No.</th>
-                            <th width="150">Effectivity Date</th>
-                            <th>Supplier</th>
-                            <th>Remarks</th>
-                            <th width="100">Status</th>
-                        </tr>
-                    </thead>
-    
-                    <tbody>
-                    <?php
-                    $company = $_SESSION['companyid'];
-                    	$sql = "SELECT A.ctranno, A.deffectdate, A.ccode, A.cremarks, A.lapproved, A.lcancelled, B.cname FROM `items_purch_cost` A left Join suppliers B on A.compcode=B.compcode and A.ccode=B.ccode WHERE A.compcode='$company' order by deffectdate desc";
-                    
-                        $result=mysqli_query($con,$sql);
-                        
-                            if (!mysqli_query($con, $sql)) {
-                                printf("Errormessage: %s\n", mysqli_error($con));
-                            } 
-                            
-                        while($row = mysqli_fetch_array($result, MYSQLI_ASSOC))
-                        {
-                    ?>
-                        <tr>
-    
-                            <td>
-                            <a href="javascript:;" onClick="editgrp('<?php echo $row['ctranno'];?>')">
-                                <?php echo $row['ctranno'];?>
-                            </a>
-                            </td>
-                            <td>
-                            <?php echo date_format(date_create($row['deffectdate']), "F d, Y");?>
-                            </td>
-                            <td>
-                                <?php echo $row['ccode']." - ".$row['cname'];?>
-                            </td>
-                             <td>
-                                <?php echo $row['cremarks'];?>
-                            </td>
-                           <td>
-                            <div id="msg<?php echo $row['ctranno'];?>">
-                        	<?php 
-							if(intval($row['lcancelled'])==intval(0) && intval($row['lapproved'])==intval(0)){
-							?>
-								<a href="javascript:;" onClick="trans('post','<?php echo $row['ctranno'];?>')">POST</a> | <a href="javascript:;" onClick="trans('cancel','<?php echo $row['ctranno'];?>')">CANCEL</a>
-							<?php
-                            }
-							else{
-								if(intval($row['lcancelled'])==intval(1)){
-									echo "Cancelled";
-								}
-								if(intval($row['lapproved'])==intval(1)){
-									echo "Posted";
-								}
-							}
-							
-							?>
-                            </div>
+	<table id="example" class="display" cellspacing="0" width="100%">
+		<thead>
+			<tr>
+				<th width="100">PM Batch No.</th>
+				<th width="150">Effectivity Date</th>
+				<th>Supplier</th>
+				<th>Remarks</th>
+				<th width="100" style="text-align: center">Status</th>
+			</tr>
+		</thead>
 
-                            </td>
-                        </tr>
-                    <?php 
-                    }
-                    
-                    
-                    ?>
-                   
-                    </tbody>
-                </table>
+		<tbody>
+		<?php
+		$company = $_SESSION['companyid'];
+			$sql = "SELECT A.ctranno, A.deffectdate, A.ccode, A.cremarks, A.lapproved, A.lcancelled, B.cname FROM `items_purch_cost` A left Join suppliers B on A.compcode=B.compcode and A.ccode=B.ccode WHERE A.compcode='$company' order by deffectdate desc";
+		
+			$result=mysqli_query($con,$sql);
+			
+				if (!mysqli_query($con, $sql)) {
+					printf("Errormessage: %s\n", mysqli_error($con));
+				} 
+				
+			while($row = mysqli_fetch_array($result, MYSQLI_ASSOC))
+			{
+		?>
+			<tr>
 
+				<td>
+				<a href="javascript:;" onClick="editgrp('<?php echo $row['ctranno'];?>')">
+					<?php echo $row['ctranno'];?>
+				</a>
+				</td>
+				<td>
+				<?php echo date_format(date_create($row['deffectdate']), "F d, Y");?>
+				</td>
+				<td>
+					<?php echo $row['ccode']." - ".$row['cname'];?>
+				</td>
+					<td>
+					<?php echo $row['cremarks'];?>
+				</td>
+				<td style="text-align: center">
+					<div id="msg<?php echo $row['ctranno'];?>">
+					<?php 
+					if(intval($row['lcancelled'])==intval(0) && intval($row['lapproved'])==intval(0)){
+					?>
 
+						<a href="javascript:;" onClick="trans('post','<?php echo $row['ctranno'];?>')" class="btn btn-xs btn-default<?=($poststat!="True") ? " disabled" : ""?>"><i class="fa fa-thumbs-up" style="font-size:20px;color:Green ;" title="Approve transaction"></i></a> 
+
+						<a href="javascript:;" onClick="trans('cancel','<?php echo $row['ctranno'];?>')" class="btn btn-xs btn-default<?=($cancstat!="True") ? " disabled" : ""?>"><i class="fa fa-thumbs-down" style="font-size:20px;color:Red ;" title="Cancel transaction"></i></a> 
+
+					<?php
+					}
+					else{
+						if(intval($row['lcancelled'])==intval(1)){
+							echo "Cancelled";
+						}
+						if(intval($row['lapproved'])==intval(1)){
+							echo "Posted";
+						}
+					}
+					
+					?>
+					</div>
+
+				</td>
+			</tr>
+		<?php 
+		}
+		
+		
+		?>
+		
+		</tbody>
+	</table>
 
 <?php
 mysqli_close($con);
@@ -165,26 +181,35 @@ mysqli_close($con);
 		$("#add_errpick").hide();
 
 		$('#btnmass').click(function(){
-			window.location="../../MassUpload/PurchasePrice.php"
+			var x = chkAccess('PP_New');
+		 	if(x.trim()=="True"){
+				window.location="../../MassUpload/PurchasePrice.php";
+			}else{
+				$("#AlertMsg").html("<center><b>ACCESS DENIED!</b></center>");
+				$("#alertbtnOK").show();
+				$("#OK").hide();
+				$("#Cancel").hide();
+			 	$("#AlertModal").modal('show');
+			}
 		})
 
 		$("#btnadd").on("click", function() {
-			 var x = chkAccess('PP_New.php');
+			 var x = chkAccess('PP_New');
 	
 			 if(x.trim()=="True"){
 				location.href = "PP_new.php";
 			 }
 			 else{
-				 $("#AlertMsg").html("<center><b>ACCESS DENIED!</b></center>");
-					$("#alertbtnOK").show();
-					$("#OK").hide();
-					$("#Cancel").hide();
-				 $("#AlertModal").modal('show');
+				$("#AlertMsg").html("<center><b>ACCESS DENIED!</b></center>");
+				$("#alertbtnOK").show();
+				$("#OK").hide();
+				$("#Cancel").hide();
+				$("#AlertModal").modal('show');
 	
 			 }
 		});
 		
-				var itmstat = "";
+		var itmstat = "";
 		var typ = "";
 		var tran = "";
 	
@@ -272,20 +297,10 @@ mysqli_close($con);
 		}
 		
 		function editgrp(val){
-			 var x = chkAccess('PP_Edit.php');
-	
-			 if(x.trim()=="True"){
-				$("#txtctranno").val(val);
-				$("#frmedit").submit();
-			 }
-			 else{
-				 $("#AlertMsg").html("<center><b>ACCESS DENIED!</b></center>");
-				 $("#alertbtnOK").show();
-				 $("#OK").hide();
-				 $("#Cancel").hide();							
-				 $("#AlertModal").modal('show');
-			 }
 
+			$("#txtctranno").val(val);
+			$("#frmedit").submit();
+			
 		}
 
 		function trans(typ,tran){
@@ -293,13 +308,13 @@ mysqli_close($con);
 			$("#typ").val(typ);
 			$("#modzx").val(tran);
 		
-				$("#AlertMsg").html("");
-									
-				$("#AlertMsg").html("Are you sure you want to "+typ+" Pricelist No.: "+tran);
-				$("#alertbtnOK").hide();
-				$("#OK").show();
-				$("#Cancel").show();
-				$("#AlertModal").modal('show');
+			$("#AlertMsg").html("");
+								
+			$("#AlertMsg").html("Are you sure you want to "+typ+" Pricelist No.: "+tran);
+			$("#alertbtnOK").hide();
+			$("#OK").show();
+			$("#Cancel").show();
+			$("#AlertModal").modal('show');
 
 		}
 	</script>

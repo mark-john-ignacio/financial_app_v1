@@ -2,7 +2,7 @@
 if(!isset($_SESSION)){
 session_start();
 }
-$_SESSION['pageid'] = "Groupings.php";
+$_SESSION['pageid'] = "Groupings";
 
 include('../../Connection/connection_string.php');
 include('../../include/accessinner.php');
@@ -213,7 +213,7 @@ mysqli_close($con);
 
 		// Adding new user
 		$("#btnadd").on("click", function() {
-		 var x = chkAccess('Groupings_New.php');
+		 var x = chkAccess('Groupings_New');
 		 
 		 if(x.trim()=="True"){
 			$("#btnSave").show();
@@ -315,7 +315,7 @@ mysqli_close($con);
 	 });
 	
 	function editgrp(grp,code,desc){
-		var x = chkAccess('Groupings_Edit.php');
+		var x = chkAccess('Groupings_Edit');
 		 
 		 if(x.trim()=="True"){
 		$("#btnSave").hide();
@@ -339,31 +339,40 @@ mysqli_close($con);
 
 
 		function setStat(code, stat, grpno){
-			$.ajax ({
-				url: "th_grpsetstat.php",
-				data: { code: code,  stat: stat, typz: grpno },
-				async: false,
-				success: function( data ) {
-					if(data.trim()!="True"){
-						$("#itm"+code).html("<b>Error: </b>"+ data);
-						$("#itm"+code).attr("class", "itmalert alert alert-danger nopadding")
-						$("#itm"+code).show();
-					}
-					else{
-					  if(stat=="ACTIVE"){
-						$("#itmstat"+code).html("<span class='label label-success'>Active</span>&nbsp;&nbsp;<a id=\"popoverData1\" href=\"#\" data-content=\"Set as Inactive\" rel=\"popover\" data-placement=\"bottom\" data-trigger=\"hover\" onClick=\"setStat('"+code+"','INACTIVE','"+grpno+"')\" ><i class=\"fa fa-refresh\" style=\"color: #f0ad4e\"></i></a>");
-					  }else{
-						 $("#itmstat"+code).html("<span class='label label-warning'>Inactive</span>&nbsp;&nbsp;<a id=\"popoverData2\" href=\"#\" data-content=\"Set as Active\" rel=\"popover\" data-placement=\"bottom\" data-trigger=\"hover\" onClick=\"setStat('"+code+"','ACTIVE','"+grpno+"')\"><i class=\"fa fa-refresh\" style=\"color: #5cb85c\"></i></a>");
-					  }
-						
-						$("#itm"+code).html("<b>SUCCESS: </b> Status changed to "+stat);
-						$("#itm"+code).attr("class", "itmalert alert alert-success nopadding")
-						$("#itm"+code).show();
+			var x = chkAccess('Groupings_Edit');
+		 
+			if(x.trim()=="True"){
+				
+				$.ajax ({
+					url: "th_grpsetstat.php",
+					data: { code: code,  stat: stat, typz: grpno },
+					async: false,
+					success: function( data ) {
+						if(data.trim()!="True"){
+							$("#itm"+code).html("<b>Error: </b>"+ data);
+							$("#itm"+code).attr("class", "itmalert alert alert-danger nopadding")
+							$("#itm"+code).show();
+						}
+						else{
+						if(stat=="ACTIVE"){
+							$("#itmstat"+code).html("<span class='label label-success'>Active</span>&nbsp;&nbsp;<a id=\"popoverData1\" href=\"#\" data-content=\"Set as Inactive\" rel=\"popover\" data-placement=\"bottom\" data-trigger=\"hover\" onClick=\"setStat('"+code+"','INACTIVE','"+grpno+"')\" ><i class=\"fa fa-refresh\" style=\"color: #f0ad4e\"></i></a>");
+						}else{
+							$("#itmstat"+code).html("<span class='label label-warning'>Inactive</span>&nbsp;&nbsp;<a id=\"popoverData2\" href=\"#\" data-content=\"Set as Active\" rel=\"popover\" data-placement=\"bottom\" data-trigger=\"hover\" onClick=\"setStat('"+code+"','ACTIVE','"+grpno+"')\"><i class=\"fa fa-refresh\" style=\"color: #5cb85c\"></i></a>");
+						}
+							
+							$("#itm"+code).html("<b>SUCCESS: </b> Status changed to "+stat);
+							$("#itm"+code).attr("class", "itmalert alert alert-success nopadding")
+							$("#itm"+code).show();
 
+						}
 					}
-				}
-			
-			});
+				
+				});
+			} else {
+				$("#AlertMsg").html("<center><b>ACCESS DENIED!</b></center>");
+				$("#AlertModal").modal('show');
+
+			}
 		}
 		
 		function chkAccess(id){
@@ -380,7 +389,8 @@ mysqli_close($con);
 			
 			return result;
 		}
-		function deleteRow(xid,grp){
+		
+		/*function deleteRow(xid,grp){
 			$.ajax ({
 				url: "../th_delete.php",
 				data: { code: xid,  id: "itemGRP", grp: grp },
@@ -399,6 +409,6 @@ mysqli_close($con);
 				}
 			
 			});
-		}
+		}*/
 
 	</script>

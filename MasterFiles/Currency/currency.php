@@ -2,7 +2,7 @@
 	if(!isset($_SESSION)){
 		session_start();
 	}
-	$_SESSION['pageid'] = "Currency.php";
+	$_SESSION['pageid'] = "Currency";
 
 	include('../../Connection/connection_string.php');
 	include('../../include/accessinner.php');
@@ -213,7 +213,7 @@
 
 		// Adding new user
 		$("#btnadd").on("click", function() {
-		 var x = chkAccess('Currency_New.php');
+		 var x = chkAccess('Currency_New');
 		 
 		 if(x.trim()=="True"){
 			$("#btnSave").show();
@@ -334,7 +334,7 @@
 	 });
 
 	function editgrp(id,unit,symbol,cntry,nrate){
-		 var x = chkAccess('Currency_Edit.php');
+		 var x = chkAccess('Currency_Edit');
 		 
 		 if(x.trim()=="True"){
 			$("#btnSave").hide();

@@ -2,7 +2,7 @@
 	if(!isset($_SESSION)){
 		session_start();
 	}
-	$_SESSION['pageid'] = "EWTCodes.php";
+	$_SESSION['pageid'] = "EWTCodes";
 
 	include('../../Connection/connection_string.php');
 	include('../../include/accessinner.php');
@@ -10,13 +10,13 @@
 	$employeeid = $_SESSION['employeeid'];
 	
 	$posnew = "True";
-	$sql = mysqli_query($con,"select * from users_access where userid = '$employeeid' and pageid = 'EWTCodes_New.php'");
+	$sql = mysqli_query($con,"select * from users_access where userid = '$employeeid' and pageid = 'EWTCodes_New'");
 	if(mysqli_num_rows($sql) == 0){
 		$posnew = "False";
 	}
 
 	$posedit = "True";
-	$sql = mysqli_query($con,"select * from users_access where userid = '$employeeid' and pageid = 'EWTCodes_Edit.php'");
+	$sql = mysqli_query($con,"select * from users_access where userid = '$employeeid' and pageid = 'EWTCodes_Edit'");
 	if(mysqli_num_rows($sql) == 0){
 		$posedit = "False";
 	}
@@ -27,7 +27,9 @@
 	<head>
 
 	<link rel="stylesheet" type="text/css" href="../../Bootstrap/css/bootstrap.css"> 
-	<link href="../../global/plugins/font-awesome/css/font-awesome.min.css" rel="stylesheet" type="text/css"/>   
+	<link href="../../global/plugins/font-awesome/css/font-awesome.min.css" rel="stylesheet" type="text/css"/> 
+	<link rel="stylesheet" type="text/css" href="../../Bootstrap/css/alert-modal.css">
+
 	<script src="../../Bootstrap/js/jquery-3.2.1.min.js"></script>
 	<script src="../../Bootstrap/js/bootstrap.js"></script>
 
@@ -65,7 +67,7 @@
 
       <div>
         <div style="float:left; width:50%">
-					<font size="+2"><u>EWT Codes List</u></font>	
+			<font size="+2"><u>EWT Codes List</u></font>	
         </div>            
       </div>
 
@@ -128,9 +130,6 @@
 										
 				</tbody>
 			</table>
-
-			<input type="hidden" id="posnew" value="<?=$posnew;?>">
-			<input type="hidden" id="posedit" value="<?=$posedit;?>">
 
 		</section>
 	</div>		
@@ -229,7 +228,7 @@ mysqli_close($con);
 
 			// Adding new user
 			$("#btnadd").on("click", function() {
-				var x = $("#posnew").val();
+				var x = "<?=$posnew;?>";
 				
 				if(x.trim()=="True"){
 					$("#btnSave").show();
@@ -319,7 +318,7 @@ mysqli_close($con);
 	 });
 	
 		function editgrp(id,code,desc,rate){
-			var x = $("#posedit").val();
+			var x = "<?=$posedit;?>";
 			
 			if(x.trim()=="True"){
 				$("#btnSave").hide();
@@ -344,32 +343,40 @@ mysqli_close($con);
 		}
 	
 		function setStat(code, stat){
-			$.ajax ({
-				url: "th_setstat.php",
-				data: { code: code,  stat: stat },
-				async: false,
-				success: function( data ) {
-					if(data.trim()!="True"){
-						$("#itm"+code).html("<b>Error: </b>"+ data);
-						$("#itm"+code).attr("class", "itmalert alert alert-danger nopadding")
-						$("#itm"+code).show();
-					}
-					else{
-					  if(stat=="ACTIVE"){
-						$("#itmstat"+code).html("<span class='label label-success'>Active</span>&nbsp;&nbsp;<a id=\"popoverData1\" href=\"#\" data-content=\"Set as Inactive\" rel=\"popover\" data-placement=\"bottom\" data-trigger=\"hover\" onClick=\"setStat('"+code+"','INACTIVE')\" ><i class=\"fa fa-refresh\" style=\"color: #f0ad4e\"></i></a>");
-					  }else{
-						 $("#itmstat"+code).html("<span class='label label-warning'>Inactive</span>&nbsp;&nbsp;<a id=\"popoverData2\" href=\"#\" data-content=\"Set as Active\" rel=\"popover\" data-placement=\"bottom\" data-trigger=\"hover\" onClick=\"setStat('"+code+"','ACTIVE')\"><i class=\"fa fa-refresh\" style=\"color: #5cb85c\"></i></a>");
-					  }
-						
-						$("#itm"+code).html("<br><b>SUCCESS: </b> Status changed to "+stat);
-						$("#itm"+code).attr("class", "itmalert alert alert-success nopadding")
-						$("#itm"+code).show();
-
-					}
-				}
+			var x = "<?=$posedit;?>";
 			
-			});
+			if(x.trim()=="True"){
 
+				$.ajax ({
+					url: "th_setstat.php",
+					data: { code: code,  stat: stat },
+					async: false,
+					success: function( data ) {
+						if(data.trim()!="True"){
+							$("#itm"+code).html("<b>Error: </b>"+ data);
+							$("#itm"+code).attr("class", "itmalert alert alert-danger nopadding")
+							$("#itm"+code).show();
+						}
+						else{
+						if(stat=="ACTIVE"){
+							$("#itmstat"+code).html("<span class='label label-success'>Active</span>&nbsp;&nbsp;<a id=\"popoverData1\" href=\"#\" data-content=\"Set as Inactive\" rel=\"popover\" data-placement=\"bottom\" data-trigger=\"hover\" onClick=\"setStat('"+code+"','INACTIVE')\" ><i class=\"fa fa-refresh\" style=\"color: #f0ad4e\"></i></a>");
+						}else{
+							$("#itmstat"+code).html("<span class='label label-warning'>Inactive</span>&nbsp;&nbsp;<a id=\"popoverData2\" href=\"#\" data-content=\"Set as Active\" rel=\"popover\" data-placement=\"bottom\" data-trigger=\"hover\" onClick=\"setStat('"+code+"','ACTIVE')\"><i class=\"fa fa-refresh\" style=\"color: #5cb85c\"></i></a>");
+						}
+							
+							$("#itm"+code).html("<br><b>SUCCESS: </b> Status changed to "+stat);
+							$("#itm"+code).attr("class", "itmalert alert alert-success nopadding")
+							$("#itm"+code).show();
+
+						}
+					}
+				
+				});
+			} else {
+				$("#AlertMsg").html("<center><b>ACCESS DENIED!</b></center>");
+				$("#AlertModal").modal('show');
+
+			}
 		}
 
 	</script>

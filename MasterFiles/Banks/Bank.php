@@ -1,30 +1,23 @@
 <?php
-if(!isset($_SESSION)){
-session_start();
-}
-$_SESSION['pageid'] = "Bank.php";
+	if(!isset($_SESSION)){
+		session_start();
+	}
+	$_SESSION['pageid'] = "Bank";
 
-include('../../Connection/connection_string.php');
-include('../../include/denied.php');
-include('../../include/access.php');
+	include('../../Connection/connection_string.php');
+	include('../../include/denied.php');
+	include('../../include/access.php');
 ?>
 <!DOCTYPE html>
 <html>
 <head>
-<script type="text/javascript">
-function editfrm(x){
-	document.getElementById("txtcitemno").value = x;
-	document.getElementById("frmedit").submit();
-}
-
-</script>
 
 	<meta charset="utf-8">
 	<meta name="viewport" content="initial-scale=1.0, maximum-scale=2.0">
 
-	<title>Coop Financials</title>
+	<title>Myx Financials</title>
 
-<link rel="stylesheet" type="text/css" href="../../Bootstrap/css/bootstrap.css">    
+	<link rel="stylesheet" type="text/css" href="../../Bootstrap/css/bootstrap.css">    
     <link href="../../global/plugins/font-awesome/css/font-awesome.min.css" rel="stylesheet" type="text/css"/>  
 
 
@@ -108,15 +101,10 @@ function editfrm(x){
 		</section>
 	</div>		
 
+	<form name="frmedit" id="frmedit" method="get" action="Bank_edit.php">
+		<input type="hidden" name="txtcitemno" id="txtcitemno" />
+	</form>		
 
-<form name="frmedit" id="frmedit" method="get" action="Bank_edit.php">
-	<input type="hidden" name="txtcitemno" id="txtcitemno" />
-</form>		
-
-<?php
-
-mysqli_close($con);
-?>
 </body>
 </html>
 
@@ -124,21 +112,21 @@ mysqli_close($con);
 	<script type="text/javascript" language="javascript" src="../../Bootstrap/DataTable/jquery.dataTables.min.js"></script>
 
 	<script>
-	$(function() { 
-		$(".itmalert").hide();
-		$('#MyTable').DataTable();
-	});
+		$(function() { 
+			$(".itmalert").hide();
+			$('#MyTable').DataTable();
+		});
 
-	$(document).keydown(function(e) {
-		if(e.keyCode == 112){//F1
+		$(document).keydown(function(e) {
+			if(e.keyCode == 112){//F1
 				if(document.getElementById("btnNew").className=="btn btn-primary btn-md"){
 					e.preventDefault();
 					window.location.href='Bank_new.php';
 				}
-		}
-	});
+			}
+		});
 
-	function setStat(code, stat){
+		function setStat(code, stat){
 			$.ajax ({
 				url: "th_supsetstat.php",
 				data: { code: code,  stat: stat },
@@ -152,11 +140,11 @@ mysqli_close($con);
 						$("#itm"+code).show();
 					}
 					else{
-					  if(stat=="ACTIVE"){
-						 $("#itmstat"+code).html("<span class='label label-success'>Active</span>&nbsp;&nbsp;<a id=\"popoverData1\" href=\"#\" data-content=\"Set as Inactive\" rel=\"popover\" data-placement=\"bottom\" data-trigger=\"hover\" onClick=\"setStat('"+code+"','INACTIVE')\" ><i class=\"fa fa-refresh\" style=\"color: #f0ad4e\"></i></a>");
-					  }else{
-						 $("#itmstat"+code).html("<span class='label label-warning'>Inactive</span>&nbsp;&nbsp;<a id=\"popoverData2\" href=\"#\" data-content=\"Set as Active\" rel=\"popover\" data-placement=\"bottom\" data-trigger=\"hover\" onClick=\"setStat('"+code+"','ACTIVE')\"><i class=\"fa fa-refresh\" style=\"color: #5cb85c\"></i></a>");
-					  }
+						if(stat=="ACTIVE"){
+							$("#itmstat"+code).html("<span class='label label-success'>Active</span>&nbsp;&nbsp;<a id=\"popoverData1\" href=\"#\" data-content=\"Set as Inactive\" rel=\"popover\" data-placement=\"bottom\" data-trigger=\"hover\" onClick=\"setStat('"+code+"','INACTIVE')\" ><i class=\"fa fa-refresh\" style=\"color: #f0ad4e\"></i></a>");
+						}else{
+							$("#itmstat"+code).html("<span class='label label-warning'>Inactive</span>&nbsp;&nbsp;<a id=\"popoverData2\" href=\"#\" data-content=\"Set as Active\" rel=\"popover\" data-placement=\"bottom\" data-trigger=\"hover\" onClick=\"setStat('"+code+"','ACTIVE')\"><i class=\"fa fa-refresh\" style=\"color: #5cb85c\"></i></a>");
+						}
 						
 						$("#itm"+code).html("<b>SUCCESS: </b> Status changed to "+stat);
 						$("#itm"+code).attr("class", "itmalert alert alert-success nopadding")
@@ -165,7 +153,15 @@ mysqli_close($con);
 				}
 			
 			});
+		}
 
-	}
+		function editfrm(x){
+			document.getElementById("txtcitemno").value = x;
+			document.getElementById("frmedit").submit();
+		}
 	</script>
-	
+
+
+<?php
+	mysqli_close($con);
+?>

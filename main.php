@@ -25,10 +25,11 @@
 		}
 
 		if(!in_array($list["menu_id"], $mainidx)){
-			if($list["menu_id"]!="" && $list["menu_id"]!=null && $list["main_id"]!="" && $list["main_id"]!=null  & $list["main_id"]!=0){
+			if($list["menu_id"]!="" && $list["menu_id"]!=null && $list["main_id"]!="" && $list["main_id"]!=null){
 				$mainidx[] = $list["menu_id"];
 			}
 		}
+
 	}	
 
 	//get main id of access
@@ -54,6 +55,7 @@
 			$navmenu[] = $list;
 		}
 	}
+
 ?>
 
 <!DOCTYPE html>
@@ -276,7 +278,17 @@
 				<!-- DOC: To remove the search box from the sidebar you just need to completely remove the below "sidebar-search-wrapper" LI element -->
 				<?php
 					foreach($navmain as $rs1){
-						if($rs1['url']=="#"){
+						if($rs1['id']==1 || $rs1['id']==103){
+							?>
+								<li>		
+									<a href="javascript:;" onClick="setpage('<?=$rs1['url']?>','<?=$rs1['id']?>');">
+										<i class="<?=$rs1['icon']?>"></i> <?=$rs1['title']?>
+									</a>
+								</li>
+							<?php
+						}else{
+
+							if($rs1['url']=="#"){
 				?>
 					<li>
 						<a href="javascript:;">
@@ -284,7 +296,7 @@
 						</a>
 						<ul class="sub-menu"> 
 					<?php
-						foreach($navmenu as $rs2){
+							foreach($navmenu as $rs2){
 							if($rs2['main_id']==$rs1['id'] && $rs2['main']==2 && $rs2['report_list']==0){
 								?>
 							<li>
@@ -322,13 +334,14 @@
 					?>
 
 					<?php
-						}
+							}
 					?>
 						</ul>
 					</li>
 				<?php
-						}else{
-							echo "<li><a href=\"javascript:;\" onClick=\"setpage('".$rs1['url']."');\"><i class=\"".$rs1['icon']."\"></i>".$rs1['title']."</a></li>";
+							}else{
+								echo "<li><a href=\"javascript:;\" onClick=\"setpage('".$rs1['url']."');\"><i class=\"".$rs1['icon']."\"></i>".$rs1['title']."</a></li>";
+							}
 						}
 
 					}
@@ -441,9 +454,9 @@
 				
 	  }
 	  function loaddashboard(){
-		let pages = <?= json_encode($pages) ?>;
+		let pages = <?= json_encode($mainidx) ?>;
 
-		if (pages.includes("DashboardSales.php") || pages.includes("DashboardPurchase.php")) {
+		if (pages.includes("1")) {
 			setpage("./Dashboard/dashboard2/index.php")
 		} else {
 			setpage('MAIN/index.html')

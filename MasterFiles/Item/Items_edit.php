@@ -2,13 +2,20 @@
     if(!isset($_SESSION)){
         session_start();
     }
-    $_SESSION['pageid'] = "Items_edit.php";
+    $_SESSION['pageid'] = "Items";
 
     include('../../Connection/connection_string.php');
     include('../../include/denied.php');
     include('../../include/access2.php');
 
     $company = $_SESSION['companyid'];
+
+    $poststat = "True";
+	$sql = mysqli_query($con,"select * from users_access where userid = '$employeeid' and pageid = 'Items_Edit'");
+	if(mysqli_num_rows($sql) == 0){
+		$poststat = "False";
+	}
+
     //$citemno = $_REQUEST['txtcitemno'];
     //echo $citemno;
     if(isset($_REQUEST['txtcitemno'])){
@@ -872,24 +879,33 @@
                 </div>
             </div>
 
+            <?php
+                if($poststat == "True"){
+            ?>
+
             <table width="100%" border="0" cellpadding="3">
-            <tr>
-                <td>
-                    <button type="button" class="btn btn-primary btn-sm" onClick="window.location.href='Items.php';" id="btnMain" name="btnMain">Back to Main<br>(ESC)</button>
+                <tr>
+                    <td>
+                        <button type="button" class="btn btn-primary btn-sm" onClick="window.location.href='Items.php';" id="btnMain" name="btnMain">Back to Main<br>(ESC)</button>
 
-                    <button type="button" class="btn btn-default btn-sm" onClick="window.location.href='Items_new.php';" id="btnNew" name="btnNew">New<br>(F1)</button>
-            
-                    <button type="button" class="btn btn-danger btn-sm" onClick="chkSIEnter(13,'frmITEM');" id="btnUndo" name="btnUndo">
-                        Undo Edit<br>(CTRL+Z)
-                    </button>
-            
-                    <button type="button" class="btn btn-warning btn-sm" onClick="enabled();" id="btnEdit" name="btnEdit"> Edit<br>(CTRL+E) </button>
-
-                    <button type="submit" class="btn btn-success btn-sm" name="btnSave" id="btnSave">Save<br> (CTRL+S)</button>
+                        <button type="button" class="btn btn-default btn-sm" onClick="window.location.href='Items_new.php';" id="btnNew" name="btnNew">New<br>(F1)</button>
                 
-                </td>
-            </tr>
+                        <button type="button" class="btn btn-danger btn-sm" onClick="chkSIEnter(13,'frmITEM');" id="btnUndo" name="btnUndo">
+                            Undo Edit<br>(CTRL+Z)
+                        </button>
+                
+                        <button type="button" class="btn btn-warning btn-sm" onClick="enabled();" id="btnEdit" name="btnEdit"> Edit<br>(CTRL+E) </button>
+
+                        <button type="submit" class="btn btn-success btn-sm" name="btnSave" id="btnSave">Save<br> (CTRL+S)</button>
+                    
+                    </td>
+                </tr>
             </table>
+
+            <?php
+                }
+            ?>
+
         </fieldset>
     </form>
 

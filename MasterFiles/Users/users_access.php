@@ -41,7 +41,7 @@
   $navitems = array();
   $navrpts = array();
 
-  $result=mysqli_query($con,"select * From nav_menu");								
+  $result=mysqli_query($con,"select * From nav_menu WHERE cstatus ='ACTIVE'");								
   while($row = mysqli_fetch_array($result, MYSQLI_ASSOC))
   {
     $navmenu[] =  $row;
@@ -190,14 +190,24 @@
       <?php
         $cnt = 0;
         foreach($navmain as $rx){
-          $cnt++;
-          if($cnt==1){
-            $style=" in active";
+          if($rx['id']==1){
+            $xstat = (in_array("dashboard",$arrpgist)) ? "checked" : "";
+            ?>  
+              <div id="menu<?=$rx['id']?>" class="tab-pane fade in active" style="padding-left:10px; padding-top: 20px">
+                <div class="col-xs-12" style="padding-left: 20px !important;"><label><input type="checkbox" name="chkAcc[]" data-val="" value="dashboard|1" <?=$xstat?>>&nbsp;Display Dashboard</label></div>
+              </div>
+            <?php
+          }elseif($rx['id']==103){
+            $xstat = (in_array("audittrail",$arrpgist)) ? "checked" : "";
+            ?>  
+            <div id="menu<?=$rx['id']?>" class="tab-pane fade" style="padding-left:10px; padding-top: 20px">
+              <div class="col-xs-12" style="padding-left: 20px !important;"><label><input type="checkbox" name="chkAcc[]" data-val="" value="audittrail|103" <?=$xstat?>>&nbsp;Audit Trail</label></div>
+            </div>
+          <?php  
           }else{
-            $style="";
-          }
+
       ?>
-        <div id="menu<?=$rx['id']?>" class="tab-pane fade<?=$style?>" style="padding-left:10px; padding-top: 20px">
+        <div id="menu<?=$rx['id']?>" class="tab-pane fade" style="padding-left:10px; padding-top: 20px">
           
           <?php
             $cnt2nd = 0;
@@ -209,12 +219,13 @@
                   echo "<br>&nbsp;<br>";
                 }
           ?>             
-                <span style="font-size: 12px; color: blue"><b><?=$rz['title']?></b></span>
+                  <span style="font-size: 12px; color: blue"><b><?=$rz['title']?></b></span>
 
                     <?php
                       getItems($rz['id'],"no");
                     ?>
           <?php
+
               }
             }
           ?>
@@ -226,6 +237,7 @@
            
         </div>
       <?php
+          }
         }
       ?>
     </div>
