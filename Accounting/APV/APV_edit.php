@@ -2,7 +2,7 @@
 	if(!isset($_SESSION)){
 		session_start();
 	}
-	$_SESSION['pageid'] = "APV.php";
+	$_SESSION['pageid'] = "APV";
 
 	include('../../Connection/connection_string.php');
 	include('../../include/denied.php');
@@ -21,7 +21,7 @@
 	}
 
 	$poststat = "True";
-	$sql = mysqli_query($con,"select * from users_access where userid = '$employeeid' and pageid = 'APV_edit.php'");
+	$sql = mysqli_query($con,"select * from users_access where userid = '$employeeid' and pageid = 'APV_edit'");
 	if(mysqli_num_rows($sql) == 0){
 		$poststat = "False";
 	}

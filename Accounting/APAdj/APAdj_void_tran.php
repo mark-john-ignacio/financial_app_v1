@@ -3,7 +3,7 @@
 		session_start();
 	}
 
-	$_SESSION['pageid'] = "APAdj_unpost.php";
+	$_SESSION['pageid'] = "APAdj_unpost";
 
 	require_once "../../Connection/connection_string.php";
 	require_once "../../include/denied.php";

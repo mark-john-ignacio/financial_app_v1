@@ -2,13 +2,20 @@
 	if(!isset($_SESSION)){
 		session_start();
 	}
-	$_SESSION['pageid'] = "ARAdj_edit.php";
+	$_SESSION['pageid'] = "ARAdj";
 
 	include('../../Connection/connection_string.php');
 	include('../../include/denied.php');
 	include('../../include/access2.php');
 
 	$company = $_SESSION['companyid'];
+
+	$poststat = "True";
+	$sql = mysqli_query($con,"select * from users_access where userid = '$employeeid' and pageid = 'ARAdj_edit'");
+	if(mysqli_num_rows($sql) == 0){
+		$poststat = "False";
+	}
+
 	$ddeldate = date("m/d/Y");
 	$ddeldate = date("m/d/Y", strtotime($ddeldate . "+1 day"));
 	
@@ -290,6 +297,11 @@
 			<table width="100%" border="0" cellpadding="3">
 				<tr>
 					<td>
+						<input type="hidden" name="hdnrowcnt" id="hdnrowcnt">
+						<?php
+							if($poststat=="True"){
+						?>
+
 						<button type="button" class="btn btn-primary btn-sm" tabindex="6" onClick="window.location.href='ARAdj.php';" id="btnMain" name="btnMain">
 							Back to Main<br>(ESC)
 						</button>
@@ -305,11 +317,33 @@
 						<button type="button" class="btn btn-warning btn-sm" tabindex="6" onClick="enabled();" id="btnEdit" name="btnEdit">
 							Edit<br>(CTRL+E)
 						</button>
+
+						<?php
+							}
+
+							$sql = mysqli_query($con,"select * from users_access where userid = '".$_SESSION['employeeid']."' and pageid = 'ARAdj_print'");
+
+							if(mysqli_num_rows($sql) == 1){
+							
+						?>
+
+						<button type='button' class='btn btn-info btn-sm' tabindex='6' onclick="printchk('<?= $cjeno ?>')" id='btnPrint' name='btnPrint'>
+							Print<br>(CTRL+P)
+						</button>
+										
+						<?php		
+							}
+
+							if($poststat=="True"){
+						?>
 													
-						<input type="hidden" name="hdnrowcnt" id="hdnrowcnt"> 
 						<button type="button" class="btn btn-success btn-sm" tabindex="6" onClick="return chkform();" id="btnSave" name="btnSave">
 							SAVE<br> (F2)
 						</button>
+						<?php
+							}
+						?>
+
 					</td>
 					<td align="right" valign="top">
 						<b>TOTAL AMOUNT </b>
@@ -323,108 +357,122 @@
 	</form>
 
 
-<!-- 1) Alert Modal -->
-<div class="modal fade" id="AlertModal" tabindex="-1" role="dialog" data-keyboard="false" data-backdrop="static" aria-hidden="true">
-    <div class="vertical-alignment-helper">
-        <div class="modal-dialog vertical-align-top">
-            <div class="modal-content">
-               <div class="alert-modal-danger">
-                  <p id="AlertMsg"></p>
-                <p>
-                    <center>
-                        <button type="button" class="btnmodz btn btn-primary btn-sm" id="OK">Ok</button>
-                        <button type="button" class="btnmodz btn btn-danger btn-sm" id="Cancel">Cancel</button>
-                        
-                        
-                        <button type="button" class="btn btn-primary btn-sm" data-dismiss="modal" id="alertbtnOK">Ok</button>
-                        
-                        <input type="hidden" id="typ" name="typ" value = "">
-                        <input type="hidden" id="modzx" name="modzx" value = "">
-                    </center>
-                </p>
-               </div>
-            </div>
-        </div>
-    </div>
-</div>
-
-			<!-- FULL SALES RETURN LIST REFERENCES-->
-				<div class="modal fade" id="mySIRef" role="dialog" data-keyboard="false" data-backdrop="static">
-					<div class="modal-dialog modal-md">
-						<div class="modal-content">
-							<div class="modal-header">
-								<button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-								<h3 class="modal-title" id="InvListHdr">Sales Return List</h3>
-							</div>
-										
-							<div class="modal-body" style="height:40vh">
-										
-								<div class="col-xs-12 nopadding pre-scrollable" style="height:37vh">
-									<table name='MyInvTbl' id='MyInvTbl' class="table table-condensed">
-										<thead>
-											<tr>
-												<th>SR No.</th>
-												<th>Ref Invoice</th>
-												<th>Date</th>
-											</tr>
-										</thead>
-										<tbody>
-										</tbody>
-									</table>
-								</div>
-															
-							</div>
+	<!-- 1) Alert Modal -->
+	<div class="modal fade" id="AlertModal" tabindex="-1" role="dialog" data-keyboard="false" data-backdrop="static" aria-hidden="true">
+		<div class="vertical-alignment-helper">
+			<div class="modal-dialog vertical-align-top">
+				<div class="modal-content">
+				<div class="alert-modal-danger">
+					<p id="AlertMsg"></p>
+					<p>
+						<center>
+							<button type="button" class="btnmodz btn btn-primary btn-sm" id="OK">Ok</button>
+							<button type="button" class="btnmodz btn btn-danger btn-sm" id="Cancel">Cancel</button>
 							
-							<div class="modal-footer">
-								<button type="button" class="btn btn-danger" data-dismiss="modal">Cancel</button>
-							</div>
-						</div><!-- /.modal-content -->
-					</div><!-- /.modal-dialog -->
-				</div><!-- /.modal -->
-			<!-- End FULL INVOICE LIST -->
+							
+							<button type="button" class="btn btn-primary btn-sm" data-dismiss="modal" id="alertbtnOK">Ok</button>
+							
+							<input type="hidden" id="typ" name="typ" value = "">
+							<input type="hidden" id="modzx" name="modzx" value = "">
+						</center>
+					</p>
+				</div>
+				</div>
+			</div>
+		</div>
+	</div>
 
-			<!-- FULL SALES INVOICE LIST REFERENCES-->
-				<div class="modal fade" id="myInvoiceRef" role="dialog" data-keyboard="false" data-backdrop="static">
-    			<div class="modal-dialog modal-lg">
+	<!-- FULL SALES RETURN LIST REFERENCES-->
+		<div class="modal fade" id="mySIRef" role="dialog" data-keyboard="false" data-backdrop="static">
+			<div class="modal-dialog modal-md">
+				<div class="modal-content">
+					<div class="modal-header">
+						<button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+						<h3 class="modal-title" id="InvListHdr">Sales Return List</h3>
+					</div>
+								
+					<div class="modal-body" style="height:40vh">
+								
+						<div class="col-xs-12 nopadding pre-scrollable" style="height:37vh">
+							<table name='MyInvTbl' id='MyInvTbl' class="table table-condensed">
+								<thead>
+									<tr>
+										<th>SR No.</th>
+										<th>Ref Invoice</th>
+										<th>Date</th>
+									</tr>
+								</thead>
+								<tbody>
+								</tbody>
+							</table>
+						</div>
+													
+					</div>
+					
+					<div class="modal-footer">
+						<button type="button" class="btn btn-danger" data-dismiss="modal">Cancel</button>
+					</div>
+				</div><!-- /.modal-content -->
+			</div><!-- /.modal-dialog -->
+		</div><!-- /.modal -->
+	<!-- End FULL INVOICE LIST -->
+
+	<!-- FULL SALES INVOICE LIST REFERENCES-->
+		<div class="modal fade" id="myInvoiceRef" role="dialog" data-keyboard="false" data-backdrop="static">
+			<div class="modal-dialog modal-lg">
         		<div class="modal-content">
-            	<div class="modal-header">
-                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-                <h3 class="modal-title" id="InvListHdr">Sales Invoice List</h3>
-            	</div>
+            		<div class="modal-header">
+                		<button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                		<h3 class="modal-title" id="InvListHdr">Sales Invoice List</h3>
+            		</div>
             
-            	<div class="modal-body" style="height:40vh">
+            		<div class="modal-body" style="height:40vh">
             
-                <div class="col-xs-12 nopadding pre-scrollable" style="height:37vh">
-                  <table name='MyInvoiceTbl' id='MyInvoiceTbl' class="table table-condensed">
-                    <thead>
-                      <tr>
-												<th>Invoice No.</th>
-												<th>Print No.</th>
-												<th>Remarks</th>
-												<th>Date</th>
-											</tr>
-										</thead>
-                    <tbody>
-                    </tbody>
-                  </table>
-                </div>
-         	            
-							</div>
-			
-            	<div class="modal-footer">
-                <button type="button" class="btn btn-danger" data-dismiss="modal">Cancel</button>
-            	</div>
-        		</div><!-- /.modal-content -->
-    			</div><!-- /.modal-dialog -->
-				</div><!-- /.modal -->
-			<!-- End FULL INVOICE LIST -->
+						<div class="col-xs-12 nopadding pre-scrollable" style="height:37vh">
+							<table name='MyInvoiceTbl' id='MyInvoiceTbl' class="table table-condensed">
+								<thead>
+									<tr>
+										<th>Invoice No.</th>
+										<th>Print No.</th>
+										<th>Remarks</th>
+										<th>Date</th>
+									</tr>
+								</thead>
+								<tbody>
+								</tbody>
+							</table>
+						</div>
+							
+					</div>
+				
+					<div class="modal-footer">
+						<button type="button" class="btn btn-danger" data-dismiss="modal">Cancel</button>
+					</div>
+				</div><!-- /.modal-content -->
+			</div><!-- /.modal-dialog -->
+		</div><!-- /.modal -->
+	<!-- End FULL INVOICE LIST -->
+
+
+	<div class="modal fade" id="PrintModal" role="dialog" data-keyboard="false" data-backdrop="static">
+		<div class="modal-dialog modal-lg">
+			<div class="modal-contnorad">   
+				<div class="modal-bodylong">
+					<button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>        
+				
+					<iframe id="myprintframe" name="myprintframe" scrolling="no" style="width:100%; height:8.5in; display:block; margin:0px; padding:0px; border:0px"></iframe>
+						
+				</div>
+			</div><!-- /.modal-content -->
+		</div><!-- /.modal-dialog -->
+	</div>
 
 </body>
 </html>
 
 <script type="text/javascript">
 
-var fileslist = [];
+	var fileslist = [];
 	/*
 	var xz = $("#hdnfiles").val();
 	$.each(jQuery.parseJSON(xz), function() { 
@@ -1119,6 +1167,7 @@ function disabled(){
 	$("#btnMain").attr("disabled", false);
 	$("#btnNew").attr("disabled", false);
 	$("#btnEdit").attr("disabled", false);
+	$("#btnPrint").attr("disabled", false);
 
 	$(".kv-file-zoom").attr("disabled", false);
 
@@ -1147,9 +1196,27 @@ function enabled(){
 			$("#btnMain").attr("disabled", true);
 			$("#btnNew").attr("disabled", true);
 			$("#btnEdit").attr("disabled", true);
+			$("#btnPrint").attr("disabled", true);
 				
 	}
 
+}
+
+function printchk(tranno){
+	if(document.getElementById("hdncancel").value==1){	
+		document.getElementById("statmsgz").innerHTML = "CANCELLED TRANSACTION CANNOT BE PRINTED!";
+		document.getElementById("statmsgz").style.color = "#FF0000";
+	}
+	else{
+		//   var url =  "RR_confirmprint.php?x="+x;
+		var url = "ARAdj_printv1.php?tranno="+tranno;
+		  
+		  $("#myprintframe").attr('src',url);
+
+
+		$("#PrintModal").modal('show');
+
+	}
 }
 
 </script>

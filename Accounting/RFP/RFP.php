@@ -3,7 +3,7 @@
 	if(!isset($_SESSION)){
 	session_start();
 	}
-	$_SESSION['pageid'] = "RFP.php";
+	$_SESSION['pageid'] = "RFP";
 
 	include('../../Connection/connection_string.php');
 	include('../../include/denied.php');

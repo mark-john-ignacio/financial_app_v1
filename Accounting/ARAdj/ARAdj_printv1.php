@@ -22,8 +22,8 @@
 	}
 
     $tranno = $_REQUEST['tranno'];
-    $sql = "SELECT a.*, b.*, c.Fname, c.Lname, c.Minit, IFNULL(c.cusersign,'') as cusersign FROM apadjustment a
-    left join `suppliers` b on a.compcode = b.compcode and a.ccode = b.ccode
+    $sql = "SELECT a.*, b.*, c.Fname, c.Lname, c.Minit, IFNULL(c.cusersign,'') as cusersign FROM aradjustment a
+    left join `customers` b on a.compcode = b.compcode and a.ccode = b.cempid
     left join users c on a.cpreparedby = c.Userid
     where a.compcode = '$company' and a.ctranno = '$tranno'";
     $query = mysqli_query($con, $sql);
@@ -84,18 +84,14 @@
 
 		</td>
 	</tr>
-
-
-
-
-    
+  
 	<tr>
 		<td style="vertical-align: top; padding-top: 10px">
 
 			<table border="0" width="100%" style="border-collapse:collapse">
 				<tr>
 					<td colspan="2" align="center" style="padding-bottom: 20px">
-							<font style="font-size: 24px;">Accounts Payment Adjustment </font>
+							<font style="font-size: 24px;">Accounts Receivables Adjustment </font>
 					</td>
 				</tr>
 
@@ -115,7 +111,7 @@
 							<table border="0" width="100%">
 								<tr>
 									<td width="150px" style="padding: 10px;">
-											<b>SUPPLIER'S NAME: </b>
+											<b>CUSTOMERS'S NAME: </b>
 									</td>
 									<td style="padding: 10px;">
 											<?=$CustName?>
@@ -140,7 +136,8 @@
 								</tr>
 							</table>
 					</td>
-	</tr>
+				</tr>
+
 				
 			</table>
 
@@ -154,7 +151,7 @@
 				</tr>
 
 				<?php 
-                $sql = "SELECT a.* FROM apadjustment_t a
+                $sql = "SELECT a.* FROM aradjustment_t a
                     where a.compcode = '$company' and a.ctranno = '$tranno'";
             
                 $query = mysqli_query($con, $sql);

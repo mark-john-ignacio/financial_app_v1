@@ -2,13 +2,21 @@
 	if(!isset($_SESSION)){
 		session_start();
 	}
-	$_SESSION['pageid'] = "APAdj_edit.php";
+	$_SESSION['pageid'] = "APAdj";
 
 	include('../../Connection/connection_string.php');
 	include('../../include/denied.php');
 	include('../../include/access2.php');
 
 	$company = $_SESSION['companyid'];
+
+	$poststat = "True";
+	$sql = mysqli_query($con,"select * from users_access where userid = '$employeeid' and pageid = 'APAdj_edit'");
+	if(mysqli_num_rows($sql) == 0){
+		$poststat = "False";
+	}
+
+
 	$ddeldate = date("m/d/Y");
 	$ddeldate = date("m/d/Y", strtotime($ddeldate . "+1 day"));
 	
@@ -292,6 +300,12 @@
 				<table width="100%" border="0" cellpadding="3">
 					<tr>
 						<td>
+							<input type="hidden" name="hdnrowcnt" id="hdnrowcnt"> 
+
+							<?php
+								if($poststat=="True"){
+							?>
+
 							<button type="button" class="btn btn-primary btn-sm" tabindex="6" onClick="window.location.href='APAdj.php?ix=<?=isset($_REQUEST['hdnsrchval']) ? $_REQUEST['hdnsrchval'] : ""?>';" id="btnMain" name="btnMain">
 								Back to Main<br>(ESC)
 							</button>
@@ -307,14 +321,33 @@
 							<button type="button" class="btn btn-warning btn-sm" tabindex="6" onClick="enabled();" id="btnEdit" name="btnEdit">
 								Edit<br>(CTRL+E)
 							</button>
+							
+							<?php
+								}
+
+								$sql = mysqli_query($con,"select * from users_access where userid = '".$_SESSION['employeeid']."' and pageid = 'APAdj_print'");
+
+								if(mysqli_num_rows($sql) == 1){
+								
+							?>
+
 							<button type='button' class='btn btn-info btn-sm' tabindex='6' onclick="printchk('<?= $cjeno ?>')" id='btnPrint' name='btnPrint'>
 								Print<br>(CTRL+P)
 							</button>
-														
-							<input type="hidden" name="hdnrowcnt" id="hdnrowcnt"> 
+											
+							<?php		
+								}
+
+								if($poststat=="True"){
+							?>
+							
 							<button type="button" class="btn btn-success btn-sm" tabindex="6" onClick="return chkform();" id="btnSave" name="btnSave">
 								SAVE<br> (F2)
 							</button>
+
+							<?php		
+								}
+							?>
 						</td>
 						<td align="right" valign="top">
 							<b>TOTAL AMOUNT </b>
@@ -425,15 +458,15 @@
     			</div><!-- /.modal-dialog -->
 				</div><!-- /.modal -->
 				<!-- End FULL INVOICE LIST -->
-<div class="modal fade" id="PrintModal" role="dialog" data-keyboard="false" data-backdrop="static">
-	<div class="modal-dialog modal-lg">
-        <div class="modal-contnorad">   
-            <div class="modal-bodylong">
-				<button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>        
-			
-				<iframe id="myprintframe" name="myprintframe" scrolling="no" style="width:100%; height:8.5in; display:block; margin:0px; padding:0px; border:0px"></iframe>
-		
-					
+
+	<div class="modal fade" id="PrintModal" role="dialog" data-keyboard="false" data-backdrop="static">
+		<div class="modal-dialog modal-lg">
+			<div class="modal-contnorad">   
+				<div class="modal-bodylong">
+					<button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>        
+				
+					<iframe id="myprintframe" name="myprintframe" scrolling="no" style="width:100%; height:8.5in; display:block; margin:0px; padding:0px; border:0px"></iframe>
+							
 				</div>
 			</div><!-- /.modal-content -->
 		</div><!-- /.modal-dialog -->

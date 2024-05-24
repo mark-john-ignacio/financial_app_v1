@@ -3,7 +3,7 @@
 		session_start();
 	}
 
-	$_SESSION['pageid'] = "SuppInv_unpost.php";
+	$_SESSION['pageid'] = "SuppInv_unpost";
 
 	require_once "../../Connection/connection_string.php";
 	require_once "../../include/denied.php";

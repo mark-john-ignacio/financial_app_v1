@@ -2,7 +2,7 @@
 	if(!isset($_SESSION)){
 		session_start();
 	}
-	$_SESSION['pageid'] = "RFP.php";
+	$_SESSION['pageid'] = "RFP";
 
 	include('../../Connection/connection_string.php');
 	include('../../include/denied.php');
@@ -12,9 +12,15 @@
 	$ccvno = $_REQUEST['txtctranno'];
 
 	$poststat = "True";
-	$sql = mysqli_query($con,"select * from users_access where userid = '$employeeid' and pageid = 'RFP_edit.php'");
+	$sql = mysqli_query($con,"select * from users_access where userid = '$employeeid' and pageid = 'RFP_edit'");
 	if(mysqli_num_rows($sql) == 0){
 		$poststat = "False";
+	}
+
+	$printstat = "True";
+	$sql = mysqli_query($con,"select * from users_access where userid = '$employeeid' and pageid = 'RFP_print'");
+	if(mysqli_num_rows($sql) == 0){
+		$printstat = "False";
 	}
 
 	//echo $_SERVER['SERVER_NAME'];
@@ -348,49 +354,61 @@
 
 								</div>
 				
-					<?php
-						if($poststat=="True"){
-					?>
+					
 					<br>
 					<table width="100%" border="0" cellpadding="3">
 						<tr>
 							<td width="60%" rowspan="2"><input type="hidden" name="hdnrowcnt" id="hdnrowcnt" value="0">
-													
-											<button type="button" class="btn btn-primary btn-sm" tabindex="6" onClick="window.location.href='RFP.php?ix=<?=isset($_REQUEST['hdnsrchval']) ? $_REQUEST['hdnsrchval'] : ""?>';" id="btnMain" name="btnMain">
-												Back to Main<br>(ESC)
-											</button>
 										
-											<button type="button" class="btn btn-default btn-sm" tabindex="6" onClick="window.location.href='RFP_new.php';" id="btnNew" name="btnNew">
-												New<br>(F1)
-											</button>
+							<?php
+								if($poststat=="True"){
+							?>
 
-											<button type="button" class="btn btn-danger btn-sm" tabindex="6" onClick="chkSIEnter(13,'frmpos');" id="btnUndo" name="btnUndo">
-												Undo Edit<br>(CTRL+Z)
-											</button>
-									
-											<button type="button" class="btn btn-info btn-sm" tabindex="6" onClick="printchk('<?=$ccvno?>');" id="btnPrint" name="btnPrint">
-												Print<br>(F4)
-											</button>
+								<button type="button" class="btn btn-primary btn-sm" tabindex="6" onClick="window.location.href='RFP.php?ix=<?=isset($_REQUEST['hdnsrchval']) ? $_REQUEST['hdnsrchval'] : ""?>';" id="btnMain" name="btnMain">
+									Back to Main<br>(ESC)
+								</button>
+							
+								<button type="button" class="btn btn-default btn-sm" tabindex="6" onClick="window.location.href='RFP_new.php';" id="btnNew" name="btnNew">
+									New<br>(F1)
+								</button>
 
-											<button type="button" class="btn btn-info btn-sm" id="btnShowApv" name="btnShowApv">
-												APV<br> (Insert)
-											</button>	
-								    
-											<button type="button" class="btn btn-warning btn-sm" tabindex="6" onClick="enabled();" id="btnEdit" name="btnEdit">
-												Edit<br>(CTRL+E)
-											</button>
-											
-											<button type="submit" class="btn btn-success btn-sm" tabindex="6" id="btnSave" name="btnSave">
-												Save<br>(CTRL+S)
-											</button>
-											
+								<button type="button" class="btn btn-danger btn-sm" tabindex="6" onClick="chkSIEnter(13,'frmpos');" id="btnUndo" name="btnUndo">
+									Undo Edit<br>(CTRL+Z)
+								</button>
+							<?php
+								} 
+
+								if($printstat=="True"){
+							?>
+								<button type="button" class="btn btn-info btn-sm" tabindex="6" onClick="printchk('<?=$ccvno?>');" id="btnPrint" name="btnPrint">
+									Print<br>(F4)
+								</button>
+
+							<?php
+								} 
+
+								if($poststat=="True"){
+							?>
+
+								<button type="button" class="btn btn-info btn-sm" id="btnShowApv" name="btnShowApv">
+									APV<br> (Insert)
+								</button>	
+						
+								<button type="button" class="btn btn-warning btn-sm" tabindex="6" onClick="enabled();" id="btnEdit" name="btnEdit">
+									Edit<br>(CTRL+E)
+								</button>
+								
+								<button type="submit" class="btn btn-success btn-sm" tabindex="6" id="btnSave" name="btnSave">
+									Save<br>(CTRL+S)
+								</button>
+							<?php
+								} 	
+							?>		
 							</td>
 						</tr>
 						
 					</table>
-					<?php
-						}
-					?>
+					
 			</fieldset>
 
 	</form>

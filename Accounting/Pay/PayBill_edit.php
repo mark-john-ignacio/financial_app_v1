@@ -2,7 +2,7 @@
 	if(!isset($_SESSION)){
 		session_start();
 	}
-	$_SESSION['pageid'] = "PayBill.php";
+	$_SESSION['pageid'] = "PayBill";
 
 	include('../../Connection/connection_string.php');
 	include('../../include/denied.php');
@@ -12,9 +12,16 @@
 	$company = $_SESSION['companyid'];
 
 	$poststat = "True";
-	$sql = mysqli_query($con,"select * from users_access where userid = '$employeeid' and pageid = 'PayBill_edit.php'");
+	$sql = mysqli_query($con,"select * from users_access where userid = '$employeeid' and pageid = 'PayBill_edit'");
 	if(mysqli_num_rows($sql) == 0){
 		$poststat = "False";
+	}
+
+
+	$printstat = "True";
+	$sql = mysqli_query($con,"select * from users_access where userid = '$employeeid' and pageid = 'PayBill_print'");
+	if(mysqli_num_rows($sql) == 0){
+		$printstat = "False";
 	}
 		
 	$arrnoslist = array();
@@ -211,376 +218,386 @@ if (mysqli_num_rows($sqlchk)!=0) {
 
 <form action="PayBill_editsave.php?hdnsrchval=<?=(isset($_REQUEST['hdnsrchval'])) ? $_REQUEST['hdnsrchval'] : ""?>" name="frmpos" id="frmpos" method="post" onsubmit="return chkform();"enctype="multipart/form-data">
 	<fieldset>
-   	  <legend>
+   	  	<legend>
 			 <div class="col-xs-6 nopadding"> Bills Payment Details </div>  <div class= "col-xs-6 text-right nopadding" id="salesstat">
+				<?php
+					if($lCancelled==1){
+						echo "<font color='#FF0000'><b>CANCELLED</b></font>";
+					}
+					
+					if($lPosted==1){
+						if($lVoid==1){
+							echo "<font color='#FF0000'><b>VOIDED</b></font>";
+						}else{
+							echo "<font color='#FF0000'><b>POSTED</b></font>";
+						}
+					}
+				?>
+   			</div>
+		</legend>
+
+		<ul class="nav nav-tabs">
+			<li class="active" id="lidet"><a href="#1Det" data-toggle="tab">Bills Payment Details</a></li>
+			<li><a href="#attc" data-toggle="tab">Attachments</a></li>
+		</ul>
+
+		<div class="tab-content nopadwtop2x">
+			<div class="tab-pane active" id="1Det">
+
+				<table width="100%" border="0" cellspacing="0" cellpadding="0">
+					<tr>
+						<tH>Tran No.:</tH>
+						<td style="padding:2px;">
+							<div class="col-xs-12"  style="padding-left:2px">
+								<div class="col-xs-5 nopadding">
+									<input type="text" class="form-control input-sm" id="txtctranno" name="txtctranno" width="20px" tabindex="1" value="<?php echo $ccvno;?>" onKeyUp="chkSIEnter(event.keyCode,'frmpos');">
+								</div>
+								<div class="col-xs-1 nopadwleft">
+								
+									<input type="hidden" name="hdnorigNo" id="hdnorigNo" value="<?php echo $ccvno;?>">
+									
+									<input type="hidden" name="hdnposted" id="hdnposted" value="<?php echo $lPosted;?>">
+									<input type="hidden" name="hdncancel" id="hdncancel" value="<?php echo $lCancelled;?>">
+									<input type="hidden" name="hdnprintpost" id="hdnprintpost" value="<?php echo $lPrintPost;?>"> 
+									<input type="hidden" name="hdnvoid" id="hdnvoid" value="<?php echo $lVoid;?>"> 
+									
+
+									<button type="button" class="btn btn-entry btn-sm" id="btnentry">
+										<i class="fa fa-bar-chart" aria-hidden="true"></i>
+									</button>
+								</div>
+							</div>
+
+						</td>
+						<td colspan="2" style="padding:2px;" align="right">
+							<div id="statmsgz" class="small" style="display:inline;"></div>
+						</td>
+					</tr>
+
 					<?php
-						if($lCancelled==1){
-							echo "<font color='#FF0000'><b>CANCELLED</b></font>";
+						if($nvalue==0){
+					?>
+						
+					<tr>
+						<td><span style="padding:2px"><b>Reference:</b></span></td>
+						<td> 
+							<div class="col-xs-12"  style="padding-left:2px">
+								<div class="col-xs-6 nopadding">
+
+									<select id="isNoRef" name="isNoRef" class="form-control input-sm selectpicker" onchange="changeDet();">
+										<option value="0" <?=($lnoAPVRef==0) ? "selected" : ""?>>With AP Voucher</option>
+										<option value="1" <?=($lnoAPVRef==1) ? "selected" : ""?>>No AP Voucher Reference</option>
+									</select> 
+								</div>
+							</div>
+							</td>
+							<td colspan="2">&nbsp;</td> 
+					</tr>
+					<?php
+						}
+					?>
+
+					<tr>
+						<td><span style="padding:2px"><b>Paid To:</b></span></td>
+						<td>
+							<div class="col-xs-12"  style="padding-left:2px">
+								<div class="col-xs-2 nopadding">
+										<input type="text" class="form-control input-sm"  id="txtcustid" name="txtcustid" readonly value="<?php echo $cCode;?>">
+										<input type="hidden" value=""  id="hdncustewt">
+								</div>
+								<div class="col-xs-10 nopadwleft">
+										<input type="text" class="form-control input-sm" id="txtcust" name="txtcust" width="20px" placeholder="Search Supplier Name..." required autocomplete="off" tabindex="4" value="<?php echo $cName;?>">
+								</div>
+							</div>
+						</td>
+						<td><span style="padding:2px"><b>Payee:</b></span></td>
+						<td>
+						<div class="col-xs-12"  style="padding-bottom:2px">
+								<div class='col-xs-12 nopadding'>
+										<input type="text" class="form-control input-sm" id="txtpayee" name="txtpayee" tabindex="5" value="<?php echo $cPayee;?>">
+								</div>
+						</div>
+						</td>
+					</tr>
+				
+							<tr>
+								<td colspan="4">&nbsp;</td>
+							</tr>
+
+
+					<tr>
+						
+					<td width="150"><span style="padding:2px"><b>Payment Method</b></span></td>
+					<td>
+						<div class="row nopadwleft" style="padding-left:2px">
+							<div class="col-xs-3 nopadding">
+								<select id="selpayment" name="selpayment" class="form-control input-sm selectpicker">
+									<option value="cheque" <?=($cpaymeth=="cheque") ? "selected" : ""?>>Cheque</option>
+									<option value="cash" <?=($cpaymeth=="cash") ? "selected" : ""?>>Cash</option>
+									<option value="bank transfer" <?=($cpaymeth=="bank transfer") ? "selected" : ""?>>Bank Transfer</option>
+									<option value="mobile payment" <?=($cpaymeth=="mobile payment") ? "selected" : ""?>>Mobile Payment</option>
+									<option value="credit card" <?=($cpaymeth=="credit card") ? "selected" : ""?>>Credit Card</option>
+									<option value="debit card" <?=($cpaymeth=="debit card") ? "selected" : ""?>>Debit Card</option>
+								</select>
+							</div>
+							<div class="col-xs-9 nopadwleft">
+
+										<div class="col-xs-7 nopadding" id="paymntrefrdet" style="<?=($cpaymeth!=="cheque") ? "; display: none" : ""?>">
+
+											<div class="col-xs-7 nopadding">
+												<input type='text' class='noref form-control input-sm' name='txtCheckNo' id='txtCheckNo' value="<?php echo $cCheckNo; ?>" readonly required placeholder="Check No."/>
+												<input type='hidden' name='txtChkBkNo' id='txtChkBkNo' value="" />
+											</div>	
+											<div class="col-xs-5 nopadwleft">
+												<button type="button" class="btn btn-danger btn-sm disabled" name="btnVoid" id="btnVoid" data-toggle="popover" data-content="Void Check" data-trigger="hover" data-placement="top" disabled><i class="fa fa-ban" aria-hidden="true"></i></button> 
+												
+												<button type="button" class="btn btn-warning btn-sm disabled" name="btnreserve" id="btnreserve" data-toggle="popover" data-content="Reserve Check" data-trigger="hover" data-placement="top" disabled><i class="fa fa-calendar-plus-o" aria-hidden="true"></i></button> 	
+											</div>
+										</div>
+
+										<div class="col-xs-7 nopadding" style="<?=($cpaymeth=="cheque" || $cpaymeth=="cash") ? "; display: none" : ""?>" id="payrefothrsdet">
+											<input type="text" id="txtPayRefrnce" class="noref form-control input-sm" name="txtPayRefrnce"  value="<?php echo $cPayRefr; ?>" placeholder="Reference No.">
+										</div>
+
+										<div class="col-xs-5 nopadding">
+											<div class="input-sm no-border" style="color: red" id="chknochek">
+											
+											</div>
+										</div>
+
+							</div>																												
+						</td>
+						<td width="120"><span style="padding:2px"><b>Payment Date:</b></span></td>
+						<td>
+							<div class='col-xs-12' style="padding-bottom:2px">
+								<div class="col-xs-6 nopadding">
+									<input type='text' class="datepick form-control input-sm" id="date_delivery" name="date_delivery" value="<?php echo $dDate; ?>" tabindex="3"  />
+								</div>
+							</div>
+						</td>
+					</tr>
+					<tr>
+					<td width="150">
+							<span style="padding:2px" id="paymntdesc"><b>Bank Name</b></span> 
+						</td>
+						<td>
+							<div class="col-xs-12"  style="padding-left:2px" id="paymntdescdet">
+								<div class="col-xs-3 nopadding">
+									<input type="text" id="txtBank" class="form-control input-sm" name="txtBank" placeholder="Bank Code" readonly value="<?php echo $cBank;?>">
+								</div>
+								<div class="col-xs-1 nopadwleft">
+									<button type="button" class="btn btn-block btn-primary btn-sm" name="btnsearchbank" id="btnsearchbank"><i class="fa fa-search"></i></button> 
+								</div>
+								<div class="col-xs-8 nopadwleft">
+									<input type="text" class="form-control input-sm" id="txtBankName" name="txtBankName" width="20px" tabindex="1" placeholder="Bank Name..." required value="<?php echo $cBankName;?>" autocomplete="off" readonly>   
+								</div>
+							</div>  
+
+						</td>		
+						<td><span style="padding:2px" id="chkdate"><b><?=($cpaymeth=="cash" || $cpaymeth=="cheque") ? "Check Date" : "Transfer Date"?>:</b></span></td>
+						<td>
+						<div class="col-xs-12"  style="padding-bottom:2px">
+								<div class='col-xs-6 nopadding'>
+										<input type='text' class="datepick form-control input-sm" placeholder="Pick a Date" name="txtChekDate" id="txtChekDate" value="<?php echo $dCheckDate; ?>" <?=($cpaymeth=="cash") ? "disbaled=true" : ""?>/>
+								</div>
+						</div>
+						</td>							
+					</tr>
+					<tr>
+						
+					<td><span style="padding:2px"><b>Payment Acct (Cr): </b></span></td>
+						<td>
+						<div class="col-xs-12"  style="padding-left:2px">
+							<div class="col-xs-3 nopadding">
+								<input type="text" id="txtcacctid" class="form-control input-sm" name="txtcacctid" placeholder="Account Code" value="<?php echo $cAcctID; ?>">
+							</div>
+							<div class="col-xs-9 nopadwleft">
+								<input type="text" class="form-control input-sm" id="txtcacct" name="txtcacct" width="20px" tabindex="1" placeholder="Search Account Description..." required autocomplete="off" value="<?php echo $cAcctDesc; ?>">
+							</div>
+							
+						</div>
+						</td>
+						<td><span style="padding:2px" id="chkdate"><b>Amount Paid:</b></span></td>
+						<td>
+							<div class='col-xs-12' style="padding-bottom:2px">
+								<div class="col-xs-7 nopadding"> 
+									<input type="text" id="txttotpaid" name="txttotpaid" class="numericchkamt form-control input-sm" value="<?php echo number_format($nPaid,2); ?>" style="font-size:16px; font-weight:bold; text-align:right" > 
+
+									
+								</div>
+							</div>
+						</td>
+					</tr>
+					<tr>
+						<td><span style="padding:2px" id="paymntrefr"><b>Currency</b></span></td>
+						<td>
+							<div class="row nopadwleft">
+								<div class="col-xs-7 nopadding">
+									<select class="form-control input-sm" name="selbasecurr" id="selbasecurr">					
+										<?php
+															
+											$nvaluecurrbase = "";	
+											$nvaluecurrbasedesc = "";	
+											$result = mysqli_query($con,"SELECT * FROM `parameters` WHERE ccode='DEF_CURRENCY'"); 
+																	
+											if (mysqli_num_rows($result)!=0) {
+												$all_course_data = mysqli_fetch_array($result, MYSQLI_ASSOC);																				
+												$nvaluecurrbase = $all_course_data['cvalue']; 																					
+											}
+											else{
+												$nvaluecurrbase = "";
+											}
+
+											$sqlhead=mysqli_query($con,"Select symbol as id, CONCAT(symbol,\" - \",country,\" \",unit) as currencyName, rate from currency_rate");
+											if (mysqli_num_rows($sqlhead)!=0) {
+												while($rows = mysqli_fetch_array($sqlhead, MYSQLI_ASSOC)){
+										?>
+											<option value="<?=$rows['id']?>" <?php if ($ccurrcode==$rows['id']) { echo "selected='true'"; } ?> data-val="<?=$rows['rate']?>" data-desc="<?=$rows['currencyName']?>"><?=$rows['currencyName']?></option>
+										<?php
+												}
+											}
+										?>
+									</select>
+									<input type='hidden' id="basecurrvalmain" name="basecurrvalmain" value="<?=$nvaluecurrbase; ?>"> 	
+									<input type='hidden' id="hidcurrvaldesc" name="hidcurrvaldesc" value="<?=$ccurrdesc; ?>"> 
+								</div>
+								<div class="col-xs-2 nopadwleft">
+									<input type='text' class="numeric required form-control input-sm text-right" id="basecurrval" name="basecurrval" value="<?=$ccurrrate; ?>">	 
+								</div>
+								<div class="col-xs-3" id="statgetrate" style="padding: 4px !important"> 																	
+								</div>
+							</div>
+						</td>
+						<td><span style="padding:2px" id="chkdate"><b>Amount Payable:</b></span></td>
+						<td>
+							<div class='col-xs-12' style="padding-bottom:2px">
+								<div class="col-xs-7 nopadding">  
+									<input type="text" id="txtnGross" name="txtnGross" class="numericchkamt form-control input-sm" <?php echo number_format($nAmount,2); ?> style="font-size:16px; font-weight:bold; text-align:right" readonly> 
+								</div>
+							</div>
+						</td>
+					</tr>
+
+					<tr>
+						<td><span style="padding:2px"><b>Particulars:</b></span></td>
+						<td> 
+							<div class="col-xs-12"  style="padding-left:2px">
+								<div class='col-xs-12 nopadding'>
+									<textarea class="form-control" rows="2" id="txtparticulars" name="txtparticulars"><?=$cpartic?></textarea>
+								</div>
+							</div>
+						</td>
+						<td colspan="2"> &nbsp; </td>
+					</tr>
+				</table>
+
+			</div>	
+
+			<div id="attc" class="tab-pane fade in" style="padding-left:5px; padding-top:10px;">
+
+				<div class="col-xs-12 nopadwdown"><b>Attachments:</b></div>
+				<div class="col-sm-12 nopadwdown"><i>Can attach a file according to the ff: file type: (jpg,png,gif,jpeg,pdf,txt,csv,xls,xlsx,doc,docx,ppt,pptx)</i></div> <br><br><br>
+				<input type="file" name="upload[]" id="file-0" multiple />
+
+			</div>
+		</div>
+
+		<hr>
+		<div class="col-xs-12 nopadwdown"><b>Details</b></div>
+		<div class="col-xs-12 nopadwdown">
+			<div class="col-xs-1 nopadwright"><button type="button" class="btn btn-xs btn-warning btn-block" id="btnaddline">Add Payable</button></div>
+		</div>
+
+		<div id="tableContainer" class="alt2" dir="ltr" style="
+			margin: 0px;
+			padding: 3px;
+			border: 1px solid #919b9c;
+			width: 100%;
+			height: 250px;
+			text-align: left;
+			overflow: auto">
+				<table width="150%" border="0" cellpadding="0" id="MyTable">
+					<thead>
+						<tr>
+							<th scope="col" id="hdnRefTitle" nowrap>APV No&nbsp;&nbsp;&nbsp;</th>
+							<th scope="col">Ref No</th>
+							<th scope="col">Date</th>
+							<th scope="col" class="text-right" width="120px">Amount</th>
+							<th scope="col" class="text-right" width="120px">Payed&nbsp;&nbsp;&nbsp;</th>
+							<th scope="col" width="120px" class="text-right">Total Owed&nbsp;&nbsp;&nbsp;</th>
+							<th scope="col" width="120px" class="text-center">Amount Applied</th>
+							<th scope="col">Account Code</th>
+							<th scope="col">Account Title</th>
+							<th scope="col" id="tblewt" <?=($lnoAPVRef==0) ? "style='display: none'" : ""?>>EWT Code</th>
+							<th scope="col">Type</th>												
+							<th scope="col">Cost Center</th>
+							<th scope="col">&nbsp;</th>
+						</tr>
+					</thead>
+					<tbody>
+					</tbody>
+				</table>
+		</div>
+						
+		<br>
+		<table width="100%" border="0" cellpadding="3">
+			<tr>
+				<td width="60%" rowspan="2">
+					<input type="hidden" name="hdnrowcnt" id="hdnrowcnt" value="0">
+					<?php
+						if($poststat=="True"){
+					?>
+
+					<button type="button" class="btn btn-primary btn-sm" tabindex="6" onClick="window.location.href='PayBill.php?ix=<?=isset($_REQUEST['hdnsrchval']) ? $_REQUEST['hdnsrchval'] : ""?>';" id="btnMain" name="btnMain">
+						Back to Main<br>(ESC)
+					</button>
+				
+					<button type="button" class="btn btn-default btn-sm" tabindex="6" onClick="window.location.href='PayBill_new.php';" id="btnNew" name="btnNew">
+						New<br>(F1)
+					</button>
+
+					<button type="button" class="btn btn-info btn-sm" tabindex="6" id="btnAPVIns" name="btnAPVIns">
+						APV<br>(Insert)
+					</button>
+
+					<button type="button" class="btn btn-danger btn-sm" tabindex="6" onClick="chkSIEnter(13,'frmpos');" id="btnUndo" name="btnUndo">
+						Undo Edit<br>(CTRL+Z)
+					</button>
+			
+					<?php
+						}
+
+						if($printstat=="True"){
+					?>
+
+					<button type="button" class="btn btn-info btn-sm" tabindex="6" onClick="printchk();" id="btnPrint" name="btnPrint">
+						Print<br>(F4)
+					</button>
+			
+					<?php
 						}
 						
-						if($lPosted==1){
-							if($lVoid==1){
-								echo "<font color='#FF0000'><b>VOIDED</b></font>";
-							}else{
-								echo "<font color='#FF0000'><b>POSTED</b></font>";
-							}
-						}
-					?>
-   			</div>
-			</legend>
-
-				 	<ul class="nav nav-tabs">
-						<li class="active" id="lidet"><a href="#1Det" data-toggle="tab">Bills Payment Details</a></li>
-						<li><a href="#attc" data-toggle="tab">Attachments</a></li>
-					</ul>
-
-					<div class="tab-content nopadwtop2x">
-						<div class="tab-pane active" id="1Det">
-
-							<table width="100%" border="0" cellspacing="0" cellpadding="0">
-								<tr>
-									<tH>Tran No.:</tH>
-									<td style="padding:2px;">
-										<div class="col-xs-12"  style="padding-left:2px">
-											<div class="col-xs-5 nopadding">
-												<input type="text" class="form-control input-sm" id="txtctranno" name="txtctranno" width="20px" tabindex="1" value="<?php echo $ccvno;?>" onKeyUp="chkSIEnter(event.keyCode,'frmpos');">
-											</div>
-											<div class="col-xs-1 nopadwleft">
-											
-												<input type="hidden" name="hdnorigNo" id="hdnorigNo" value="<?php echo $ccvno;?>">
-												
-												<input type="hidden" name="hdnposted" id="hdnposted" value="<?php echo $lPosted;?>">
-												<input type="hidden" name="hdncancel" id="hdncancel" value="<?php echo $lCancelled;?>">
-												<input type="hidden" name="hdnprintpost" id="hdnprintpost" value="<?php echo $lPrintPost;?>"> 
-												<input type="hidden" name="hdnvoid" id="hdnvoid" value="<?php echo $lVoid;?>"> 
-												
-
-												<button type="button" class="btn btn-entry btn-sm" id="btnentry">
-													<i class="fa fa-bar-chart" aria-hidden="true"></i>
-												</button>
-											</div>
-										</div>
-
-									</td>
-									<td colspan="2" style="padding:2px;" align="right">
-										<div id="statmsgz" class="small" style="display:inline;"></div>
-									</td>
-								</tr>
-
-								<?php
-									if($nvalue==0){
-								?>
-									
-								<tr>
-									<td><span style="padding:2px"><b>Reference:</b></span></td>
-									<td> 
-										<div class="col-xs-12"  style="padding-left:2px">
-											<div class="col-xs-6 nopadding">
-
-												<select id="isNoRef" name="isNoRef" class="form-control input-sm selectpicker" onchange="changeDet();">
-													<option value="0" <?=($lnoAPVRef==0) ? "selected" : ""?>>With AP Voucher</option>
-													<option value="1" <?=($lnoAPVRef==1) ? "selected" : ""?>>No AP Voucher Reference</option>
-												</select> 
-											</div>
-										</div>
-										</td>
-										<td colspan="2">&nbsp;</td> 
-								</tr>
-								<?php
-									}
-								?>
-
-								<tr>
-									<td><span style="padding:2px"><b>Paid To:</b></span></td>
-									<td>
-										<div class="col-xs-12"  style="padding-left:2px">
-											<div class="col-xs-2 nopadding">
-													<input type="text" class="form-control input-sm"  id="txtcustid" name="txtcustid" readonly value="<?php echo $cCode;?>">
-													<input type="hidden" value=""  id="hdncustewt">
-											</div>
-											<div class="col-xs-10 nopadwleft">
-													<input type="text" class="form-control input-sm" id="txtcust" name="txtcust" width="20px" placeholder="Search Supplier Name..." required autocomplete="off" tabindex="4" value="<?php echo $cName;?>">
-											</div>
-										</div>
-									</td>
-									<td><span style="padding:2px"><b>Payee:</b></span></td>
-									<td>
-									<div class="col-xs-12"  style="padding-bottom:2px">
-											<div class='col-xs-12 nopadding'>
-													<input type="text" class="form-control input-sm" id="txtpayee" name="txtpayee" tabindex="5" value="<?php echo $cPayee;?>">
-											</div>
-									</div>
-									</td>
-								</tr>
-							
-										<tr>
-											<td colspan="4">&nbsp;</td>
-										</tr>
-
-
-								<tr>
-									
-								<td width="150"><span style="padding:2px"><b>Payment Method</b></span></td>
-								<td>
-									<div class="row nopadwleft" style="padding-left:2px">
-										<div class="col-xs-3 nopadding">
-											<select id="selpayment" name="selpayment" class="form-control input-sm selectpicker">
-												<option value="cheque" <?=($cpaymeth=="cheque") ? "selected" : ""?>>Cheque</option>
-												<option value="cash" <?=($cpaymeth=="cash") ? "selected" : ""?>>Cash</option>
-												<option value="bank transfer" <?=($cpaymeth=="bank transfer") ? "selected" : ""?>>Bank Transfer</option>
-												<option value="mobile payment" <?=($cpaymeth=="mobile payment") ? "selected" : ""?>>Mobile Payment</option>
-												<option value="credit card" <?=($cpaymeth=="credit card") ? "selected" : ""?>>Credit Card</option>
-												<option value="debit card" <?=($cpaymeth=="debit card") ? "selected" : ""?>>Debit Card</option>
-											</select>
-										</div>
-										<div class="col-xs-9 nopadwleft">
-
-													<div class="col-xs-7 nopadding" id="paymntrefrdet" style="<?=($cpaymeth!=="cheque") ? "; display: none" : ""?>">
-
-														<div class="col-xs-7 nopadding">
-															<input type='text' class='noref form-control input-sm' name='txtCheckNo' id='txtCheckNo' value="<?php echo $cCheckNo; ?>" readonly required placeholder="Check No."/>
-															<input type='hidden' name='txtChkBkNo' id='txtChkBkNo' value="" />
-														</div>	
-														<div class="col-xs-5 nopadwleft">
-															<button type="button" class="btn btn-danger btn-sm disabled" name="btnVoid" id="btnVoid" data-toggle="popover" data-content="Void Check" data-trigger="hover" data-placement="top" disabled><i class="fa fa-ban" aria-hidden="true"></i></button> 
-															
-															<button type="button" class="btn btn-warning btn-sm disabled" name="btnreserve" id="btnreserve" data-toggle="popover" data-content="Reserve Check" data-trigger="hover" data-placement="top" disabled><i class="fa fa-calendar-plus-o" aria-hidden="true"></i></button> 	
-														</div>
-													</div>
-
-													<div class="col-xs-7 nopadding" style="<?=($cpaymeth=="cheque" || $cpaymeth=="cash") ? "; display: none" : ""?>" id="payrefothrsdet">
-														<input type="text" id="txtPayRefrnce" class="noref form-control input-sm" name="txtPayRefrnce"  value="<?php echo $cPayRefr; ?>" placeholder="Reference No.">
-													</div>
-
-													<div class="col-xs-5 nopadding">
-														<div class="input-sm no-border" style="color: red" id="chknochek">
-														
-														</div>
-													</div>
-
-										</div>																												
-									</td>
-									<td width="120"><span style="padding:2px"><b>Payment Date:</b></span></td>
-									<td>
-										<div class='col-xs-12' style="padding-bottom:2px">
-											<div class="col-xs-6 nopadding">
-												<input type='text' class="datepick form-control input-sm" id="date_delivery" name="date_delivery" value="<?php echo $dDate; ?>" tabindex="3"  />
-											</div>
-										</div>
-									</td>
-								</tr>
-								<tr>
-								<td width="150">
-										<span style="padding:2px" id="paymntdesc"><b>Bank Name</b></span> 
-									</td>
-									<td>
-										<div class="col-xs-12"  style="padding-left:2px" id="paymntdescdet">
-											<div class="col-xs-3 nopadding">
-												<input type="text" id="txtBank" class="form-control input-sm" name="txtBank" placeholder="Bank Code" readonly value="<?php echo $cBank;?>">
-											</div>
-											<div class="col-xs-1 nopadwleft">
-												<button type="button" class="btn btn-block btn-primary btn-sm" name="btnsearchbank" id="btnsearchbank"><i class="fa fa-search"></i></button> 
-											</div>
-											<div class="col-xs-8 nopadwleft">
-												<input type="text" class="form-control input-sm" id="txtBankName" name="txtBankName" width="20px" tabindex="1" placeholder="Bank Name..." required value="<?php echo $cBankName;?>" autocomplete="off" readonly>   
-											</div>
-										</div>  
-
-									</td>		
-									<td><span style="padding:2px" id="chkdate"><b><?=($cpaymeth=="cash" || $cpaymeth=="cheque") ? "Check Date" : "Transfer Date"?>:</b></span></td>
-									<td>
-									<div class="col-xs-12"  style="padding-bottom:2px">
-											<div class='col-xs-6 nopadding'>
-													<input type='text' class="datepick form-control input-sm" placeholder="Pick a Date" name="txtChekDate" id="txtChekDate" value="<?php echo $dCheckDate; ?>" <?=($cpaymeth=="cash") ? "disbaled=true" : ""?>/>
-											</div>
-									</div>
-									</td>							
-								</tr>
-								<tr>
-									
-								<td><span style="padding:2px"><b>Payment Acct (Cr): </b></span></td>
-									<td>
-									<div class="col-xs-12"  style="padding-left:2px">
-										<div class="col-xs-3 nopadding">
-											<input type="text" id="txtcacctid" class="form-control input-sm" name="txtcacctid" placeholder="Account Code" value="<?php echo $cAcctID; ?>">
-										</div>
-										<div class="col-xs-9 nopadwleft">
-											<input type="text" class="form-control input-sm" id="txtcacct" name="txtcacct" width="20px" tabindex="1" placeholder="Search Account Description..." required autocomplete="off" value="<?php echo $cAcctDesc; ?>">
-										</div>
-										
-									</div>
-									</td>
-									<td><span style="padding:2px" id="chkdate"><b>Amount Paid:</b></span></td>
-									<td>
-										<div class='col-xs-12' style="padding-bottom:2px">
-											<div class="col-xs-7 nopadding"> 
-												<input type="text" id="txttotpaid" name="txttotpaid" class="numericchkamt form-control input-sm" value="<?php echo number_format($nPaid,2); ?>" style="font-size:16px; font-weight:bold; text-align:right" > 
-
-												
-											</div>
-										</div>
-									</td>
-								</tr>
-								<tr>
-									<td><span style="padding:2px" id="paymntrefr"><b>Currency</b></span></td>
-									<td>
-										<div class="row nopadwleft">
-											<div class="col-xs-7 nopadding">
-												<select class="form-control input-sm" name="selbasecurr" id="selbasecurr">					
-													<?php
-																		
-														$nvaluecurrbase = "";	
-														$nvaluecurrbasedesc = "";	
-														$result = mysqli_query($con,"SELECT * FROM `parameters` WHERE ccode='DEF_CURRENCY'"); 
-																				
-														if (mysqli_num_rows($result)!=0) {
-															$all_course_data = mysqli_fetch_array($result, MYSQLI_ASSOC);																				
-															$nvaluecurrbase = $all_course_data['cvalue']; 																					
-														}
-														else{
-															$nvaluecurrbase = "";
-														}
-
-														$sqlhead=mysqli_query($con,"Select symbol as id, CONCAT(symbol,\" - \",country,\" \",unit) as currencyName, rate from currency_rate");
-														if (mysqli_num_rows($sqlhead)!=0) {
-															while($rows = mysqli_fetch_array($sqlhead, MYSQLI_ASSOC)){
-													?>
-														<option value="<?=$rows['id']?>" <?php if ($ccurrcode==$rows['id']) { echo "selected='true'"; } ?> data-val="<?=$rows['rate']?>" data-desc="<?=$rows['currencyName']?>"><?=$rows['currencyName']?></option>
-													<?php
-															}
-														}
-													?>
-												</select>
-												<input type='hidden' id="basecurrvalmain" name="basecurrvalmain" value="<?=$nvaluecurrbase; ?>"> 	
-												<input type='hidden' id="hidcurrvaldesc" name="hidcurrvaldesc" value="<?=$ccurrdesc; ?>"> 
-											</div>
-											<div class="col-xs-2 nopadwleft">
-												<input type='text' class="numeric required form-control input-sm text-right" id="basecurrval" name="basecurrval" value="<?=$ccurrrate; ?>">	 
-											</div>
-											<div class="col-xs-3" id="statgetrate" style="padding: 4px !important"> 																	
-											</div>
-										</div>
-									</td>
-									<td><span style="padding:2px" id="chkdate"><b>Amount Payable:</b></span></td>
-									<td>
-										<div class='col-xs-12' style="padding-bottom:2px">
-											<div class="col-xs-7 nopadding">  
-												<input type="text" id="txtnGross" name="txtnGross" class="numericchkamt form-control input-sm" <?php echo number_format($nAmount,2); ?> style="font-size:16px; font-weight:bold; text-align:right" readonly> 
-											</div>
-										</div>
-									</td>
-								</tr>
-
-								<tr>
-									<td><span style="padding:2px"><b>Particulars:</b></span></td>
-									<td> 
-										<div class="col-xs-12"  style="padding-left:2px">
-											<div class='col-xs-12 nopadding'>
-												<textarea class="form-control" rows="2" id="txtparticulars" name="txtparticulars"><?=$cpartic?></textarea>
-											</div>
-										</div>
-									</td>
-									<td colspan="2"> &nbsp; </td>
-								</tr>
-							</table>
-
-						</div>	
-
-						<div id="attc" class="tab-pane fade in" style="padding-left:5px; padding-top:10px;">
-
-							<div class="col-xs-12 nopadwdown"><b>Attachments:</b></div>
-							<div class="col-sm-12 nopadwdown"><i>Can attach a file according to the ff: file type: (jpg,png,gif,jpeg,pdf,txt,csv,xls,xlsx,doc,docx,ppt,pptx)</i></div> <br><br><br>
-							<input type="file" name="upload[]" id="file-0" multiple />
-
-						</div>
-					</div>
-
-					<hr>
-					<div class="col-xs-12 nopadwdown"><b>Details</b></div>
-
-
-							<div class="col-xs-12 nopadwdown">
-								<div class="col-xs-1 nopadwright"><button type="button" class="btn btn-xs btn-warning btn-block" id="btnaddline">Add Payable</button></div>
-							</div>
-
-							<div id="tableContainer" class="alt2" dir="ltr" style="
-								margin: 0px;
-								padding: 3px;
-								border: 1px solid #919b9c;
-								width: 100%;
-								height: 250px;
-								text-align: left;
-								overflow: auto">
-									<table width="150%" border="0" cellpadding="0" id="MyTable">
-										<thead>
-											<tr>
-												<th scope="col" id="hdnRefTitle" nowrap>APV No&nbsp;&nbsp;&nbsp;</th>
-												<th scope="col">Ref No</th>
-												<th scope="col">Date</th>
-												<th scope="col" class="text-right" width="120px">Amount</th>
-												<th scope="col" class="text-right" width="120px">Payed&nbsp;&nbsp;&nbsp;</th>
-												<th scope="col" width="120px" class="text-right">Total Owed&nbsp;&nbsp;&nbsp;</th>
-												<th scope="col" width="120px" class="text-center">Amount Applied</th>
-												<th scope="col">Account Code</th>
-												<th scope="col">Account Title</th>
-												<th scope="col" id="tblewt" <?=($lnoAPVRef==0) ? "style='display: none'" : ""?>>EWT Code</th>
-												<th scope="col">Type</th>												
-												<th scope="col">Cost Center</th>
-												<th scope="col">&nbsp;</th>
-											</tr>
-										</thead>
-										<tbody>
-										</tbody>
-									</table>
-							</div>
-
-						<?php
-							if($poststat=="True"){
-						?>
-            <br>
-						<table width="100%" border="0" cellpadding="3">
-							<tr>
-								<td width="60%" rowspan="2">
-										<input type="hidden" name="hdnrowcnt" id="hdnrowcnt" value="0">
-											<button type="button" class="btn btn-primary btn-sm" tabindex="6" onClick="window.location.href='PayBill.php?ix=<?=isset($_REQUEST['hdnsrchval']) ? $_REQUEST['hdnsrchval'] : ""?>';" id="btnMain" name="btnMain">
-												Back to Main<br>(ESC)
-											</button>
-										
-											<button type="button" class="btn btn-default btn-sm" tabindex="6" onClick="window.location.href='PayBill_new.php';" id="btnNew" name="btnNew">
-												New<br>(F1)
-											</button>
-
-											<button type="button" class="btn btn-info btn-sm" tabindex="6" id="btnAPVIns" name="btnAPVIns">
-												APV<br>(Insert)
-											</button>
-
-											<button type="button" class="btn btn-danger btn-sm" tabindex="6" onClick="chkSIEnter(13,'frmpos');" id="btnUndo" name="btnUndo">
-												Undo Edit<br>(CTRL+Z)
-											</button>
-									
-											<button type="button" class="btn btn-info btn-sm" tabindex="6" onClick="printchk();" id="btnPrint" name="btnPrint">
-												Print<br>(F4)
-											</button>
-								    
-											<button type="button" class="btn btn-warning btn-sm" tabindex="6" onClick="enabled();" id="btnEdit" name="btnEdit">
-												Edit<br>(CTRL+E)
-											</button>
-											
-											<button type="submit" class="btn btn-success btn-sm" tabindex="6" id="btnSave" name="btnSave">
-												Save<br>(CTRL+S)
-											</button>
-
-								</td>
-								<td align="right">&nbsp;</td>
-							</tr>
-							<tr>
-								<td align="right">&nbsp;</td>
-							</tr>
-						</table>
-						<?php
-						}
+						if($poststat=="True"){
 					?>
 
+					<button type="button" class="btn btn-warning btn-sm" tabindex="6" onClick="enabled();" id="btnEdit" name="btnEdit">
+						Edit<br>(CTRL+E)
+					</button>
+					
+					<button type="submit" class="btn btn-success btn-sm" tabindex="6" id="btnSave" name="btnSave">
+						Save<br>(CTRL+S)
+					</button>
+					<?php
+						}
+					?>
+				</td>
+				<td align="right">&nbsp;</td>
+			</tr>
+			<tr>
+				<td align="right">&nbsp;</td>
+			</tr>
+		</table>
+						
     </fieldset>
 
 </form>
@@ -609,211 +626,209 @@ else{
 }
 ?>
 
-				<!-- DETAILS ONLY -->
-				<div class="modal fade" id="myAPModal" role="dialog" data-keyboard="false" data-backdrop="static">
-					<div class="modal-dialog modal-lg">
-						<div class="modal-content">
-							<div class="modal-header">
-								<button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-								<h3 class="modal-title" id="APListHeader">AP List</h3>
-							</div>
-										
-							<div class="modal-body pre-scrollable">
-										
-								<table name='MyAPVList' id='MyAPVList' class="table table-small table-hoverO" style="cursor:pointer">
-									<thead>
-										<tr>
-											<th><input name="allbox" id="allbox" type="checkbox" value="Check All" /></th>
-											<th>AP No.</th>
-											<th>Ref No.</th>
-											<th>Date</th>
-											<th>Acct Code</th>
-											<th>Acct Desc</th>
-											<th>Payable Amount</th>
-										</tr>
-									</thead>
-									<tbody>
-																			
-									</tbody>
-								</table>
-
-							</div> 
-										
-							<div class="modal-footer">
-								<button type="button" id="btnSave2" onClick="InsertSI()" class="btn btn-primary">Insert</button>
-								<button type="button" class="btn btn-danger" data-dismiss="modal">Cancel</button>
-							</div>        	
-						</div><!-- /.modal-content -->
-					</div><!-- /.modal-dialog -->
-				</div><!-- /.modal -->
-				<!-- End Bootstrap modal -->
-
-				<!-- Banks List -->
-				<div class="modal fade" id="myChkModal" role="dialog" data-keyboard="false" data-backdrop="static">
-					<div class="modal-dialog modal-lg">
-						<div class="modal-content">
-							<div class="modal-header">
-								<button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-								<h3 class="modal-title" id="BanksListHeader">Bank List</h3>
-							</div>
+	<!-- DETAILS ONLY -->
+	<div class="modal fade" id="myAPModal" role="dialog" data-keyboard="false" data-backdrop="static">
+		<div class="modal-dialog modal-lg">
+			<div class="modal-content">
+				<div class="modal-header">
+					<button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+					<h3 class="modal-title" id="APListHeader">AP List</h3>
+				</div>
 							
-							<div class="modal-body pre-scrollable">
+				<div class="modal-body pre-scrollable">
 							
-								<table name='MyDRDetList' id='MyDRDetList' class="table table-small table-hoverO" style="cursor:pointer">
-									<thead>
-										<tr>
-											<th>Bank Code</th>
-											<th>Bank Name</th>
-											<th>Bank Acct No</th>
-											<th class="bnkchk">Checkbook No.</th>
-											<th class="bnkchk">Check No.</th>
-										</tr>
-									</thead>
-									<tbody>																
-									</tbody>
-								</table>
-							</div>         	
-						</div><!-- /.modal-content -->
-					</div><!-- /.modal-dialog -->
-				</div><!-- /.modal -->
-				<!-- End Banks modal -->
+					<table name='MyAPVList' id='MyAPVList' class="table table-small table-hoverO" style="cursor:pointer">
+						<thead>
+							<tr>
+								<th><input name="allbox" id="allbox" type="checkbox" value="Check All" /></th>
+								<th>AP No.</th>
+								<th>Ref No.</th>
+								<th>Date</th>
+								<th>Acct Code</th>
+								<th>Acct Desc</th>
+								<th>Payable Amount</th>
+							</tr>
+						</thead>
+						<tbody>
+																
+						</tbody>
+					</table>
 
-				<!-- override modal -->
-				<div class="modal fade" id="mychkover" role="dialog" data-keyboard="false" data-backdrop="static">
-					<div class="modal-dialog modal-sm">
-						<div class="modal-content">
-							<div class="modal-header">
-								<button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-								<h3 class="modal-title" id="APListHeader">Authentication</h3>
-							</div>
+				</div> 
 							
-							<div class="modal-body">
-								<form action="index.php" method="post">
-									<div class="form-group">
-										<input type="text" class="form-control" name="authen_id" id="authen_id" placeholder="Username" required value="" autocomplete="off">		
-									</div>
-														
-									<div class="form-group">
-										<input type="password" class="form-control" name="authen_pass" id="authen_pass" placeholder="Password" required  value=""  autocomplete="off">	
-									</div>
-																											
-									<div class="form-group" id="add_err">
-																			
-									</div>
+				<div class="modal-footer">
+					<button type="button" id="btnSave2" onClick="InsertSI()" class="btn btn-primary">Insert</button>
+					<button type="button" class="btn btn-danger" data-dismiss="modal">Cancel</button>
+				</div>        	
+			</div><!-- /.modal-content -->
+		</div><!-- /.modal-dialog -->
+	</div><!-- /.modal -->
+	<!-- End Bootstrap modal -->
 
-								</form>
-							</div> 
-							
-							<div class="modal-footer">
-								<button type="button" id="btnauthenticate" class="btn btn-primary">Proceed</button>
-								<button type="button" class="btn btn-danger" data-dismiss="modal">Cancel</button>
-							</div>        	
-						</div><!-- /.modal-content -->
-					</div><!-- /.modal-dialog -->
-				</div><!-- /.modal -->
-				<!-- End override modal -->
+	<!-- Banks List -->
+	<div class="modal fade" id="myChkModal" role="dialog" data-keyboard="false" data-backdrop="static">
+		<div class="modal-dialog modal-lg">
+			<div class="modal-content">
+				<div class="modal-header">
+					<button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+					<h3 class="modal-title" id="BanksListHeader">Bank List</h3>
+				</div>
+				
+				<div class="modal-body pre-scrollable">
+				
+					<table name='MyDRDetList' id='MyDRDetList' class="table table-small table-hoverO" style="cursor:pointer">
+						<thead>
+							<tr>
+								<th>Bank Code</th>
+								<th>Bank Name</th>
+								<th>Bank Acct No</th>
+								<th class="bnkchk">Checkbook No.</th>
+								<th class="bnkchk">Check No.</th>
+							</tr>
+						</thead>
+						<tbody>																
+						</tbody>
+					</table>
+				</div>         	
+			</div><!-- /.modal-content -->
+		</div><!-- /.modal-dialog -->
+	</div><!-- /.modal -->
+	<!-- End Banks modal -->
 
-				<!-- reason modal -->
-				<div class="modal fade" id="reasonmod" role="dialog" data-keyboard="false" data-backdrop="static">
-					<div class="modal-dialog modal-sm">
-						<div class="modal-content">
-							<div class="modal-header">
-								<button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-								<h3 class="modal-title" id="APListHeader">Reason</h3>
-
-								<input type="hidden" name="modevent" id="modevent" value="">
-								<input type="hidden" name="authcode" id="authcode" value="">
-							</div>
-							
-							<div class="modal-body">
-								<div class="form-group">
-									<label for="comment">Reason:</label>
-									<textarea class="form-control" rows="5" id="txtreason"></textarea>
-								</div> 
-							</div> 
-							
-							<div class="modal-footer">
-								<button type="button" id="btnresonok" class="btn btn-primary">Proceed</button>
-								<button type="button" class="btn btn-danger" data-dismiss="modal">Cancel</button>
-							</div>        	
-						</div><!-- /.modal-content -->
-					</div><!-- /.modal-dialog -->
-				</div><!-- /.modal -->
-				<!-- End override modal -->
-
-				<!-- 1) Alert Modal -->
-				<div class="modal fade" id="AlertModal" tabindex="-1" role="dialog" data-keyboard="false" data-backdrop="static" aria-hidden="true">
-					<div class="vertical-alignment-helper">
-						<div class="modal-dialog vertical-align-top">
-							<div class="modal-content">
-								<div class="alert-modal-danger">
-									<p id="AlertMsg"></p>
-									<p><center>
-										<button type="button" class="btn btn-primary btn-sm" data-dismiss="modal" id="alertbtnOK">Ok</button>
-									</center></p>
-								</div>
-							</div>
+	<!-- override modal -->
+	<div class="modal fade" id="mychkover" role="dialog" data-keyboard="false" data-backdrop="static">
+		<div class="modal-dialog modal-sm">
+			<div class="modal-content">
+				<div class="modal-header">
+					<button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+					<h3 class="modal-title" id="APListHeader">Authentication</h3>
+				</div>
+				
+				<div class="modal-body">
+					<form action="index.php" method="post">
+						<div class="form-group">
+							<input type="text" class="form-control" name="authen_id" id="authen_id" placeholder="Username" required value="" autocomplete="off">		
 						</div>
+											
+						<div class="form-group">
+							<input type="password" class="form-control" name="authen_pass" id="authen_pass" placeholder="Password" required  value=""  autocomplete="off">	
+						</div>
+																								
+						<div class="form-group" id="add_err">
+																
+						</div>
+
+					</form>
+				</div> 
+				
+				<div class="modal-footer">
+					<button type="button" id="btnauthenticate" class="btn btn-primary">Proceed</button>
+					<button type="button" class="btn btn-danger" data-dismiss="modal">Cancel</button>
+				</div>        	
+			</div><!-- /.modal-content -->
+		</div><!-- /.modal-dialog -->
+	</div><!-- /.modal -->
+	<!-- End override modal -->
+
+	<!-- reason modal -->
+	<div class="modal fade" id="reasonmod" role="dialog" data-keyboard="false" data-backdrop="static">
+		<div class="modal-dialog modal-sm">
+			<div class="modal-content">
+				<div class="modal-header">
+					<button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+					<h3 class="modal-title" id="APListHeader">Reason</h3>
+
+					<input type="hidden" name="modevent" id="modevent" value="">
+					<input type="hidden" name="authcode" id="authcode" value="">
+				</div>
+				
+				<div class="modal-body">
+					<div class="form-group">
+						<label for="comment">Reason:</label>
+						<textarea class="form-control" rows="5" id="txtreason"></textarea>
+					</div> 
+				</div> 
+				
+				<div class="modal-footer">
+					<button type="button" id="btnresonok" class="btn btn-primary">Proceed</button>
+					<button type="button" class="btn btn-danger" data-dismiss="modal">Cancel</button>
+				</div>        	
+			</div><!-- /.modal-content -->
+		</div><!-- /.modal-dialog -->
+	</div><!-- /.modal -->
+	<!-- End override modal -->
+
+	<!-- 1) Alert Modal -->
+	<div class="modal fade" id="AlertModal" tabindex="-1" role="dialog" data-keyboard="false" data-backdrop="static" aria-hidden="true">
+		<div class="vertical-alignment-helper">
+			<div class="modal-dialog vertical-align-top">
+				<div class="modal-content">
+					<div class="alert-modal-danger">
+						<p id="AlertMsg"></p>
+						<p><center>
+							<button type="button" class="btn btn-primary btn-sm" data-dismiss="modal" id="alertbtnOK">Ok</button>
+						</center></p>
 					</div>
 				</div>
-				<!-- End Alert modal -->
+			</div>
+		</div>
+	</div>
+	<!-- End Alert modal -->
 
-
-				<!--modal entry view-->
-				<div class="modal fade" id="modGLEntry" role="dialog">
-					<div class="modal-dialog">
-						<div class="modal-content">
-							<div class="modal-header">
-								<button type="button" id="btn-closemod" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-								<h3 class="modal-title">GL Entry</h3>
-							</div>
-							<div class="modal-body">
-									
-								<table width="100%" border="0" class="table table-condensed table-bordered atble-hover" id="TblGLEntry">
-									<thead>
-										<tr>
-											<td>Account Code</td>
-											<td>Account Title</td>
-											<td>Account Debit</td>
-											<td>Account Credit</td>  
-										</tr>		
-										<?php
-											$getewtcd = mysqli_query($con,"SELECT * FROM glactivity where compcode='$company' and ctranno='$ccvno'"); 
-											if (mysqli_num_rows($getewtcd)!=0) {
-												while($row = mysqli_fetch_array($getewtcd, MYSQLI_ASSOC)){
-										?>					
-											<tr>
-												<td><?=$row['acctno']?></td>
-												<td><?=$row['ctitle']?></td>
-												<td align="right"><?=(floatval($row['ndebit']) != 0) ? number_format($row['ndebit'],2) : ""?></td>
-												<td align="right"><?=(floatval($row['ncredit']) != 0) ? number_format($row['ncredit'],2) : ""?></td>  
-											</tr>	
-										<?php
-												}
-											}
-										?>
-								</table>
-									
-							</div>
-						</div><!-- /.modal-content -->
-					</div><!-- /.modal-dialog -->
+	<!--modal entry view-->
+	<div class="modal fade" id="modGLEntry" role="dialog">
+		<div class="modal-dialog">
+			<div class="modal-content">
+				<div class="modal-header">
+					<button type="button" id="btn-closemod" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+					<h3 class="modal-title">GL Entry</h3>
 				</div>
+				<div class="modal-body">
+						
+					<table width="100%" border="0" class="table table-condensed table-bordered atble-hover" id="TblGLEntry">
+						<thead>
+							<tr>
+								<td>Account Code</td>
+								<td>Account Title</td>
+								<td>Account Debit</td>
+								<td>Account Credit</td>  
+							</tr>		
+							<?php
+								$getewtcd = mysqli_query($con,"SELECT * FROM glactivity where compcode='$company' and ctranno='$ccvno'"); 
+								if (mysqli_num_rows($getewtcd)!=0) {
+									while($row = mysqli_fetch_array($getewtcd, MYSQLI_ASSOC)){
+							?>					
+								<tr>
+									<td><?=$row['acctno']?></td>
+									<td><?=$row['ctitle']?></td>
+									<td align="right"><?=(floatval($row['ndebit']) != 0) ? number_format($row['ndebit'],2) : ""?></td>
+									<td align="right"><?=(floatval($row['ncredit']) != 0) ? number_format($row['ncredit'],2) : ""?></td>  
+								</tr>	
+							<?php
+									}
+								}
+							?>
+					</table>
+						
+				</div>
+			</div><!-- /.modal-content -->
+		</div><!-- /.modal-dialog -->
+	</div>
 
+	<form action="print_voucher.php" name="frmvoucher" id="frmvoucher" method="post" target="_blank">
+		<input type="hidden" name="id" id="id" value="<?php echo $ccvno;?>">
+		<input type="submit" style="display: none" id="btnvoucher">
+	</form>
 
-				<form action="print_voucher.php" name="frmvoucher" id="frmvoucher" method="post" target="_blank">
-					<input type="hidden" name="id" id="id" value="<?php echo $ccvno;?>">
-					<input type="submit" style="display: none" id="btnvoucher">
-				</form>
+	<form action="print_check.php" name="frmchek" id="frmchek" method="post" target="_blank"> 
+		<input type="hidden" name="id" id="id" value="<?php echo $ccvno;?>">
+		<input type="submit" style="display: none" id="btncheck"> 
+	</form>
 
-				<form action="print_check.php" name="frmchek" id="frmchek" method="post" target="_blank"> 
-					<input type="hidden" name="id" id="id" value="<?php echo $ccvno;?>">
-					<input type="submit" style="display: none" id="btncheck"> 
-				</form>
-
-				<form action="bir2307.php" name="frmbir2307" id="frmbir2307" method="post" target="_blank"> 
-					<input type="hidden" name="id" id="id" value="<?php echo $ccvno;?>">
-					<input type="submit" style="display: none" id="btn2307"> 
-				</form>
+	<form action="bir2307.php" name="frmbir2307" id="frmbir2307" method="post" target="_blank"> 
+		<input type="hidden" name="id" id="id" value="<?php echo $ccvno;?>">
+		<input type="submit" style="display: none" id="btn2307"> 
+	</form>
 
 </body>
 </html>
