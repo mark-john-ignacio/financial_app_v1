@@ -1,63 +1,69 @@
 <?php
-if(!isset($_SESSION)){
-session_start();
-}
-$_SESSION['pageid'] = "users";
+	if(!isset($_SESSION)){
+		session_start();
+	}
+	$_SESSION['pageid'] = "users";
 
-include('../../Connection/connection_string.php');
-include('../../include/denied.php');
-include('../../include/access2.php');
+	include('../../Connection/connection_string.php');
+	include('../../include/denied.php');
+	include('../../include/access2.php');
 
-@$lvlcntA = 0;
-@$lvlcntI = 0;
+	@$lvlcntA = 0;
+	@$lvlcntI = 0;
 
-$sqlhead = mysqli_query($con,"Select * from users where Userid<>'Admin'");
-if (mysqli_num_rows($sqlhead)!=0) {
-	while($row = mysqli_fetch_array($sqlhead, MYSQLI_ASSOC)){
-		if($row['cstatus']=="Active"){
-			@$lvlcntA++;
+	$sqlhead = mysqli_query($con,"Select * from users where Userid<>'Admin'");
+	if (mysqli_num_rows($sqlhead)!=0) {
+		while($row = mysqli_fetch_array($sqlhead, MYSQLI_ASSOC)){
+			if($row['cstatus']=="Active"){
+				@$lvlcntA++;
+			}
+			
+			if($row['cstatus']=="Inactive"){
+				@$lvlcntI++;
+			}
 		}
-		
-		if($row['cstatus']=="Inactive"){
-			@$lvlcntI++;
+	}
+
+	$sqlhead = mysqli_query($con,"Select code from company where compcode='".$_SESSION['companyid']."'");
+	if (mysqli_num_rows($sqlhead)!=0) {
+		while($row = mysqli_fetch_array($sqlhead, MYSQLI_ASSOC)){
+			@$keycode = $row['code']; // 1 = both; 0 = active only
 		}
 	}
-}
 
-$sqlhead = mysqli_query($con,"Select code from company where compcode='".$_SESSION['companyid']."'");
-if (mysqli_num_rows($sqlhead)!=0) {
-	while($row = mysqli_fetch_array($sqlhead, MYSQLI_ASSOC)){
-		@$keycode = $row['code']; // 1 = both; 0 = active only
+	$posedit = "True";
+	$sql = mysqli_query($con,"select * from users_access where userid = '$employeeid' and pageid = 'users_Edit'");
+	if(mysqli_num_rows($sql) == 0){
+		$posedit = "False";
 	}
-}
 
-@$lvlcnt = 0;
-$sqlhead = mysqli_query($con,"Select * from users_license where compcode='".$_SESSION['companyid']."'");
-if (mysqli_num_rows($sqlhead)!=0) {
-	while($row = mysqli_fetch_array($sqlhead, MYSQLI_ASSOC)){
-		@$lvlcnt = $row['value'];
-		@$lvlcompute = $row['ccompute']; // 1 = both; 0 = active only
+	@$lvlcnt = 0;
+	$sqlhead = mysqli_query($con,"Select * from users_license where compcode='".$_SESSION['companyid']."'");
+	if (mysqli_num_rows($sqlhead)!=0) {
+		while($row = mysqli_fetch_array($sqlhead, MYSQLI_ASSOC)){
+			@$lvlcnt = $row['value'];
+			@$lvlcompute = $row['ccompute']; // 1 = both; 0 = active only
+		}
 	}
-}
 
-@$licval = 0;
-$c=base64_decode(@$lvlcnt);
-$ivlen=openssl_cipher_iv_length($cipher="AES-128-CBC");
-$iv=substr($c,0,$ivlen);
-$hmac=substr($c,$ivlen,$sha2len=32);
-$ciphertext_raw=substr($c,$ivlen+$sha2len);
-$original_plaintext=openssl_decrypt($ciphertext_raw,$cipher,@$keycode,$options=OPENSSL_RAW_DATA,$iv);
-$calcmac=hash_hmac('sha256',$ciphertext_raw,@$keycode,$as_binary=true);
-if(hash_equals($hmac,$calcmac))// timing attack safe comparison
-{
-  @$licval = $original_plaintext."\n";
-}
+	@$licval = 0;
+	$c=base64_decode(@$lvlcnt);
+	$ivlen=openssl_cipher_iv_length($cipher="AES-128-CBC");
+	$iv=substr($c,0,$ivlen);
+	$hmac=substr($c,$ivlen,$sha2len=32);
+	$ciphertext_raw=substr($c,$ivlen+$sha2len);
+	$original_plaintext=openssl_decrypt($ciphertext_raw,$cipher,@$keycode,$options=OPENSSL_RAW_DATA,$iv);
+	$calcmac=hash_hmac('sha256',$ciphertext_raw,@$keycode,$as_binary=true);
+	if(hash_equals($hmac,$calcmac))// timing attack safe comparison
+	{
+	@$licval = $original_plaintext."\n";
+	}
 
-if(@$lvlcompute==1){
-	@$remain = intval(@$licval) - (intval(@$lvlcntA)+intval(@$lvlcntI));
-}else{
-	@$remain = intval(@$licval) - intval(@$lvlcntA);
-}
+	if(@$lvlcompute==1){
+		@$remain = intval(@$licval) - (intval(@$lvlcntA)+intval(@$lvlcntI));
+	}else{
+		@$remain = intval(@$licval) - intval(@$lvlcntA);
+	}
 
 
 
@@ -71,6 +77,8 @@ if(@$lvlcompute==1){
 
     <link rel="stylesheet" type="text/css" href="../../Bootstrap/css/bootstrap.css"> 
     <link href="../../global/plugins/font-awesome/css/font-awesome.min.css" rel="stylesheet" type="text/css"/>   
+	<link rel="stylesheet" type="text/css" href="../../Bootstrap/css/alert-modal.css">
+	
     <script src="../../Bootstrap/js/jquery-3.2.1.min.js"></script>
     <script src="../../Bootstrap/js/bootstrap.js"></script>
 
@@ -116,7 +124,7 @@ if(@$lvlcompute==1){
 						//check user access level sa page
 						$employeeid = $_SESSION['employeeid'];	
 						$vrdiabled = "";
-						$sql = mysqli_query($con,"select * from users_access where userid = '$employeeid' and pageid = 'users_add.php'");
+						$sql = mysqli_query($con,"select * from users_access where userid = '$employeeid' and pageid = 'users_New'");
 										
 						if(mysqli_num_rows($sql) == 0){
 							$vrdiabled = "disabled";
@@ -405,7 +413,30 @@ if(@$lvlcompute==1){
 ?>
 
 
-
+	<!-- 1) Alert Modal -->
+	<div class="modal fade" id="AlertModal" tabindex="-1" role="dialog" data-keyboard="false" data-backdrop="static" aria-hidden="true">
+		<div class="vertical-alignment-helper">
+			<div class="modal-dialog vertical-align-top">
+				<div class="modal-content">
+				<div class="alert-modal-danger">
+					<p id="AlertMsg"></p>
+					<p>
+						<center>
+							<button type="button" class="btn btn-primary btn-sm" id="OK" onclick="setStat('OK')">Ok</button>
+							<button type="button" class="btn btn-danger btn-sm" id="Cancel" onclick="setStat('Cancel')">Cancel</button>
+							
+							
+							<button type="button" class="btn btn-primary btn-sm" data-dismiss="modal" id="alertbtnOK">Ok</button>
+							
+							<input type="hidden" id="typ" name="typ" value = "">
+							<input type="hidden" id="modzx" name="modzx" value = "">
+						</center>
+					</p>
+				</div> 
+				</div>
+			</div>
+		</div>
+	</div>
 
 <link rel="stylesheet" type="text/css" href="../../Bootstrap/DataTable/DataTable.css"> 
 <script type="text/javascript" language="javascript" src="../../Bootstrap/DataTable/jquery.dataTables.min.js"></script>
@@ -644,6 +675,10 @@ if(@$lvlcompute==1){
 	function editsrc($xcv){
 		$("#hdnmodtype").val("Edit");
 			
+		var x = "<?=$posedit;?>";
+				
+		if(x.trim()=="True"){
+
 			$.ajax({
 				url: 'users_getdetail.php',
 				data: 'id='+$xcv,
@@ -651,8 +686,8 @@ if(@$lvlcompute==1){
 				method: 'post',
 				async:false,
 				success: function (data) {
-					 console.log(data);
-										 $.each(data,function(index,item){
+						console.log(data);
+											$.each(data,function(index,item){
 					
 						$("#userid").val(item.id);
 						$("#Fname").val(item.fname);
@@ -675,18 +710,27 @@ if(@$lvlcompute==1){
 							$('#imgsignuser').html("");
 						}
 						
-					 });
-					 $("#btnSave").hide();
-					 $("#btnUpdate").show();
-					 
-					 $("#userid").attr('readonly',true);
-					 
-					 
-					 $('#myModalLabel').html("<b>Update User Details</b>");
-					 $('#myModal').modal('show');
+						});
+						$("#btnSave").hide();
+						$("#btnUpdate").show();
+						
+						$("#userid").attr('readonly',true);
+						
+						
+						$('#myModalLabel').html("<b>Update User Details</b>");
+						$('#myModal').modal('show');
 
 				}
 			});
+
+		}else {
+			$("#AlertMsg").html("<center><b>ACCESS DENIED!</b></center>");
+			$("#alertbtnOK").show();
+			$("#OK").hide();
+			$("#Cancel").hide();
+			$("#AlertModal").modal('show');
+
+		}
 	}
 
 </script>

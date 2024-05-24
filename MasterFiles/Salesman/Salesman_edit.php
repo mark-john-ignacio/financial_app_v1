@@ -1,12 +1,18 @@
 <?php
-if(!isset($_SESSION)){
-session_start();
-}
-$_SESSION['pageid'] = "Salesman_edit.php";
+	if(!isset($_SESSION)){
+		session_start();
+	}
+	$_SESSION['pageid'] = "Salesman";
 
-include('../../Connection/connection_string.php');
-include('../../include/denied.php');
-include('../../include/access2.php');
+	include('../../Connection/connection_string.php');
+	include('../../include/denied.php');
+	include('../../include/access2.php');
+
+	$poststat = "True";
+	$sql = mysqli_query($con,"select * from users_access where userid = '$employeeid' and pageid = 'Salesman_Edit'");
+	if(mysqli_num_rows($sql) == 0){
+		$poststat = "False";
+	}
 
 			if(isset($_REQUEST["txtcitemno"])){
 				$citemno = $_REQUEST['txtcitemno'];
@@ -160,6 +166,10 @@ include('../../include/access2.php');
 </table>
 
 <br>
+<?php
+if($poststat == "True"){
+?>
+
 <table width="100%" border="0" cellpadding="3">
   <tr>
     <td>
@@ -178,7 +188,9 @@ Undo Edit<br>(CTRL+Z)
     </td>
   </tr>
 </table>
-
+<?php
+            }
+        ?>
 </fieldset>
 </form>
 

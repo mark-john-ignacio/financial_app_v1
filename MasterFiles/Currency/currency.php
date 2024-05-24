@@ -7,7 +7,13 @@
 	include('../../Connection/connection_string.php');
 	include('../../include/accessinner.php');
 
-	$company = $_SESSION['companyid'];
+	$company = $_SESSION['companyid'];  
+
+	$posedit = "True";
+	$sql = mysqli_query($con,"select * from users_access where userid = '$employeeid' and pageid = 'Currency_Edit'");
+	if(mysqli_num_rows($sql) == 0){
+		$posedit = "False";
+	}
 				
 	$sql = "select A.cvalue, B.symbol, B.unit, B.country, B.id from parameters A left join currency_rate B on A.compcode=B.compcode and A.cvalue=B.symbol where A.compcode='$company' and A.ccode='DEF_CURRENCY'";
 				
@@ -361,29 +367,38 @@
 	}
 	
 	function setStat(code, stat){
-		$.ajax ({
-			url: "th_itmsetstat.php",
-			data: { code: code,  stat: stat, typz: 'ITEMTYP' },
-			async: false,
-			success: function( data ) {
-				if(data.trim()!="True"){
-					$("#itm"+code).html("<b>Error: </b>"+ data);
-					$("#itm"+code).attr("class", "itmalert alert alert-danger nopadding")
-					$("#itm"+code).show();
-				}
-				else{
-					if(stat=="ACTIVE"){
-						$("#itmstat"+code).html("<span class='label label-success'>Active</span>&nbsp;&nbsp;<a id=\"popoverData1\" href=\"#\" data-content=\"Set as Inactive\" rel=\"popover\" data-placement=\"bottom\" data-trigger=\"hover\" onClick=\"setStat('"+code+"','INACTIVE')\" ><i class=\"fa fa-refresh\" style=\"color: #f0ad4e\"></i></a>");
-					}else{
-						$("#itmstat"+code).html("<span class='label label-warning'>Inactive</span>&nbsp;&nbsp;<a id=\"popoverData2\" href=\"#\" data-content=\"Set as Active\" rel=\"popover\" data-placement=\"bottom\" data-trigger=\"hover\" onClick=\"setStat('"+code+"','ACTIVE')\"><i class=\"fa fa-refresh\" style=\"color: #5cb85c\"></i></a>");
+		var x = "<?=$posedit;?>";
+			
+		if(x.trim()=="True"){
+
+			$.ajax ({
+				url: "th_itmsetstat.php",
+				data: { code: code,  stat: stat, typz: 'ITEMTYP' },
+				async: false,
+				success: function( data ) {
+					if(data.trim()!="True"){
+						$("#itm"+code).html("<b>Error: </b>"+ data);
+						$("#itm"+code).attr("class", "itmalert alert alert-danger nopadding")
+						$("#itm"+code).show();
 					}
-						
-					$("#itm"+code).html("<b>SUCCESS: </b> Status changed to "+stat);
-					$("#itm"+code).attr("class", "itmalert alert alert-success nopadding")
-					$("#itm"+code).show();
-				}
-			}		
-		});
+					else{
+						if(stat=="ACTIVE"){
+							$("#itmstat"+code).html("<span class='label label-success'>Active</span>&nbsp;&nbsp;<a id=\"popoverData1\" href=\"#\" data-content=\"Set as Inactive\" rel=\"popover\" data-placement=\"bottom\" data-trigger=\"hover\" onClick=\"setStat('"+code+"','INACTIVE')\" ><i class=\"fa fa-refresh\" style=\"color: #f0ad4e\"></i></a>");
+						}else{
+							$("#itmstat"+code).html("<span class='label label-warning'>Inactive</span>&nbsp;&nbsp;<a id=\"popoverData2\" href=\"#\" data-content=\"Set as Active\" rel=\"popover\" data-placement=\"bottom\" data-trigger=\"hover\" onClick=\"setStat('"+code+"','ACTIVE')\"><i class=\"fa fa-refresh\" style=\"color: #5cb85c\"></i></a>");
+						}
+							
+						$("#itm"+code).html("<b>SUCCESS: </b> Status changed to "+stat);
+						$("#itm"+code).attr("class", "itmalert alert alert-success nopadding")
+						$("#itm"+code).show();
+					}
+				}		
+			});
+			
+		}else {
+			$("#AlertMsg").html("<center><b>ACCESS DENIED!</b></center>");
+			$("#AlertModal").modal('show');
+		}
 	}
 
 	function chkAccess(id){
@@ -421,7 +436,7 @@
 								if (full[1] == "<?=$resdefcurr[0]['symbol']?>") {
 									return full[1];
 								}else{
-									return "<a href=\"javascript:;\" onClick=\"editgrp('"+full[0]+"','"+full[3]+"','"+full[1]+"','"+full[2]+"','"+full[4]+"')\">"+full[1]+"<divclass=\"itmalert alert alert-danger nopadding\" id=\"itm"+full[0]+"\" style=\"display: none\";></div></a>";
+									return "<a href=\"javascript:;\" onClick=\"editgrp('"+full[0]+"','"+full[3]+"','"+full[1]+"','"+full[2]+"','"+full[4]+"')\">"+full[1]+"</a>";
 								}										
 							}
 					
@@ -430,9 +445,9 @@
 							"render": function (data, type, full, row) {
 
 									if (full[1] == "<?=$resdefcurr[0]['symbol']?>") {
-										return full[2] + " - <font color='red'>Main Unit</font>";
+										return full[2] + " - <font color='red'>Main Unit</font>" + "<divclass=\"itmalert alert alert-danger nopadding\" id=\"itm"+full[0]+"\" style=\"display: none\";></div>";
 									}else{
-										return full[2];
+										return full[2] + " <divclass=\"itmalert alert alert-danger nopadding\" id=\"itm"+full[0]+"\" style=\"display: none\";></div>";
 									}										
 								}
 					},

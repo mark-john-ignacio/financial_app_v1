@@ -2,8 +2,12 @@
 if(!isset($_SESSION)){
 	session_start();
 }
+$_SESSION['pageid'] = "Currency_Export";
+
 require_once  "../../vendor2/autoload.php";
 require_once "../../Connection/connection_string.php";
+include('../../include/denied.php');
+include('../../include/access2.php');
 
 //use PhpOffice\PhpSpreadsheet\Helper\Sample;
 use PhpOffice\PhpSpreadsheet\IOFactory;
