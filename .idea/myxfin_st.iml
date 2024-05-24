@@ -4,23 +4,21 @@
     <content url="file://$MODULE_DIR$">
       <sourceFolder url="file://$MODULE_DIR$/vendor2/ezyang/htmlpurifier/library" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/vendor2/maennchen/zipstream-php/src" isTestSource="false" packagePrefix="ZipStream\" />
-      <sourceFolder url="file://$MODULE_DIR$/vendor2/maennchen/zipstream-php/test" isTestSource="true" />
       <sourceFolder url="file://$MODULE_DIR$/vendor2/markbaker/complex/classes/src" isTestSource="false" packagePrefix="Complex\" />
-      <sourceFolder url="file://$MODULE_DIR$/vendor2/markbaker/complex/tests" isTestSource="true" />
       <sourceFolder url="file://$MODULE_DIR$/vendor2/markbaker/matrix/classes/src" isTestSource="false" packagePrefix="Matrix\" />
-      <sourceFolder url="file://$MODULE_DIR$/vendor2/markbaker/matrix/unitTests/classes/src" isTestSource="true" />
       <sourceFolder url="file://$MODULE_DIR$/vendor2/markbaker/matrix/unitTests/classes/src" isTestSource="true" packagePrefix="MatrixTest\" />
       <sourceFolder url="file://$MODULE_DIR$/vendor2/myclabs/php-enum/src" isTestSource="false" packagePrefix="MyCLabs\Enum\" />
-      <sourceFolder url="file://$MODULE_DIR$/vendor2/myclabs/php-enum/tests" isTestSource="true" />
       <sourceFolder url="file://$MODULE_DIR$/vendor2/myclabs/php-enum/tests" isTestSource="true" packagePrefix="MyCLabs\Tests\Enum\" />
       <sourceFolder url="file://$MODULE_DIR$/vendor2/phpoffice/phpspreadsheet/infra" isTestSource="true" packagePrefix="PhpOffice\PhpSpreadsheetInfra\" />
       <sourceFolder url="file://$MODULE_DIR$/vendor2/phpoffice/phpspreadsheet/src/PhpSpreadsheet" isTestSource="false" packagePrefix="PhpOffice\PhpSpreadsheet\" />
-      <sourceFolder url="file://$MODULE_DIR$/vendor2/phpoffice/phpspreadsheet/tests" isTestSource="true" />
       <sourceFolder url="file://$MODULE_DIR$/vendor2/phpoffice/phpspreadsheet/tests/PhpSpreadsheetTests" isTestSource="true" packagePrefix="PhpOffice\PhpSpreadsheetTests\" />
       <sourceFolder url="file://$MODULE_DIR$/vendor2/psr/http-client/src" isTestSource="false" packagePrefix="Psr\Http\Client\" />
       <sourceFolder url="file://$MODULE_DIR$/vendor2/psr/http-factory/src" isTestSource="false" packagePrefix="Psr\Http\Message\" />
       <sourceFolder url="file://$MODULE_DIR$/vendor2/psr/http-message/src" isTestSource="false" packagePrefix="Psr\Http\Message\" />
       <sourceFolder url="file://$MODULE_DIR$/vendor2/psr/simple-cache/src" isTestSource="false" packagePrefix="Psr\SimpleCache\" />
+      <sourceFolder url="file://$MODULE_DIR$/vendor2/maennchen/zipstream-php/test" isTestSource="true" />
+      <sourceFolder url="file://$MODULE_DIR$/vendor2/markbaker/complex/tests" isTestSource="true" />
+      <sourceFolder url="file://$MODULE_DIR$/vendor2/phpoffice/phpspreadsheet/tests" isTestSource="true" />
       <excludeFolder url="file://$MODULE_DIR$/vendor/composer" />
       <excludeFolder url="file://$MODULE_DIR$/vendor/mpdf/mpdf" />
       <excludeFolder url="file://$MODULE_DIR$/vendor/myclabs/deep-copy" />
