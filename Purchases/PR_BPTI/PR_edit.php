@@ -2,7 +2,7 @@
 	if(!isset($_SESSION)){
 		session_start();
 	}
-	$_SESSION['pageid'] = "PR_edit.php";
+	$_SESSION['pageid'] = "PR";
 
 	include('../../Connection/connection_string.php');
 	include('../../include/denied.php');
@@ -30,6 +30,12 @@
 		$cancstat = "False";
 	}
 
+	$postedit = "True";
+	$sql = mysqli_query($con,"select * from users_access where userid = '$employeeid' and pageid = 'PR_edit'");
+	if(mysqli_num_rows($sql) == 0){
+		$postedit = "False";
+	}
+
 	$arrseclist = array();
 	$sqlempsec = mysqli_query($con,"select A.section_nid as nid, B.cdesc from users_sections A left join locations B on A.section_nid=B.nid where A.UserID='$employeeid' and B.cstatus='ACTIVE' Order By B.cdesc");
 	$rowdetloc = $sqlempsec->fetch_all(MYSQLI_ASSOC);
@@ -44,12 +50,6 @@
 		if(count($arrseclist)==0){
 			$arrseclist[] = 0;
 		}
-	}
-
-	$poststat = "True";
-	$sql = mysqli_query($con,"select * from users_access where userid = '$employeeid' and pageid = 'PR_edit.php'");
-	if(mysqli_num_rows($sql) == 0){
-		$poststat = "False";
 	}
 
 	// UOM LIST //
@@ -398,15 +398,17 @@ if (mysqli_num_rows($sqlhead)!=0) {
 					</div>
 				</div>
 
-				<?php
-					if($poststat=="True"){
-				?>
+				
 
 				<div class="row nopadwtop2x">
 					<div class="col-xs-12">
 						<div class="portlet">
 							<div class="portlet-body">
 								<input type="hidden" name="hdnrowcnt" id="hdnrowcnt">
+								<?php
+									if($postedit=="True"){
+								?>
+
 								<button type="button" class="btn btn-primary btn-sm" tabindex="6" onClick="window.location.href='PR.php?ix=<?=isset($_REQUEST['hdnsrchval']) ? $_REQUEST['hdnsrchval'] : ""?>&loc=<?=isset($_REQUEST['hdnsrchsec']) ? $_REQUEST['hdnsrchsec'] : ""?>&st=<?=isset($_REQUEST['hdnsrchsta']) ? $_REQUEST['hdnsrchsta'] : ""?>';" id="btnMain" name="btnMain">
 									Back to Main<br>(ESC)
 								</button>
@@ -420,6 +422,8 @@ if (mysqli_num_rows($sqlhead)!=0) {
 								</button>
 
 								<?php
+									}
+
 									$sql = mysqli_query($con,"select * from users_access where userid = '".$_SESSION['employeeid']."' and pageid = 'PR_print'");
 
 									if(mysqli_num_rows($sql) == 1){
@@ -431,7 +435,9 @@ if (mysqli_num_rows($sqlhead)!=0) {
 									</button>
 
 								<?php		
-										}
+									}
+
+									if($postedit=="True"){
 								?>
 
 								<button type="button" class="btn btn-warning btn-sm" tabindex="6" onClick="enabled();" id="btnEdit" name="btnEdit">
@@ -443,34 +449,34 @@ if (mysqli_num_rows($sqlhead)!=0) {
 								</button>
 
 								<?php
-								if($xm==0 && $lSent==1){ 
-									$chkrejstat1 = "";
-									$chkrejstat2 = "";
-									if($chkapprovals==$employeeid){
-										$chkrejstat1 = (($poststat!="True") ? " disabled" : "");
-										$chkrejstat2 = (($cancstat!="True") ? " disabled" : "");
-									}else{
-										$chkrejstat1 = " disabled";
-										$chkrejstat2 = " disabled";
+										if($xm==0 && $lSent==1){ 
+											$chkrejstat1 = "";
+											$chkrejstat2 = "";
+											if($chkapprovals==$employeeid){
+												$chkrejstat1 = (($poststat!="True") ? " disabled" : "");
+												$chkrejstat2 = (($cancstat!="True") ? " disabled" : "");
+											}else{
+												$chkrejstat1 = " disabled";
+												$chkrejstat2 = " disabled";
+											}
+				
+											if($chkrejstat1==""){
+												echo "<button id=\"btnPosting\" type=\"button\" onClick=\"trans('POST','".$cprno."')\" class=\"btn btn-default btn-sm".$chkrejstat1."\">Post<br><i class=\"fa fa-thumbs-up\" style=\"font-size:18px;color:Green\" title=\"Approve transaction\"></i></button>";
+											}
+				
+											if($chkrejstat2==""){
+												echo " <button id=\"btnCanceling\" type=\"button\" onClick=\"trans('CANCEL','".$cprno."')\" class=\"btn btn-default btn-sm".$chkrejstat2."\">Cancel<br><i class=\"fa fa-thumbs-down\" style=\"font-size:18px;color:Red\" title=\"Cancel transaction\"></i></button>";
+											}
+																		
+										}
+
 									}
-		
-									if($chkrejstat1==""){
-										echo "<button id=\"btnPosting\" type=\"button\" onClick=\"trans('POST','".$cprno."')\" class=\"btn btn-default btn-sm".$chkrejstat1."\">Post<br><i class=\"fa fa-thumbs-up\" style=\"font-size:18px;color:Green\" title=\"Approve transaction\"></i></button>";
-									}
-		
-									if($chkrejstat2==""){
-										echo " <button id=\"btnCanceling\" type=\"button\" onClick=\"trans('CANCEL','".$cprno."')\" class=\"btn btn-default btn-sm".$chkrejstat2."\">Cancel<br><i class=\"fa fa-thumbs-down\" style=\"font-size:18px;color:Red\" title=\"Cancel transaction\"></i></button>";
-									}
-																
-								}
 								?>
 							</div>
 						</div>
 					</div>
 				</div>
-				<?php
-					}
-				?>
+
 			</div>
 		</div>
 

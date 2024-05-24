@@ -2,13 +2,21 @@
 	if(!isset($_SESSION)){
 		session_start();
 	}
-	$_SESSION['pageid'] = "PR_edit.php";
+	$_SESSION['pageid'] = "PR";
 
 	include('../../Connection/connection_string.php');
 	include('../../include/denied.php');
 	include('../../include/access2.php');
 
 	$company = $_SESSION['companyid'];
+
+	$poststat = "True";
+	$sql = mysqli_query($con,"select * from users_access where userid = '$employeeid' and pageid = 'PR_edit'");
+	if(mysqli_num_rows($sql) == 0){
+		$poststat = "False";
+	}
+
+
 	if(isset($_REQUEST['txtctranno'])){
 		$cprno = $_REQUEST['txtctranno'];
 	}
@@ -30,12 +38,6 @@
 		if(count($arrseclist)==0){
 			$arrseclist[] = 0;
 		}
-	}
-
-	$poststat = "True";
-	$sql = mysqli_query($con,"select * from users_access where userid = '$employeeid' and pageid = 'Purch_edit.php'");
-	if(mysqli_num_rows($sql) == 0){
-		$poststat = "False";
 	}
 
 	// UOM LIST //
@@ -336,14 +338,16 @@ if (mysqli_num_rows($sqlhead)!=0) {
 				</div>
 					
 				<br>
-				<?php
-					if($poststat=="True"){
-				?>
+				
 				<table width="100%" border="0" cellpadding="3">
 					<tr>
 						<td rowspan="2" width="70%">
 							<input type="hidden" name="hdnrowcnt" id="hdnrowcnt"> 
 					
+							<?php
+								if($poststat=="True"){
+							?>
+
 							<button type="button" class="btn btn-primary btn-sm" tabindex="6" onClick="window.location.href='PR.php?ix=<?=isset($_REQUEST['hdnsrchval']) ? $_REQUEST['hdnsrchval'] : ""?>';" id="btnMain" name="btnMain">
 								Back to Main<br>(ESC)
 							</button>
@@ -357,6 +361,8 @@ if (mysqli_num_rows($sqlhead)!=0) {
 							</button>
 
 							<?php
+								}
+
 								$sql = mysqli_query($con,"select * from users_access where userid = '".$_SESSION['employeeid']."' and pageid = 'PR_print'");
 
 								if(mysqli_num_rows($sql) == 1){
@@ -369,6 +375,8 @@ if (mysqli_num_rows($sqlhead)!=0) {
 
 							<?php		
 									}
+
+									if($poststat=="True"){
 							?>
 
 							<button type="button" class="btn btn-warning btn-sm" tabindex="6" onClick="enabled();" id="btnEdit" name="btnEdit">
@@ -378,15 +386,15 @@ if (mysqli_num_rows($sqlhead)!=0) {
 							<button type="button" class="btn btn-success btn-sm" tabindex="6" onClick="return chkform();" id="btnSave" name="btnSave">
 								Save<br>(CTRL+S)
 							</button>
-						
+							<?php
+								}
+							?>
 						</td>
 						
 					</tr>
 					
 				</table>
-				<?php
-					}
-				?>
+				
 
     </fieldset>
 

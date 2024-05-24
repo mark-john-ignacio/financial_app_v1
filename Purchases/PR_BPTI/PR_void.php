@@ -4,7 +4,7 @@
 		session_start();
 	}
 	
-	$_SESSION['pageid'] = "PR_unpost.php";
+	$_SESSION['pageid'] = "PR_unpost";
 	include('../../Connection/connection_string.php');
 	include('../../include/denied.php');
 	include('../../include/access2.php');

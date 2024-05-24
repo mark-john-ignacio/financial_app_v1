@@ -2,7 +2,7 @@
 	if(!isset($_SESSION)){
 		session_start();
 	}
-	$_SESSION['pageid'] = "Receive.php";
+	$_SESSION['pageid'] = "Receive";
 	include('../../Connection/connection_string.php');
 	include('../../include/denied.php');
 	include('../../include/access2.php'); // nandito ung $employeeid
@@ -25,7 +25,7 @@
 
 	//UNPOST
 	$unpostat = "True";
-	$sql = mysqli_query($con,"select * from users_access where userid = '$employeeid' and pageid = 'Receive_unpost.php'");
+	$sql = mysqli_query($con,"select * from users_access where userid = '$employeeid' and pageid = 'Receive_unpost'");
 	if(mysqli_num_rows($sql) == 0){
 		$unpostat = "False";
 	}

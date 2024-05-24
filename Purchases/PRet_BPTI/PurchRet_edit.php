@@ -2,7 +2,7 @@
 	if(!isset($_SESSION)){
 		session_start();
 	}
-	$_SESSION['pageid'] = "PurchRet.php";
+	$_SESSION['pageid'] = "PurchRet";
 
 	include('../../Connection/connection_string.php');
 	include('../../include/denied.php');
@@ -12,7 +12,7 @@
 	$company = $_SESSION['companyid'];
 
 	$poststat = "True";
-	$sql = mysqli_query($con,"select * from users_access where userid = '$employeeid' and pageid = 'PurchRet_edit.php'");
+	$sql = mysqli_query($con,"select * from users_access where userid = '$employeeid' and pageid = 'PurchRet_edit'");
 	if(mysqli_num_rows($sql) == 0){
 		$poststat = "False";
 	}
@@ -256,16 +256,15 @@ if (mysqli_num_rows($sqlhead)!=0) {
 
 		</div>
 
-		<?php
-			if($poststat=="True"){
-		?>
 		<br>
 		<table width="100%" border="0" cellpadding="3">
 			<tr>
 				<td>
 					<input type="hidden" name="hdnrowcnt" id="hdnrowcnt"> 
 		
-		
+					<?php
+						if($poststat=="True"){
+					?>
 					<button type="button" class="btn btn-primary btn-sm" tabindex="6" onClick="window.location.href='PurchRet.php?ix=<?=isset($_REQUEST['hdnsrchval']) ? $_REQUEST['hdnsrchval'] : ""?>&st=<?=isset($_REQUEST['hdnsrchsta']) ? $_REQUEST['hdnsrchsta'] : ""?>';" id="btnMain" name="btnMain">
 						Back to Main<br>(ESC)
 					</button>
@@ -284,6 +283,8 @@ if (mysqli_num_rows($sqlhead)!=0) {
 					</button>
 
 					<?php
+						}
+
 						$sql = mysqli_query($con,"select * from users_access where userid = '".$_SESSION['employeeid']."' and pageid = 'PurchRet_print'");
 
 						if(mysqli_num_rows($sql) == 1){
@@ -296,6 +297,8 @@ if (mysqli_num_rows($sqlhead)!=0) {
 
 					<?php		
 						}
+
+						if($poststat=="True"){
 					?>
 
 					<button type="button" class="btn btn-warning btn-sm" tabindex="6" onClick="enabled();" id="btnEdit" name="btnEdit">
@@ -305,13 +308,13 @@ if (mysqli_num_rows($sqlhead)!=0) {
 					<button type="button" class="btn btn-success btn-sm" tabindex="6" onClick="return chkform();" id="btnSave" name="btnSave">
 						Save<br>(CTRL+S)    
 					</button>
-				
+					<?php
+						}
+					?>
 				</td>
 			</tr>
 		</table>
-		<?php
-			}
-		?>
+		
 
     </fieldset>
 </form>

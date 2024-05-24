@@ -2,7 +2,7 @@
 	if(!isset($_SESSION)){
 		session_start();
 	}
-	$_SESSION['pageid'] = "Receive.php";
+	$_SESSION['pageid'] = "Receive";
 
 	include('../../Connection/connection_string.php');
 	include('../../include/denied.php');
@@ -12,7 +12,7 @@
 	$company = $_SESSION['companyid'];
 
 	$poststat = "True";
-	$sql = mysqli_query($con,"select * from users_access where userid = '$employeeid' and pageid = 'Receive_edit.php'");
+	$sql = mysqli_query($con,"select * from users_access where userid = '$employeeid' and pageid = 'Receive_edit'");
 	if(mysqli_num_rows($sql) == 0){
 		$poststat = "False";
 	}
@@ -399,16 +399,15 @@ if (mysqli_num_rows($sqlhead)!=0) {
 					</div>				
 			</div>
 
-			<?php
-				if($poststat=="True"){
-			?>
 			<div class="row nopadwtop2x">
 				<div class="col-xs-8">
 					<div class="portlet">
 						<div class="portlet-body">
 							<input type="hidden" name="hdnrowcnt" id="hdnrowcnt"> 
 				
-				
+							<?php
+								if($poststat=="True"){
+							?>
 							<button type="button" class="btn btn-primary btn-sm" tabindex="6" onClick="window.location.href='RR.php?ix=<?=isset($_REQUEST['hdnsrchval']) ? $_REQUEST['hdnsrchval'] : ""?>&st=<?=isset($_REQUEST['hdnsrchsta']) ? $_REQUEST['hdnsrchsta'] : ""?>';" id="btnMain" name="btnMain">
 								Back to Main<br>(ESC)
 							</button>
@@ -427,6 +426,8 @@ if (mysqli_num_rows($sqlhead)!=0) {
 							</button>
 
 							<?php
+								}
+
 								$sql = mysqli_query($con,"select * from users_access where userid = '".$_SESSION['employeeid']."' and pageid = 'Receive_print'");
 
 								if(mysqli_num_rows($sql) == 1){
@@ -439,6 +440,8 @@ if (mysqli_num_rows($sqlhead)!=0) {
 
 							<?php		
 								}
+
+								if($poststat=="True"){
 							?>
 
 							<button type="button" class="btn btn-warning btn-sm" tabindex="6" onClick="enabled();" id="btnEdit" name="btnEdit">
@@ -452,14 +455,14 @@ if (mysqli_num_rows($sqlhead)!=0) {
 							<!--<input type="hidden" id="txtnBaseGross" name="txtnBaseGross" value="0">
 							<input type="hidden" id="txtnGross" name="txtnGross" value="0">
 							-->
-						
+							<?php
+								}
+							?>
 						</div>
 					</div>
 				</div>
 			</div>
-			<?php
-				}
-			?>
+			
 
 		</div>
 	</div>
