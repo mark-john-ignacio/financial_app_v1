@@ -2,7 +2,7 @@
 	if(!isset($_SESSION)){
 		session_start();
 	}
-	$_SESSION['pageid'] = "POS.php";
+	$_SESSION['pageid'] = "SI";
 
 	include('../../Connection/connection_string.php');
 	include('../../include/denied.php');
@@ -21,7 +21,7 @@
 	$company = $_SESSION['companyid'];
 
 	$poststat = "True";
-	$sql = mysqli_query($con,"select * from users_access where userid = '$employeeid' and pageid = 'POS_edit.php'");
+	$sql = mysqli_query($con,"select * from users_access where userid = '$employeeid' and pageid = 'SI_edit'");
 	if(mysqli_num_rows($sql) == 0){
 		$poststat = "False";
 	}
@@ -640,7 +640,9 @@ if (mysqli_num_rows($sqlhead)!=0) {
 								</button>
 
 								<?php
-									$sql = mysqli_query($con,"select * from users_access where userid = '".$_SESSION['employeeid']."' and pageid = 'POS_print'");
+									}
+
+									$sql = mysqli_query($con,"select * from users_access where userid = '".$_SESSION['employeeid']."' and pageid = 'SI_print'");
 
 									if(mysqli_num_rows($sql) == 1){
 									
@@ -658,6 +660,7 @@ if (mysqli_num_rows($sqlhead)!=0) {
 								<?php		
 									}
 
+									if($poststat == "True"){
 								?>
 							
 								<button type="button" class="btn btn-warning btn-sm" tabindex="6" onClick="enabled();" id="btnEdit" name="btnEdit">

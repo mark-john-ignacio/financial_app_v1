@@ -2,7 +2,7 @@
 	if(!isset($_SESSION)){
 		session_start();
 	}
-	$_SESSION['pageid'] = "DR.php";
+	$_SESSION['pageid'] = "DR";
 
 	include('../../Connection/connection_string.php');
 	include('../../include/denied.php');
@@ -12,7 +12,7 @@
 	$company = $_SESSION['companyid'];
 
 	$poststat = "True";
-	$sql = mysqli_query($con,"select * from users_access where userid = '$employeeid' and pageid = 'DR_edit.php'");
+	$sql = mysqli_query($con,"select * from users_access where userid = '$employeeid' and pageid = 'DR_edit'");
 	if(mysqli_num_rows($sql) == 0){
 		$poststat = "False";
 	}
@@ -399,22 +399,22 @@ if (mysqli_num_rows($sqlhead)!=0) {
 			</div>
 	</div>
 
-		<?php
-			if($poststat == "True"){
-		?>
 		<br>
 			<table width="100%" border="0" cellpadding="3">
 				<tr>
 					<td>
-    				<input type="hidden" name="hdnrowcnt" id="hdnrowcnt"> 
- 
+    					<input type="hidden" name="hdnrowcnt" id="hdnrowcnt"> 
+						<?php
+							if($poststat == "True"){
+						?>
+
 						<button type="button" class="btn btn-primary btn-sm" tabindex="6" onClick="window.location.href='DR.php?ix=<?=isset($_REQUEST['hdnsrchval']) ? $_REQUEST['hdnsrchval'] : ""?>';" id="btnMain" name="btnMain">
 							Back to Main<br>(ESC)
 						</button>   
-    				<button type="button" class="btn btn-default btn-sm" tabindex="6" onClick="window.location.href='DR_new.php';" id="btnNew" name="btnNew">
+    					<button type="button" class="btn btn-default btn-sm" tabindex="6" onClick="window.location.href='DR_new.php';" id="btnNew" name="btnNew">
 							New<br>(F1)
 						</button>
-    				<button type="button" class="btn btn-info btn-sm" tabindex="6" onClick="openinv();" id="btnIns" name="btnIns">
+    					<button type="button" class="btn btn-info btn-sm" tabindex="6" onClick="openinv();" id="btnIns" name="btnIns">
 							SO<br>(Insert)
 						</button>
 						<button type="button" class="btn btn-danger btn-sm" tabindex="6" onClick="chkSIEnter(13,'frmpos');" id="btnUndo" name="btnUndo">
@@ -422,6 +422,8 @@ if (mysqli_num_rows($sqlhead)!=0) {
 						</button>
 
 						<?php
+							}
+
 							$sql = mysqli_query($con,"select * from users_access where userid = '".$_SESSION['employeeid']."' and pageid = 'DR_print'");
 
 							if(mysqli_num_rows($sql) == 1){
@@ -433,16 +435,21 @@ if (mysqli_num_rows($sqlhead)!=0) {
 
 						<?php		
 							}
+
+							if($poststat == "True"){
 						?>
 								
-    				<button type="button" class="btn btn-warning btn-sm" tabindex="6" onClick="enabled();" id="btnEdit" name="btnEdit">
+    					<button type="button" class="btn btn-warning btn-sm" tabindex="6" onClick="enabled();" id="btnEdit" name="btnEdit">
 							Edit<br>(CTRL+E)
 						</button>
     
-    				<button type="button" class="btn btn-success btn-sm" tabindex="6" onClick="return chkform();" id="btnSave" name="btnSave">
+    					<button type="button" class="btn btn-success btn-sm" tabindex="6" onClick="return chkform();" id="btnSave" name="btnSave">
 							Save<br>(CTRL+S)
 						</button>
-        
+						
+						<?php
+							}
+						?>
     			</td>
     			<td align="right">
 						<!--<b>TOTAL AMOUNT : <input type="text" id="txtnGross" name="txtnGross" readonly value="<?php //echo $Gross; ?>" style="text-align:right; border:none; background-color:#FFF; font-size:20px; font-weight:bold; color:#F00;" size="10"></b>-->
@@ -450,9 +457,7 @@ if (mysqli_num_rows($sqlhead)!=0) {
     			</td>
   			</tr>
 			</table>
-		<?php
-			}
-		?>
+		
     </fieldset>
     
    

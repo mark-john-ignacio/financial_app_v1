@@ -3,7 +3,7 @@
 		session_start();
 	}
 
-	$_SESSION['pageid'] = "SalesRet_unpost.php";
+	$_SESSION['pageid'] = "SalesRet_unpost";
 	include('../../Connection/connection_string.php');
 	include('../../include/denied.php');
 	include('../../include/access2.php');

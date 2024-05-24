@@ -3,7 +3,7 @@
 		session_start();
 	}
 
-	$_SESSION['pageid'] = "Quote.php";
+	$_SESSION['pageid'] = "Quote";
 
 	include('../../Connection/connection_string.php');
 	include('../../include/denied.php');
@@ -14,9 +14,16 @@
 
 	//POST
 	$poststat = "True";
-	$sql = mysqli_query($con,"select * from users_access where userid = '$employeeid' and pageid = 'Quote_edit.php'");
+	$sql = mysqli_query($con,"select * from users_access where userid = '$employeeid' and pageid = 'Quote_edit'");
 	if(mysqli_num_rows($sql) == 0){
 		$poststat = "False";
+	}
+
+	//PRINT
+	$printstat = "True";
+	$sql = mysqli_query($con,"select * from users_access where userid = '$employeeid' and pageid = 'Quote_print'");
+	if(mysqli_num_rows($sql) == 0){
+		$printstat = "False";
 	}
 
 
@@ -564,7 +571,11 @@ if (mysqli_num_rows($sqlhead)!=0) {
 					<button type="button" class="btn btn-danger btn-sm" tabindex="6" onClick="chkSIEnter(13,'frmpos');" id="btnUndo" name="btnUndo">
 						Undo Edit<br>(F3)
 					</button>
+				<?php
+					}
 
+					if($printstat == "True"){
+				?>
 					<button type="button" class="btn btn-info btn-sm" tabindex="6" onClick="printchk('<?php echo $txtctranno;?>','Print');" id="btnPrint" name="btnPrint">
 						Print<br>(F4)
 					</button>
@@ -574,6 +585,9 @@ if (mysqli_num_rows($sqlhead)!=0) {
 					</button>
 
 					<?php
+					}
+					if($poststat == "True"){
+
 						if($lPosted==1 && $lVoid==0){
 					?>
 					<button type="button" class="btn btn-info btn-sm" tabindex="6" id="btnEmail" name="btnEmail" onclick="sendEmail()">  

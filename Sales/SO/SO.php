@@ -2,7 +2,7 @@
 	if(!isset($_SESSION)){
 		session_start();
 	}
-	$_SESSION['pageid'] = "SO.php";
+	$_SESSION['pageid'] = "SO";
 	include('../../Connection/connection_string.php');
 	include('../../include/denied.php');
 	include('../../include/access2.php');
@@ -25,7 +25,7 @@
 	}
 
 	$unpoststat = "True";
-	$sql = mysqli_query($con,"select * from users_access where userid = '$employeeid' and pageid = 'SO_unpost.php'");
+	$sql = mysqli_query($con,"select * from users_access where userid = '$employeeid' and pageid = 'SO_unpost'");
 	if(mysqli_num_rows($sql) == 0){
 		$unpoststat = "False";
 	}
