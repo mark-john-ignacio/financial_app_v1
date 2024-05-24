@@ -1,1 +1,1 @@
-<?php
+<iframe title="accounts per category pie" width="1140" height="541.25" src="https://app.powerbi.com/reportEmbed?reportId=2ed222a0-e343-45f2-a4cc-ae161ab08353&autoAuth=true&embeddedDemo=true" frameborder="0" allowFullScreen="true"></iframe>
