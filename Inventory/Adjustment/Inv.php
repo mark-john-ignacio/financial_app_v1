@@ -2,13 +2,28 @@
 	if(!isset($_SESSION)){
 		session_start();
 	}
-	$_SESSION['pageid'] = "InvAdj.php";
+	$_SESSION['pageid'] = "InvAdj";
 
 	include('../../Connection/connection_string.php');
 	include('../../include/denied.php');
 	include('../../include/access.php');
 
 	$company = $_SESSION['companyid'];
+
+	//POST
+	$poststat = "True";
+	$sql = mysqli_query($con,"select * from users_access where userid = '$employeeid' and pageid = 'InvAdj_post'");
+	if(mysqli_num_rows($sql) == 0){
+		$poststat = "False";
+	}
+
+	//CANCEL
+	$cancstat = "True";
+	$sql = mysqli_query($con,"select * from users_access where userid = '$employeeid' and pageid = 'InvAdj_cancel'");
+	if(mysqli_num_rows($sql) == 0){
+		$cancstat = "False";
+	}
+
 	$employeeid = $_SESSION['employeeid'];
 ?>
 
@@ -20,8 +35,8 @@
 
 	<title>Myx Financials</title>
 	<link rel="stylesheet" type="text/css" href="../../Bootstrap/css/bootstrap.css?x=<?=time()?>">
-  <link href="../../global/plugins/font-awesome/css/font-awesome.min.css" rel="stylesheet" type="text/css"/> 
-  <link rel="stylesheet" type="text/css" href="../../Bootstrap/css/alert-modal.css">
+  	<link href="../../global/plugins/font-awesome/css/font-awesome.min.css" rel="stylesheet" type="text/css"/> 
+  	<link rel="stylesheet" type="text/css" href="../../Bootstrap/css/alert-modal.css">
 
 	<script src="../../Bootstrap/js/jquery-3.2.1.min.js"></script>
 	<script src="../../js/bootstrap3-typeahead.min.js"></script>
@@ -50,15 +65,15 @@
 					<tr>
 						<th>Transaction Code</th>
 						<th>Section</th>
-            <th>Prepared By</th>
+            			<th>Prepared By</th>
 						<th>Transaction Date</th>
-            <th>Adjustment Date</th>
-            <th>Status</th>
+						<th>Adjustment Date</th>
+						<th style="text-align: center">Status</th>
 					</tr>
 				</thead>
 
 				<tbody>
-          <?php
+          			<?php
 						$arrsecs = array();
 						$reslocs=mysqli_query($con,"Select * From locations where compcode='$company'");
 						while($row = mysqli_fetch_array($reslocs, MYSQLI_ASSOC)){
@@ -92,7 +107,10 @@
 									<?php 
 										if(intval($row['lcancelled'])==intval(0) && intval($row['lapproved'])==intval(0)){
 									?>
-										<a href="javascript:;" onClick="trans('POST','<?=$row['ctranno'];?>','<?=$row['ctype'];?>')">POST</a> | <a href="javascript:;" onClick="trans('CANCEL','<?=$row['ctranno'];?>','')">CANCEL</a>
+
+										<a href="javascript:;" onClick="trans('POST','<?=$row['ctranno'];?>','<?=$row['ctype'];?>')" class="btn btn-xs btn-default<?=($poststat!="True") ? " disabled" : ""?>"><i class="fa fa-thumbs-up" style="font-size:20px;color:Green ;" title="Approve transaction"></i></a> 
+										<a href="javascript:;" onClick="trans('CANCEL','<?=$row['ctranno'];?>','')" class="btn btn-xs btn-default<?=($cancstat!="True") ? " disabled" : ""?>"><i class="fa fa-thumbs-down" style="font-size:20px;color:Red ;" title="Cancel transaction"></i></a>
+
 									<?php
 										}
 										else{
@@ -107,10 +125,10 @@
 								</div>
 							</td>
 						</tr>
-          <?php 
+          				<?php 
 							}				
 							mysqli_close($con);				
-					?>
+						?>
                
 				</tbody>
 			</table>
@@ -133,7 +151,7 @@
             <div class="modal-content">
                <div class="alert-modal-danger">
                   <p id="AlertMsg"></p>
-                <p>
+                	<p>
                     <center>
                         <button type="button" class="btnmodz btn btn-primary btn-sm" id="OK">Ok</button>
                         <button type="button" class="btnmodz btn btn-danger btn-sm" id="Cancel">Cancel</button>
@@ -143,9 +161,9 @@
                         
                         <input type="hidden" id="typ" name="typ" value = "">
                         <input type="hidden" id="modzx" name="modzx" value = "">
-												<input type="hidden" id="modztyp" name="modztyp" value = "">
+						<input type="hidden" id="modztyp" name="modztyp" value = "">
                     </center>
-                </p>
+               	 </p>
                </div>
             </div>
         </div>

@@ -3,13 +3,26 @@
 	if(!isset($_SESSION)){
 		session_start();
 	}
-	$_SESSION['pageid'] = "InvAdj_new.php";
+	$_SESSION['pageid'] = "InvAdj";
 
 	include('../../Connection/connection_string.php');
 	include('../../include/denied.php');
 	include('../../include/access.php');
 
 	$company = $_SESSION['companyid'];
+
+	$poststat = "True"; 
+	$sql = mysqli_query($con,"select * from users_access where userid = '$employeeid' and pageid = 'InvAdj_edit'");
+	if(mysqli_num_rows($sql) == 0){
+		$poststat = "False";
+	}
+
+	$printstat = "True";
+	$sql = mysqli_query($con,"select * from users_access where userid = '$employeeid' and pageid = 'InvAdj_print'");
+	if(mysqli_num_rows($sql) == 0){
+		$printstat = "False";
+	}
+
 	$EmpID = $_SESSION['employeeid'];
 
 	$_SESSION['myxtoken'] = gen_token();
@@ -43,8 +56,8 @@
     
 	<link rel="stylesheet" type="text/css" href="../../global/plugins/font-awesome/css/font-awesome.min.css"/>
 	<link rel="stylesheet" type="text/css" href="../../Bootstrap/css/bootstrap.css?t=<?php echo time();?>">
-  <link rel="stylesheet" type="text/css" href="../../Bootstrap/css/alert-modal.css">
-  <link rel="stylesheet" type="text/css" href="../../Bootstrap/css/bootstrap-datetimepicker.css">
+  	<link rel="stylesheet" type="text/css" href="../../Bootstrap/css/alert-modal.css">
+  	<link rel="stylesheet" type="text/css" href="../../Bootstrap/css/bootstrap-datetimepicker.css">
     
 	<script src="../../Bootstrap/js/jquery-3.2.1.min.js"></script>
 	<script src="../../Bootstrap/js/bootstrap3-typeahead.js"></script>
@@ -65,210 +78,233 @@
 		$sqlhead = mysqli_query($con,"Select * from adjustments where compcode='$company' and ctranno='".$_REQUEST['id']."'");
 		if (mysqli_num_rows($sqlhead)!=0) {
 
-		while($row = mysqli_fetch_array($sqlhead, MYSQLI_ASSOC)){
+			while($row = mysqli_fetch_array($sqlhead, MYSQLI_ASSOC)){
 
-			$selwh = $row['section_nid'];
-			$seltype = $row['ctype'];
-			$hdremarks = $row['cremarks'];
-			$hddatecnt = $row['dadjdate'];
+				$selwh = $row['section_nid'];
+				$seltype = $row['ctype'];
+				$hdremarks = $row['cremarks'];
+				$hddatecnt = $row['dadjdate'];
 
-			$lCancelled = $row['lcancelled'];
-			$lPosted = $row['lapproved'];
+				$lCancelled = $row['lcancelled'];
+				$lPosted = $row['lapproved'];
 
-		}
+			}
 	?>
 
-	<input type="hidden" value='<?=json_encode(@$arrinventories)?>' id="hdnivntrs">
+		<input type="hidden" value='<?=json_encode(@$arrinventories)?>' id="hdnivntrs">
 
-	<form id="frmCount" name="frmCount" method="post" action="<?="https://".$_SERVER['SERVER_NAME']?>/Inventory/Adjustment/InvAdj_EditSave.php">
+		<form id="frmCount" name="frmCount" method="post" action="<?="https://".$_SERVER['SERVER_NAME']?>/Inventory/Adjustment/InvAdj_EditSave.php">
 
-		<input type="hidden" name="hdnmyxfin" value="<?= $_SESSION['myxtoken'] ?? '' ?>">
-		<input type="hidden" name="hdnposted" id="hdnposted" value="<?php echo $lPosted;?>">
-    <input type="hidden" name="hdncancel" id="hdncancel" value="<?php echo $lCancelled;?>">
+			<input type="hidden" name="hdnmyxfin" value="<?= $_SESSION['myxtoken'] ?? '' ?>">
+			<input type="hidden" name="hdnposted" id="hdnposted" value="<?php echo $lPosted;?>">
+			<input type="hidden" name="hdncancel" id="hdncancel" value="<?php echo $lCancelled;?>">
 
-		<fieldset>
-			<legend>Inventory Adjustment Details</legend>
+			<fieldset>
+				<legend>Inventory Adjustment Details</legend>
 
-				<div class= "col-xs-6 text-right nopadding" id="invcntstat">
-					<?php
-					if($lCancelled==1){
-						echo "<font color='#FF0000'><b>CANCELLED</b></font>";
-					}
-					
-					if($lPosted==1){
-						echo "<font color='#FF0000'><b>POSTED</b></font>";
-					}
-					?>
-				</div>
-				</legend>
+					<div class= "col-xs-6 text-right nopadding" id="invcntstat">
+						<?php
+						if($lCancelled==1){
+							echo "<font color='#FF0000'><b>CANCELLED</b></font>";
+						}
+						
+						if($lPosted==1){
+							echo "<font color='#FF0000'><b>POSTED</b></font>";
+						}
+						?>
+					</div>
+					</legend>
 
-				<div class="col-xs-12 nopadding">
+					<div class="col-xs-12 nopadding">
+						<div class="col-xs-2 nopadding">
+							<b>Trans No: </b>
+						</div>
+						<div class="col-xs-3 nopadding">
+							<input type="text" class="form-control input-sm" name="id" id="id" value="<?=$_REQUEST['id']?>" readonly>
+						</div>
+
+						<div class="col-xs-1 nopadding">
+								&nbsp;
+						</div>
+
+						<div class="col-xs-4 nopadding" id="statmsgz">
+
+						</div>
+					</div>
+
+				<div class="col-xs-12 nopadwtop">
 					<div class="col-xs-2 nopadding">
-						<b>Trans No: </b>
+						<b>Section: </b>
 					</div>
 					<div class="col-xs-3 nopadding">
-						<input type="text" class="form-control input-sm" name="id" id="id" value="<?=$_REQUEST['id']?>" readonly>
+						
+						<select class="form-control input-sm" name="selwhfrom" id="selwhfrom">
+						<?php
+								foreach($rowdetloc as $localocs){
+							?>
+								<option value="<?php echo $localocs['nid'];?>" <?=($selwh==$localocs['nid']) ? "selected" : ""?>><?php echo $localocs['cdesc'];?></option>										
+							<?php	
+								}						
+							?>
+						</select>
 					</div>
-
+					
 					<div class="col-xs-1 nopadding">
 							&nbsp;
 					</div>
+						
+					<div class="col-xs-2 nopadding">
+						<b>Inventory Date: </b>
+					</div>
+					
+					<div class="col-xs-2 nopadding">
+						<input type="text" class="datepick form-control input-sm" name="txtdtrandate" id="txtdtrandate" value="<?php echo date_format(date_create($hddatecnt),'m/d/Y'); ?>">
+					</div>
 
-					<div class="col-xs-4 nopadding" id="statmsgz">
+				</div>
 
+				<div class="col-xs-12 nopadwtop">
+					<div class="col-xs-2 nopadding">
+						<b>Adjustment Type: </b>
+					</div>
+					<div class="col-xs-3 nopadding">
+						<select class="form-control input-sm" name="selcntyp" id="selcntyp">			
+							<option value="manual" <?=($seltype=="manual") ? "selected" : ""?>>Manual</option>		
+							<option value="theo" <?=($seltype=="theo") ? "selected" : ""?>>Theoretical</option>	
+							<option value="ending" <?=($seltype=="ending") ? "selected" : ""?>>Count Ending</option>					
+						</select>
+					</div>
+
+					<div class="col-xs-1 nopadwleft">
+			<button class="btncgroup btn btn-sm btn-danger" type="button" id="btnSISearch" onClick="InsertDet();" <?=($seltype!=="ending") ? "disabled" : ""?>><i class="fa fa-search"></i></button>
+			</div>
+				</div>
+
+				<div class="col-xs-12 nopadwtop">
+					<div class="col-xs-2 nopadding">
+						<b>Remarks: </b>
+					</div>
+					<div class="col-xs-8 nopadding">
+						<input type="text" class="form-control input-sm" name="txtccrems" id="txtccrems" value="<?=$hdremarks?>" placeholder="Enter Remarks...">
 					</div>
 				</div>
+		
+			</fieldset>	
 
-			<div class="col-xs-12 nopadwtop">
-				<div class="col-xs-2 nopadding">
-					<b>Section: </b>
-				</div>
-				<div class="col-xs-3 nopadding">
-					
-					<select class="form-control input-sm" name="selwhfrom" id="selwhfrom">
-					<?php
-							foreach($rowdetloc as $localocs){
-						?>
-							<option value="<?php echo $localocs['nid'];?>" <?=($selwh==$localocs['nid']) ? "selected" : ""?>><?php echo $localocs['cdesc'];?></option>										
-						<?php	
-							}						
-						?>
-					</select>
-				</div>
-				
-				<div class="col-xs-1 nopadding">
-						&nbsp;
-				</div>
-					
-				<div class="col-xs-2 nopadding">
-					<b>Inventory Date: </b>
-				</div>
-				
-				<div class="col-xs-2 nopadding">
-					<input type="text" class="datepick form-control input-sm" name="txtdtrandate" id="txtdtrandate" value="<?php echo date_format(date_create($hddatecnt),'m/d/Y'); ?>">
-				</div>
+			<div class="col-xs-12 nopadwtop2x">			
+				<input type="text" class="form-control input-lg" name="txtscan" id="txtscan" value="" placeholder="Search Item Name...">
 
+				<input type="hidden" name="rowcnt" id="rowcnt" value="">
 			</div>
 
-			<div class="col-xs-12 nopadwtop">
-				<div class="col-xs-2 nopadding">
-					<b>Adjustment Type: </b>
-				</div>
-				<div class="col-xs-3 nopadding">
-					<select class="form-control input-sm" name="selcntyp" id="selcntyp">			
-						<option value="manual" <?=($seltype=="manual") ? "selected" : ""?>>Manual</option>		
-						<option value="theo" <?=($seltype=="theo") ? "selected" : ""?>>Theoretical</option>	
-						<option value="ending" <?=($seltype=="ending") ? "selected" : ""?>>Count Ending</option>					
-					</select>
-				</div>
-
-				<div class="col-xs-1 nopadwleft">
-          <button class="btncgroup btn btn-sm btn-danger" type="button" id="btnSISearch" onClick="InsertDet();" <?=($seltype!=="ending") ? "disabled" : ""?>><i class="fa fa-search"></i></button>
-        </div>
-			</div>
-
-			<div class="col-xs-12 nopadwtop">
-				<div class="col-xs-2 nopadding">
-					<b>Remarks: </b>
-				</div>
-				<div class="col-xs-8 nopadding">
-					<input type="text" class="form-control input-sm" name="txtccrems" id="txtccrems" value="<?=$hdremarks?>" placeholder="Enter Remarks...">
-				</div>
-			</div>
-	
-		</fieldset>	
-
-		<div class="col-xs-12 nopadwtop2x">			
-			<input type="text" class="form-control input-lg" name="txtscan" id="txtscan" value="" placeholder="Search Item Name...">
-
-			<input type="hidden" name="rowcnt" id="rowcnt" value="">
-		</div>
-
-                       
-                <table name='MyTbl' id='MyTbl' class="table table-scroll table-striped table-condensed">
-                  <thead>
-                    <tr>
-											<th width="50">&nbsp;</th>
-                      <th width="150">Item Code</th>
-                      <th>Item Description</th>
-                      <th width="70">Unit</th>
-											<th width="100" class="text-center">Theo End</th>
-                      <th width="100" class="text-center">Actual Qty</th>
-											<th width="100" class="text-center">Adjustment</th>
-                      <th width="50">&nbsp;</th>
-                    </tr>
-                  </thead>
-                  <tbody>
-										<?php
-												$sqlhead = mysqli_query($con,"Select A.*, B.citemdesc from adjustments_t A left join items B on A.compcode=B.compcode and A.citemno=B.cpartno where A.compcode='$company' and A.ctranno='".$_REQUEST['id']."'");
-												if (mysqli_num_rows($sqlhead)!=0) {
-										
-													$cnt = 0;
-													while($row = mysqli_fetch_array($sqlhead, MYSQLI_ASSOC)){
-														$cnt++;
-											?>
-												<tr>				
-													<td><?=$cnt?></td>
-													<td><input type='hidden' value='<?=$row['creference']?>' name="hdncreference" id="hdncreference<?=$cnt?>"><input type='hidden' value='<?=$row['nrefident']?>' name="hdncrefident" id="hdncrefident<?=$cnt?>"><input type='hidden' value='<?=$row['citemno']?>' name="txtitmcode" id="txtitmcode<?=$cnt?>"><?=$row['citemno']?></td>
-													<td><input type='hidden' value='<?=$row['citemdesc']?>' name="txtitmdesc" id="txtitmdesc<?=$cnt?>"><?=$row['citemdesc']?></td>
-													<td><input type='hidden' value='<?=$row['cunit']?>' name="txtcunit" id="txtcunit<?=$cnt?>"><?=$row['cunit']?></td>
-													<td>
-														<input type='text' class="form-control input-xs text-center" name="txtnqtytheo" id="txtnqtytheo<?=$cnt?>" value="<?=number_format($row['nqty'],2)?>" readonly>
-													</td>
-													<td>
-														<input type='text' class="numeric form-control input-xs text-center" name="txtnqty" id="txtnqty<?=$cnt?>" value="<?=number_format($row['nqtyactual'],2)?>">
-													</td>
-													<td>
-														<input type='text' class="form-control input-xs text-center" name="txtdiff" id="txtdiff<?=$cnt?>" value="<?=number_format($row['nadj'],2)?>" readonly>
-													</td>
-													<td align="center"><button type="button" class="<?=($row['creference']!=="") ? "btndeldet" : ""?> btn btn-danger btn-xs" name="btnDel" id="btnDel<?=$cnt?>" <?=($seltype!=="manual") ? "disabled" : ""?>><i class="fa fa-times"></i></button></td>
-												</tr>
-
-													<script type="text/javascript">
-														$(function(){	
-
-															$("#btnDel<?=$cnt?>").on('click', function() {
-																$(this).closest('tr').remove();
-																Reinitialize();
-															});
-
-														});
-													</script>
+						
+					<table name='MyTbl' id='MyTbl' class="table table-scroll table-striped table-condensed">
+					<thead>
+						<tr>
+												<th width="50">&nbsp;</th>
+						<th width="150">Item Code</th>
+						<th>Item Description</th>
+						<th width="70">Unit</th>
+												<th width="100" class="text-center">Theo End</th>
+						<th width="100" class="text-center">Actual Qty</th>
+												<th width="100" class="text-center">Adjustment</th>
+						<th width="50">&nbsp;</th>
+						</tr>
+					</thead>
+					<tbody>
 											<?php
+													$sqlhead = mysqli_query($con,"Select A.*, B.citemdesc from adjustments_t A left join items B on A.compcode=B.compcode and A.citemno=B.cpartno where A.compcode='$company' and A.ctranno='".$_REQUEST['id']."'");
+													if (mysqli_num_rows($sqlhead)!=0) {
+											
+														$cnt = 0;
+														while($row = mysqli_fetch_array($sqlhead, MYSQLI_ASSOC)){
+															$cnt++;
+												?>
+													<tr>				
+														<td><?=$cnt?></td>
+														<td><input type='hidden' value='<?=$row['creference']?>' name="hdncreference" id="hdncreference<?=$cnt?>"><input type='hidden' value='<?=$row['nrefident']?>' name="hdncrefident" id="hdncrefident<?=$cnt?>"><input type='hidden' value='<?=$row['citemno']?>' name="txtitmcode" id="txtitmcode<?=$cnt?>"><?=$row['citemno']?></td>
+														<td><input type='hidden' value='<?=$row['citemdesc']?>' name="txtitmdesc" id="txtitmdesc<?=$cnt?>"><?=$row['citemdesc']?></td>
+														<td><input type='hidden' value='<?=$row['cunit']?>' name="txtcunit" id="txtcunit<?=$cnt?>"><?=$row['cunit']?></td>
+														<td>
+															<input type='text' class="form-control input-xs text-center" name="txtnqtytheo" id="txtnqtytheo<?=$cnt?>" value="<?=number_format($row['nqty'],2)?>" readonly>
+														</td>
+														<td>
+															<input type='text' class="numeric form-control input-xs text-center" name="txtnqty" id="txtnqty<?=$cnt?>" value="<?=number_format($row['nqtyactual'],2)?>">
+														</td>
+														<td>
+															<input type='text' class="form-control input-xs text-center" name="txtdiff" id="txtdiff<?=$cnt?>" value="<?=number_format($row['nadj'],2)?>" readonly>
+														</td>
+														<td align="center"><button type="button" class="<?=($row['creference']!=="") ? "btndeldet" : ""?> btn btn-danger btn-xs" name="btnDel" id="btnDel<?=$cnt?>" <?=($seltype!=="manual") ? "disabled" : ""?>><i class="fa fa-times"></i></button></td>
+													</tr>
+
+														<script type="text/javascript">
+															$(function(){	
+
+																$("#btnDel<?=$cnt?>").on('click', function() {
+																	$(this).closest('tr').remove();
+																	Reinitialize();
+																});
+
+															});
+														</script>
+												<?php
+														}
 													}
-												}
-											?>
-                  </tbody>
-				 				</table>
+												?>
+					</tbody>
+									</table>
 
 
-		<br>
-		<table width="100%" border="0" cellpadding="3">
-			<tr>
-				<td>
-					<button type="button" class="btn btn-primary btn-sm" tabindex="6" onClick="window.location.href='Inv.php';" id="btnMain" name="btnMain">
-						Back to Main<br>(ESC)
-					</button>
+			<br>
+			<table width="100%" border="0" cellpadding="3">
+				<tr>
+					<td>
+						<?php
+							if($poststat == "True"){
+						?>
+						<button type="button" class="btn btn-primary btn-sm" tabindex="6" onClick="window.location.href='Inv.php';" id="btnMain" name="btnMain">
+							Back to Main<br>(ESC)
+						</button>
 
-					<button type="button" class="btn btn-default btn-sm" tabindex="6" onClick="window.location='https://<?=$_SERVER['SERVER_NAME']?>/Inventory/Adjustment/InvAdj_New.php'" id="btnNew" name="btnNew">
-						New<br>(F1)
-					</button>
+						<button type="button" class="btn btn-default btn-sm" tabindex="6" onClick="window.location='https://<?=$_SERVER['SERVER_NAME']?>/Inventory/Adjustment/InvAdj_New.php'" id="btnNew" name="btnNew">
+							New<br>(F1)
+						</button>
 
-					<button type="button" class="btn btn-danger btn-sm" tabindex="6" onClick="window.location='https://<?=$_SERVER['SERVER_NAME']?>/Inventory/Adjustment/InvAdj_Edit.php?id=<?=$_REQUEST['id']?>'" id="btnUndo" name="btnUndo">
-						Undo Edit<br>(CTRL+Z)
-					</button>
+						<button type="button" class="btn btn-danger btn-sm" tabindex="6" onClick="window.location='https://<?=$_SERVER['SERVER_NAME']?>/Inventory/Adjustment/InvAdj_Edit.php?id=<?=$_REQUEST['id']?>'" id="btnUndo" name="btnUndo">
+							Undo Edit<br>(CTRL+Z)
+						</button>
 
-					<button type="button" class="btn btn-warning btn-sm" tabindex="6" onClick="enabled();" id="btnEdit" name="btnEdit">
-						Edit<br>(CTRL+E)
-					</button>
+						<?php
+							}
+							
+							if($printstat == "True"){
+						?>
+						<button type="button" class="btn btn-info btn-sm" tabindex="6" onClick="printchk('<?=$_REQUEST['id']?>','Print');" id="btnPrint" name="btnPrint">
+							Print<br>(CTRL+P)
+						</button>
+						<?php
+							}
 
-					<button type="button" class="btn btn-success btn-sm" tabindex="6" onClick="return chkform();" id="btnSave" name="btnSave">SAVE<br> (CTRL+S)</button></td>
+							if($poststat == "True"){
+						?>
 
-				</tr>
-		</table>
+						<button type="button" class="btn btn-warning btn-sm" tabindex="6" onClick="enabled();" id="btnEdit" name="btnEdit">
+							Edit<br>(CTRL+E)
+						</button>
 
-	</form>
+						<button type="button" class="btn btn-success btn-sm" tabindex="6" onClick="return chkform();" id="btnSave" name="btnSave">SAVE<br> (CTRL+S)</button></td>
 
+						<?php
+							}
+						?>
+					</tr>
+			</table>
+
+		</form>
+
+		<form method="post" name="frmprint" id="frmprint" action="InvAdj_PDF.php" target="_blank">
+			<input type="hidden" name="printid" id="printid" value="">
+		</form>
 	<?php
 		}
 	?>
@@ -276,48 +312,48 @@
 
 	<!-- 1) Alert Modal -->
 	<div class="modal fade" id="AlertModal" tabindex="-1" role="dialog" data-keyboard="false" data-backdrop="static" aria-hidden="true">
-			<div class="vertical-alignment-helper">
-					<div class="modal-dialog vertical-align-top">
-							<div class="modal-content">
-								<div class="alert-modal-danger">
-										<p id="AlertMsg"></p>
-									<p>
-											<center>
-													<button type="button" class="btn btn-primary btn-sm" data-dismiss="modal" id="alertbtnOK">Ok</button>
-											</center>
-									</p>
-								</div>
-							</div>
+		<div class="vertical-alignment-helper">
+			<div class="modal-dialog vertical-align-top">
+				<div class="modal-content">
+					<div class="alert-modal-danger">
+						<p id="AlertMsg"></p>
+						<p>
+							<center>
+								<button type="button" class="btn btn-primary btn-sm" data-dismiss="modal" id="alertbtnOK">Ok</button>
+							</center>
+						</p>
 					</div>
+				</div>
 			</div>
+		</div>
 	</div>
 
 	<div class="modal fade" id="mySIRef" role="dialog" data-keyboard="false" data-backdrop="static">
-    <div class="modal-dialog modal-md">
-      <div class="modal-content">
-        <div class="modal-header">
-          <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-          <h3 class="modal-title" id="InvListHdr">Inventory Count List</h3>
-        </div>           
-        <div class="modal-body pre-scrollable" style="height:25vh">            
+		<div class="modal-dialog modal-md">
+			<div class="modal-content">
+				<div class="modal-header">
+					<button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+					<h3 class="modal-title" id="InvListHdr">Inventory Count List</h3>
+				</div>           
+				<div class="modal-body pre-scrollable" style="height:25vh">            
 
-							<table name='MyInvTbl' id='MyInvTbl' class="table table-small table-highlight small">
-								<thead>
-									<tr>
-										<th>Trans No.</th>
-										<th>Inventory Date</th>
-									</tr>
-								</thead>
-								<tbody>
-								</tbody>
-							</table>
+					<table name='MyInvTbl' id='MyInvTbl' class="table table-small table-highlight small">
+						<thead>
+							<tr>
+								<th>Trans No.</th>
+								<th>Inventory Date</th>
+							</tr>
+						</thead>
+						<tbody>
+						</tbody>
+					</table>
   	            
 				</div>			
-        <div class="modal-footer">
-          <button type="button" class="btn btn-danger" data-dismiss="modal">Cancel</button>
-        </div>
-      </div><!-- /.modal-content -->
-    </div><!-- /.modal-dialog -->
+				<div class="modal-footer">
+					<button type="button" class="btn btn-danger" data-dismiss="modal">Cancel</button>
+				</div>
+      		</div><!-- /.modal-content -->
+    	</div><!-- /.modal-dialog -->
 	</div>
 
 </body>
@@ -330,16 +366,22 @@
 
 	$(document).keydown(function(e) {	 
 	  if(e.keyCode == 83 && e.ctrlKey){//CTRL S
-			if($("#btnSave").is(":disabled")==false){
-				e.preventDefault();
-				return chkform();
-			}
+		if($("#btnSave").is(":disabled")==false){
+			e.preventDefault();
+			return chkform();
+		}
 	  }
+	  else if(e.keyCode == 80 && e.ctrlKey){//CTRL+P
+		if($("#btnPrint").is(":disabled")==false){
+			e.preventDefault();
+			printchk('<?=$_REQUEST['id']?>', 'Print');
+		}
+	}
 	  else if(e.keyCode == 27){//ESC
-			if($("#btnMain").is(":disabled")==false){
-				e.preventDefault();
-				window.location.href='Inv.php';
-			}
+		if($("#btnMain").is(":disabled")==false){
+			e.preventDefault();
+			window.location.href='Inv.php';
+		}
 	  }
 
 	});
@@ -690,7 +732,7 @@
 		$("#frmCount :input").attr("disabled", true);
 
 		$("#btnMain").attr("disabled", false);
-		//$("#btnPrint").attr("disabled", false);
+		$("#btnPrint").attr("disabled", false);
 		$("#btnNew").attr("disabled", false);
 		$("#btnEdit").attr("disabled", false);
 
@@ -715,7 +757,7 @@
 			$("#frmCount :input").attr("disabled", false);
 			
 				$("#btnMain").attr("disabled", true);
-				//$("#btnPrint").attr("disabled", true);
+				$("#btnPrint").attr("disabled", true);
 				$("#btnNew").attr("disabled", true);
 				$("#btnEdit").attr("disabled", true);
 
@@ -731,6 +773,22 @@
 			if(keyCode==13){
 				document.getElementById(frm).action = "InvAdj_Edit.php";
 				document.getElementById(frm).submit();
+			}
+		}
+
+		function printchk(x,typx){
+			if(document.getElementById("hdncancel").value==1){	
+				document.getElementById("statmsgz").innerHTML = "CANCELLED TRANSACTION CANNOT BE PRINTED!";
+				document.getElementById("statmsgz").style.color = "#FF0000";
+			}
+			else{
+
+				if(typx=="Print"){
+
+					$("#printid").val(x);
+					$("#frmprint").submit();
+				}
+
 			}
 		}
 

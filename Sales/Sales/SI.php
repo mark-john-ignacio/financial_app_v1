@@ -281,11 +281,11 @@
 				"columns": [
 					{ "data": null,
 							"render": function (data, type, full, row) {
-									var sts = "";
-									if (full[6] == 1 || full[11] == 1) {
-										sts="class='text-danger'";
-									}
-									return "<a "+sts+" href=\"javascript:;\" onclick=\"editfrm('"+full[0]+"')\">"+full[0]+"</a>";
+								var sts = "";
+								if (full[6] == 1 || full[11] == 1) {
+									sts="class='text-danger'";
+								}
+								return "<a "+sts+" href=\"javascript:;\" onclick=\"editfrm('"+full[0]+"')\">"+full[0]+"</a>";
 							}								
 					},
 					{ "data": 1 },
