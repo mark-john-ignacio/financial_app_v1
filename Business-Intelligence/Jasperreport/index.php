@@ -1,23 +1,26 @@
-
-<script src="http://localhost:8080/jrio-client/scripts/jrio/jrio.js"></script>
-
-<div id="reportContainer"></div>
-
+<script src="http://localhost:8080/jasperserver-pro/client/visualize.js"></script>
+<div id="container"></div>
 <script>
-
-    jrio.config({
-        server : "http://localhost:8080/jrio-docs",
-        theme: {
-            href: "http://localhost:8080/jrio-client/themes/default"
+    visualize(
+        {auth:
+            {
+                name: "jasperadmin",
+                password: "jasperadmin"
+            }
         },
-        locale: "en_US"
-    });
-
-    jrio(function(jrioClient) {
-        jrioClient.report({
-            resource: "/samples/reports/highcharts/HighchartsChart",
-            container: "#reportContainer",
-            error: function(err) { alert(err); },
+        /*
+        please uncomment and use your credentials for testing
+        {auth: {
+        name: "******",
+        password: "*******"
+        }},
+        */
+        function (v) {
+            v("#container").report({
+                resource: "/public/MyxFin/MyxFin",
+                error: function(e) {
+                    alert(e);
+                }
+            });
         });
-    });
 </script>
