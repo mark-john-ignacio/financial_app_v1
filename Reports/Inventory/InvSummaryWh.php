@@ -2,7 +2,7 @@
 	if(!isset($_SESSION)){
 		session_start();
 	}
-	$_SESSION['pageid'] = "InvSum.php";
+	$_SESSION['pageid'] = "InvSumWh";
 
 
 	ini_set('MAX_EXECUTION_TIME', 900);

@@ -1,3 +1,33 @@
+<?php 
+	if(!isset($_SESSION)){
+		session_start();
+	}
+	include('../Connection/connection_string.php');
+	include('../include/denied.php');
+
+	//get the value of the employee id
+	$employeeid = isset($_SESSION['employeeid']) ? $_SESSION['employeeid'] : '';
+	$session_id = isset($_SESSION['session_id']) ? $_SESSION['session_id'] : '';
+	$company = isset($_SESSION['companyid']) ? $_SESSION['companyid'] : ''; // Retrieve companyid from session
+
+	//get list of reports that a user can access
+	$pages = array();
+	$sql = "SELECT pageid, main_id, menu_id FROM users_access WHERE userid = '$employeeid' and main_id in (65,75,83,94,101)";
+	$query = mysqli_query($con, $sql);
+	while($list = $query -> fetch_assoc()) {
+		array_push($pages, $list["menu_id"]);
+	}	
+
+	$navmenu = array();
+
+	$sql = "SELECT * FROM nav_menu WHERE cstatus ='ACTIVE' and id in (".implode(",",$pages).") Order by menu_order";
+	$query = mysqli_query($con, $sql);
+	while($list = $query -> fetch_assoc()) {	
+		$navmenu[] = $list;
+	}
+		
+?>
+
 <html>
 <head>
 	<link rel="stylesheet" type="text/css" href="../Bootstrap/css/bootstrap.css">
@@ -15,7 +45,7 @@
 	<script type="text/javascript">//<![CDATA[
 
 		$(document).ready(function() {
-				$(".divhid").hide();
+			$(".divhid").hide();
 			
 			$("#<?php echo $_GET["id"];?>").show();
 			
@@ -26,7 +56,10 @@
 				$("#divname").html("<font size=\"+2\"><u>Purchase Reports</u></font>");
 			}
 			else if($("#hdntyp").val()=="acc"){
-				$("#divname").html("<font size=\"+2\"><u>GL & BIR Reports</u></font>");
+				$("#divname").html("<font size=\"+2\"><u>Books of Account</u></font>");
+			}
+			else if($("#hdntyp").val()=="bir"){
+				$("#divname").html("<font size=\"+2\"><u>BIR Reports</u></font>");
 			}
 			else if($("#hdntyp").val()=="inv"){
 				$("#divname").html("<font size=\"+2\"><u>Inventory Reports</u></font>");
@@ -74,236 +107,100 @@
         <div class="col-sm-3 nopadding">
 
       	<div id="sales" class="divhid">
-
             <div style="padding-left:10px; padding-top:3px">
-					    <ul class="ver-inline-menu tabbable margin-bottom-25">  
+				<ul class="ver-inline-menu tabbable margin-bottom-25">  
 
-								<li>
-          				<a href="" onClick="setI('A','SalesOrders.php')" data-toggle="tab">
-                  <i class="fa fa-book"></i> Sales Orders </a>
-                </li>
-
-                <li>
-          				<a href="" onClick="setI('A','SalesPerItem.php')" data-toggle="tab">
-                  <i class="fa fa-book"></i> Sales Per Item </a>
-                </li>
-
-          			<li>
-          				<a href="" onClick="setI('A','SalesPerCust.php')" data-toggle="tab">
-                  <i class="fa fa-book"></i> Sales Per Customer </a>
-                </li>
-                
-    						<li>
-    							<a href="" onClick="setI('A','SalesSummary.php')" data-toggle="tab">
-    							<i class="fa fa-book"></i> Sales Summary </a>
-    						</li>
-    						<li>
-    							<a href="" onClick="setI('A','SalesDetailed.php')" data-toggle="tab">
-    							<i class="fa fa-book"></i> Sales Detailed </a>
-    						</li>
-                <li>
-    							<a href="" onClick="setI('A','SalesDisc.php')" data-toggle="tab">
-    							<i class="fa fa-book"></i> SO vs DR vs SI </a>
-    						</li>
-                <li>
-    							<a href="" onClick="setI('A','SODRDisc.php')" data-toggle="tab">
-    							<i class="fa fa-book"></i> Discrepancy Report - SO vs DR </a>
-    						</li>
-								<li>
-									<a href="" onClick="setI('A','ARAgeing.php')" data-toggle="tab">
-									<i class="fa fa-book"></i> AR Ageing </a>
-								</li>
-								<li>
-									<a href="" onClick="setI('A','ARMonitoring.php')" data-toggle="tab">
-									<i class="fa fa-book"></i> AR Monitoring </a>
-								</li>
-              </ul>
-					  </div>
-
+					<?php
+						foreach($navmenu as $row){
+							if($row['main_id']==65){
+								?>
+									<li>
+										<a href="" onClick="setI('A','<?=$row['url']?>')" data-toggle="tab">
+										<i class="fa fa-book"></i> <?=$row['title']?> </a>
+									</li>
+								<?php
+							}
+						}
+					?>
+					
+              	</ul>
+			</div>
         </div>
-        
-        
+               
         <div id="purch" class="divhid">
-
             <div style="padding-left:10px; padding-top:3px">
-					    <ul class="ver-inline-menu tabbable margin-bottom-25">  
-                <li>
-          				<a href="" onClick="setI('A','PurchPerItem.php')" data-toggle="tab">
-                  <i class="fa fa-book"></i> Purchases Per Item </a>
-                </li>
-
-          			<li>
-          				<a href="" onClick="setI('A','PurchPerSupp.php')" data-toggle="tab">
-                  <i class="fa fa-book"></i> Purchases Per Supplier </a>
-                </li>
-                
-    						<li>
-    							<a href="" onClick="setI('A','PurchSummary.php')" data-toggle="tab">
-    							<i class="fa fa-book"></i> Purchases Summary </a>
-    						</li>
-    						<li>
-    							<a href="" onClick="setI('A','PurchDetailed.php')" data-toggle="tab">
-    							<i class="fa fa-book"></i> Purchases Detailed </a>
-    						</li>
-                <li>
-    							<a href="" onClick="setI('A','PurchBalances.php')" data-toggle="tab">
-    							<i class="fa fa-book"></i> PO Balances </a>
-    						</li>
-                <li>
-    							<a href="" onClick="setI('A','PurchMonitoring.php')" data-toggle="tab">
-    							<i class="fa fa-book"></i> PO Price Monitoring </a>
-    						</li>
-								<li>
-									<a href="" onClick="setI('A','APAgeing.php')" data-toggle="tab">
-									<i class="fa fa-book"></i> AP Ageing Report </a>
-								</li>
-              </ul>
-					  </div>
-
-        
+				<ul class="ver-inline-menu tabbable margin-bottom-25">  
+					<?php
+						foreach($navmenu as $row){
+							if($row['main_id']==75){
+								?>
+									<li>
+										<a href="" onClick="setI('A','<?=$row['url']?>')" data-toggle="tab">
+										<i class="fa fa-book"></i> <?=$row['title']?> </a>
+									</li>
+								<?php
+							}
+						}
+					?>
+              	</ul>
+			</div>       
         </div>
         
-        <div id="acc" class="divhid">
-        
-					<h4 class="nopadding">GL Reports</h4>
-					<hr class="alert-danger nopadding">
-          			<div style="padding-left:10px; padding-top:3px">
-						<ul class="ver-inline-menu tabbable margin-bottom-25">
-							<li>
-								<a href="" onClick="setI('A','SalesReg.php')" data-toggle="tab">
-								<i class="fa fa-book"></i> Sales Register </a>
-							</li>
-							<li>
-								<a href="" onClick="setI('A','CashBook.php')" data-toggle="tab">
-								<i class="fa fa-book"></i> Cash Receipts Book</a>
-							</li>
-							<!--<li>
-									<a href="" onClick="setI('A','PurchJourn.php')" data-toggle="tab">
-								<i class="fa fa-book"></i> Purchase Journal </a>
-							</li>-->
-							<li>
-								<a href="" onClick="setI('A','APJ.php')" data-toggle="tab">
-								<i class="fa fa-book"></i> Accounts Payable Ledger </a>
-							</li>
-							<li>
-								<a href="" onClick="setI('A','CDJ.php')" data-toggle="tab">
-								<i class="fa fa-book"></i> Cash Disbursement Book </a>
-							</li>
-							<li>
-								<a href="" onClick="setI('A','CashPosition.php')" data-toggle="tab">
-								<i class="fa fa-book"></i> Cash Position </a>
-							</li> 
-							<li>
-								<a href="" onClick="setI('A','GJournal.php')" data-toggle="tab">
-								<i class="fa fa-book"></i> General Journal </a>
-							</li>
-							<li>
-								<a href="" onClick="setI('A','GLedger.php')" data-toggle="tab">
-								<i class="fa fa-book"></i> General Ledger </a>
-							</li>
-							<li>
-								<a href="" onClick="setI('A','TBal.php')" data-toggle="tab">
-								<i class="fa fa-book"></i> Trial Balance </a>
-							</li>
-                
-    						<li>
-    							<a href="" onClick="setI('A','BalSheet.php')" data-toggle="tab">
-    							<i class="fa fa-book"></i> Balance Sheet </a>
-    						</li> 
-
-								<li>
-    							<a href="" onClick="setI('A','IStatement.php')" data-toggle="tab">
-    							<i class="fa fa-book"></i> Income Statement </a>
-    						</li> 
-						</ul>
-					</div>
-
-							<h4 class="nopadwtop2x">BIR Forms &amp; Reports</h4>
-							<hr class="alert-danger nopadding">
-								<div style="padding-left:10px; padding-top:3px">
-									<ul class="ver-inline-menu tabbable margin-bottom-25"> 
-										<li>
-											<a href="" onclick="setI('A', 'SJournal.php')"  data-toggle="tab">
-											<i class="fa fa-book"></i>Sales Journal</a>
-										</li>
-										<li>
-											<a href="" onclick="setI('A', 'PurchJourn.php')"  data-toggle="tab">
-											<i class="fa fa-book"></i>Purchase Journal</a>
-										</li>
-										<li>
-											<a href="" onclick="setI('A', 'SalesDat.php')"  data-toggle="tab">
-											<i class="fa fa-book"></i>BIR Sales RELIEF</a>
-										</li>
-										<li>
-											<a href="" onclick="setI('A', 'PurchaseDat.php')" data-toggle="tab">
-												<i class="fa fa-book"></i>BIR Purchase RELIEF</a>
-										</li>   
-										<li>
-											<!-- <form action="./QAP" target="_blank">
-												<button type="submit" style="border: 0px; padding:0px; width: 100%; display: flex; justify-content: left; justify-items: left; font-size: 16px">
-													<a href="javascript:;" ><i class="fa fa-book"></i>BIR QAP</a>
-												</button>
-											</form> -->
-											<a href="" onClick="setI('A', './QAP/')" data-toggle="tab">
-											<i class="fa fa-book"></i>BIR QAP</a>
-										</li>    
-										<li>
-											<a href="" onclick="setI('A', './SAWT/')" data-toggle="tab">
-											<i class="fa fa-book"></i>BIR SAWT</a>
-										</li>
-										<!--<li>
-											<a href="" onclick="setI('A', 'BIR_Forms.php')" data-toggle="tab">
-											<i class="fa fa-book"></i>BIR FORMS</a>
-										</li>
-
-										<li>
-											<a href="" onclick="setI('A', './VAT_SUMMARY/')" data-toggle="tab">
-											<i class="fa fa-book"></i>VAT SUMMARY</a>
-										</li> -->
-										<!-- <li>
-											<a href="" onClick="setI('A','MonthlyVAT.php')" data-toggle="tab">
-											<i class="fa fa-book"></i> Monthly Output VAT</a>
-										</li>
-										<li>
-											<a href="" onClick="setI('A','Monthly_IVat.php')" data-toggle="tab">
-											<i class="fa fa-book"></i> Monthly Input VAT and W/Tax </a>
-										</li>
-										<li>
-											<a href="" onClick="setI('A', 'BIR_2307.php')" data-toggle="tab">
-											<i class="fa fa-book"></i>BIR FORM 2307</a>
-										</li>
-										<li>
-											<a href="" onClick="setI('A', 'BIR_2306.php')" data-toggle="tab">
-											<i class="fa fa-book"></i>BIR FORM 2306</a>
-										</li> -->
-										<!--
-										<li>
-											<a href="" onClick="setI('A', 'BIR_Quartely.php')" data-toggle="tab">
-											<i class="fa fa-book"></i>2550Q Form</a>
-										</li>
-										-->
-									</ul>
-								</div>
-        
+		<div id="acc" class="divhid">
+            <div style="padding-left:10px; padding-top:3px">
+				<ul class="ver-inline-menu tabbable margin-bottom-25">  
+					<?php
+						foreach($navmenu as $row){
+							if($row['main_id']==83){
+								?>
+									<li>
+										<a href="" onClick="setI('A','<?=$row['url']?>')" data-toggle="tab">
+										<i class="fa fa-book"></i> <?=$row['title']?> </a>
+									</li>
+								<?php
+							}
+						}
+					?>
+              	</ul>
+			</div>       
         </div>
         
+		<div id="bir" class="divhid">
+            <div style="padding-left:10px; padding-top:3px">
+				<ul class="ver-inline-menu tabbable margin-bottom-25">  
+					<?php
+						foreach($navmenu as $row){
+							if($row['main_id']==94){
+								?>
+									<li>
+										<a href="" onClick="setI('A','<?=$row['url']?>')" data-toggle="tab">
+										<i class="fa fa-book"></i> <?=$row['title']?> </a>
+									</li>
+								<?php
+							}
+						}
+					?>
+              	</ul>
+			</div>       
+        </div>
+
         <div id="inv" class="divhid">
-        
             <div style="padding-left:10px; padding-top:3px">
-					    <ul class="ver-inline-menu tabbable margin-bottom-25">  
-                <li>
-          				<a href="" onClick="setI('A','InvSumWh.php')" data-toggle="tab">
-                  <i class="fa fa-book"></i> Inventory Summary </a>
-                </li>
-								<!--
-                <li>
-          				<a href="" onClick="setI('A','InvTrans_Reg.php')" data-toggle="tab">
-                  <i class="fa fa-book"></i> Inventory Transfer - Register </a>
-                </li>
-								-->
-              </ul>
-            </div>
-
+				<ul class="ver-inline-menu tabbable margin-bottom-25">  
+					<?php
+						foreach($navmenu as $row){
+							if($row['main_id']==101){
+								?>
+									<li>
+										<a href="" onClick="setI('A','<?=$row['url']?>')" data-toggle="tab">
+										<i class="fa fa-book"></i> <?=$row['title']?> </a>
+									</li>
+								<?php
+							}
+						}
+					?>
+              	</ul>
+			</div>       
         </div>
   
 

@@ -3,7 +3,7 @@
     session_start();
   }
 
-  $_SESSION['pageid'] = "ARMonitoring.php";
+  $_SESSION['pageid'] = "ARMonitoring";
   include('../Connection/connection_string.php');
   include('../include/denied.php');
   include('../include/access.php');

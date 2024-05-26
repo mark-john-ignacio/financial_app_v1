@@ -2,7 +2,7 @@
 if(!isset($_SESSION)){
 session_start();
 }
-$_SESSION['pageid'] = "CashBook.php";
+$_SESSION['pageid'] = "CashBook";
 
 include('../Connection/connection_string.php');
 include('../include/denied.php');
@@ -72,7 +72,7 @@ $(document).ready(function() {
                  format: 'MM/DD/YYYY'
            });
            $('#btnxls').on('click', function(){
-              $('#frmrep').attr("action", "Accounting/CRB_xls.php");
+              $('#frmrep').attr("action", "Accounting/CRJ_xls.php");
               $('#frmrep').submit();
            })
 

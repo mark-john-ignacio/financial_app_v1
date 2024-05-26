@@ -2,7 +2,11 @@
 	if(!isset($_SESSION)){
 		session_start();
 	}
+	$_SESSION['pageid'] = "CashPosition";
+
 	include('../../Connection/connection_string.php');
+	include('../../include/denied.php');
+	include('../../include/access2.php');
 
 	$company = $_SESSION['companyid'];
 	$sql = "select * From company where compcode='$company'";

@@ -3,7 +3,10 @@
     if(!isset($_SESSION)){
         session_start();
     }
-    include ("../../../Connection/connection_string.php");
+    $_SESSION['pageid'] = "BIRQAP";
+    include("../../../Connection/connection_string.php");
+    include('../../../include/denied.php');
+    include('../../../include/access.php');
     require_once("../../../Model/helper.php");
 
     $company = $_SESSION['companyid'];

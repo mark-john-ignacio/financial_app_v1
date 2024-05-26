@@ -132,8 +132,6 @@
 				</tbody>
 			</table>
 			<input type="hidden" id="hdndescs" value='<?=json_encode($arrdesc);?>'>
-			<input type="hidden" id="posnew" value="<?=$posnew;?>">
-			<input type="hidden" id="posedit" value="<?=$posedit;?>">
 
 		</section>
 	</div>		
@@ -213,7 +211,7 @@ mysqli_close($con);
 			
 			// Adding new user
 			$("#btnadd").on("click", function() {
-				var x = $("#posnew").val();
+				var x = "<?=$posnew;?>";
 				
 				if(x.trim()=="True"){
 					$("#btnSave").show();
@@ -308,7 +306,7 @@ mysqli_close($con);
 	
 		function editgrp(code,desc){
 
-			var x = $("#posedit").val();
+			var x = "<?=$posedit;?>";
 			
 			if(x.trim()=="True"){
 				$("#btnSave").hide();
@@ -330,32 +328,41 @@ mysqli_close($con);
 		}
 	
 		function setStat(code, stat){
-			$.ajax ({
-				url: "th_setstatlocations.php",
-				data: { code: code,  stat: stat },
-				async: false,
-				success: function( data ) {
-					if(data.trim()!="True"){
-						$("#itm"+code).html("<b>Error: </b>"+ data);
-						$("#itm"+code).attr("class", "itmalert alert alert-danger nopadding")
-						$("#itm"+code).show();
-					}
-					else{
-					  if(stat=="ACTIVE"){
-						$("#itmstat"+code).html("<span class='label label-success'>Active</span>&nbsp;&nbsp;<a id=\"popoverData1\" href=\"#\" data-content=\"Set as Inactive\" rel=\"popover\" data-placement=\"bottom\" data-trigger=\"hover\" onClick=\"setStat('"+code+"','INACTIVE')\" ><i class=\"fa fa-refresh\" style=\"color: #f0ad4e\"></i></a>");
-					  }else{
-						 $("#itmstat"+code).html("<span class='label label-warning'>Inactive</span>&nbsp;&nbsp;<a id=\"popoverData2\" href=\"#\" data-content=\"Set as Active\" rel=\"popover\" data-placement=\"bottom\" data-trigger=\"hover\" onClick=\"setStat('"+code+"','ACTIVE')\"><i class=\"fa fa-refresh\" style=\"color: #5cb85c\"></i></a>");
-					  }
-						
-						$("#itm"+code).html("<b>SUCCESS: </b> Status changed to "+stat);
-						$("#itm"+code).attr("class", "itmalert alert alert-success nopadding")
-						$("#itm"+code).show();
 
-					}
-				}
+			var x = "<?=$posedit;?>";
 			
-			});
+			if(x.trim()=="True"){
 
+				$.ajax ({
+					url: "th_setstatlocations.php",
+					data: { code: code,  stat: stat },
+					async: false,
+					success: function( data ) {
+						if(data.trim()!="True"){
+							$("#itm"+code).html("<b>Error: </b>"+ data);
+							$("#itm"+code).attr("class", "itmalert alert alert-danger nopadding")
+							$("#itm"+code).show();
+						}
+						else{
+						if(stat=="ACTIVE"){
+							$("#itmstat"+code).html("<span class='label label-success'>Active</span>&nbsp;&nbsp;<a id=\"popoverData1\" href=\"#\" data-content=\"Set as Inactive\" rel=\"popover\" data-placement=\"bottom\" data-trigger=\"hover\" onClick=\"setStat('"+code+"','INACTIVE')\" ><i class=\"fa fa-refresh\" style=\"color: #f0ad4e\"></i></a>");
+						}else{
+							$("#itmstat"+code).html("<span class='label label-warning'>Inactive</span>&nbsp;&nbsp;<a id=\"popoverData2\" href=\"#\" data-content=\"Set as Active\" rel=\"popover\" data-placement=\"bottom\" data-trigger=\"hover\" onClick=\"setStat('"+code+"','ACTIVE')\"><i class=\"fa fa-refresh\" style=\"color: #5cb85c\"></i></a>");
+						}
+							
+							$("#itm"+code).html("<b>SUCCESS: </b> Status changed to "+stat);
+							$("#itm"+code).attr("class", "itmalert alert alert-success nopadding")
+							$("#itm"+code).show();
+
+						}
+					}
+				
+				});
+			} else {
+				$("#AlertMsg").html("<center><b>ACCESS DENIED!</b></center>");
+				$("#AlertModal").modal('show');
+
+			}
 		}
 
 	</script>

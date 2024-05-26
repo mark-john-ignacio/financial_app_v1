@@ -3,8 +3,12 @@
     if(!isset($_SESSION)){
         session_start();
     }
-    include ("../../../Connection/connection_string.php");
-    require_once("../../../Model/helper.php");
+    $_SESSION['pageid'] = "BIRSAWT";
+
+    include("../../../Connection/connection_string.php");
+    include('../../../include/denied.php');
+    include('../../../include/access.php');
+    include('../../../Model/helper.php');
 
     $company = $_SESSION['companyid'];
     //$month = date("m", strtotime($_POST['months']));

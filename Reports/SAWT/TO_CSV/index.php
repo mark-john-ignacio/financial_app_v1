@@ -2,8 +2,13 @@
     if(!isset($_SESSION)){
         session_start();
     }
-    require_once  "../../../vendor2/autoload.php";
+    
+    $_SESSION['pageid'] = "BIRSAWT";
+
+    require_once "../../../vendor2/autoload.php";
     require_once "../../../Connection/connection_string.php";
+    require_once "../../../include/denied.php";
+    require_once "../../../include/access.php";
     require_once "../../../Model/helper.php";
 
     //use PhpOffice\PhpSpreadsheet\Helper\Sample;

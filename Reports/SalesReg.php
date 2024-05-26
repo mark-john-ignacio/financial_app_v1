@@ -2,12 +2,13 @@
   if(!isset($_SESSION)){
     session_start();
   }
-  $_SESSION['pageid'] = "SalesReg.php";
+  $_SESSION['pageid'] = "SalesReg";
 
   include('../Connection/connection_string.php');
   include('../include/denied.php');
   include('../include/access.php');
-?><html>
+?>
+<html>
 <head>
 
   <link href="../global/plugins/font-awesome/css/font-awesome.min.css" rel="stylesheet" type="text/css"/>

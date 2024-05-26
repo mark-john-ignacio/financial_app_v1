@@ -2,8 +2,14 @@
 if(!isset($_SESSION)){
     session_start();
 }
+$_SESSION['pageid'] = "BIRQAP";
+
 require_once  "../../../vendor2/autoload.php";
+
 require_once "../../../Connection/connection_string.php";
+include('../../../include/denied.php');
+include('../../../include/access.php');
+
 require_once "../../../Model/helper.php";
 
 //use PhpOffice\PhpSpreadsheet\Helper\Sample;
