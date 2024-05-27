@@ -85,16 +85,12 @@ include('../../include/denied.php');
 
 <body> <!-- onLoad="window.print()" -->
 
-<div id="imgcontent">
-	<img src="../<?=$logosrc?>" class="ribbon" alt="" width="150px"/>
-</div>
-
 <table border="0" width="100%"  id="tblMain">
 	<tr>
-		<!--<td align="left" width="250px"> 
-			<img src="<//php echo "../".$logosrc; ?>" height="68px">
+		<td align="left" width="250px"> 
+			<img src="<?php echo "../".$logosrc; ?>" width="150px">
 		</td>
-		<td align="left"> 
+		<!--<td align="left"> 
 
 				<table border="0" width="100%">
 						<tr>
@@ -162,6 +158,31 @@ include('../../include/denied.php');
 			</table>
 		</td>
 	</tr>
+
+	<tr>
+		<td colspan="4" style="padding-top: 10px; border-top: 1px solid"> 
+			<table border="0" width="100%">
+				<tr>
+					<th width="25%"> Customer PO / Ref Work Week: </th> 
+					<td width="25%"> <?=$arrmrpjo[0]['cnarration']?></td>
+					<th width="25%"> Product Type</th>
+					<td width="25%"> <?=$arrmrpjo[0]['cproductype']?></td>
+				</tr>
+			</table>
+		</td>
+	</tr>
+
+	<tr>
+		<td colspan="4"> 
+			<table border="1" width="100%" style="border-collapse: collapse;">
+				<tr>
+					<td width="33%" valign="top" height="50px"> <b> Prepared by: </b></td> 
+					<td width="34%" valign="top" height="50px"> <b> Checked by: </b></td> 
+					<td width="33%" valign="top" height="50px"> <b> Approved by: </b></td> 
+				</tr>
+			</table>
+		</td>
+	</tr>
 </table>
 
 <br><br>
@@ -181,6 +202,8 @@ include('../../include/denied.php');
 	</tr>
 
 	<?php
+		$totrej = 0;
+		$totscrp = 0;
 		foreach($arrmrpjoproc as $rsc){
 	?>
 		<tr> 
@@ -214,6 +237,8 @@ include('../../include/denied.php');
 				<td><?=$bv['cremarks']?></td>				
 			</tr>
 		<?php
+					$totrej = $totrej + floatval($bv['nrejectqty']);
+					$totscrp = $totscrp + floatval($bv['nscrapqty']);
 				}
 			}
 		?>
@@ -255,9 +280,48 @@ include('../../include/denied.php');
 				<td><?=$bv['cremarks']?></td>				
 			</tr>
 		<?php
-
+				$totrej = $totrej + floatval($bv['nrejectqty']);
+				$totscrp = $totscrp + floatval($bv['nscrapqty']);
 			}
 		?>
+
+			<tr> 
+				<td>&nbsp;</td>
+				<td>&nbsp;</td>
+				<td>&nbsp;</td>
+				<td>&nbsp;</td>
+				<td>&nbsp;</td>
+				<td align="right"><b> Total: </b></td>
+				<td style="text-align: center"><?=number_format($totrej)?></td>
+				<td style="text-align: center"><?=number_format($totscrp)?></td>
+				<td>&nbsp;</td>
+				<td>&nbsp;</td>				
+			</tr>
+</table>
+<br>
+<table border="1" width="100%" style="border-collapse: collapse;">
+	<tr>
+		<td width="30%" valign="top" height="50px"> <b> REMARKS: </b></td> 
+		<td valign="top" height="50px"> 
+			<table border="0" width="100%">
+				<tr>
+					<th colspan="4"> RECEIVED BY </th> 
+				</tr>
+				<tr>
+					<th width="20%" style="text-align: left"> Production: </th>
+					<td>&nbsp;</td> 
+					<th width="20%" style="text-align: left"> Warehouse: </th>
+					<td>&nbsp;</td> 
+				</tr>
+				<tr>
+					<th width="20%" style="text-align: left"> Date: </th>
+					<td>&nbsp;</td> 
+					<th width="20%" style="text-align: left"> Date: </th>
+					<td>&nbsp;</td> 
+				</tr>
+			</table>
+		</td> 
+	</tr>
 </table>
 <!-- END MAIN JO PRINT --> 
 
@@ -267,7 +331,31 @@ include('../../include/denied.php');
 	foreach($arrmrpjoproc as $rsc){
 ?>
 
-	<table border="0" width="100%" cellpadding="1px"  id="tblMain" style="page-break-before:always">
+	<table border="0" width="100%"  id="tblMain" style="page-break-before:always">
+		<tr>
+			<td align="left" width="250px"> 
+				<img src="<?php echo "../".$logosrc; ?>" width="150px">
+			</td>
+			<!--<td align="left"> 
+
+					<table border="0" width="100%">
+							<tr>
+								<td><font style="font-size: 18px;"><?//php echo $logonamz; ?></font></td>
+							</tr>
+							<tr>
+								<td><font><?//php echo $logoaddrs; ?></font></td>
+							</tr>
+					</table>
+
+			</td>-->
+			<td align="center"> 
+				<h1>JOB ORDER</h1>
+			</td>
+		</tr>
+		
+	</table>
+
+	<table border="0" width="100%" cellpadding="1px"  id="tblMain" >
 		<tr>
 			<td width="100px"><b>Date Release: </b></td>
 			<td> </td>
@@ -315,6 +403,32 @@ include('../../include/denied.php');
 				</table>
 			</td>
 		</tr>
+
+		<tr>
+			<td colspan="4" style="padding-top: 10px; border-top: 1px solid"> 
+				<table border="0" width="100%">
+					<tr>
+						<th width="25%"> Customer PO / Ref Work Week: </th> 
+						<td width="25%"> <?=$arrmrpjo[0]['cnarration']?></td>
+						<th width="25%"> Product Type</th>
+						<td width="25%"> <?=$arrmrpjo[0]['cproductype']?></td>
+					</tr>
+				</table>
+			</td>
+		</tr>
+
+		<tr>
+			<td colspan="4"> 
+				<table border="1" width="100%" style="border-collapse: collapse;">
+					<tr>
+						<td width="33%" valign="top" height="50px"> <b> Prepared by: </b></td> 
+						<td width="34%" valign="top" height="50px"> <b> Checked by: </b></td> 
+						<td width="33%" valign="top" height="50px"> <b> Approved by: </b></td> 
+					</tr>
+				</table>
+			</td>
+		</tr>
+
 	</table>
 	<br><br>
 	<table border="1" width="100%" cellpadding="3px"  id="tblMain" style="border-collapse: collapse; margin-top: 10px">
@@ -353,6 +467,32 @@ include('../../include/denied.php');
 				}
 			?>
 		
+	</table>
+
+	<br>
+	<table border="1" width="100%" style="border-collapse: collapse;">
+		<tr>
+			<td width="30%" valign="top" height="50px"> <b> REMARKS: </b></td> 
+			<td valign="top" height="50px"> 
+				<table border="0" width="100%">
+					<tr>
+						<th colspan="4"> RECEIVED BY </th> 
+					</tr>
+					<tr>
+						<th width="20%" style="text-align: left"> Production: </th>
+						<td>&nbsp;</td> 
+						<th width="20%" style="text-align: left"> Warehouse: </th>
+						<td>&nbsp;</td> 
+					</tr>
+					<tr>
+						<th width="20%" style="text-align: left"> Date: </th>
+						<td>&nbsp;</td> 
+						<th width="20%" style="text-align: left"> Date: </th>
+						<td>&nbsp;</td> 
+					</tr>
+				</table>
+			</td> 
+		</tr>
 	</table>
 <?php
 	}

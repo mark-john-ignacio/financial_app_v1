@@ -56,8 +56,9 @@
 	//echo "<br>";
 
 	mysqli_query($con,"DELETE FROM mrp_jo_process where compcode='$company' and mrp_jo_ctranno ='$tranno'");
-	mysqli_query($con,"DELETE FROM mrp_jo_process_m where compcode='$company' and mrp_jo_ctranno ='$tranno'");
-	
+	mysqli_query($con,"DELETE FROM mrp_jo_process_m where compcode='$company' and mrp_jo_ctranno ='$tranno'"); 
+	mysqli_query($con,"DELETE FROM mrp_jo_process_mrs where compcode='$company' and mrp_jo_ctranno ='$tranno'"); 
+
 	getsubs($dmainitms,$dmainaryy['ctranno'],$dmainaryy['crefSO'],1,$dmainaryy['nqty'],$dmainaryy['ctranno']);
 
 	function getsubs($itm,$maintran,$soref,$lvl,$qty,$sicurr){
@@ -112,6 +113,15 @@
 						echo "Errormessage: ". mysqli_error($con);
 					}
 
+					// INSERT FOR MRS //
+					if (!mysqli_query($con, "INSERT INTO mrp_jo_process_mrs(`compcode`, `mrp_jo_ctranno`, `mrp_jo_sub`, `crefitem`, `nreference_id`, `citemno`, `cunit`, `nqty`, `cremarks`) values('$company', '".$maintran."', '".$sicurr."', '".$itm."', '".$rs2['nid']."', '".$rs2['citemno']."', '".$rs2['cunit']."','".$totqty."', 'BUILDABLE ".$totqty.$rs2['cunit']."')")) {
+					
+						$status = "False";
+						$msgz = $msgz . "<b>ERROR ON ".$rs2['citemno'].": </b>There's a problem generating your material!";
+		
+					}
+					//END MRS
+
 					getsubs($rs2['citemno'],$maintran,$soref,$nxtlvl,$totqty,$SINo);
 
 				}elseif($rs2['ctype']=="BUY"){
@@ -122,6 +132,15 @@
 						$msgz = $msgz . "<b>ERROR ON ".$rs2['citemno'].": </b>There's a problem generating your material!";
 		
 					}
+
+					// INSERT FOR MRS //
+					if (!mysqli_query($con, "INSERT INTO mrp_jo_process_mrs(`compcode`, `mrp_jo_ctranno`, `mrp_jo_sub`, `crefitem`, `nreference_id`, `citemno`, `cunit`, `nqty`, `cremarks`) values('$company', '".$maintran."', '".$sicurr."', '".$itm."', '".$rs2['nid']."', '".$rs2['citemno']."', '".$rs2['cunit']."','".$totqty."', '')")) {
+					
+						$status = "False";
+						$msgz = $msgz . "<b>ERROR ON ".$rs2['citemno'].": </b>There's a problem generating your material!";
+		
+					}
+					//END MRS
 
 				}
 

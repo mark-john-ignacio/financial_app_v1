@@ -1474,7 +1474,8 @@ function myFunctionadd(qty,pricex,curramt,amtx,factr,cref,crefident,itmsku,itmpo
 	var tditmpono = "<td width=\"130\" nowrap> <input type='text' value='"+itmpono+"' class='form-control input-xs' name='txtapono' id='txtapono"+lastRow+"'> </td>";
 
 	var tditmcode = "<td width=\"120\"> <input type='hidden' value='"+itmcode+"' name=\"txtitemcode\" id=\"txtitemcode" + lastRow + "\">"+itmcode+" <input type='hidden' value='"+cref+"' name=\"txtcreference\" id=\"txtcreference" + lastRow + "\"><input type='hidden' value='"+crefident+"' name=\"txtcrefident\" id=\"txtcrefident" + lastRow + "\"></td>";
-	var tditmdesc = "<td style=\"white-space: nowrap; text-overflow:ellipsis; overflow: hidden; max-width:1px;\">"+itmdesc+"</td>";  
+
+	var tditmdesc = "<td width=\"180\" nowrap> <input type='text' value='"+itmdesc+"' class='form-control input-xs' name='txtitmpartnodsc' id='txtitmpartnodsc"+lastRow+"'> </td>";  
 
 	var tditmpartnme = "<td width=\"180\" nowrap> <input type='text' value='"+itmpartnme+"' class='form-control input-xs' name='txtitmpartname' id='txtitmpartname"+lastRow+"'> </td>";
 
@@ -1555,7 +1556,8 @@ function Reindex(){
 		tx = index + 1; 
 
 		$(this).find('input[name="ins"]').attr("id","ins"+tx);
-		$(this).find('input[type="hidden"][name="txtitemcode"]').attr("id","txtitemcode"+tx);
+		$(this).find('input[type="hidden"][name="txtitemcode"]').attr("id","txtitemcode"+tx); 
+		$(this).find('input[name="txtitmpartnodsc"]').attr("id","txtitmpartnodsc"+tx);
 		$(this).find('input[name="txtitmpartname"]').attr("id","txtitmpartname"+tx);
 		$(this).find('input[type="hidden"][name="txtcreference"]').attr("id","txtcreference"+tx);
 		$(this).find('input[type="hidden"][name="txtcrefident"]').attr("id","txtcrefident"+tx);
@@ -2267,7 +2269,8 @@ function chkform(){
 			
 				var crefno = $(this).find('input[type="hidden"][name="txtcreference"]').val(); 
 				var crefnoident = $(this).find('input[type="hidden"][name="txtcrefident"]').val();
-				var citmno = $(this).find('input[type="hidden"][name="txtitemcode"]').val();
+				var citmno = $(this).find('input[type="hidden"][name="txtitemcode"]').val(); 
+				var citmpartnodsc = $(this).find('input[name="txtitmpartnodsc"]').val();
 				var citmpartnme = $(this).find('input[name="txtitmpartname"]').val();
 				var cuom = $(this).find('select[name="seluom"]').val();
 				var nqty = $(this).find('input[name="txtnqty"]').val();
@@ -2283,7 +2286,7 @@ function chkform(){
 
 				$.ajax ({
 					url: "DR_newsavedet.php",
-					data: { trancode: trancode, crefno: crefno, crefnoident:crefnoident, indx: index, citmno: citmno, cuom: cuom, nqty:nqty, norigqty:norigqty, nprice: nprice, namt:namt, mainunit:mainunit, nfactor:nfactor, ntransamt:ntransamt, nitemsysno:nitemsysno, nitemposno:nitemposno, citmpartnme:citmpartnme },
+					data: { trancode: trancode, crefno: crefno, crefnoident:crefnoident, indx: index, citmno: citmno, cuom: cuom, nqty:nqty, norigqty:norigqty, nprice: nprice, namt:namt, mainunit:mainunit, nfactor:nfactor, ntransamt:ntransamt, nitemsysno:nitemsysno, nitemposno:nitemposno, citmpartnme:citmpartnme, citmpartnodsc: citmpartnodsc },
 					async: false,
 					success: function( data ) {
 						if(data.trim()=="False"){

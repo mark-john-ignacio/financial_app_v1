@@ -80,6 +80,12 @@
 		$prntnme[$row0['code']] = $row0['filename'];
 	}
 
+	$btnlabelmrs = "Generate<br>MRS";
+	$sqlempsec = mysqli_query($con,"Select * from invtransfer Where compcode='$company' and mrp_jo_ctranno='".$tranno."' and lcancelled1=0");
+	if(mysqli_num_rows($sqlempsec) > 0){
+		$btnlabelmrs = "View<br>MRS";
+	}
+
 ?>
 
 <!DOCTYPE html>
@@ -228,9 +234,10 @@
 										<div class="col-xs-12" style="padding-left:2px; padding-bottom:2px">
 											<div class="col-xs-8 nopadding">
 												<select id="selpriority" name="selpriority" class="form-control input-sm selectpicker">
-													<option value="Low" <?=($arrmrpjo[0]['cpriority']=="Low") ? "selected" : "" ?>>Low</option>
+													<option value="SP" <?=($arrmrpjo[0]['cpriority']=="SP") ? "selected" : "" ?>>SP</option>
+													<option value="Urgent" <?=($arrmrpjo[0]['cpriority']=="Urgent") ? "selected" : ""?>>Urgent</option>
 													<option value="Normal" <?=($arrmrpjo[0]['cpriority']=="Normal") ? "selected" : ""?>>Normal</option>
-													<option value="High" <?=($arrmrpjo[0]['cpriority']=="High") ? "selected" : ""?>>High</option>
+													
 												</select>
 											</div>
 									</td>		
@@ -239,11 +246,35 @@
 
 								<tr>									
 									<td valign="top" style="padding-top:8px;"><span style="padding:2px;"><b>Remarks</b></span></td>
-									<td>
+									<td rowspan="3" style="vertical-align: top">
 										<div class="col-xs-12"  style="padding-left:2px; padding-bottom:2px">
 											<textarea class="form-control input-sm" id="txtcremarks" name="txtcremarks" rows="3"><?=$arrmrpjo[0]['cremarks']?></textarea>
 										</div>
 									</td>
+									<td valign="top" style="padding-top:8px;"><span style="padding:2px"><b>Product Type:</b></span></td>
+									<td valign="top">
+										<div class="col-xs-12" style="padding-left:2px; padding-bottom:2px">
+											<div class="col-xs-8 nopadding">
+												<select id="selprodtyp" name="selprodtyp" class="form-control input-sm selectpicker">
+													<option value="Individual" <?=($arrmrpjo[0]['cproductype']=="Individual") ? "selected" : "" ?>>Individual</option>		
+													<option value="RACK" <?=($arrmrpjo[0]['cproductype']=="RACK") ? "selected" : "" ?>>RACK</option>								
+												</select>
+											</div>
+									</td>											
+								</tr>
+
+								<tr>	
+									<td valign="top">&nbsp;</td>
+									<td valign="top" style="padding-top:8px;"><span style="padding:2px"><b>Narration:</b></span></td>
+									<td valign="top">
+										<div class="col-xs-12" style="padding-left:2px; padding-bottom:2px">
+											<div class="col-xs-8 nopadding">
+												<input type="text" class="form-control input-sm" id="txtnarration" name="txtnarration" width="20px" placeholder="" required autocomplete="off" tabindex="4" value="<?=$arrmrpjo[0]['cnarration']?>">
+											</div>
+									</td>
+								</tr>
+								<tr>	
+									<td valign="top">&nbsp;</td>
 									<td valign="top" style="padding-top:8px;"><span style="padding:2px"><b>Department:</b></span></td>
 									<td valign="top">
 										<div class="col-xs-12" style="padding-left:2px; padding-bottom:2px">
@@ -258,7 +289,7 @@
 													?>
 												</select>
 											</div>
-									</td>											
+									</td>
 								</tr>
 
 							</table>
@@ -410,21 +441,30 @@
 										<th style="border-bottom:1px solid #999">Material Description</th>
 										<th style="border-bottom:1px solid #999">UOM</th>
 										<th style="border-bottom:1px solid #999; text-align: right">Qty Needed</th>
+										<th style="border-bottom:1px solid #999;">Remarks</th>
 										<th style="border-bottom:1px solid #999; text-align: right">Available Inv.</th>
 										<th style="border-bottom:1px solid #999; text-align: right">Buildable Qty</th>
 									</tr>
 								</thead>
 								<tbody class="tbody">
 									<?php
-										$sql = "select X.*, A.citemdesc from mrp_jo_process_m X left join items A on X.compcode=A.compcode and X.citemno=A.cpartno where X.compcode='$company' and X.mrp_jo_ctranno = '$tranno' Order By X.nid";
+										$sql = "select X.*, A.citemdesc, B.citemdesc as crefitmdesc from mrp_jo_process_mrs X left join items A on X.compcode=A.compcode and X.citemno=A.cpartno left join items B on X.compcode=B.compcode and X.crefitem=B.cpartno where X.compcode='$company' and X.mrp_jo_ctranno = '$tranno' Order By X.mrp_jo_sub, X.nreference_id";
 										$resultmain = mysqli_query ($con, $sql); 
+
+										$xcitm = "";
 										while($row2 = mysqli_fetch_array($resultmain, MYSQLI_ASSOC)){
+
+											if($xcitm!=$row2['crefitem']){
+												$xcitm=$row2['crefitem'];
+												echo "<tr style=\"background-color: #eee\"><td><b>".$row2['mrp_jo_sub']."</b></td><td colspan=\"6\"><b>".$row2['crefitem']." - ".$row2['crefitmdesc']."</b></td></tr>";
+											}
 									?>
 										<tr>
 											<td><?=$row2['citemno']?></td>
 											<td><?=$row2['citemdesc']?></td>
 											<td><?=$row2['cunit']?></td>
 											<td style="text-align: right"><?=number_format($row2['nqty'])?></td>
+											<td><?=$row2['cremarks']?></td>
 											<td style="text-align: right">
 												<?php
 													if(isset($arrinvv[$row2['citemno']])){
@@ -485,7 +525,7 @@
 									Print<br>(CTRL+P)
 								</button>					
 								<button type="button" class="btn btn-success btn-sm" tabindex="6" onClick="genMRS('<?=$tranno?>');" id="btnGen" name="btnGen">
-									Generate <br> MRS
+									<?=$btnlabelmrs?>
 								</button>
 								<button type="button" class="btn btn-warning btn-sm" tabindex="6" onClick="enabled();" id="btnEdit" name="btnEdit">
 									Edit<br>(CTRL+E)    
@@ -504,21 +544,6 @@
 			</fieldset>
 
 	</form>
-
-	<!-- PRINT OUT MODAL-->
-	<div class="modal fade" id="PrintModal" role="dialog" data-keyboard="false" data-backdrop="static">
-			<div class="modal-dialog modal-lg">
-				<div class="modal-contnorad">   
-					<div class="modal-body" style="height: 12in !important">
-						<button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>        
-				
-							<iframe id="myprintframe" name="myprintframe" scrolling="yes" style="width:100%; height: 11.5in; display:block; margin:0px; padding:0px; border:0px; overflow: scroll;"></iframe>    
-						
-						</div>
-				</div><!-- /.modal-content -->
-			</div><!-- /.modal-dialog -->
-		</div><!-- /.modal -->
-	<!-- End Bootstrap modal -->
 
 	<!-- DETAILS ONLY -->
 	<div class="modal fade" id="mySIRef" role="dialog" data-keyboard="false" data-backdrop="static">
@@ -596,6 +621,11 @@
 
 	<form action="JO_edit.php" method="post" name="frmUndo" id="frmUndo">
 		<input type="hidden" name="txtctranno" id="txtctranno" value="<?php echo $tranno; ?>">
+	</form>
+
+	<form action="JO_MRS.php" method="post" name="frmMrs" id="frmMrs" target="_blank">
+		<input type="hidden" name="txtx" id="txtx" value="<?php echo $tranno; ?>">
+		<input type="hidden" name="n" id="n" value="1">
 	</form>
 
 </body>
@@ -1202,8 +1232,10 @@
 					$("#AlertMsg").html("");
 					$("#AlertModal").modal('hide');
 
-					$("#myprintframe").attr("src","../../Inventory/Transfers/<?=$prntnme['INVTRANS_REQUEST']?>?id="+data.trim()+"&n=1");
-					$("#PrintModal").modal('show');
+					$("#frmMrs").submit();
+					
+					//$("#myprintframe").attr("src","../../Inventory/Transfers/<?//=$prntnme['INVTRANS_REQUEST']?>?id="+data.trim()+"&n=1");
+					//$("#PrintModal").modal('show');
 					
 				}
 			}
