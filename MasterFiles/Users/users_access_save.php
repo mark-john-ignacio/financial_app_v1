@@ -21,7 +21,7 @@
 
 		if($xid[0]=="dashboard" || $xid[0]=="audittrail"){
 
-			$sql = "insert into users_access(pageid,menu_id,userid) 
+			$sql = "insert into users_access(pageid,menu_id,main_id,userid) 
 			values('$xid[0]','$xid[1]','0','$userid')";
 
 		}else{
