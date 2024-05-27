@@ -411,7 +411,7 @@ else{
 
 ?>
 
-<input type="button" value="<?//php echo $valsub;?>" onClick="<?//php echo $strqry;?>;" class="noPrint"/>
+<input type="button" value="<?php echo $valsub;?>" onClick="<?php echo $strqry;?>;" class="noPrint"/>
 
 
 </div>
