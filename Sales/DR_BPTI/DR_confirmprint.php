@@ -301,7 +301,7 @@
     height:  75px;  
     text-align: center; 
     /*border: 1px solid #000; 
-    letter-spacing: 11px;/
+    letter-spacing: 11px;*/
   }
 
 </style>
