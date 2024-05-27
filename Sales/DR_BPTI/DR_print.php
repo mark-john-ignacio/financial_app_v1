@@ -317,7 +317,7 @@
     <?php 
 	$firstclass = "";
 
-      $sqlbody = mysqli_query($con,"select a.*,b.citemdesc, c.cdesc  from dr_t a left join items b on a.citemno=b.cpartno join groupings c on b.compcode=c.compcode and b.cclass=c.ccode and c.ctype='ITEMCLS' where a.compcode='$company' and a.ctranno = '$csalesno'");
+      $sqlbody = mysqli_query($con,"select a.*, a.cpartno as citemdesc, c.cdesc  from dr_t a left join items b on a.citemno=b.cpartno join groupings c on b.compcode=c.compcode and b.cclass=c.ccode and c.ctype='ITEMCLS' where a.compcode='$company' and a.ctranno = '$csalesno'");
 
       if (mysqli_num_rows($sqlbody)!=0) { 
 		
