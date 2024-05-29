@@ -68,13 +68,24 @@ var Login = function () {
 			rules: {
 				email: {
 					required: true,
-					email: true
+					email: true,
+					remote: {
+						url: "check-email.php",
+						type: "post",
+						data: {
+							username: function() {
+								return $( "#username" ).val();
+							}
+						}
+					}
 				}
 			},
 
 			messages: {
 				email: {
-					required: "Email is required."
+					required: "Please enter your email address.",
+					email: "Please enter a valid email address.",
+					remote: "Email don't exist!"
 				}
 			},
 

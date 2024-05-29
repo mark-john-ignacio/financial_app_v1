@@ -144,7 +144,7 @@
 		<div class="form-actions">
 			<button type="button" id="back-btn" class="btn">
 			<i class="m-icon-swapleft"></i> Back </button>
-			<button type="submit" class="btn blue pull-right">
+			<button type="submit" name="forgets" class="btn blue pull-right">
 			Submit <i class="m-icon-swapright m-icon-white"></i>
 			</button>
 		</div>
