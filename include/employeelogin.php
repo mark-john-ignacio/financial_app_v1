@@ -57,7 +57,7 @@ if (isset($_REQUEST['from_window_load'])) {
     // Proceed with regular login process
     $employeeid = mysqli_real_escape_string($con, $_REQUEST['employeeid']);
     $password = mysqli_real_escape_string($con, $_REQUEST['password']);
-    $selcompany = mysqli_real_escape_string($con, $_REQUEST['selcompany']);
+   // $selcompany = mysqli_real_escape_string($con, $_REQUEST['selcompany']);
     $attempts = mysqli_real_escape_string($con, $_REQUEST['attempts']);
 
 

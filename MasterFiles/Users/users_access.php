@@ -18,21 +18,11 @@
 		}
 	}
 
-  @$arrseclist[] = "";
-  $sql = mysqli_query($con,"select * from users_sections where userid = '$employeeid'");
-	if (mysqli_num_rows($sql)!=0) {
-		while($row = mysqli_fetch_array($sql, MYSQLI_ASSOC)){
-			@$arrseclist[] = $row['section_nid']; 
-		}
-	}
-
-  $lallowMRP = 0;
-	$result=mysqli_query($con,"select * From company");								
+  $companies = array();
+	$result=mysqli_query($con,"select A.*, B.UserID as cUser From company A left join users_company B on A.compcode=B.compcode and B.`UserID` = '$employeeid'");								
   while($row = mysqli_fetch_array($result, MYSQLI_ASSOC))
   {
-    if($row['compcode'] == $company){
-      $lallowMRP =  $row['lmrpmodules'];
-    }
+    $companies[] =  $row;
   } 
 
   $navmenu = array();
@@ -181,6 +171,8 @@
           echo "<li".$style."><a href=\"#menu".$rx['id']."\">".$rx['title']."</a></li>";
       }
     ?>
+
+    <li><a href="#menuComp">Company &amp; Sections</a></li>
   </ul>
 
 
@@ -236,10 +228,46 @@
             ?>          
            
         </div>
+
       <?php
           }
         }
       ?>
+
+      <div id="menuComp" class="tab-pane fade" style="padding-left:10px; padding-top: 20px">
+
+      <?php
+        foreach($companies as $xcr){
+
+          $xstatcomp = ($xcr['cUser']!="") ? "checked" : "";
+
+      ?>
+        <div class="col-xs-12" style="padding-left: 20px !important;">
+          <label><input type="checkbox" name="chkCompany[]" data-val="" value="<?=$xcr['compcode']?>" <?=$xstatcomp?>>&nbsp;<?=$xcr['compname']?></label>
+        </div>
+          <?php
+          
+            @$arrseclist[] = "";
+            $sql = mysqli_query($con,"select A.*, IFNULL(B.userid,'') as userid
+            from locations A left join users_sections B on A.nid=B.section_nid and B.`userid` = '$employeeid'
+            where A.compcode='".$xcr['compcode']."' and A.cstatus='ACTIVE' Order by A.cdesc");
+            if (mysqli_num_rows($sql)!=0) {
+              while($row = mysqli_fetch_array($sql, MYSQLI_ASSOC)){
+
+                  $xstat = ($row['userid']!="") ? "checked" : "";
+
+                echo "<div class=\"col-xs-12\" style=\"padding-left: 40px !important;\">
+                <label><input type=\"checkbox\" name=\"chkSections[]\" value=\"".$row['nid']."\" ".$xstat.">&nbsp;".$row['cdesc']."</label>
+              </div>";
+              }
+            }
+
+          ?>
+      <?php
+        }
+      ?>
+      </div>
+
     </div>
   </div>
    
