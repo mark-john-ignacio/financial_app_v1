@@ -125,7 +125,7 @@
 
             $dateNow = date('Y-m-d h:i:s');
             $stmtlog = $con->prepare("INSERT INTO `users_log` (`Userid`, `status`, `machine`, `logged_date`) values (?, 'Online', ?, ?)");
-            $stmtlog->bind_param("ssss", $username, $hashedIP, $dateNow);
+            $stmtlog->bind_param("sss", $username, $hashedIP, $dateNow);
             $stmtlog->execute();
             $stmtlog->close();
 
