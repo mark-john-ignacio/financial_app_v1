@@ -125,6 +125,14 @@
             $_SESSION['companyid'] = getDefaultCompany($username);
             $_SESSION['timestamp']=time();
 
+
+            $now = time();
+            $your_date = strtotime($row['modify']);
+            $datediff = $now - $your_date;
+            $days = round($datediff / (60 * 60 * 24));
+
+            $_SESSION['modify_pass'] = $days;
+
             $dateNow = date('Y-m-d h:i:s');
             $stmtlog = $con->prepare("INSERT INTO `users_log` (`Userid`, `status`, `machine`, `logged_date`) values (?, 'Online', ?, ?)");
             $stmtlog->bind_param("sss", $username, $hashedIP, $dateNow);
