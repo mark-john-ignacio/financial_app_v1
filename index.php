@@ -119,7 +119,7 @@
 			<label class="control-label visible-ie8 visible-ie9">Password</label>
 			<div class="input-icon">
 				<i class="fa fa-lock"></i>
-				<input class="form-control placeholder-no-fix" type="password" autocomplete="off" placeholder="Password" name="password" <?=$defpsswd?>/>
+				<input class="form-control placeholder-no-fix" type="password" autocomplete="off" placeholder="Password" name="password" value="<?=$defpsswd?>"/>
 			</div>
 		</div>
 		<div class="form-actions">
