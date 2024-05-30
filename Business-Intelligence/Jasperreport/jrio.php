@@ -1,8 +1,10 @@
 
 <script src="http://localhost:8080/jrio-client/scripts/jrio/jrio.js"></script>
 
-<div id="reportContainer"></div>
-
+<div>
+    <div id="reportContainer"></div>
+    <div id="chartContainer"></div>
+</div>
 
 <script>
 
@@ -16,8 +18,16 @@
 
     jrio(function(jrioClient) {
         jrioClient.report({
-            resource: "/samples/reports/highcharts/HighchartsChart",
+            resource: "/reports/test",
             container: "#reportContainer",
+            error: function(err) { alert(err); },
+        });
+    });
+
+    jrio(function(jrioClient) {
+        jrioClient.report({
+            resource: "/reports/accounts_category_chart",
+            container: "#chartContainer",
             error: function(err) { alert(err); },
         });
     });
