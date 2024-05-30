@@ -92,6 +92,8 @@
                         $xmessage = "User Blocked! Contact Administrator or Change your Password.";
                         
                     }else{
+                        $_SESSION['employeeid'] = $username;
+
                         $xmessage = "Invalid Password!";
                     }
                 }   
@@ -128,6 +130,23 @@
             $stmtlog->bind_param("sss", $username, $hashedIP, $dateNow);
             $stmtlog->execute();
             $stmtlog->close();
+
+
+            //if REMEBER ME is CLICKED
+                if(isset($_POST['remember'])){
+                    /**
+                    * Store Login Credential
+                    */
+                    setcookie('username', $_POST['username'], (time()+60*60*24*30));
+                    setcookie('password', $_POST['password'], (time()+60*60*24*30));
+                }else{
+                    /**
+                    * Delete Login Credential
+                    */
+                    setcookie('username', $_POST['username'], (time()-3600));
+                    setcookie('password', $_POST['password'], (time()-3600));
+                }
+            //END REMEBER
 
             header("Location: main.php");
 

@@ -18,12 +18,22 @@
 		}
 	}
 
+	$defusnmr = "";
+	$defpsswd = "";
 	if(!isset($_SERVER['HTTP_REFERER'])){
 		session_unset(); 
 		session_destroy();
+
+		
+	}else{
+		$defusnmr = isset($_SESSION['employeeid']) ? $_SESSION['employeeid'] : '';
+		$defpsswd = "";
 	}
 
-	
+	if(!isset($_SESSION['employeeid'])){
+		$defusnmr = isset($_COOKIE['username']) ? $_COOKIE['username'] : '';
+		$defpsswd = isset($_COOKIE['password']) ? $_COOKIE['password'] : '';
+	}
 ?>
   
 
@@ -102,14 +112,14 @@
 			<label class="control-label visible-ie8 visible-ie9">Username</label>
 			<div class="input-icon">
 				<i class="fa fa-user"></i>
-				<input class="form-control placeholder-no-fix" type="text" autocomplete="off" placeholder="Username" name="username" value="<?=isset($_SESSION['employeeid']) ? $_SESSION['employeeid'] : ''?>"/>
+				<input class="form-control placeholder-no-fix" type="text" autocomplete="off" placeholder="Username" name="username" value="<?=$defusnmr?>"/>
 			</div>
 		</div>
 		<div class="form-group">
 			<label class="control-label visible-ie8 visible-ie9">Password</label>
 			<div class="input-icon">
 				<i class="fa fa-lock"></i>
-				<input class="form-control placeholder-no-fix" type="password" autocomplete="off" placeholder="Password" name="password"/>
+				<input class="form-control placeholder-no-fix" type="password" autocomplete="off" placeholder="Password" name="password" <?=$defpsswd?>/>
 			</div>
 		</div>
 		<div class="form-actions">
