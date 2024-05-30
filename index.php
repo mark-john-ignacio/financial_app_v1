@@ -124,7 +124,7 @@
 		</div>
 		<div class="form-actions">
 			<label class="checkbox">
-			<input type="checkbox" name="remember" value="1"/> Remember me </label>
+			<input type="checkbox" name="remember" value="1" <?=isset($_COOKIE['username']) ? 'checked' : ''?>/> Remember me </label>
 			<button type="submit" name="login" class="btn blue pull-right"> Login <i class="m-icon-swapright m-icon-white"></i> </button>
 		</div>
 		
