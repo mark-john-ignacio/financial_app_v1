@@ -185,7 +185,7 @@ if(isset($_POST["action"]) && ($_POST["action"]=="update")){
 	else{
 		$cPass_hash = better_crypt($pass1);
 
-		mysqli_query($con,"UPDATE `users` SET `password`='".$cPass_hash."', `modify` = current_date() WHERE `cemailadd`='".$email."'");
+		mysqli_query($con,"UPDATE `users` SET `password`='".$cPass_hash."', `modify` = current_date(), cstatus='Active' WHERE `cemailadd`='".$email."'");
 
 		$compname = gethostbyaddr($_SERVER['REMOTE_ADDR']);
 
