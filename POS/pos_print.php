@@ -124,6 +124,14 @@
             }
 
             @media print {
+                @page {
+                size: 58mm auto;
+                margin: 5mm;
+                }
+                body {
+                    width: 58mm;
+                    margin: 0;
+                }
                 .hidden-print,
                 .hidden-print * {
                     display: none !important;
@@ -255,13 +263,13 @@
                     </tr>
 
                     <tr>
-                        <td colspan='2'><div style="float: left; width 10%">Name:</div><div style="float:right; border-bottom: 1px solid #000; width: 80%">&nbsp;</div></td>
+                        <td colspan='2'><div style="float: left; width: 10%;">Name:</div><div style="float:right; border-bottom: 1px solid #000; width: 80%">&nbsp;</div></td>
                     </tr>
                     <tr>
-                        <td colspan='2'><div style="float: left; width 15%">Address:</div><div style="float:right; border-bottom: 1px solid #000; width: 75%">&nbsp;</div></td>
+                        <td colspan='2'><div style="float: left; width: 15%;">Address:</div><div style="float:right; border-bottom: 1px solid #000; width: 75%">&nbsp;</div></td>
                     </tr>
                     <tr>
-                        <td colspan='2'><div style="float: left; width 10%">TIN:</div><div style="float:right; border-bottom: 1px solid #000; width: 85%">&nbsp;</div></td>
+                        <td colspan='2'><div style="float: left; width: 10%;">TIN:</div><div style="float:right; border-bottom: 1px solid #000; width: 85%">&nbsp;</div></td>
                     </tr>
                    
 
