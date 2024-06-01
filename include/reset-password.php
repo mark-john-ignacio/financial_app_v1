@@ -99,19 +99,9 @@
 			<form method="post" action="reset-password.php" name="frmupdatepass" id="frmupdatepass">
 				<input type="hidden" name="action" value="update" />
 				<input type="hidden" name="email" value="<?=$_GET["email"]?>" />
-				<?php
-					$dxmsgs = "Enter password and confirm password.";
-					$dxstat = " display-hide";
-					if(isset($_SESSION['xmessage'])){
-						if($_SESSION['xmessage']!=""){
-							$dxstat = "";
-							$dxmsgs = $_SESSION['xmessage'];
-						}
-					}
-				?>
-				<div class="alert alert-danger<?=$dxstat?>">
+				<div class="alert alert-danger display-hide">
 					<button class="close" data-close="alert"></button>
-					<span> <?=$dxmsgs?> </span>
+					<span> Enter password and confirm password. </span>
 				</div>
 				<div class="form-group">
 					<!--ie8, ie9 does not support html5 placeholder, so we just show field title for that-->
