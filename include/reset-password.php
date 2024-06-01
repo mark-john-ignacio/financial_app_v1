@@ -190,7 +190,7 @@ if(isset($_POST["action"]) && ($_POST["action"]=="update")){
    } 
 ?>
 
-		<center><h3 class="form-title">Reset Password <?=$pass1?></h3></center>
+		<center><h3 class="form-title">Reset Password</h3></center>
 		<div class="form-group">
 			<h4>Congratulations!</h4>
 			<p>Your password has been updated successfully.
