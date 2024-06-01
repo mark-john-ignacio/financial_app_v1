@@ -3,13 +3,7 @@
 		session_start();
 	}
 	require_once "../Connection/connection_string.php";
-
-	function better_crypt($input, $rounds = 10) { 
-
-		$crypt_options = array( 'cost' => $rounds ); 
-		return password_hash($input, PASSWORD_BCRYPT, $crypt_options); 
-
-	}
+	require_once('../Model/helper.php');
 
 ?>
 
@@ -179,21 +173,29 @@ if(isset($_POST["action"]) && ($_POST["action"]=="update")){
 	if ($pass1!=$pass2){
 		$error = "<p>Password do not match, both password should be same.<br /><br /></p>";
 	}
-  if($error!=""){
+  	if($error!=""){
 		//echo "<div class='error'>".$error."</div><br />";
 	}
 	else{
 		$cPass_hash = better_crypt($pass1);
 
-		mysqli_query($con,"UPDATE `users` SET `password`='".$cPass_hash."', `modify` = current_date(), cstatus='Active' WHERE `cemailadd`='".$email."'");
+		$stmtlog = $con->prepare("UPDATE users set `password` = ?, `modify` = current_date(), `cstatus` = 'Active' WHERE `cemailadd` = ?");
+		$stmtlog->bind_param("ss", $cPass_hash, $email);
+		$stmtlog->execute();
+		$stmtlog->close();
 
 		$compname = gethostbyaddr($_SERVER['REMOTE_ADDR']);
 
-		mysqli_query($con,"INSERT INTO logfile(`compcode`, `ctranno`, `cuser`, `ddate`, `module`, `cevent`, `cmachine`, `cremarks`) 
-			values('001','$email','',NOW(),'PASSWORD','RECOVER','$compname','Recover Password')");		 
+		$stmtlog = $con->prepare("INSERT INTO logfile(`compcode`, `ctranno`, `cuser`, `ddate`, `module`, `cevent`, `cmachine`, `cremarks`) 
+		values('001',?,'',NOW(),'PASSWORD','RECOVER',?,'Recover Password')");
+		$stmtlog->bind_param("ss", $email, $compname);
+		$stmtlog->execute();
+		$stmtlog->close(); 
 
-		mysqli_query($con,"DELETE FROM `password_reset_temp` WHERE `email`='".$email."'");
-		 
+		$stmtlog = $con->prepare("DELETE FROM `password_reset_temp` WHERE `email` = ?");
+		$stmtlog->bind_param("s", $email);
+		$stmtlog->execute();
+		$stmtlog->close(); 	 
    } 
 ?>
 
