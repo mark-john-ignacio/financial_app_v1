@@ -272,10 +272,10 @@ include('../../include/denied.php');
 				<td style="padding-left:10px"><?=$bv['mrp_process_desc']?> </td>
 				<td><?=$bv['ddatestart']?></td>
 				<td><?=$bv['ddateend']?></td>
-				<td style="text-align: center"><?=number_format($bv['nactualoutput'])?></td>
+				<td style="text-align: center"><?=(intval($bv['nactualoutput'])>0) ? number_format($bv['nactualoutput']) : ""?></td>
 				<td><?=$bv['operator_name']?></td>
-				<td style="text-align: center"><?=number_format($bv['nrejectqty'])?></td>
-				<td style="text-align: center"><?=number_format($bv['nscrapqty'])?></td>
+				<td style="text-align: center"><?=(intval($bv['nrejectqty'])>0) ? number_format($bv['nrejectqty']) : ""?></td>
+				<td style="text-align: center"><?=(intval($bv['nscrapqty'])>0) ? number_format($bv['nscrapqty']) : ""?></td>
 				<td><?=$bv['qc_name']?></td>
 				<td><?=$bv['cremarks']?></td>				
 			</tr>
@@ -292,8 +292,8 @@ include('../../include/denied.php');
 				<td>&nbsp;</td>
 				<td>&nbsp;</td>
 				<td align="right"><b> Total: </b></td>
-				<td style="text-align: center"><?=number_format($totrej)?></td>
-				<td style="text-align: center"><?=number_format($totscrp)?></td>
+				<td style="text-align: center"><?=(intval($totrej)>0) ? number_format($totrej) : ""?></td>
+				<td style="text-align: center"><?=(intval($totscrp)>0) ? number_format($totscrp) : ""?></td>
 				<td>&nbsp;</td>
 				<td>&nbsp;</td>				
 			</tr>
@@ -451,17 +451,18 @@ include('../../include/denied.php');
 			?>
 
 				<tr> 
-					<td>&nbsp;</td>
+					<td><?=$bv['cmachinedesc']?> </td> 
 					<td style="padding-left:10px"><?=$bv['mrp_process_desc']?> </td>
-					<td>&nbsp;</td>
-					<td>&nbsp;</td>
-					<td>&nbsp;</td>
-					<td>&nbsp;</td>
-					<td>&nbsp;</td>
-					<td>&nbsp;</td>
-					<td>&nbsp;</td>
-					<td>&nbsp;</td>				
+					<td><?=$bv['ddatestart']?></td>
+					<td><?=$bv['ddateend']?></td>
+					<td style="text-align: center"><?=(intval($bv['nactualoutput'])>0) ? number_format($bv['nactualoutput']) : ""?></td>
+					<td><?=$bv['operator_name']?></td>
+					<td style="text-align: center"><?=(intval($bv['nrejectqty'])>0) ? number_format($bv['nrejectqty']) : ""?></td>
+					<td style="text-align: center"><?=(intval($bv['nscrapqty'])>0) ? number_format($bv['nscrapqty']) : ""?></td>
+					<td><?=$bv['qc_name']?></td>
+					<td><?=$bv['cremarks']?></td>				
 				</tr>
+
 			<?php
 					}
 				}
