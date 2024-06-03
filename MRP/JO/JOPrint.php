@@ -229,10 +229,10 @@ include('../../include/denied.php');
 				<td style="padding-left:10px"><?=$bv['mrp_process_desc']?> </td>
 				<td><?=$bv['ddatestart']?></td>
 				<td><?=$bv['ddateend']?></td>
-				<td style="text-align: center"><?=number_format($bv['nactualoutput'])?></td>
+				<td style="text-align: center"><?=(intval($bv['nactualoutput'])>0) ? number_format($bv['nactualoutput']) : ""?></td>
 				<td><?=$bv['operator_name']?></td>
-				<td style="text-align: center"><?=number_format($bv['nrejectqty'])?></td>
-				<td style="text-align: center"><?=number_format($bv['nscrapqty'])?></td>
+				<td style="text-align: center"><?=(intval($bv['nrejectqty'])>0) ? number_format($bv['nrejectqty']) : ""?></td>
+				<td style="text-align: center"><?=(intval($bv['nscrapqty'])>0) ? number_format($bv['nscrapqty']) : ""?></td>
 				<td><?=$bv['qc_name']?></td>
 				<td><?=$bv['cremarks']?></td>				
 			</tr>
