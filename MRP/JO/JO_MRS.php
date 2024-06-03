@@ -56,7 +56,7 @@
 
 	//echo "Select A.*, B.Fname, B.Minit, B.Lname from invtransfer A left join users B on A.cpreparedBy=B.Userid where compcode='$company' and mrp_jo_ctranno='".$cno."'";
 
-	$sqlhead = mysqli_query($con,"Select A.*, B.Fname, B.Minit, B.Lname from invtransfer A left join users B on A.cpreparedBy=B.Userid where compcode='$company' and mrp_jo_ctranno='".$cno."' and A.lcancelled=0");
+	$sqlhead = mysqli_query($con,"Select A.*, B.Fname, B.Minit, B.Lname from invtransfer A left join users B on A.cpreparedBy=B.Userid where compcode='$company' and mrp_jo_ctranno='".$cno."' and A.lcancelled1=0");
 	if (mysqli_num_rows($sqlhead)!=0) {
 		$xccnt = 0;
 		while($row = mysqli_fetch_array($sqlhead, MYSQLI_ASSOC)){
