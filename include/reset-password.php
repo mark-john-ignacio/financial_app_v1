@@ -108,14 +108,14 @@
 					<label class="control-label visible-ie8 visible-ie9">New Password</label>
 					<div class="input-icon">
 						<i class="fa fa-user"></i>
-						<input class="form-control placeholder-no-fix" type="password" autocomplete="off" placeholder="New Password" name="pass1" id="pass1" value=""/>
+						<input class="form-control placeholder-no-fix" type="password" autocomplete="off" placeholder="New Password (20 characters max)" name="pass1" id="pass1" value="" maxlength="20"/>
 					</div>
 				</div>
 				<div class="form-group">
 					<label class="control-label visible-ie8 visible-ie9">Confirm Password</label>
 					<div class="input-icon">
 						<i class="fa fa-lock"></i>
-						<input class="form-control placeholder-no-fix" type="password" autocomplete="off" placeholder="Confirm Password" name="pass2" id="pass2" value=""/>
+						<input class="form-control placeholder-no-fix" type="password" autocomplete="off" placeholder="Confirm Password (20 characters max)" name="pass2" id="pass2" value="" maxlength="20"/>
 					</div>
 				</div>
 
