@@ -57,11 +57,15 @@ if (mysqli_num_rows($sqlhead)!=0) {
 
 		$Gross = $row['ngross'];
 
-    $TotSales = $row['ngrossbefore'];
-    $TotZero = $row['nzerorated'];
-    $TotVEx = $row['nexempt'];
-    $TotVat = $row['nvat'];
-    $TotNets = $row['nnet'];
+    $TotSales = (floatval($row['ngrossbefore']) > 0) ? number_format(floatval($row['ngrossbefore']),2): "";
+    $TotZero = (floatval($row['nzerorated']) > 0) ? number_format(floatval($row['nzerorated']),2): "";
+    $TotVEx = (floatval($row['nexempt']) > 0) ? number_format(floatval($row['nexempt']),2): "";
+    $TotVat = (floatval($row['nvat']) > 0) ? number_format(floatval($row['nvat']),2): "";
+    $TotNets = (floatval($row['nnet']) > 0) ? number_format(floatval($row['nnet']),2): "";
+
+    $xcTot = floatval($row['nnet']) + floatval($row['nzerorated']) + floatval($row['nexempt']);
+
+    $xcTot = (floatval($xcTot) > 0) ? number_format(floatval($xcTot),2): "";
 
 		$lCancelled = $row['lcancelled'];
 		$lPosted = $row['lapproved'];
@@ -176,6 +180,149 @@ if (mysqli_num_rows($sqlhead)!=0) {
       /*border: 1px solid #000;
       letter-spacing: 11px;*/
     }
+
+    .TotSales{
+      position: absolute;
+      top: 668px;
+      left: 650px;
+      width: 1in;
+      height:  10px;  
+      text-align: right; 
+      font-size: 11px;
+      /* border: 1px solid #000; 
+      letter-spacing: 11px;
+      border: 1px solid #000;*/
+    }
+
+    .LessVat{
+      position: absolute;
+      top: 679px;
+      left: 650px;
+      width: 1in;
+      height:  10px;  
+      text-align: right; 
+      font-size: 11px;
+      /* border: 1px solid #000; 
+      letter-spacing: 11px;
+      border: 1px solid #000;*/ 
+    }
+
+    .AmtNetVat{
+      position: absolute;
+      top: 700px;
+      left: 650px;
+      width: 1in;
+      height:  10px;  
+      text-align: right; 
+      font-size: 11px;
+      /* border: 1px solid #000; 
+      letter-spacing: 11px;
+      border: 1px solid #000;*/ 
+    }
+
+    .LessDisc{
+      position: absolute;
+      top: 720px;
+      left: 650px;
+      width: 1in;
+      height:  10px;  
+      text-align: right; 
+      font-size: 11px;
+      /* border: 1px solid #000; 
+      letter-spacing: 11px;
+      border: 1px solid #000;*/ 
+    }
+
+    .AmtDue{
+      position: absolute;
+      top: 741px;
+      left: 650px;
+      width: 1in;
+      height:  10px;  
+      text-align: right; 
+      font-size: 11px;
+      /* border: 1px solid #000; 
+      letter-spacing: 11px;
+      border: 1px solid #000;*/ 
+    }
+
+    .AdddVat{
+      position: absolute;
+      top: 751px;
+      left: 650px;
+      width: 1in;
+      height:  10px;  
+      text-align: right; 
+      font-size: 11px;
+      /* border: 1px solid #000;   
+      letter-spacing: 11px;
+      border: 1px solid #000;*/ 
+    } 
+
+    .TotAmtDue{
+      position: absolute;
+      top: 772px;
+      left: 650px;
+      width: 1in;
+      height:  10px;  
+      text-align: right; 
+      font-size: 12px;
+      /* border: 1px solid #000;   
+      letter-spacing: 11px;
+      border: 1px solid #000;*/
+    }
+
+    .LVatSales{
+      position: absolute;
+      top: 700px;
+      left: 325px;
+      width: 1in;
+      height:  10px;  
+      text-align: right; 
+      font-size: 11px;
+      /* border: 1px solid #000;   
+      letter-spacing: 11px;
+      border: 1px solid #000;*/ 
+    }
+
+    .LVatExempt{
+      position: absolute;
+      top: 717px;
+      left: 325px;
+      width: 1in;
+      height:  10px;  
+      text-align: right; 
+      font-size: 11px;
+      /* border: 1px solid #000;   
+      letter-spacing: 11px;
+      border: 1px solid #000;*/ 
+    }
+
+    .LZeroRated{
+      position: absolute;
+      top: 727px;
+      left: 325px;
+      width: 1in;
+      height:  10px;  
+      text-align: right; 
+      font-size: 11px;
+      /* border: 1px solid #000;   
+      letter-spacing: 11px;
+      border: 1px solid #000;*/ 
+    }
+
+    .LVatAmt{
+      position: absolute;
+      top: 746px;
+      left: 325px;
+      width: 1in;
+      height:  10px;  
+      text-align: right; 
+      font-size: 11px;
+      /* border: 1px solid #000;   
+      letter-spacing: 11px;
+      border: 1px solid #000;*/ 
+    }
   </style>
 
 </head>
@@ -225,18 +372,20 @@ if (mysqli_num_rows($sqlhead)!=0) {
       ?>
     </div>
 
-    <div class="TotSales"><?=$TotSales?></div>
+    <div class="TotSales"><?=$xcTot?></div>
     <div class="LessVat"><?=$TotVat?></div>
     <div class="AmtNetVat"><?=$TotNets?></div>
-    <div class="LessDisc"> </div>
-    <div class="AmtDue"><?=$CustName?></div>
-    <div class="AdddVat"><?=$TotVat?></div>
+    <div class="LessDisc"> &nbsp; </div>
+    <div class="AmtDue"><?=$xcTot?></div>
+    <div class="AdddVat"><?=$TotVat?></div> 
     <div class="TotAmtDue"><?=$TotSales?></div>
 
-    <div class="LVatSales"><?=$TotSales?></div>
-    <div class="LVatExempt"><?=$TotVEx?></div>
-    <div class="LZeroRated"><?=$TotZero?></div>
-    <div class="LVatAmt"><?=$TotVat?></div>
+
+    <div class="LVatSales"><?=$TotNets?></div> 
+    <div class="LVatExempt"><?=$TotVEx?></div> 
+    <div class="LZeroRated"><?=$TotZero?></div> 
+    <div class="LVatAmt"><?=$TotVat?></div> 
+
   </div>
   
 
