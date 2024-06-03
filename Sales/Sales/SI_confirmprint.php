@@ -18,7 +18,7 @@ include('../../include/denied.php');
 	}
 
   $siformname = "";
-  $sqlauto = mysqli_query($con,"select filename from nav_menu_prints where compcode='$company' and ccode='SI_PRINT'");
+  $sqlauto = mysqli_query($con,"select filename from nav_menu_prints where compcode='$company' and code='SI_PRINT'");
 	if(mysqli_num_rows($sqlauto) != 0){
 		while($rowauto = mysqli_fetch_array($sqlauto, MYSQLI_ASSOC))
 		{
