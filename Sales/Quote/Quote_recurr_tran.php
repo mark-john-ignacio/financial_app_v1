@@ -8,7 +8,7 @@
 		session_start();
 	}
 
-	$_SESSION['pageid'] = "Quote_new.php";
+	$_SESSION['pageid'] = "Quote_new";
 
 	require_once "../../Connection/connection_string.php";
 
