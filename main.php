@@ -5,6 +5,11 @@
 	include('Connection/connection_string.php');
 
 	//get the value of the employee id
+
+	if(!isset($_SESSION['employeeid'])){
+		echo "<script>top.location='".$UrlBase."denied.php'</script>";
+	}
+	
 	$employeeid = isset($_SESSION['employeeid']) ? $_SESSION['employeeid'] : '';
 	$session_id = isset($_SESSION['session_id']) ? $_SESSION['session_id'] : '';
 	$company = isset($_SESSION['companyid']) ? $_SESSION['companyid'] : ''; // Retrieve companyid from session
