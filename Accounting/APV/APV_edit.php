@@ -631,7 +631,7 @@
 						<?php
 							if($poststat == "True"){
 						?>
-						<button type="button" class="btn btn-primary btn-sm" tabindex="6" onClick="window.location.href='APV.php?ix=<?=isset($_REQUEST['hdnsrchval']) ? $_REQUEST['hdnsrchval'] : ""?>';" id="btnMain" name="btnMain">
+						<button type="button" class="btn btn-primary btn-sm" tabindex="6" onClick="window.location.href='APV.php?ix=<?=isset($_REQUEST['hdnsrchval']) ? $_REQUEST['hdnsrchval'] : ""?>&st=<?=isset($_REQUEST['hdnsrchsta']) ? $_REQUEST['hdnsrchsta'] : ""?>';" id="btnMain" name="btnMain">
 							Back to Main<br>(ESC)
 						</button>
 

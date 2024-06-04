@@ -109,10 +109,10 @@
 			<div class="col-xs-2 text-right nopadwleft">
 				<select  class="form-control input-sm" name="selstats" id="selstats">
 					<option value=""> All Transactions</option>
-					<option value="post"> Posted </option>
-					<option value="cancel"> Cancelled </option>
-					<option value="void"> Voided </option>
-					<option value="pending"> Pending </option>
+					<option value="post" <?=(isset($_REQUEST['st'])) ? (($_REQUEST['st']=="post") ? "selected" : "" ) : "";?>> Posted </option>
+					<option value="cancel" <?=(isset($_REQUEST['st'])) ? (($_REQUEST['st']=="cancel") ? "selected" : "" ) : "";?>> Cancelled </option>
+					<option value="void" <?=(isset($_REQUEST['st'])) ? (($_REQUEST['st']=="void") ? "selected" : "" ) : "";?>> Voided </option>
+					<option value="pending" <?=(isset($_REQUEST['st'])) ? (($_REQUEST['st']=="pending") ? "selected" : "" ) : "";?>> Pending </option>
 				</select>
 			</div>
 		</div>
@@ -137,6 +137,7 @@
 	<form name="frmedit" id="frmedit" method="post" action="APV_edit.php">
 		<input type="hidden" name="txtctranno" id="txtctranno" />
 		<input type="hidden" name="hdnsrchval" id="hdnsrchval" />
+		<input type="hidden" name="hdnsrchsta" id="hdnsrchsta" />
 	</form>		
 
 	<!-- 1) Alert Modal -->
@@ -253,7 +254,7 @@
 
 		$(document).ready(function() {
 			
-			fill_datatable("<?=(isset($_REQUEST['ix'])) ? $_REQUEST['ix'] : "";?>");	
+			fill_datatable("<?=(isset($_REQUEST['ix'])) ? $_REQUEST['ix'] : "";?>",$('#selstats').val());	
 
 			$("#searchByName").keyup(function(){
 				var searchByName = $('#searchByName').val();
@@ -380,6 +381,7 @@
 		function editfrm(x){
 			$('#txtctranno').val(x); 
 			$('#hdnsrchval').val($('#searchByName').val()); 
+			$('#hdnsrchsta').val($('#selstats').val());
 			document.getElementById("frmedit").submit();
 		}
 
