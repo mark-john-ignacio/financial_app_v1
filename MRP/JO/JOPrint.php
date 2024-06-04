@@ -185,7 +185,7 @@ include('../../include/denied.php');
 	</tr>
 </table>
 
-<br><br>
+<br>
 
 <table border="1" width="100%" cellpadding="3px"  id="tblMain" style="border-collapse: collapse;">
 	<tr>
@@ -204,11 +204,11 @@ include('../../include/denied.php');
 	<?php
 		$totrej = 0;
 		$totscrp = 0;
-		foreach($arrmrpjoproc as $rsc){
+		//foreach($arrmrpjoproc as $rsc){
 	?>
-		<tr> 
+		<!--<tr> 
 				<td>&nbsp;</td>
-				<td> <b><?=$rsc['citemdesc']?><b></td>
+				<td> <b><?//=$rsc['citemdesc']?><b></td>
 				<td>&nbsp;</td>
 				<td>&nbsp;</td>
 				<td>&nbsp;</td>
@@ -217,38 +217,38 @@ include('../../include/denied.php');
 				<td>&nbsp;</td>
 				<td>&nbsp;</td>
 				<td>&nbsp;</td>				
-		</tr>
+		</tr>-->
 
 		<?php
-			foreach($arrmrpjo_pt as $bv){
-				if($rsc['ctranno']==$bv['ctranno']){
+			//foreach($arrmrpjo_pt as $bv){
+			//	if($rsc['ctranno']==$bv['ctranno']){
 		?>
 
-			<tr> 
-				<td><?=$bv['cmachinedesc']?> </td> 
-				<td style="padding-left:10px"><?=$bv['mrp_process_desc']?> </td>
-				<td><?=$bv['ddatestart']?></td>
-				<td><?=$bv['ddateend']?></td>
-				<td style="text-align: center"><?=(intval($bv['nactualoutput'])>0) ? number_format($bv['nactualoutput']) : ""?></td>
-				<td><?=$bv['operator_name']?></td>
-				<td style="text-align: center"><?=(intval($bv['nrejectqty'])>0) ? number_format($bv['nrejectqty']) : ""?></td>
-				<td style="text-align: center"><?=(intval($bv['nscrapqty'])>0) ? number_format($bv['nscrapqty']) : ""?></td>
-				<td><?=$bv['qc_name']?></td>
-				<td><?=$bv['cremarks']?></td>				
+			<!--<tr> 
+				<td><//?=$bv['cmachinedesc']?> </td> 
+				<td style="padding-left:10px"><?//=$bv['mrp_process_desc']?> </td>
+				<td><?//=$bv['ddatestart']?></td>
+				<td><?//=$bv['ddateend']?></td>
+				<td style="text-align: center"><?//=(intval($bv['nactualoutput'])>0) ? number_format($bv['nactualoutput']) : ""?></td>
+				<td><?//=$bv['operator_name']?></td>
+				<td style="text-align: center"><?//=(intval($bv['nrejectqty'])>0) ? number_format($bv['nrejectqty']) : ""?></td>
+				<td style="text-align: center"><?//=(intval($bv['nscrapqty'])>0) ? number_format($bv['nscrapqty']) : ""?></td>
+				<td><//=$bv['qc_name']?></td>
+				<td><?//=$bv['cremarks']?></td>		-->		
 			</tr>
 		<?php
-					$totrej = $totrej + floatval($bv['nrejectqty']);
+		/*			$totrej = $totrej + floatval($bv['nrejectqty']);
 					$totscrp = $totscrp + floatval($bv['nscrapqty']);
 				}
 			}
 		?>
 	<?php
-		}
+		}*/
 
-		if(count($arrmrpjoproc)>=1){
+		//if(count($arrmrpjoproc)>=1){
 	?>
 
-			<tr> 
+			<!--<tr> 
 				<td>&nbsp;</td>
 				<td>&nbsp;</td>
 				<td>&nbsp;</td>
@@ -259,10 +259,10 @@ include('../../include/denied.php');
 				<td>&nbsp;</td>
 				<td>&nbsp;</td>
 				<td>&nbsp;</td>				
-			</tr>
+			</tr> -->
 
 		<?php
-		}
+		//}
 		
 			foreach($arrmrpjo_ptmain as $bv){
 		?>
