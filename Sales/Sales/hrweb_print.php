@@ -64,8 +64,10 @@ if (mysqli_num_rows($sqlhead)!=0) {
     $TotNets = (floatval($row['nnet']) > 0) ? number_format(floatval($row['nnet']),2): "";
 
     $xcTot = floatval($row['nnet']) + floatval($row['nzerorated']) + floatval($row['nexempt']);
+    $xcTotA = $xcTot + floatval($row['nvat']);
 
     $xcTot = (floatval($xcTot) > 0) ? number_format(floatval($xcTot),2): "";
+    $xcTotA = (floatval($xcTotA) > 0) ? number_format(floatval($xcTotA),2): "";
 
 		$lCancelled = $row['lcancelled'];
 		$lPosted = $row['lapproved'];
@@ -372,7 +374,7 @@ if (mysqli_num_rows($sqlhead)!=0) {
       ?>
     </div>
 
-    <div class="TotSales"><?=$xcTot?></div>
+    <div class="TotSales"><?=$xcTotA?></div>
     <div class="LessVat"><?=$TotVat?></div>
     <div class="AmtNetVat"><?=$TotNets?></div>
     <div class="LessDisc"> &nbsp; </div>
