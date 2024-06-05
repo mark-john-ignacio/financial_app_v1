@@ -8,7 +8,7 @@
 
 	$column = array('a.ctranno', 'c.cref', 'CONCAT(a.ccode,"-",b.cname)', 'a.ngross', 'a.dtransdate', 'CASE WHEN a.lapproved=1 THEN CASE WHEN a.lvoid=1 THEN "Voided" ELSE "Posted" END WHEN a.lcancelled=1 THEN "Cancelled" ELSE CASE WHEN a.lsent=0 THEN "For Sending" ELSE "For Approval" END END','CASE WHEN a.lapproved=1 THEN CASE WHEN a.lvoid=1 THEN "Voided" ELSE "Posted" END WHEN a.lcancelled=1 THEN "Cancelled" ELSE CASE WHEN a.lsent=0 THEN "For Sending" ELSE "For Approval" END END');
 
-	$query = "select a.ctranno, a.lsent, a.lapproved, a.lcancelled, a.lvoid, a.ccode, a.ngross, b.cname, a.cremarks, a.dtransdate, c.cref as capvno
+	$query = "select a.ctranno, a.lsent, a.lapproved, a.lcancelled, a.lvoid, a.ccode, a.ngross, b.cname, a.cremarks, a.dtransdate, IFNULL(c.cref,'') as capvno
 	from rfp a left join suppliers b on a.compcode=b.compcode and a.ccode=b.ccode left join (Select ctranno, GROUP_CONCAT(capvno) as cref from rfp_t where compcode='".$_SESSION['companyid']."' Group By ctranno) c on a.ctranno=c.ctranno where a.compcode='".$_SESSION['companyid']."' ";
 
 	if(isset($_POST['searchByName']) && $_POST['searchByName'] != '')
