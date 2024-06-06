@@ -412,15 +412,9 @@ mysqli_close($con);
 											var xcz = '<?=json_encode(@$chkapprovals)?>';
 											if(xcz!=""){
 												$.each( JSON.parse(xcz), function( key, val ) {
-													console.log(val.ctranno + "==" + full[0] + "&&" + val.userid+ "==" +'<?=$employeeid?>');
-													if(val.ctranno==full[0]){
-														if(val.userid=='<?=$employeeid?>'){
-															chkrejstat1 = "";
-															chkrejstat2 = "";
-														}else{
-															chkrejstat1 = "disabled";
-															chkrejstat2 = "disabled";
-														}
+													if(val.crfpno==full[0] && val.userid=='<?=$employeeid?>'){
+														chkrejstat1 = "";
+														chkrejstat2 = "";											
 													}
 													//console.log(key,val);
 												});

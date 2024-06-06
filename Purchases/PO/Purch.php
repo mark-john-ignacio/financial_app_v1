@@ -408,7 +408,7 @@
 												var xcz = '<?=json_encode(@$chkapprovals)?>';
 												if(xcz!=""){
 													$.each( JSON.parse(xcz), function( key, val ) {
-														if(val.ctranno==full[0] && val.userid=='<?=$employeeid?>'){
+														if(val.cpono==full[0] && val.userid=='<?=$employeeid?>'){
 															chkrejstat1 = "";
 															chkrejstat2 = "";
 														}
