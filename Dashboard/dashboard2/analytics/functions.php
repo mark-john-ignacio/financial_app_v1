@@ -77,11 +77,11 @@ function topSellingItem($company){
         INNER JOIN sales s ON s.compcode = s_t.compcode AND s.ctranno = s_t.ctranno
         INNER JOIN items i ON s_t.citemno = i.cpartno
         WHERE s.lapproved = 1 AND s.lvoid = 0 AND s.compcode = '$company'
-        GROUP BY s_t.citemno
+        GROUP BY s_t.citemno, i.citemdesc
         ORDER BY total_price DESC
         LIMIT 1
     ";
-
+    
     $result = $con->query($sql);
 
     if ($result->num_rows > 0) {
