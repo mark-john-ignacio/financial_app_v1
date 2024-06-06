@@ -31,10 +31,10 @@ $company = $_SESSION['companyid'];
 	}
 
 	$chkapprovals = array();
-	$sqlappx = mysqli_query($con,"Select * from quote_trans_approvals where compcode='$company' and lapproved=0 and lreject=0 and userid = '$employeeid' Group BY ctranno HAVING nlevel = MIN(nlevel) Order By ctranno, nlevel");
+	$sqlappx = mysqli_query($con,"Select * from quote_trans_approvals where compcode='$company' and lapproved=0 and lreject=0 Group BY ctranno HAVING nlevel = MIN(nlevel) Order By ctranno, nlevel");
 	if (mysqli_num_rows($sqlappx)!=0) {
 		while($rows = mysqli_fetch_array($sqlappx, MYSQLI_ASSOC)){
-			@$chkapprovals[] = $rows['ctranno']; 
+			@$chkapprovals[] = $rows; 
 		}
 	}
 
@@ -500,10 +500,11 @@ function track(xno){
 									var xcz = '<?=json_encode(@$chkapprovals)?>';
 									if(xcz!=""){
 										$.each( JSON.parse(xcz), function( key, val ) {
-											if(val==full[0]){
+											//console.log(val.userid + "==" + '<?=$employeeid?>');
+											if(val.ctranno==full[0] && val.userid=='<?=$employeeid?>'){
 												chkrejstat = "";
 											}
-											//console.log(key,val);
+											
 										});
 									}
 
