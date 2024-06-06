@@ -406,15 +406,20 @@ mysqli_close($con);
 
 										if(full[7] == 0 && full[8]==0){
 
-											var chkrejstat1 = "disabled";
-											var chkrejstat2 = "disabled";
+											var chkrejstat1 = "";
+											var chkrejstat2 = "";
 											var xcz = '<?=json_encode(@$chkapprovals)?>';
 											if(xcz!=""){
 												$.each( JSON.parse(xcz), function( key, val ) {
 													console.log(val.ctranno + "==" + full[0] + "&&" + val.userid+ "==" +'<?=$employeeid?>');
-													if(val.ctranno==full[0] && val.userid=='<?=$employeeid?>'){
-														chkrejstat1 = "";
-														chkrejstat2 = "";
+													if(val.ctranno==full[0]){
+														if(val.userid=='<?=$employeeid?>'){
+															chkrejstat1 = "";
+															chkrejstat2 = "";
+														}else{
+															chkrejstat1 = "disabled";
+															chkrejstat2 = "disabled";
+														}
 													}
 													//console.log(key,val);
 												});
