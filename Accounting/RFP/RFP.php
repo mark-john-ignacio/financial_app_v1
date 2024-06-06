@@ -406,8 +406,6 @@ mysqli_close($con);
 
 										if(full[7] == 0 && full[8]==0){
 
-											var chkrejstat1 = "disabled";
-											var chkrejstat2 = "disabled";
 											var xcz = '<?=json_encode(@$chkapprovals)?>';
 											if(xcz!=""){
 												$.each( JSON.parse(xcz), function( key, val ) {
@@ -420,6 +418,9 @@ mysqli_close($con);
 															chkrejstat1 = "disabled";
 															chkrejstat2 = "disabled";
 														}
+													}else{													
+														var chkrejstat1 = "disabled";
+														var chkrejstat2 = "disabled";
 													}
 													//console.log(key,val);
 												});
