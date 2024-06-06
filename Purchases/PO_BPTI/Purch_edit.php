@@ -1958,7 +1958,7 @@ else{
 		var ccode = document.getElementById("txtcustid").value;
 				
 		$.ajax ({
-			url: "../th_checkitmprice.php",
+			url: "../th_checkitmpoprice.php",
 			data: { itm: itmcode, cust: ccode, cunit: itmunit},
 			async: false,
 			success: function( data ) {
