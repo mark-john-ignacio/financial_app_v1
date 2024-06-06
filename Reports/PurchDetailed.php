@@ -41,36 +41,25 @@ include('../include/access.php');
 <table width="100%" border="0" cellpadding="2">
   <tr>
     <td valign="top" width="50" style="padding:2px">
-    <button type="submit" class="btn btn-danger btn-block" id="btnsales">
+    <button type="button" class="btn btn-danger btn-block" id="btnView">
     <span class="glyphicon glyphicon-search"></span> View Report
     </button>
     </td>
 
-    <td style="padding-left:10px"><b>Item Type: </b></td>
+    <td style="padding-left:10px"><b>PO Date Range: </b></td>
     <td style="padding:2px">
-              <div class="col-xs-4 nopadding">
-    			<select id="seltype" name="seltype" class="form-control input-sm selectpicker"  tabindex="4">
-                <option value="">All Items</option> 
-                    <?php
-                $sql = "select * from groupings where ctype='ITEMTYP' order by cdesc";
-                $result=mysqli_query($con,$sql);
-                    if (!mysqli_query($con, $sql)) {
-                        printf("Errormessage: %s\n", mysqli_error($con));
-                    }			
-        
-                    while($row = mysqli_fetch_array($result, MYSQLI_ASSOC))
-                        {
-                    ?>   
-                    <option value="<?php echo $row['ccode'];?>"><?php echo $row['cdesc']?></option>
-                    <?php
-                        }
-                        
-                        
-                    ?>   
-                     
-                </select>
-                
-                </div>
+
+        <div class="col-xs-12 nopadding">
+          <div class="form-group nopadding">
+              <div class="col-xs-8 nopadding">
+              <div class="input-group input-large date-picker input-daterange">
+                  <input type="text" class="datepick form-control input-sm" id="date1" name="date1" value="<?php echo date("m/d/Y"); ?>">
+                  <span class="input-group-addon">to </span>
+                  <input type="text" class="datepick form-control input-sm" id="date2" name="date2" value="<?php echo date("m/d/Y"); ?>">
+              </div>
+              </div>	
+          </div>
+        </div>               
     </td>
 
   </tr>
@@ -83,31 +72,45 @@ include('../include/access.php');
     <td style="padding-left:10px"><b>Transaction Type: </b></td>
     <td style="padding:2px">
       <div class="col-xs-4 nopadding">
-                <select id="sleposted" name="sleposted" class="form-control input-sm selectpicker"  tabindex="4">
-                    <option value="">All Transactions</option>   
-                    <option value="1">Posted</option>      
-                    <option value="0">UnPosted</option>           
-                </select>
-                    
-            </div>  
+          <select id="sleposted" name="sleposted" class="form-control input-sm selectpicker"  tabindex="4">
+            <option value="">All Transactions</option>   
+            <option value="1">Posted</option>      
+            <option value="0">UnPosted</option>           
+          </select>             
+      </div>  
+
+      <div class="col-xs-4 nopadwleft">
+          <select id="slereport" name="slereport" class="form-control input-sm selectpicker"  tabindex="4">
+            <option value="PurchDetailedPR">PO/PR Report</option>      
+            <option value="PurchDetailed">Received Purchases</option>           
+          </select>             
+      </div> 
     </td>
   </tr>
   <tr>
-    <td style="padding-left:10px"><b>Date Range: </b></td>
+    <td style="padding-left:10px"><b>Item Type: </b></td>
     <td style="padding:2px">
-      <div class="col-xs-12 nopadding">
+      <div class="col-xs-4 nopadding">
+        <select id="seltype" name="seltype" class="form-control input-sm selectpicker"  tabindex="4">
+          <option value="">All Items</option> 
+          <?php
+            $sql = "select * from groupings where ctype='ITEMTYP' order by cdesc";
+            $result=mysqli_query($con,$sql);
+            if (!mysqli_query($con, $sql)) {
+                printf("Errormessage: %s\n", mysqli_error($con));
+            }			
 
-        <div class="form-group nopadding">
-            <div class="col-xs-8 nopadding">
-            <div class="input-group input-large date-picker input-daterange">
-                <input type="text" class="datepick form-control input-sm" id="date1" name="date1" value="<?php echo date("m/d/Y"); ?>">
-                <span class="input-group-addon">to </span>
-                <input type="text" class="datepick form-control input-sm" id="date2" name="date2" value="<?php echo date("m/d/Y"); ?>">
-            </div>
-            </div>	
-        </div>
-
-      </div>    
+            while($row = mysqli_fetch_array($result, MYSQLI_ASSOC))
+              {
+          ?>   
+          <option value="<?php echo $row['ccode'];?>"><?php echo $row['cdesc']?></option>
+          <?php
+              }
+              
+              
+          ?>                       
+        </select>               
+      </div>
     </td>
   </tr>
 </table>
@@ -122,12 +125,16 @@ $(function(){
     });
 
     $('#btnView').on("click", function(){
-      $('#frmrep').attr("action", "Purchases/PurchDetailed.php");
+
+      $xcv = $('#slereport').val();
+      $('#frmrep').attr("action", "Purchases/"+$xcv+".php");
       $('#frmrep').submit();
     });
 
     $('#btnexcel').on("click", function(){
-      $('#frmrep').attr("action", "Purchases/PurchDetailed_xls.php");
+
+      $xcv = $('#slereport').val();
+      $('#frmrep').attr("action", "Purchases/"+$xcv+"_xls.php");
       $('#frmrep').submit();
     });
 });

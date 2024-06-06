@@ -188,7 +188,10 @@
 
 	}
 
-
+	$sheet = $spreadsheet->getActiveSheet();
+	foreach ($sheet->getColumnIterator() as $column) {
+		$sheet->getColumnDimension($column->getColumnIndex())->setAutoSize(true);
+	}
 
 
 // Rename worksheet

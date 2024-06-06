@@ -7,6 +7,7 @@
 	include('../../Connection/connection_string.php');
 	include('../../include/denied.php');
 	include('../../include/access2.php');
+	
 	$company = $_SESSION['companyid'];
 	$sql = "select * From company where compcode='$company'";
 	$result=mysqli_query($con,$sql);
