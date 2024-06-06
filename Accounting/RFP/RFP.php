@@ -180,6 +180,9 @@ mysqli_close($con);
 <script type="text/javascript" language="javascript" src="../../Bootstrap/DataTable/jquery.dataTables.min.js"></script>
 	
 <script>
+	var chkrejstat1 = "";
+	var chkrejstat2 = "";
+
 	$(document).ready(function() {
 		
 		fill_datatable("<?=(isset($_REQUEST['ix'])) ? $_REQUEST['ix'] : "";?>");	
@@ -418,9 +421,6 @@ mysqli_close($con);
 															chkrejstat1 = "disabled";
 															chkrejstat2 = "disabled";
 														}
-													}else{													
-														var chkrejstat1 = "disabled";
-														var chkrejstat2 = "disabled";
 													}
 													//console.log(key,val);
 												});
