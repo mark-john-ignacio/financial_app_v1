@@ -2505,7 +2505,9 @@ function loaddetails(){
 				$("#hdnqty").val(item.nqty);
 				$("#hdnqtyunit").val(item.cqtyunit);
 
-				addItemName(item.totqty,item.nqtyorig,item.nprice,item.nbaseamount,item.namount,item.nfactor,item.xref,item.xrefident,item.xcskucode,item.xcpono)
+				//myFunctionadd(qty,nqtyorig,pricex,curramt,amtx,factr,cref,crefident,itmsku,itmpono);
+				myFunctionadd(item.totqty,item.nqtyorig,item.nprice,item.nbaseamount,item.namount,item.nfactor,item.xref,item.xrefident,item.xcskucode,item.xcpono);
+				//addItemName(item.totqty,item.nqtyorig,item.nprice,item.nbaseamount,item.namount,item.nfactor,item.xref,item.xrefident,item.xcskucode,item.xcpono)
 			});
 
 		}
