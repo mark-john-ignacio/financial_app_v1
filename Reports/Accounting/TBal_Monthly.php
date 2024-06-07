@@ -23,7 +23,7 @@
 
 	$dteyr = $_POST["selyr"];
 
-	$sql = "Select MONTH(ddate) as dmonth, A.acctno, B.cacctdesc, sum(A.ndebit) as ndebit, sum(A.ncredit) as ncredit
+	$sql = "Select MONTH(ddate) as dmonth, A.acctno, B.cacctdesc, sum(ROUND(A.ndebit,2)) as ndebit, sum(ROUND(A.ncredit,2)) as ncredit
 		From glactivity A left join accounts B on A.compcode=B.compcode and A.acctno=B.cacctid
 		where A.compcode='$company' and YEAR(A.ddate) = '$dteyr' and IFNULL(B.cacctdesc,'') <> ''
 		Group By MONTH(ddate), A.acctno, B.cacctdesc
@@ -63,7 +63,7 @@
 	$begtotdebit = array();
 	$begtotcredit = array();
 
-	$sql = "Select A.acctno, B.cacctdesc, sum(A.ndebit) as ndebit, sum(A.ncredit) as ncredit
+	$sql = "Select A.acctno, B.cacctdesc, sum(ROUND(A.ndebit,2)) as ndebit, sum(ROUND(A.ncredit,2)) as ncredit
 	From glactivity A left join accounts B on A.compcode=B.compcode and A.acctno=B.cacctid
 	where A.compcode='$company' and YEAR(A.ddate) = '$dteyrminus' and IFNULL(B.cacctdesc,'') <> ''
 	Group By A.acctno, B.cacctdesc
