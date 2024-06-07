@@ -113,6 +113,19 @@
 
 	}
 
+	if($_REQUEST['typ']=="ALLAPVMYX"){
+		$sqlhead = mysqli_query($con,"Select ctranno from apv where compcode='$company' and lapproved=1 and lvoid=0 and dapvdate between '".$_REQUEST['dx1']."' and '".$_REQUEST['dx2']."'");
+		if (mysqli_num_rows($sqlhead)!=0) {
+			while($row = mysqli_fetch_array($sqlhead, MYSQLI_ASSOC)){
+
+				mysqli_query($con,"DELETE FROM `glactivity` where compcode='".$company."' and `ctranno` = '".$row['ctranno']."'");
+					
+				mysqli_query($con,"INSERT INTO `glactivity`(`compcode`, `cmodule`, `ctranno`, `ddate`, `acctno`, `ctitle`, `ndebit`, `ncredit`, `lposted`, `dpostdate`, `ctaxcode`) Select '$company','APV','".$row['ctranno']."',A.dapvdate,B.cacctno,B.ctitle,B.ndebit,B.ncredit,0,NOW(),B.cewtcode From apv A left join apv_t B on  A.compcode=B.compcode and A.ctranno=B.ctranno where A.compcode='$company' and A.ctranno='".$row['ctranno']."'");
+			}
+
+		}
+	}
+
 
 	$json['ms'] = $msgz;
 	$json['stat'] = $status;
