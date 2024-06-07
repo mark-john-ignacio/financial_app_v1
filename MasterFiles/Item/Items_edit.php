@@ -148,7 +148,7 @@
     
     <script src="../../Bootstrap/js/jquery-3.2.1.min.js"></script>
     <script src="../../Bootstrap/js/bootstrap3-typeahead.js"></script>
-    <script src="../../include/autoNumeric.js"></script>
+    <script src="../../Bootstrap/js/jquery.numeric.js"></script>
 
     <script src="../../Bootstrap/js/bootstrap.js"></script>
     
@@ -981,7 +981,7 @@
             $(this).tab('show');
         });
         
-        $("input.numeric").autoNumeric('init',{mDec:2});
+        $("input.numeric").numeric({decimalPlaces: 2});
         $("input.numeric").on("click", function () {
             $(this).select();
         });
@@ -1300,7 +1300,7 @@
         y.innerHTML = "<div class=\"nopadwright\" ><input type='checkbox' id='txtchkSI"+lastRow+"' name='txtchkSI"+lastRow+"' value='1'> </div>";
         z.innerHTML = "<input class='btn btn-danger btn-xs' type='button' id='row_" + lastRow + "_delete' class='delete' value='Delete' onClick=\"deleteRow(this);\"/>";
         
-        $("#txtfactor"+lastRow).autoNumeric('init',{mDec:2});
+        $("#txtfactor"+lastRow).numeric({decimalPlaces: 2});
 		$("#txtfactor"+lastRow).on("focus", function () {
 			$(this).select();
 		});
@@ -1364,7 +1364,7 @@
 
         g.innerHTML = "<div class=\"col-xs-12 nopadwleft\" ><input class='btn btn-danger btn-xs' type='button' id='row_" + lastRow + "_delete' class='delete' value='Delete' onClick=\"deleteSeclevl(this);\"/></div>";
         
-        $("input.numeric").autoNumeric('init',{mDec:2});
+        $("input.numeric").numeric({decimalPlaces: 2});
         $("input.numeric").on("click", function () {
             $(this).select();
         });
@@ -1554,7 +1554,7 @@
                         z.innerHTML = varstat;
                         zy.innerHTML = "<div class=\"alert alert-danger nopadding\" id=\"itmunitmsg"+item.cunit+"\" style=\"display: inline\"></div>";
 
-                        $("#txtfactor"+lastRow).autoNumeric('init',{mDec:2});
+                        $("#txtfactor"+lastRow).numeric({decimalPlaces: 2});
                         $("#txtfactor"+lastRow).on("focus", function () {
                             $(this).select();
                         });
