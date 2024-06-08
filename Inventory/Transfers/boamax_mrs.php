@@ -7,6 +7,18 @@
 	include('../../include/denied.php');
 
 	$company = $_SESSION['companyid'];
+	$sqlcomp = mysqli_query($con,"select * from company where compcode='$company'");
+
+	if(mysqli_num_rows($sqlcomp) != 0){
+
+		while($rowcomp = mysqli_fetch_array($sqlcomp, MYSQLI_ASSOC))
+		{
+			$logosrc = $rowcomp['clogoname'];
+			$logoaddrs = $rowcomp['compadd'];
+			$logonamz = $rowcomp['compname'];
+		}
+
+	}
 
 	$arrallsec = array();
 	$sqlempsec = mysqli_query($con,"select A.nid, A.cdesc From locations A Where A.compcode='$company' and A.cstatus='ACTIVE' Order By A.cdesc");
@@ -43,7 +55,7 @@
 	<style>
 
 		body {
-			font-family: Verdana, sans-serif;
+			font-family: Arial, sans-serif;
 			font-size: 8pt;
 		}
 
@@ -55,13 +67,25 @@
 			thead {display: table-header-group;} 			
 			body {margin: 6.35mm}
 		}
-			
+		#imgcontent {
+        	position: relative;
+		}
+		#imgcontent img {
+			position: absolute;
+			top: 2px;
+			left: 3px;
+		}
 	</style>
 </head>
 
-<body >
-
-	<center><h2> MATERIAL REQUISITION SLIP</h2></center>
+<body onLoad="window.print()">
+	
+	<div id="imgcontent">
+		<img src="../<?=$logosrc?>" class="ribbon" alt="" width="150px"/>
+	</div>
+	
+	<center><div style="padding-top: 10px"><font style="font-size: 24px;"> MATERIAL REQUISITION SLIP</font></div></center>
+	<br><br>
 	<table border="1" width="100%" style="border-collapse:collapse" cellpadding="5px">
 		<tr>
 			<td width="20%" valign="top"> <b>Date Requested:</b> <br><br><br><?=date_format(date_create($hddatecnt), "F d, Y")?></td>

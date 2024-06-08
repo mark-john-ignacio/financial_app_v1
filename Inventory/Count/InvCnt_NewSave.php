@@ -54,9 +54,9 @@
 
 	$preparedby = $_SESSION['employeeid'];
 
-	$chkSales = mysqli_query($con,"select * from invcount where compcode='$company' and YEAR(ddate) = YEAR(CURDATE()) Order By ctranno desc LIMIT 1");
+	$chkSales = mysqli_query($con,"select * from invcount where compcode='$company' and YEAR(ddate) = YEAR(CURDATE()) Order By ddate desc LIMIT 1");
 	if (mysqli_num_rows($chkSales)==0) {
-		$cTranNo = "IC".$dmonth.$dyear."00000";
+		$cTranNo = "IC".$dyear."000000001";
 	}
 	else {
 		while($row = mysqli_fetch_array($chkSales, MYSQLI_ASSOC)){
@@ -64,12 +64,12 @@
 		}
 		
 		
-		if(substr($lastSI,2,2) <> $dmonth){
-			$cTranNo = "IC".$dmonth.$dyear."00000";
+		if(substr($lastSI,2,2) <> $dyear){
+			$cTranNo = "IC".$dyear."000000001";
 		}
 		else{
-			$baseno = intval(substr($lastSI,6,5)) + 1;
-			$zeros = 5 - strlen($baseno);
+			$baseno = intval(substr($lastSI,4,9)) + 1;
+			$zeros = 9 - strlen($baseno);
 			$zeroadd = "";
 			
 			for($x = 1; $x <= $zeros; $x++){
@@ -77,7 +77,7 @@
 			}
 			
 			$baseno = $zeroadd.$baseno;
-			$cTranNo = "IC".$dmonth.$dyear.$baseno;
+			$cTranNo = "IC".$dyear.$baseno;
 		}
 	}
 

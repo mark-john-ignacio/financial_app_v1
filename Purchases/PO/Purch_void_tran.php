@@ -3,7 +3,7 @@
 		session_start();
 	}
 
-	$_SESSION['pageid'] = "Purch_unpost.php";
+	$_SESSION['pageid'] = "Purch_unpost";
 
 	require_once "../../Connection/connection_string.php";
 

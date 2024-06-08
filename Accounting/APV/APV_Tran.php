@@ -37,6 +37,8 @@
 			//check if balanace debit credit
 			$sqlhead = mysqli_query($con,"Select sum(ndebit) as ndebit, sum(ncredit) as ncredit from apv_t where compcode='$company' and ctranno='$tranno'");
 			$sum=0;
+
+			$ccontinue = "TRUE";
 			if (mysqli_num_rows($sqlhead)!=0) {
 				while($row = mysqli_fetch_array($sqlhead, MYSQLI_ASSOC)){
 
@@ -44,17 +46,18 @@
 					$sum = abs($sum);
 				}
 
-				if($sum > 1){
-					$ccontinue = "FALSE";
-				}
 			}
 
-			$result = mysqli_query ($con, "SELECT A.cacctno, D.cacctdesc, A.ncredit FROM `apv_t` A left join accounts D on A.compcode=D.compcode and A.cacctno=D.cacctid where A.compcode='$company' and A.ctranno='".$tranno."' and D.ccategory='LIABILITIES' and A.ncredit > 0 and A.cacctno not in ('".implode("','",$EWTVATS)."')"); 
+			if($sum > 1){
+				$ccontinue = "FALSE";
+			}
+
+			/*$result = mysqli_query ($con, "SELECT A.cacctno, D.cacctdesc, A.ncredit FROM `apv_t` A left join accounts D on A.compcode=D.compcode and A.cacctno=D.cacctid where A.compcode='$company' and A.ctranno='".$tranno."' and D.ccategory='LIABILITIES' and A.ncredit > 0 and A.cacctno not in ('".implode("','",$EWTVATS)."')"); 
 
 			if(mysqli_num_rows($result)==0){
 				//echo "TRUE";
 				$ccontinue = "FALSE";
-			}
+			}*/
 
 			if($ccontinue == "TRUE"){
 				if (!mysqli_query($con,"Update apv set lapproved=1 where compcode='$company' and ctranno='$tranno'")){
@@ -86,7 +89,7 @@
 				}
 
 			}else{
-				$msgz = "<b>ERROR: </b>Please Check your GL Entries!";
+				$msgz = "<b>ERROR: </b>Please Check your GL Entries!<br>Unbalanced Amount: ".$sum;
 				$status = "False";
 			}
 
@@ -108,6 +111,22 @@
 
 			}
 
+	}
+
+	if($_REQUEST['typ']=="ALLAPVMYX"){
+		$sqlhead = mysqli_query($con,"Select ctranno from apv where compcode='$company' and lapproved=1 and lvoid=0 and dapvdate between '".$_REQUEST['dx1']."' and '".$_REQUEST['dx2']."'");
+		if (mysqli_num_rows($sqlhead)!=0) {
+			while($row = mysqli_fetch_array($sqlhead, MYSQLI_ASSOC)){
+
+				mysqli_query($con,"DELETE FROM `glactivity` where compcode='".$company."' and `ctranno` = '".$row['ctranno']."'");
+					
+				mysqli_query($con,"INSERT INTO `glactivity`(`compcode`, `cmodule`, `ctranno`, `ddate`, `acctno`, `ctitle`, `ndebit`, `ncredit`, `lposted`, `dpostdate`, `ctaxcode`) Select '$company','APV','".$row['ctranno']."',A.dapvdate,B.cacctno,B.ctitle,B.ndebit,B.ncredit,0,NOW(),B.cewtcode From apv A left join apv_t B on  A.compcode=B.compcode and A.ctranno=B.ctranno where A.compcode='$company' and A.ctranno='".$row['ctranno']."'");
+			}
+
+		}
+
+		$msgz = "";
+		$status = "";
 	}
 
 

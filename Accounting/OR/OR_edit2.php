@@ -2,7 +2,7 @@
 if(!isset($_SESSION)){
 	session_start();
 }
-$_SESSION['pageid'] = "OR.php";
+$_SESSION['pageid'] = "OR";
 
 include('../../Connection/connection_string.php');
 include('../../include/denied.php');
@@ -11,7 +11,7 @@ include('../../include/access2.php');
 $company = $_SESSION['companyid'];
 
 $poststat = "True"; 
-$sql = mysqli_query($con,"select * from users_access where userid = '$employeeid' and pageid = 'OR_edit.php'");
+$sql = mysqli_query($con,"select * from users_access where userid = '$employeeid' and pageid = 'OR_edit'");
 if(mysqli_num_rows($sql) == 0){
 	$poststat = "False";
 }
@@ -95,10 +95,10 @@ if (mysqli_num_rows($getewtcd)!=0) {
 
 	$result = mysqli_query($con, "SELECT * FROM `parameters` WHERE compcode='$company' and ccode = 'PRINT_VERSION_RP'");
 	if(mysqli_num_rows($result) != 0){
-	$verrow = mysqli_fetch_array($result, MYSQLI_ASSOC);
-	$version = $verrow['cvalue'];
+		$verrow = mysqli_fetch_array($result, MYSQLI_ASSOC);
+		$version = $verrow['cvalue'];
 	} else {
-	$version =''; 
+		$version =''; 
 	}
 ?>
 
@@ -505,8 +505,8 @@ if (mysqli_num_rows($getewtcd)!=0) {
 																
 										//var varnnet = item.nnet;
 										//var varngrs = item.ngross;	
-										//$("#txtnEWT<?=$cntr;?>").select2();
-										//$("#txtnEWT<?=$cntr;?>").on("change", function(){
+										//$("#txtnEWT<?//=$cntr;?>").select2();
+										//$("#txtnEWT<?//=$cntr;?>").on("change", function(){
 										//	computeDue(this);
 										//	computeGross();
 										//});
@@ -1083,7 +1083,12 @@ if (mysqli_num_rows($getewtcd)!=0) {
 									<td>Account Credit</td>  
 								</tr>		
 								<?php
+								if($lPosted==1){
 									$getewtcd = mysqli_query($con,"SELECT * FROM glactivity where compcode='$company' and ctranno='$corno'"); 
+								}else{
+									$getewtcd = mysqli_query($con,"SELECT cacctno as acctno, ctitle, ndebit, ncredit FROM receipt_entry where compcode='$company' and ctranno='$corno'"); 
+								}
+									
 									if (mysqli_num_rows($getewtcd)!=0) {
 										while($row = mysqli_fetch_array($getewtcd, MYSQLI_ASSOC)){
 								?>					
@@ -1135,7 +1140,7 @@ if (mysqli_num_rows($getewtcd)!=0) {
             <div class="modal-bodylong">
 				<button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>        
         
-               <iframe id="myprintframe" name="myprintframe" scrolling="no" style="width:100%; height:98%; display:block; margin:0px; padding:0px; border:0px"></iframe>
+               <iframe id="myprintframe" name="myprintframe" scrolling="no" style="width:100%; height:11in; display:block; margin:0px; padding:0px; border:0px"></iframe>
 			</div>
         </div><!-- /.modal-content -->
     </div><!-- /.modal-dialog -->
@@ -2069,62 +2074,32 @@ if (mysqli_num_rows($getewtcd)!=0) {
 	
 	}
 
-	/*function computeDue(selewt){
+	function computeDue(selewt){
 
-		lastRow = selewt.attributes["id"].value;
-		lastRow = lastRow.replace("txtnEWT","");
-		lastRow = lastRow.replace("[]","");
+		lastRow = selewt
 
-		///	var tbl = document.getElementById('MyTable').getElementsByTagName('tr');
-		//	var lastRow = tbl.length-1;
-		//	if(lastRow!=0){
-		//		var x = 0;
-				
-		//		for (z=1; z<=lastRow; z++){
-		//			var varngrs = $("#txtvatamt"+lastRow).val().replace(/,/g,'');
-		//			var varngrs = $("#txtSIGross"+lastRow).val().replace(/,/g,'');
-					var varngrs = $("#txtSIGross"+lastRow).val().replace(/,/g,'');
-		//		}
+		var varngrs = $("#txtSIGross"+lastRow).val().replace(/,/g,'');
 
-		//	}
+		var varncms = $("#txtncredit"+lastRow).val().replace(/,/g,'');
+		var varcdms = $("#txtndebit"+lastRow).val().replace(/,/g,'');
+		var varnpaymnts = $("#txtnpayments"+lastRow).val().replace(/,/g,''); 
 
-		varnnet =  $("#txtnetvat"+lastRow).val().replace(/,/g,'');
-		ndue = $("#txtDue"+lastRow).val().replace(/,/g,'');
-
-		xcb = 0;
-		var len = selewt.options.length;
-		for (var i = 0; i < len; i++) {
-			opt = selewt.options[i];
-
-			if (opt.selected) {
-				//alert(opt.value+ " : " + opt.dataset.rate + " : " + opt.dataset.base);
-
-				if(opt.dataset.base=="NET"){
-					xcb = xcb + parseFloat(varnnet)*(opt.dataset.rate/100);
-				}else{
-					xcb = xcb + parseFloat(varngrs)*(opt.dataset.rate/100);
-				}
-
-			}
-		}
-
-												
-		$("#txtnEWTAmt"+lastRow).val(xcb);
-		xcbdue = varngrs - xcb;
-												
+		xcbdue = (parseFloat(varngrs) + parseFloat(varcdms)) - (parseFloat(varncms) + parseFloat(varnpaymnts));
+											
 		$("#txtDue"+lastRow).val(xcbdue);
 		$("#txtApplied"+lastRow).val(xcbdue);
 
-		$("#txtnEWTAmt"+lastRow).autoNumeric('destroy');
-		$("#txtnEWTAmt"+lastRow).autoNumeric('init',{mDec:2});
+		//$("#txtnEWTAmt"+lastRow).autoNumeric('destroy');
+		//$("#txtnEWTAmt"+lastRow).autoNumeric('init',{mDec:2});
 
 		$("#txtDue"+lastRow).autoNumeric('destroy');
-		$("#txtDue"+lastRow).autoNumeric('init',{mDec:2});
+		$("#txtDue"+lastRow).autoNumeric('init',{mDec:2, vMin: -9999999.99});
 												
 		$("#txtApplied"+lastRow).autoNumeric('destroy');
-		$("#txtApplied"+lastRow).autoNumeric('init',{mDec:2});
+		$("#txtApplied"+lastRow).autoNumeric('init',{mDec:2, vMin: -9999999.99});
+										
 
-	}*/
+	}
 
 	function ReIndexMyTable(tranno){
 		$("#MyTable > tbody > tr").each(function(index) {   
@@ -2436,11 +2411,13 @@ if (mysqli_num_rows($getewtcd)!=0) {
 		$("#btnEdit").attr("disabled", false); 
 		$('#receipt').attr('disabled', true);
 
-		if(document.getElementById("hdnposted").value==1 && document.getElementById("hdnvoid").value==0){
+		//if(document.getElementById("hdnposted").value==1 && document.getElementById("hdnvoid").value==0){
 			$("#btnentry").attr("disabled", false);
-		}
+		//}
 
 		$("#btn-closemod").attr("disabled", false); 
+
+		$(".kv-file-zoom").attr("disabled", false);
 		
 
 	}
@@ -2590,7 +2567,14 @@ if (mysqli_num_rows($getewtcd)!=0) {
 
 		//	recomlines();
 		//	compgross1();
-												
+						
+			selewtid = $("#"+dsc).attr("id").replace("txtncredit","");
+			selewtid = selewtid.replace("txtndebit","");
+
+			//selewt = document.getElementById("txtnEWT"+selewtid);
+			computeDue(selewtid);
+			computeGross()
+
 			$('#MyAdjustmentModal').modal('hide');	
 		}
 		else{

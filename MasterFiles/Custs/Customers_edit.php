@@ -2,7 +2,7 @@
 	if(!isset($_SESSION)){
 		session_start();
 	}
-	$_SESSION['pageid'] = "Customers.php";
+	$_SESSION['pageid'] = "Customers";
 
 	include('../../Connection/connection_string.php');
 	include('../../include/denied.php');
@@ -11,7 +11,7 @@
 	$company = $_SESSION['companyid'];
 
 	$poststat = "True";
-	$sql = mysqli_query($con,"select * from users_access where userid = '$employeeid' and pageid = 'Customers_edit.php'");
+	$sql = mysqli_query($con,"select * from users_access where userid = '$employeeid' and pageid = 'Customers_Edit'");
 	if(mysqli_num_rows($sql) == 0){
 		$poststat = "False";
 	}

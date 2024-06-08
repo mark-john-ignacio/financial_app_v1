@@ -1,10 +1,15 @@
 <?php 
-if(!isset($_SESSION)){
-    session_start();
-}
-require_once  "../../vendor2/autoload.php";
-require_once "../../Connection/connection_string.php";
-require_once "../../Model/helper.php";
+    if(!isset($_SESSION)){
+        session_start();
+    }
+
+    $_SESSION['pageid'] = "SalesDat";
+    
+    require_once  "../../vendor2/autoload.php";
+    require_once "../../Connection/connection_string.php";
+    include('../../include/denied.php');
+	include('../../include/access2.php');
+    require_once "../../Model/helper.php";
 
 //use PhpOffice\PhpSpreadsheet\Helper\Sample;
 use PhpOffice\PhpSpreadsheet\IOFactory;
@@ -177,7 +182,7 @@ $spreadsheet->getProperties()->setCreator('Myx Financials')
 
 	// Redirect output to a client’s web browser (Xlsx)
 	header('Content-Type: application/vnd.openxmlformats-officedocument.spreadsheetml.sheet');
-	header('Content-Disposition: attachment;filename="Sales_Transaction.xlsx"');
+	header('Content-Disposition: attachment;filename="Sales_Relief.xlsx"');
 	header('Cache-Control: max-age=0');
 	// If you're serving to IE 9, then the following may be needed
 	header('Cache-Control: max-age=1');

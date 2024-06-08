@@ -2,7 +2,7 @@
 	if(!isset($_SESSION)){
 		session_start();
 	}
-	$_SESSION['pageid'] = "Receive.php";
+	$_SESSION['pageid'] = "Receive";
 
 	include('../../Connection/connection_string.php');
 	include('../../include/denied.php');
@@ -12,7 +12,7 @@
 	$company = $_SESSION['companyid'];
 
 	$poststat = "True";
-	$sql = mysqli_query($con,"select * from users_access where userid = '$employeeid' and pageid = 'Receive_edit.php'");
+	$sql = mysqli_query($con,"select * from users_access where userid = '$employeeid' and pageid = 'Receive_edit'");
 	if(mysqli_num_rows($sql) == 0){
 		$poststat = "False";
 	}
@@ -87,6 +87,7 @@
 	<link rel="stylesheet" type="text/css" href="../../Bootstrap/css/bootstrap.css?t=<?php echo time();?>">
   	<link rel="stylesheet" type="text/css" href="../../Bootstrap/css/alert-modal.css">
 	<link rel="stylesheet" type="text/css" href="../../Bootstrap/css/bootstrap-datetimepicker.css">
+	<link rel="stylesheet" type="text/css" href="../../Bootstrap/select2/css/select2.css?h=<?php echo time();?>">
 
 	<link href="../../global/css/components.css?t=<?php echo time();?>" id="style_components" rel="stylesheet" type="text/css"/>
 
@@ -101,7 +102,7 @@
 	<script src="../../Bootstrap/js/bootstrap.js"></script>
 	<script src="../../Bootstrap/js/moment.js"></script>
 	<script src="../../Bootstrap/js/bootstrap-datetimepicker.min.js"></script>
-
+	<script src="../../Bootstrap/select2/js/select2.full.min.js"></script>
 	<!--
 	--
 	-- FileType Bootstrap Scripts and Link
@@ -117,7 +118,6 @@
 </head>
 
 <body style="padding:5px" onLoad="document.getElementById('txtcust').focus();">
-<input type="hidden" value='<?=json_encode(@$arruomslist)?>' id="hdnitmfactors">
 
 <?php
 if (mysqli_num_rows($sqlhead)!=0) {
@@ -373,20 +373,19 @@ if (mysqli_num_rows($sqlhead)!=0) {
 						</div>
 
 						<div class="tab-pane fade in" id="2Acct" style="padding-left:5px; padding-top:10px">
-							<div style="min-height: 30vh; width: 1000px;">
-								
-								<table id="MyTable2" class="table" width="100%" border="0">
+							<div style="min-height: 30vh; width: 1100px;">
+						
+								<table id="MyTable2" class="MyTable" width="100%" cellpadding="3px">
 									<thead>
-										<tr>
-											
-												<th style="border-bottom:1px solid #999">Item Code</th>
-												<th style="border-bottom:1px solid #999">Serial No.</th>
-												<th style="border-bottom:1px solid #999">Barcode</th>
-												<th style="border-bottom:1px solid #999">UOM</th>
-												<th style="border-bottom:1px solid #999">Qty</th>
-												<th style="border-bottom:1px solid #999">Location</th>
-												<th style="border-bottom:1px solid #999">Expiration Date</th>
-												<th style="border-bottom:1px solid #999">&nbsp;</th>
+										<tr>                   	
+											<th style="border-bottom:1px solid #999">Item Code</th>
+											<th style="border-bottom:1px solid #999">Description</th>
+											<th style="border-bottom:1px solid #999">Lot No.</th>
+											<th style="border-bottom:1px solid #999">Packing List</th>
+											<th style="border-bottom:1px solid #999">Location</th>
+											<th style="border-bottom:1px solid #999">UOM</th>
+											<th style="border-bottom:1px solid #999">Qty</th>
+											<th style="border-bottom:1px solid #999">&nbsp;</th>
 										</tr>
 									</thead>
 									<tbody>
@@ -400,17 +399,16 @@ if (mysqli_num_rows($sqlhead)!=0) {
 					</div>				
 			</div>
 
-			<?php
-				if($poststat=="True"){
-			?>
 			<div class="row nopadwtop2x">
 				<div class="col-xs-8">
 					<div class="portlet">
 						<div class="portlet-body">
 							<input type="hidden" name="hdnrowcnt" id="hdnrowcnt"> 
 				
-				
-							<button type="button" class="btn btn-primary btn-sm" tabindex="6" onClick="window.location.href='RR.php?ix=<?=isset($_REQUEST['hdnsrchval']) ? $_REQUEST['hdnsrchval'] : ""?>';" id="btnMain" name="btnMain">
+							<?php
+								if($poststat=="True"){
+							?>
+							<button type="button" class="btn btn-primary btn-sm" tabindex="6" onClick="window.location.href='RR.php?ix=<?=isset($_REQUEST['hdnsrchval']) ? $_REQUEST['hdnsrchval'] : ""?>&st=<?=isset($_REQUEST['hdnsrchsta']) ? $_REQUEST['hdnsrchsta'] : ""?>';" id="btnMain" name="btnMain">
 								Back to Main<br>(ESC)
 							</button>
 					
@@ -428,6 +426,8 @@ if (mysqli_num_rows($sqlhead)!=0) {
 							</button>
 
 							<?php
+								}
+
 								$sql = mysqli_query($con,"select * from users_access where userid = '".$_SESSION['employeeid']."' and pageid = 'Receive_print'");
 
 								if(mysqli_num_rows($sql) == 1){
@@ -440,6 +440,8 @@ if (mysqli_num_rows($sqlhead)!=0) {
 
 							<?php		
 								}
+
+								if($poststat=="True"){
 							?>
 
 							<button type="button" class="btn btn-warning btn-sm" tabindex="6" onClick="enabled();" id="btnEdit" name="btnEdit">
@@ -453,82 +455,88 @@ if (mysqli_num_rows($sqlhead)!=0) {
 							<!--<input type="hidden" id="txtnBaseGross" name="txtnBaseGross" value="0">
 							<input type="hidden" id="txtnGross" name="txtnGross" value="0">
 							-->
-						
+							<?php
+								}
+							?>
 						</div>
 					</div>
 				</div>
 			</div>
-			<?php
-				}
-			?>
+			
 
 		</div>
 	</div>
 </form>
 
 
-<!-- FULL PO LIST REFERENCES-->
-<div class="modal fade" id="mySIRef" role="dialog" data-keyboard="false" data-backdrop="static">
-    <div class="modal-dialog modal-lg">
-        <div class="modal-content">
-            <div class="modal-header">
-                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-                <h3 class="modal-title" id="InvListHdr">PO List</h3>
-            </div>
-            
-            <div class="modal-body" style="height:40vh">
-            
-       <div class="col-xs-12 nopadding">
+	<!-- FULL PO LIST REFERENCES-->
+	<div class="modal fade" id="mySIRef" role="dialog" data-keyboard="false" data-backdrop="static">
+		<div class="modal-dialog modal-lg">
+			<div class="modal-content">
+				<div class="modal-header">
+					<button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+					<h3 class="modal-title" id="InvListHdr">PO List</h3>
+				</div>
+				
+				<div class="modal-body" style="height:40vh">
+				
+					<div class="col-xs-12 nopadding">
 
-                <div class="form-group">
-                    <div class="col-xs-3 nopadding pre-scrollable" style="height:37vh">
-                          <table name='MyInvTbl' id='MyInvTbl' class="table table-small table-highlight small">
-                           <thead>
-                            <tr>
-                              <th>PO No</th>
-                              <th>Date</th>
-                            </tr>
-                            </thead>
-                            <tbody>
-                            </tbody>
-                          </table>
-                    </div>
+						<div class="form-group">
+							<div class="col-xs-3 nopadding pre-scrollable" style="height:37vh">
+								<table name='MyInvTbl' id='MyInvTbl' class="table table-small table-highlight small">
+									<thead>
+										<tr>
+											<th>PO No</th>
+											<th>Date</th>
+										</tr>
+									</thead>
+									<tbody>
+									</tbody>
+								</table>
+							</div>
 
-                    <div class="col-xs-9 nopadwleft pre-scrollable" style="height:37vh">
-                          <table name='MyInvDetList' id='MyInvDetList' class="table table-small small">
-                           <thead>
-                            <tr>
-                              <th align="center"> <input name="allbox" id="allbox" type="checkbox" value="Check All" /></th>
-                              <th>Item No</th>
-                              <th>Description</th>
-                              <th>UOM</th>
-                              <th>Qty</th>
-															<!--<th>Price</th>
-															<th>Amount</th>
-															<th>Cur</th>-->
-                            </tr>
-                            </thead>
-                            <tbody>
-                            	
-                            </tbody>
-                          </table>
-                    </div>
-               </div>
+							<div class="col-xs-9 nopadwleft pre-scrollable" style="height:37vh">
+								<table name='MyInvDetList' id='MyInvDetList' class="table table-small small">
+									<thead>
+										<tr>
+											<th align="center"> <input name="allbox" id="allbox" type="checkbox" value="Check All" /></th>
+											<th>Item No</th>
+											<th>Description</th>
+											<th>UOM</th>
+											<th>Qty</th>
+																		<!--<th>Price</th>
+																		<th>Amount</th>
+																		<th>Cur</th>-->
+										</tr>
+									</thead>
+									<tbody>
+										
+									</tbody>
+								</table>
+							</div>
+					</div>
 
-        </div>
-         	            
-			</div>
-			
-            <div class="modal-footer">
-                <button type="button" id="btnInsDet" onClick="InsertSI()" class="btn btn-primary">Insert</button>
-                <button type="button" class="btn btn-danger" data-dismiss="modal">Cancel</button>
+					</div>
+							
+				</div>
+				
+				<div class="modal-footer">
+					<button type="button" id="btnInsDet" onClick="InsertSI()" class="btn btn-primary">Insert</button>
+					<button type="button" class="btn btn-danger" data-dismiss="modal">Cancel</button>
 
-            </div>
-        </div><!-- /.modal-content -->
-    </div><!-- /.modal-dialog -->
-</div><!-- /.modal -->
-<!-- End FULL INVOICE LIST -->
+				</div>
+			</div><!-- /.modal-content -->
+		</div><!-- /.modal-dialog -->
+	</div><!-- /.modal -->
+	<!-- End FULL INVOICE LIST -->
 
+	<form method="post" id="frmMyEdit" action="RR_edit.php">
+		<input type="hidden" name="txtctranno" id="txtctranno" value="">
+	</form>
+
+	<form method="post" name="frmprint" id="frmprint" action="" target="_blank">
+	</form>
 
 <?php
 }
@@ -574,46 +582,65 @@ else{
 		<div class="modal-dialog modal-lg">
 			<div class="modal-content">
 				<div class="modal-header">
-					<h4 class="modal-title" id="InvSerDetHdr">Inventory Detail</h4>
-					<input type="hidden" class="form-control input-sm" name="serdisitmcode" id="serdisitmcode"> 
-					<input type="hidden" class="form-control input-sm" name="serdisrefident" id="serdisrefident"> 
-					<input type="hidden" class="form-control input-sm" name="serdisrefno" id="serdisrefno">
+					<div class="row nopadwtop">
+						<div class="col-xs-6 nopadding">
+							<h4 class="modal-title" id="InvSerDetHdr">Inventory Detail</h4>
+							<input type="hidden" class="form-control input-sm" name="serdisitmcode" id="serdisitmcode">
+							<input type="hidden" class="form-control input-sm" name="serdisitmdesc" id="serdisitmdesc">
+							<input type="hidden" class="form-control input-sm" name="serdisrefident" id="serdisrefident"> 
+							<input type="hidden" class="form-control input-sm" name="serdisrefno" id="serdisrefno">
+						</div>
+						<div class="col-xs-6 nopadding">
+							<div class="row">
+								<div class="col-xs-1 nopadwtop text-right"> </div>
+								<div class="col-xs-3 nopadwtop text-right" style="font-size: 1.25em">
+									Total Inserted
+								</div>
+								<div class="col-xs-2 nopadwleft text-right">
+									<input type="text" class="form-control input-sm text-right" name="ToInserted" id="ToInserted" value="0" readonly >
+								</div>
+								<div class="col-xs-3 nopadwtop text-right" style="font-size: 1.25em"> 
+									Total Qty
+								</div>
+								<div class="col-xs-2 nopadwleft text-right">
+									<input type="text" class="form-control input-sm text-right" name="TonnedIns" id="TonnedIns" value="0" readonly>
+								</div>	
+								<div class="col-xs-1 nopadwtop text-right"> </div>					
+							</div>
+						</div>
+					</div>
 				</div>
 				
 				<div class="modal-body" style="height:20vh">
 
-					<div class="row">
-							<div class="col-xs-2 nopadwtop"><b>&nbsp;&nbsp;&nbsp;Serial No:</b></div>
-							<div class="col-xs-7 nopadwtop"><input type="text" class="form-control input-sm" name="serdis" id="serdis"></div>
+					<div class="row nopadwtop">
+						<div class="col-xs-2 nopadwtop"><b>&nbsp;&nbsp;&nbsp;Quantity</b></div>
+						<div class="col-xs-2 nopadding"><input type="text" class="form-control input-sm" name="serdisqty" id="serdisqty" value="1" ></div>
+						<div class="col-xs-1 nopadwleft"><input type="text" class="form-control input-sm" name="serdisuom" id="serdisuom" readonly></div>
+
+						<div class="col-xs-7 nopadwleft" id="TheSerialStat"></div>
+						
 					</div>
-					<div class="row">
-							<div class="col-xs-2 nopadwtop"><b>&nbsp;&nbsp;&nbsp;Barcode:</b></div>
-							<div class="col-xs-7 nopadwtop"><input type="text" class="form-control input-sm" name="serdisbarc" id="serdisbarc"></div>
-					</div>
-					<div class="row">
-							<div class="col-xs-2 nopadwtop"><b>&nbsp;&nbsp;&nbsp;UOM</b></div>
-							<div class="col-xs-2 nopadwtop"><input type="text" class="form-control input-sm" name="serdisuom" id="serdisuom" readonly></div>
-							<div class="col-xs-1 nopadwtop"><b>&nbsp;&nbsp;&nbsp;QTY</b></div>
-							<div class="col-xs-1 nopadwtop"><input type="text" class="form-control input-sm" name="serdisqty" id="serdisqty" value="1" ></div>
-					</div>
-					<div class="row">
+					<div class="row nopadwtop">
 						<div class="col-xs-2 nopadwtop"><b>&nbsp;&nbsp;&nbsp;Location:</b></div>
-						<div class="col-xs-2 nopadwtop">
+						<div class="col-xs-3 nopadding">
 							<select class="form-control input-sm" name="selserloc" id="selserloc">
 								<?php
-										$qrya = mysqli_query($con,"Select * From locations Order By cdesc");
-										while($row = mysqli_fetch_array($qrya, MYSQLI_ASSOC)){
-											echo "<option value=\"".$row['nid']."\" data-id=\"".$row['cdesc']."\">".$row['cdesc']."</option>";
-										}
+									$qrya = mysqli_query($con,"Select * From mrp_locations Order By cdesc");
+									while($row = mysqli_fetch_array($qrya, MYSQLI_ASSOC)){
+										echo "<option value=\"".$row['nid']."\" data-id=\"".$row['cdesc']."\">".$row['cdesc']."</option>";
+									}
 								?>
 							</select>
 						</div>
-						<div class="col-xs-2 nopadwtop"><b>&nbsp;&nbsp;&nbsp;Expiration Date:</b></div>
-						<div class="col-xs-2 nopadwtop"><input type="text" class="datepick form-control input-sm" name="dexpate" id="dexpate"></div>
 					</div> 
-					<div class="row nopadwtop2x">
-							<div class="col-xs-12" id="TheSerialStat">
-							</div>
+					<div class="row nopadwtop">
+						<div class="col-xs-2 nopadwtop"><b>&nbsp;&nbsp;&nbsp;Lot #</b></div>
+						<div class="col-xs-9 nopadding"><input type="text" class="form-control input-sm" name="clotno" id="clotno" value="" ></div>
+					</div>
+					<div class="row nopadwtop">
+						<div class="col-xs-2 nopadwtop"><b>&nbsp;&nbsp;&nbsp;Packing List</b></div>  
+						<div class="col-xs-9 nopadding"><input type="text" class="form-control input-sm" name="cpackno" id="cpackno" value="" ></div>
 					</div>
 				</div>
 
@@ -629,7 +656,7 @@ else{
 		<div class="modal-dialog modal-lg">
 			<div class="modal-contnorad">   
 				<div class="modal-bodylong">
-					<button type="button" id="closePrint" class="close"><span aria-hidden="true">&times;</span></button>        
+					<button type="button" id="closePrint" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>        
 	
 					<iframe id="myprintframe" name="myprintframe" scrolling="no" style="width:100%; height:8.5in; display:block; margin:0px; padding:0px; border:0px"></iframe>
 			
@@ -638,9 +665,6 @@ else{
 		</div>
 	</div> 
 
-	<form method="post" id="frmMyEdit" action="RR_edit.php">
-		<input type="hidden" name="txtctranno" id="txtctranno" value="">
-	</form>
 </body>
 </html>
 
@@ -760,13 +784,18 @@ else{
 
 
 	$(document).ready(function() {
-		$(".nav-tabs a").click(function(){
+		/*$(".nav-tabs a").click(function(){
 			$(this).tab('show');
 		});
 
 		$('.datepick').datetimepicker({
-		format: 'MM/DD/YYYY',
+			format: 'MM/DD/YYYY',
 		});	
+
+		$("#selserloc").select2({
+			dropdownParent: $('#SerialMod .modal-content'),
+			width: '100%'
+		});
 
 		if(file_name.length > 0){
 			$('#file-0').fileinput({
@@ -796,19 +825,19 @@ else{
 				browseOnZoneClick: true,
 				fileActionSettings: { showUpload: false, showDrag: false, }
 			});
-		}
+		}*/
 
 		loaddetails();
 		loadserials();
 
-		$('#txtprodnme').attr("disabled", true);
+		/*$('#txtprodnme').attr("disabled", true);
 		$('#txtprodid').attr("disabled", true);
 		
-		$("#txtcpono").focus();
+		$("#txtcpono").focus();*/
 		
 		disabled();
 
-		$("#allbox").click(function(){
+		/*$("#allbox").click(function(){
 				$('input:checkbox').not(this).prop('checked', this.checked);
 		});
 		
@@ -875,7 +904,6 @@ else{
 		
 		});
 
-
 		$("#txtprodid").keydown(function(e){
 			if(e.keyCode == 13){
 
@@ -919,96 +947,87 @@ else{
 
 		$("#btnInsSer").on("click", function(){
 			var itmcode = $("#serdisitmcode").val();
-			var itmcoderefident = $("#serdisrefident").val();
-			var serials = $("#serdis").val();
-			var barcodes = $("#serdisbarc").val();
-			var uoms = $("#serdisuom").val();
-			var qtys = $("#serdisqty").val();
+			var itmcoderefident = $("#serdisrefident").val();   
+			var lotno = $("#clotno").val();
+			var packlist = $("#cpackno").val();
 			var locas = $("#selserloc").val();
 			var locasdesc = $("#selserloc").find(':selected').attr('data-id');
-			var expz = $("#dexpate").val();      
+			var uoms = $("#serdisuom").val();
+			var qtys = $("#serdisqty").val();			
+			var itmdesc = $("#serdisitmdesc").val();      
 			var refnox = $("#serdisrefno").val(); 
-			InsertToSerials(itmcode,serials,uoms,qtys,locas,locasdesc,expz,itmcoderefident,refnox,barcodes);
-			//AddtoQtyTot(itmcode,qtys,itmcoderefident);
 
-			//var existqty = document.getElementById("txtnqty"+itmcode+itmcoderefident).value;
-			//var qtynow = parseFloat(existqty)+parseFloat(qtys);
+			//checkQty if not over total
+			xval1 = parseFloat(qtys) + parseFloat($("#ToInserted").val().replace(/,/g,''));
+			xval2 = parseFloat($("#TonnedIns").val().replace(/,/g,''));
 
-			//document.getElementById("txtnqty"+itmcode+itmcoderefident).value = qtynow;
-			
-			//reset form
-			$("#serdis").val("");
-			$("#serdisbarc").val("");
-			$("#serdisqty").val("1");
-			
-			$("#TheSerialStat").text(serials + " Inserted...");
+			if(xval1<=xval2){
+				InsertToSerials(itmcode,itmdesc,lotno,packlist,uoms,qtys,locas,locasdesc,itmcoderefident,refnox);
+				
+				//reset form  
+				$("#clotno").val("");
+				$("#cpackno").val("");
+				$("#serdisqty").val("1");
 
+				$("#TheSerialStat").text("Inserted...");
 
-			$("#serdis").focus();
-
-		});
-
-		$("#closePrint").on("click", function(){
-			alert("close");
-			$("#PrintModal").modal("hide");
-		});
+				$("#serdisqty").focus();
+			}else{
+				$("#TheSerialStat").text("Over Quantity...");
+			}
+		
+		});*/
 		
 
 	});
 
-	function InsertToSerials(itmcode,serials,uoms,qtys,locas,locasdesc,expz,nident,refno,bcodes){
+	function printchk(x){
+		if(document.getElementById("hdncancel").value==1){	
+			document.getElementById("statmsgz").innerHTML = "CANCELLED TRANSACTION CANNOT BE PRINTED!";
+			document.getElementById("statmsgz").style.color = "#FF0000";
+		}
+		else{
+
+			//$("#printid").val(x);
+			//$("#frmprint").submit();' PrintRR_PDF.php
+			document.frmprint.action = "PrintRR_PDF.php?printid="+x;
+			document.getElementById("frmprint").submit();
+
+		}
+	}
+
+	
+	function InsertToSerials(itmcode,itmdesc,lotno,packlist,uoms,qtys,locas,locasdesc,nident,refno){
 
 		$("<tr>").append(
-			$("<td width=\"120px\" style=\"padding:1px\">").html("<input type='hidden' value='"+itmcode+"' name=\"sertabitmcode\" id=\"sertabitmcode\"><input type='hidden' value='"+nident+"' name=\"sertabident\" id=\"sertabident\"><input type='hidden' value='"+refno+"' name=\"sertabrefno\" id=\"sertabrefno\">"+itmcode),
-			$("<td>").html("<input type='hidden' value='"+serials+"' name=\"sertabserial\" id=\"sertabserial\">"+serials), 
-			$("<td>").html("<input type='hidden' value='"+bcodes+"' name=\"sertabcodes\" id=\"sertabcodes\">"+bcodes), 
-			$("<td width=\"80px\" style=\"padding:1px\">").html("<input type='hidden' value='"+uoms+"' name=\"sertabuom\" id=\"sertabuom\">"+uoms),
-			$("<td width=\"80px\" style=\"padding:1px\">").html("<input type='hidden' value='"+qtys+"' name=\"sertabqty\" id=\"sertabqty\">"+qtys),
-			$("<td width=\"150x\" style=\"padding:1px\">").html("<input type='hidden' value='"+locas+"' name=\"sertablocas\" id=\"sertablocas\">"+locasdesc),
-			$("<td width=\"100px\" style=\"padding:1px\">").html("<input type='hidden' value='"+expz+"' name=\"sertabesp\" id=\"sertabesp\">"+expz),
-			$("<td width=\"80px\" style=\"padding:1px\">").html("<input class='btn btn-danger btn-xs' type='button' id='delsrx" + itmcode + "' value='delete' />")
+			$("<td width=\"120px\">").html("<input type='hidden' value='"+itmcode+"' name=\"sertabitmcode\" id=\"sertabitmcode\"><input type='hidden' value='"+nident+"' name=\"sertabident\" id=\"sertabident\"><input type='hidden' value='"+refno+"' name=\"sertabrefno\" id=\"sertabrefno\">"+itmcode),
+			$("<td>").html(itmdesc), 
+			$("<td width=\"200px\" style=\"padding:1px\">").html("<input type='text' class='form-control input-xs' value='"+lotno+"' name=\"sertablots\" id=\"sertablots\">"), 
+			$("<td width=\"200px\">").html("<input type='hidden' value='"+packlist+"' name=\"sertabpacks\" id=\"sertabpacks\">"+packlist), 
+			$("<td width=\"150x\">").html("<input type='hidden' value='"+locas+"' name=\"sertablocas\" id=\"sertablocas\">"+locasdesc),
+			$("<td width=\"80px\">").html("<input type='hidden' value='"+uoms+"' name=\"sertabuom\" id=\"sertabuom\">"+uoms),
+			$("<td width=\"80px\">").html("<input type='hidden' value='"+qtys+"' name=\"sertabqty\" id=\"sertabqty\">"+qtys),
+			$("<td width=\"50px\">").html("<input class='btn btn-danger btn-xs' type='button' id='delsrx" + itmcode + "' value='delete' />")
 		).appendTo("#MyTable2 tbody");
 
 		$("#delsrx"+itmcode).on('click', function() {
 			$(this).closest('tr').remove();
 		});
-	}
 
-	function addItemName(){
-		if($("#txtprodid").val() != "" && $("#txtprodnme").val() !="" ){
-			/*var rowCount = $('#MyTable tr').length;
-			var isItem = "NO";
-			var itemindex = 1;
-			
-			if(rowCount > 1){
-				var cntr = rowCount-1;
-				
-				for (var counter = 1; counter <= cntr; counter++) {
-					// alert(counter);
-					if($("#txtprodid").val()==$("#txtitemcode"+counter).val()){
-						isItem = "YES";
-						itemindex = counter;
-					}
-				}
+		var xnqty = 0;
+		$("#MyTable2 > tbody > tr").each(function(index) {	
+
+			xitmrefx =$(this).find('input[type="hidden"][name="sertabitmcode"]').val();
+			xitmidnt =$(this).find('input[type="hidden"][name="sertabident"]').val();
+
+			console.log(xitmrefx +"-"+ xitmidnt);
+			if(xitmrefx==itmcode && xitmidnt==nident){
+				xnqty = xnqty + parseFloat($(this).find('input[type="hidden"][name="sertabqty"]').val());
 			}
-			
-		if(isItem=="NO"){	*/
 
-				myFunctionadd("","","","","","","","","","");		
-			//	ComputeGross();	
-		// }
-		// else{
-		//	
-		//	addqty();	
-		//		
-		}
-			
-			$("#txtprodid").val("");
-			$("#txtprodnme").val("");
-			$("#hdnunit").val("");
-			$("#txtcskuid").val("");
-			
-		// }
+		});
+
+		$("#ToInserted").val(xnqty);
 
 	}
 
@@ -1055,7 +1074,7 @@ else{
 		var uomoptions = "";
 		
 		if(xref == ""){							
-			var xz = $("#hdnitmfactors").val();
+			var xz = '<?=json_encode(@$arruomslist)?>';
 			if(itmqtyunit==itmunit){
 				isselctd = "selected";
 			}else{
@@ -1079,11 +1098,11 @@ else{
 			uomoptions = "<select class='xseluom"+lastRow+" form-control input-xs' name=\"seluom\" id=\"seluom"+lastRow+"\"  data-main='"+itmmainunit+"'>"+uomoptions+"</select>";
 			
 		}else{
-			uomoptions = "<input type='hidden' value='"+itmunit+"' name=\"seluom\" id=\"seluom\">"+itmunit;
+			uomoptions = "<input type='hidden' value='"+itmunit+"' name=\"seluom\" id=\"seluom"+lastRow+"\">"+itmunit;
 		}
 
 
-		tditmbtn = "<td width=\"50\">  <input class='btn btn-info btn-xs' type='button' id='ins" + itmcode + "' value='insert' /> </td>";
+		tditmbtn = "<td width=\"50\">  <input class='btn btn-info btn-xs' type='button' name='ins' id='ins" + lastRow + "' value='insert' /> </td>";
 		
 		tditmcode = "<td width=\"120\"> <input type='hidden' value='"+itmcode+"' name=\"txtitemcode\" id=\"txtitemcode\">"+itmcode+" </td>";
 
@@ -1119,20 +1138,35 @@ else{
 
 		tditmrmks = "<td width=\"200\" style=\"padding:1px\" align=\"center\"> <input type='text' class='form-control input-xs' name=\"txtcremarks\" id=\"txtcremarks\" value=\""+cremarks+"\"/> </td>";
 		
-		tditmdel = "<td width=\"80\" style=\"padding:1px\" align=\"center\"> <input class='btn btn-danger btn-xs' type='button' id='del" + itmcode + "' value='delete' /> </td>";
+		tditmdel = "<td width=\"80\" style=\"padding:1px\" align=\"center\"> <input class='btn btn-danger btn-xs' type='button' name='btndel' id='del" + lastRow + "' value='delete' /> </td>";
 
 		//+ tditmprice + tditmbaseamount+ tditmamount 
 
 		$('#MyTable > tbody:last-child').append('<tr style=\"padding-top:1px\">'+tditmbtn+tditmcode + tdskucode+ tditmdesc + tditmunit + tditmfactor + tditmqty + tditmporef + tditmcostc + tditmrmks + tditmdel + '</tr>');
 
 
-		$("#del"+itmcode).on('click', function() {
+		$("#del"+lastRow).on('click', function() {
+
+			var itmval = $(this).closest("tr").find("input[type='hidden'][name='txtitemcode']").val();
+			var val = $(this).closest("tr").find("input[type='hidden'][name='txtnrefident']").val();
+			$("#MyTable2 > tbody > tr").each(function(index) {	
+
+				xitmrefx =$(this).find('input[type="hidden"][name="sertabitmcode"]').val();
+				xitmidnt =$(this).find('input[type="hidden"][name="sertabident"]').val();
+
+				if(xitmrefx==itmval && xitmidnt==val){
+					$(this).closest('tr').remove();
+				}
+
+			});
+
+
 			$(this).closest('tr').remove();
-			// ComputeGross();
+			ReIdentMain();
 		});
 		
-		$("#ins"+itmcode).on('click', function() {
-				InsertDetSerial(itmcode,itmdesc,itmmainunit,itmident,itmxref);
+		$("#ins"+lastRow).on('click', function() {
+			InsertDetSerial(itmcode,itmdesc,itmmainunit,itmident,itmxref,$(this).attr("id"));
 		});
 		//alert("b");
 
@@ -1176,6 +1210,31 @@ else{
 
 	}
 
+	function ReIdentMain(){
+		$("#MyTable > tbody > tr").each(function(index) {	
+
+			$cc = index+1;
+
+			$getcref = $(this).find('input[type="hidden"][name="txtcreference"]').val();
+
+			$(this).find('input[type="button"][name="ins"]').attr("id", "ins"+$cc);
+			if($getcref==""){
+				$(this).find('select[name="seluom"]').attr("id", "seluom"+$cc);
+			}else{
+				$(this).find('input[type="hidden"][name="seluom"]').attr("id", "seluom"+$cc);
+			}
+
+			$(this).find('input[name="hdnfactor"]').attr("id", "hdnfactor"+$cc);
+	
+			$(this).find('input[name="txtnqty"]').attr("id", "txtnqty"+$cc);
+			$(this).find('input[type="hidden"][name="txtnqtyORIG"]').attr("id", "txtnqtyORIG"+$cc);
+			$(this).find('input[type="hidden"][name="hdnmainuom"]').attr("id", "hdnmainuom"+$cc);
+
+			$(this).find('input[type="button"][name="btndel"]').attr("id", "del"+$cc);
+
+		});
+	}
+
 	function chkqty(nme){
 		var disnme = nme.replace(/[0-9]/g, ''); // string only
 		var r = nme.replace( /^\D+/g, ''); // numeric only
@@ -1204,150 +1263,59 @@ else{
 		
 	}
 
-	/*
-	function ComputeAmt(nme){
-		
-		var disnme = nme.replace(/[0-9]/g, ''); // string only
-		var r = nme.replace( /^\D+/g, ''); // numeric only
-		var nnet = 0;
-		var nqty = 0;
-		var chkValref = $("#hdnCHECKREFval").val();
-		//alert(disnme + ":" + $("#hdnCHECKREFval").val());
-			if(disnme=="txtnqty"){ // If qty textbox check muna ung qty vs orig pag 1 or 2 ung CHEKREFval
-				
-				if(parseInt(chkValref)==1){
-					nqty = $("#txtnqty"+r).val().replace(/,/g,'');
-					nqty = parseFloat(nqty);
-
-					nqtyorig = $("#txtnqtyORIG"+r).val();
-					nqtyorig = parseFloat(nqtyorig);
-					
-					if(nqty > nqtyorig){
-						
-						$("#AlertMsg").html("");
-						
-						$("#AlertMsg").html("<b>ERROR: </b>Bigger qty is not allowed!<br><b>Original Qty: </b>" + nqtyorig);
-						$("#alertbtnOK").show();
-						$("#AlertModal").modal('show');
-						
-						$("#txtnqty"+r).val(nqtyorig);
-					}
-					
-				}
-			}
-		
-		nqty = $("#txtnqty"+r).val().replace(/,/g,'');
-		nqty = parseFloat(nqty);
-		nprc = $("#txtnprice"+r).val();
-		nprc = parseFloat(nprc);
-		
-		namt = nqty * nprc;
-		namt = namt.toFixed(4);
-					
-		$("#txtnamount"+r).val(namt);
-
-	}
-
-	function ComputeGross(){
-		var rowCount = $('#MyTable tr').length;
-		
-		var gross = 0;
-		var amt = 0;
-		
-		if(rowCount>1){
-			for (var i = 1; i <= rowCount-1; i++) {
-				amt = $("#txtnamount"+i).val();
-				gross = gross + parseFloat(amt);
-			}
-		}
-
-		$("#txtnGross").val(gross.toFixed(4));
-		
-	}
-	*/
-
-	function InsertDetSerial(itmcode, itmname, itmunit, itemrrident,refrnce){
+	function InsertDetSerial(itmcode, itmname, itmunit, itemrrident, refrnce, disid){
 		$("#InvSerDetHdr").text("Inventory Details ("+itmname+")");
 		$("#serdisuom").val(itmunit);
 		$("#serdisitmcode").val(itmcode);
+		$("#serdisitmdesc").val(itmname);
 		$("#serdisrefident").val(itemrrident);
 		$("#serdisrefno").val(refrnce);
 
+		$("#serdisqty").val(1);
+		$("#clotno").val("");
+		$("#cpackno").val("");
+
+		$x = disid.replace("ins","");
+		$("#TonnedIns").val($("#txtnqty"+$x).val());
+		
+
 		$("#TheSerialStat").text("");
+
+		var xnqty = 0;
+		$("#MyTable2 > tbody > tr").each(function(index) {	
+			xitmrefx =$(this).find('input[type="hidden"][name="sertabitmcode"]').val();
+			xitmidnt =$(this).find('input[type="hidden"][name="sertabident"]').val();
+
+			console.log(xitmrefx +"-"+ xitmidnt);
+			if(xitmrefx==itmcode && xitmidnt==itemrrident){
+				xnqty = xnqty + parseFloat($(this).find('input[type="hidden"][name="sertabqty"]').val());
+			}
+
+		});
+
+		$("#ToInserted").val(xnqty);
 
 		$("#SerialMod").modal("show");
 	}
 
 	function tblnav(xcode,txtinput){
 		//alert(xcode);
-					var inputCNT = txtinput.replace(/\D/g,'');
-					var inputNME = txtinput.replace(/\d+/g, '');
-					
-					switch(xcode){
-						case 38: // <Up>  
-							var idx =  parseInt(inputCNT) - 1;
-							$("#"+inputNME+idx).focus();
-							break;
-						case 13:
-						case 40: // <Down>
-							var idx =  parseInt(inputCNT) + 1;
-							$("#"+inputNME+idx).focus();
-							break;
-					}       
+		var inputCNT = txtinput.replace(/\D/g,'');
+		var inputNME = txtinput.replace(/\d+/g, '');
+		
+		switch(xcode){
+			case 38: // <Up>  
+				var idx =  parseInt(inputCNT) - 1;
+				$("#"+inputNME+idx).focus();
+				break;
+			case 13:
+			case 40: // <Down>
+				var idx =  parseInt(inputCNT) + 1;
+				$("#"+inputNME+idx).focus();
+				break;
+		}       
 
 	}
-
-
-	function addqty(){
-
-		var itmcode = document.getElementById("txtprodid").value;
-
-		var TotQty = 0;
-		var TotAmt = 0;
-		
-		$("#MyTable > tbody > tr").each(function() {	
-		var disID = $(this).find('input[type="hidden"][name="txtitemcode"]').val();
-		
-		//alert(disID);
-			if(disID==itmcode){
-				
-				var itmqty = $(this).find("input[name='txtnqty']").val();
-			//	var itmprice = $(this).find("input[name='txtnprice']").val();
-				
-				//alert(itmqty +" : "+ itmprice);
-				
-				TotQty = parseFloat(itmqty) + 1;
-				$(this).find("input[name='txtnqty']").val(TotQty);
-				
-			//	TotAmt = TotQty * parseFloat(itmprice);
-			//	$(this).find("input[name='txtnamount']").val(TotAmt);
-			}
-
-		});
-		
-		//	ComputeGross();
-
-	}
-
-	/*
-	function chkprice(itmcode,itmunit){
-		var result;
-		var ccode = document.getElementById("txtcustid").value;
-		
-		//alert("th_checkitmprice.php?itm="+itmcode+"&cust="+ccode+"&cunit="+itmunit)	;
-		$.ajax ({
-			url: "../th_checkitmprice.php",
-			data: { itm: itmcode, cust: ccode, cunit: itmunit},
-			async: false,
-			success: function( data ) {
-				result = data;
-			}
-		});
-				
-		return result;
-		
-	}
-	*/
 
 	function setfactor(itmunit, itmcode){
 		var result;
@@ -1391,60 +1359,60 @@ else{
 			//disable escape insert and save button muna
 			
 			$.ajax({
-					url: 'th_qolist.php',
-					data: 'x='+x,
-					dataType: 'json',
-					method: 'post',
-					success: function (data) {
-						// var classRoomsTable = $('#mytable tbody');
-						$("#allbox").prop('checked', false);
+				url: 'th_qolist.php',
+				data: 'x='+x,
+				dataType: 'json',
+				method: 'post',
+				success: function (data) {
+					// var classRoomsTable = $('#mytable tbody');
+					$("#allbox").prop('checked', false);
+					
+					console.log(data);
+					$.each(data,function(index,item){
+
+							
+					if(item.cpono=="NONE"){
+					$("#AlertMsg").html("No Purchase Order Available");
+					$("#alertbtnOK").show();
+					$("#AlertModal").modal('show');
+
+						xstat = "NO";
 						
-						console.log(data);
-						$.each(data,function(index,item){
+									$("#txtcustid").attr("readonly", false);
+									$("#txtcust").attr("readonly", false);
 
-								
-						if(item.cpono=="NONE"){
-						$("#AlertMsg").html("No Purchase Order Available");
-						$("#alertbtnOK").show();
-						$("#AlertModal").modal('show');
-
-							xstat = "NO";
-							
-										$("#txtcustid").attr("readonly", false);
-										$("#txtcust").attr("readonly", false);
-
-						}
-						else{
-							$("<tr>").append(
-							$("<td id='td"+item.cpono+"'>").text(item.cpono),
-							$("<td>").text(item.dneeded)
-							).appendTo("#MyInvTbl tbody");
-							
-							
-							$("#td"+item.cpono).on("click", function(){
-								opengetdet($(this).text());
-							});
-							
-							$("#td"+item.cpono).on("mouseover", function(){
-								$(this).css('cursor','pointer');
-							});
-						}
-
+					}
+					else{
+						$("<tr>").append(
+						$("<td id='td"+item.cpono+"'>").text(item.cpono),
+						$("<td>").text(item.dneeded)
+						).appendTo("#MyInvTbl tbody");
+						
+						
+						$("#td"+item.cpono).on("click", function(){
+							opengetdet($(this).text());
 						});
 						
-
-						if(xstat=="YES"){
-							$('#mySIRef').modal('show');
-						}
-					},
-					error: function (req, status, err) {
-						//alert();
-						console.log('Something went wrong', status, err);
-						$("#AlertMsg").html("Something went wrong<br>Status: "+status +"<br>Error: "+err);
-						$("#alertbtnOK").show();
-						$("#AlertModal").modal('show');
+						$("#td"+item.cpono).on("mouseover", function(){
+							$(this).css('cursor','pointer');
+						});
 					}
-				});
+
+					});
+					
+
+					if(xstat=="YES"){
+						$('#mySIRef').modal('show');
+					}
+				},
+				error: function (req, status, err) {
+					//alert();
+					console.log('Something went wrong', status, err);
+					$("#AlertMsg").html("Something went wrong<br>Status: "+status +"<br>Error: "+err);
+					$("#alertbtnOK").show();
+					$("#AlertModal").modal('show');
+				}
+			});
 			
 			
 			
@@ -1735,9 +1703,10 @@ else{
 					var cskudesc = $(this).find('input[type="hidden"][name="txtcitmdesc"]').val();
 
 					var cuom = $(this).find('select[name="seluom"]').val();
-							if(cuom=="" || cuom==null){
-								var cuom = $(this).find('input[type="hidden"][name="seluom"]').val();
-							}
+					if(cuom=="" || cuom==null){
+						var cuom = $(this).find('input[type="hidden"][name="seluom"]').val();
+					}
+					
 					var nqty = $(this).find('input[name="txtnqty"]').val();
 					var nqtyOrig = $(this).find('input[type="hidden"][name="txtnqtyORIG"]').val();
 					var mainunit = $(this).find('input[type="hidden"][name="hdnmainuom"]').val();
@@ -1832,52 +1801,53 @@ else{
 		}
 
 	}
+	
 
 	/*
 
-	function convertCurrency(fromCurrency) {
-	
-	toCurrency = $("#basecurrvalmain").val(); //statgetrate
-	$.ajax ({
-		url: "../../Sales/th_convertcurr.php",
-		data: { fromcurr: fromCurrency, tocurr: toCurrency },
-		async: false,
-		beforeSend: function () {
-			$("#statgetrate").html(" <i>Getting exchange rate please wait...</i>");
-		},
-		success: function( data ) {
+		function convertCurrency(fromCurrency) {
+		
+		toCurrency = $("#basecurrvalmain").val(); //statgetrate
+		$.ajax ({
+			url: "../../Sales/th_convertcurr.php",
+			data: { fromcurr: fromCurrency, tocurr: toCurrency },
+			async: false,
+			beforeSend: function () {
+				$("#statgetrate").html(" <i>Getting exchange rate please wait...</i>");
+			},
+			success: function( data ) {
 
-			$("#basecurrval").val(data);
-			$("#hidcurrvaldesc").val($( "#selbasecurr option:selected" ).text()); 
+				$("#basecurrval").val(data);
+				$("#hidcurrvaldesc").val($( "#selbasecurr option:selected" ).text()); 
 
-		},
-		complete: function(){
-			$("#statgetrate").html("");
-			recomputeCurr();
-		}
-	});
-
-	}
-
-	function recomputeCurr(){
-
-		var newcurate = $("#basecurrval").val();
-		var rowCount = $('#MyTable tr').length;
-				
-		var gross = 0;
-		var amt = 0;
-
-		if(rowCount>1){
-			for (var i = 1; i <= rowCount-1; i++) {
-				amt = $("#txtntranamount"+i).val();			
-				recurr = parseFloat(newcurate) * parseFloat(amt);
-
-				$("#txtnamount"+i).val(recurr.toFixed(4));
+			},
+			complete: function(){
+				$("#statgetrate").html("");
+				recomputeCurr();
 			}
+		});
+
 		}
 
-		ComputeGross();
-	}
+		function recomputeCurr(){
+
+			var newcurate = $("#basecurrval").val();
+			var rowCount = $('#MyTable tr').length;
+					
+			var gross = 0;
+			var amt = 0;
+
+			if(rowCount>1){
+				for (var i = 1; i <= rowCount-1; i++) {
+					amt = $("#txtntranamount"+i).val();			
+					recurr = parseFloat(newcurate) * parseFloat(amt);
+
+					$("#txtnamount"+i).val(recurr.toFixed(4));
+				}
+			}
+
+			ComputeGross();
+		}
 
 	*/
 
@@ -1897,6 +1867,10 @@ else{
 		$("#btnNew").attr("disabled", false);
 		$("#btnPrint").attr("disabled", false);
 		$("#btnEdit").attr("disabled", false);
+
+		$("#closePrint").attr("disabled", false);
+
+		$(".kv-file-zoom").attr("disabled", false);
 	}
 
 	function enabled(){
@@ -1934,24 +1908,7 @@ else{
 				$("#btnEdit").attr("disabled", true);
 		
 		}
-	}
-
-	function printchk(x){
-		if(document.getElementById("hdncancel").value==1){	
-			document.getElementById("statmsgz").innerHTML = "CANCELLED TRANSACTION CANNOT BE PRINTED!";
-			document.getElementById("statmsgz").style.color = "#FF0000";
-		}
-		else{
-			//   var url =  "RR_confirmprint.php?x="+x;
-			var url = "RR_printv1.php?tranno="+x;
-			
-			$("#myprintframe").attr('src',url);
-
-
-			$("#PrintModal").modal('show');
-
-		}
-	}
+	}	
 
 	function loaddetails(){
 		//alert("th_loaddetails.php?id="+$("#txtcpono").val());
@@ -1985,33 +1942,29 @@ else{
 
 	function loadserials(){	
 
-				$.ajax({
-						url : "th_serialslist.php?id=" + $("#txtcpono").val(),
-						type: "GET",
-						dataType: "JSON",
-						async: false,
-						success: function(data)
-						{	
-						console.log(data);
+		$.ajax({
+			url : "th_serialslist.php?id=" + $("#txtcpono").val(),
+			type: "GET",
+			dataType: "JSON",
+			async: false,
+			success: function(data)
+			{	
+				console.log(data);
 				$.each(data,function(index,item){
 
-									//InsertToSerials(itmcode,serials,uoms,qtys,locas,locasdesc,expz,nident)
-									InsertToSerials(item.citemno,item.cserial,item.cunit,item.nqty,item.nlocation,item.locadesc,item.dexpired,item.nrefidentity,item.crefno,item.cbarcode);
-												
-						});
-							
-						},
-						error: function (jqXHR, textStatus, errorThrown)
-						{
-							//alert(jqXHR.responseText);
-						}
-						
-					});
+					//InsertToSerials(itmcode,itmdesc,lotno,packlist,uoms,qtys,locas,locasdesc,nident,refno){
+					InsertToSerials(item.citemno,item.citemdesc,item.clotsno,item.cpacklist,item.cunit,item.nqty,item.nlocation,item.locadesc,item.nrefidentity,item.crefno);
+										
+				});
+					
+			},
+			error: function (jqXHR, textStatus, errorThrown)
+			{
+				console.log(jqXHR.responseText);
+			}
+				
+		});
 
-	}
-
-	function tblcheckk(){
-		alert($("#MyTable > tbody tr").length);
 	}
 
 </script>

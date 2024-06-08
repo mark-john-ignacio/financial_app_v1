@@ -2,7 +2,7 @@
 	if(!isset($_SESSION)){
 		session_start();
 	}
-	$_SESSION['pageid'] = "TBal.php";
+	$_SESSION['pageid'] = "TBal";
 
 	include('../../Connection/connection_string.php');
 	include('../../include/denied.php');
@@ -32,9 +32,9 @@
 		//echo $sql;
 
 	$result=mysqli_query($con,$sql);
-	if (!mysqli_query($con, $sql)) {
-		printf("Errormessage: %s\n", mysqli_error($con));
-	} 
+	//if (!mysqli_query($con, $sql)) {
+	//	printf("Errormessage: %s\n", mysqli_error($con));
+	//} 
 
 	$qry_accts = array();
 	$qry_acctsnames = array();
@@ -55,6 +55,32 @@
 		$qrytotcredit[$row['dmonth']][$row['acctno']] = $row['ncredit'];
 
 		$qryrows[] = $row;
+	}
+
+
+	//For Beg Bal
+	$dteyrminus = $dteyr - 1;
+	$begtotdebit = array();
+	$begtotcredit = array();
+
+	$sql = "Select A.acctno, B.cacctdesc, sum(A.ndebit) as ndebit, sum(A.ncredit) as ncredit
+	From glactivity A left join accounts B on A.compcode=B.compcode and A.acctno=B.cacctid
+	where A.compcode='$company' and YEAR(A.ddate) = '$dteyrminus' and IFNULL(B.cacctdesc,'') <> ''
+	Group By A.acctno, B.cacctdesc
+	Order By A.acctno";
+
+	$result=mysqli_query($con,$sql);
+	$qryrows = array();
+	while($row = mysqli_fetch_array($result, MYSQLI_ASSOC))
+	{
+		if(!in_array($row['acctno'], $qry_accts)){
+			$qry_accts[] = $row['acctno'];
+			$qry_acctsnames[$row['acctno']] = $row['cacctdesc'];
+		}
+
+		$begtotdebit[$row['acctno']] = $row['ndebit'];
+		$begtotcredit[$row['acctno']] = $row['ncredit'];
+
 	}
 
 	$hdr_months = array_unique($months);
@@ -97,6 +123,7 @@
     <th rowspan="2" width="50px">&nbsp;</th>
     <th rowspan="2" style="text-align:center" width="100px">Account No. </th>
     <th rowspan="2" style="text-align:center">Account Name</th>
+	<th colspan="3" style="text-align:center">Beginning Balance (<?=$dteyrminus?>)</th>
 		<?php
 		$GtotDr = array();
 		$GtotCr = array();
@@ -113,19 +140,28 @@
 		<?php
 			}
 		?>
+	<th colspan="3" style="text-align:center"> Grand Total </th>
   </tr>
   <tr>
+  		<th style="text-align:center;  padding-right: 20px" width="150px">Debit</th>
+		<th style="text-align:center;  padding-right: 20px" width="150px">Credit</th>
+		<th style="text-align:center;  padding-right: 20px" width="150px">Balance</th>
+
 		<?php
 				$cnts = 0;
 				foreach($hdr_months as $rx){
 					$cnts++;
 		?>
-			<th style="text-align:center;  padding-right: 20px <?=($cnts > 1) ? "; padding-left: 20px" : ""?>" width="150px">Debit</th>
+			<th style="text-align:center;  padding-right: 20px; padding-left: 20px" width="150px">Debit</th>
 			<th style="text-align:center;  padding-right: 20px" width="150px">Credit</th>
 			<th style="text-align:center" width="150px">Balance</th>
 		<?php
 			}
 		?>
+
+		<th style="text-align:center;  padding-right: 20px" width="150px">Debit</th>
+		<th style="text-align:center;  padding-right: 20px" width="150px">Credit</th>
+		<th style="text-align:center;  padding-right: 20px" width="150px">Balance</th>
   </tr>
  
  <?php
@@ -135,6 +171,18 @@
 	$cntr=0;
 	$ntotbal = 0;
 	$ntotGBal = 0;
+
+	$GtotDrBeg = 0;
+	$GtotCrBeg = 0;
+
+	$rowdebit = 0;
+	$rowcredit = 0;
+	$nrowttal = 0;
+
+	$GRowDr = 0;
+	$GRowCr = 0;
+	$GRowCrTot = 0;
+	
 	foreach($hdr_accts as $rx)
 	{
 
@@ -144,6 +192,43 @@
     <td onclick="funcset('<?=$rx?>', '<?= $dteyr ?>')" style="cursor: pointer; padding-right: 20px" nowrap><?php echo $rx;?></td>
     <td onclick="funcset('<?=$rx?>', '<?= $dteyr ?>')" style="cursor: pointer; padding-right: 20px" nowrap><?php echo $qry_acctsnames[$rx];?></td>
 
+	<!-- Beg Bal -->
+	<?php
+		if(isset($begtotdebit[$rx])){
+			$ndramt = $begtotdebit[$rx];
+		}else{
+			$ndramt = 0;
+		}
+
+		if(isset($begtotcredit[$rx])){
+			$ncramt = $begtotcredit[$rx];
+		}else{
+			$ncramt = 0;
+		}
+
+		$ntotbal = floatval($ndramt) - floatval($ncramt);
+
+		$GtotDrBeg = $GtotDrBeg + floatval($ndramt);
+		$GtotCrBeg = $GtotCrBeg + floatval($ncramt);
+
+		$rowdebit = $rowdebit + $ndramt;
+		$rowcredit = $rowcredit + $ncramt;
+	?>
+	<td style="text-align:right; padding-right: 20px"><?=(floatval($ndramt)!=0) ? number_format($ndramt,2) : ""?></td>
+    <td style="text-align:right; padding-right: 20px"><?=(floatval($ncramt)!=0) ? number_format($ncramt,2) : ""?></td>
+	<td style="text-align:right; padding-right: 20px; border-right: 1px solid #000">
+		<?php
+		
+			if($ntotbal < 0) {
+				echo "(".number_format(abs($ntotbal),2).")";
+			}elseif($ntotbal > 0) {					
+				echo number_format($ntotbal,2);
+			}else{
+				echo "";
+			}
+		?>
+	</td>
+	<!-- End Beg Bal -->
 		<?php
 				$cnts = 0;
 				$ndramt = 0;
@@ -167,26 +252,55 @@
 
 					$GtotDr[$rz] = $GtotDr[$rz] + floatval($ndramt);
 					$GtotCr[$rz] = $GtotCr[$rz] + floatval($ncramt);
+
+					$rowdebit = $rowdebit + $ndramt;
+					$rowcredit = $rowcredit + $ncramt;
 			
 		?>
 
-  	<td style="text-align:right; padding-right: 20px <?=($cnts > 1) ? "; padding-left: 20px" : ""?>"><?=(floatval($ndramt)!=0) ? number_format($ndramt,2) : ""?></td>
+  	<td style="text-align:right; padding-right: 20px; padding-left: 20px"><?=(floatval($ndramt)!=0) ? number_format($ndramt,2) : ""?></td>
     <td style="text-align:right; padding-right: 20px"><?=(floatval($ncramt)!=0) ? number_format($ncramt,2) : ""?></td>
-		<td style="text-align:right; padding-right: 20px; border-right: 1px solid #000">
-			<?php
-				if($ntotbal < 0) {
-					echo "(".number_format(abs($ntotbal),2).")";
-				}elseif($ntotbal > 0) {					
-					echo number_format($ntotbal,2);
-				}else{
-					echo "";
-				}
-			?>
-		</td>
+	<td style="text-align:right; padding-right: 20px; border-right: 1px solid #000">
+		<?php
+			if($ntotbal < 0) {
+				echo "(".number_format(abs($ntotbal),2).")";
+			}elseif($ntotbal > 0) {					
+				echo number_format($ntotbal,2);
+			}else{
+				echo "";
+			}
+		?>
+	</td>
 
 		<?php
 				}
+
 		?>
+
+	<td style="text-align:right; padding-right: 20px; padding-left: 20px"><?=(floatval($rowdebit)!=0) ? number_format($rowdebit,2) : ""?></td>
+    <td style="text-align:right; padding-right: 20px"><?=(floatval($rowcredit)!=0) ? number_format($rowcredit,2) : ""?></td>
+	<td style="text-align:right; padding-right: 20px; border-right: 1px solid #000">
+		<?php
+
+			$GRowDr =  $GRowDr + floatval($rowdebit);
+			$GRowCr = $GRowCr + floatval($rowcredit);
+
+		    $nrowttal = floatval($rowdebit) - floatval($rowcredit);
+			if($nrowttal < 0) {
+				echo "(".number_format(abs($nrowttal),2).")";
+			}elseif($nrowttal > 0) {					
+				echo number_format($nrowttal,2);
+			}else{
+				echo "";
+			}
+
+
+			$rowdebit = 0;
+			$rowcredit = 0;
+			$nrowttal = 0;
+		?>
+	</td>
+
   </tr>
 <?php
 	}
@@ -194,7 +308,15 @@
  
     <tr>
     	<td>&nbsp;</th>
-      <td colspan="2"><b>TOTALS: </b></th>
+      	<td colspan="2"><b>TOTALS: </b></th> 
+
+			<?php
+				$ntotGBalBeg = $GtotDrBeg - $GtotCrBeg;
+			?>
+		  	<td  style="text-align:right; border-top:1px solid; border-bottom:5px double;  padding-right: 20px"><b><?=number_format(floatval($GtotDrBeg), 2);?></b></th>
+			<td  style="text-align:right; border-top:1px solid; border-bottom:5px double;  padding-right: 20px"><b><?=number_format(floatval($GtotCrBeg), 2);?></b></th>
+			<td  style="text-align:right; border-top:1px solid; border-bottom:5px double;  padding-right: 20px"><b><?php echo number_format(floatval($ntotGBalBeg), 2);?></b></th>
+
 			<?php
 				foreach($hdr_months as $rz){
 					$ntotGBal = 0;
@@ -204,12 +326,19 @@
 
 					$ntotGBal = $GtotDr[$rz] - $GtotCr[$rz];
 			?>
-      	<td  style="text-align:right; border-top:1px solid; border-bottom:5px double"><b><?=number_format(floatval($GtotDr[$rz]), 2);?></b></th>
-      	<td  style="text-align:right; border-top:1px solid; border-bottom:5px double"><b><?=number_format(floatval($GtotCr[$rz]), 2);?></b></th>
-				<td  style="text-align:right; border-top:1px solid; border-bottom:5px double"><b><?php echo number_format(floatval($ntotGBal), 2);?></b></th>
+				<td  style="text-align:right; border-top:1px solid; border-bottom:5px double;  padding-right: 20px"><b><?=number_format(floatval($GtotDr[$rz]), 2);?></b></th>
+				<td  style="text-align:right; border-top:1px solid; border-bottom:5px double;  padding-right: 20px"><b><?=number_format(floatval($GtotCr[$rz]), 2);?></b></th>
+				<td  style="text-align:right; border-top:1px solid; border-bottom:5px double;  padding-right: 20px"><b><?php echo number_format(floatval($ntotGBal), 2);?></b></th>
 			<?php
 				}
-			?>
+
+				$GRowCrTot = $GRowDr - $GRowCr;
+			?> 
+			
+			<td  style="text-align:right; border-top:1px solid; border-bottom:5px double;  padding-right: 20px"><b><?=number_format(floatval($GRowDr), 2);?></b></th>
+			<td  style="text-align:right; border-top:1px solid; border-bottom:5px double;  padding-right: 20px"><b><?=number_format(floatval($GRowCr), 2);?></b></th>
+			<td  style="text-align:right; border-top:1px solid; border-bottom:5px double;  padding-right: 20px"><b><?php echo number_format(floatval($GRowCrTot), 2);?></b></th>
+
 		</tr>
  
 </table>

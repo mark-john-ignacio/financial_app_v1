@@ -1,20 +1,25 @@
 <?php
-if(!isset($_SESSION)){
-session_start();
-}
-include('../../Connection/connection_string.php');
-$company = $_SESSION['companyid'];
-				$sql = "select * From company where compcode='$company'";
-				$result=mysqli_query($con,$sql);
-				
-					if (!mysqli_query($con, $sql)) {
-						printf("Errormessage: %s\n", mysqli_error($con));
-					} 
-					
-				while($row = mysqli_fetch_array($result, MYSQLI_ASSOC))
-				{
-					$compname =  $row['compname'];
-				}
+	if(!isset($_SESSION)){
+		session_start();
+	}
+	$_SESSION['pageid'] = "SalesDetailed";
+
+	include('../../Connection/connection_string.php');
+	include('../../include/denied.php');
+	include('../../include/access2.php');
+
+	$company = $_SESSION['companyid'];
+	$sql = "select * From company where compcode='$company'";
+	$result=mysqli_query($con,$sql);
+	
+		if (!mysqli_query($con, $sql)) {
+			printf("Errormessage: %s\n", mysqli_error($con));
+		} 
+		
+	while($row = mysqli_fetch_array($result, MYSQLI_ASSOC))
+	{
+		$compname =  $row['compname'];
+	}
 ?>
 
 <html>
@@ -78,7 +83,7 @@ if($postedtran!==""){
 	$qryposted = " and b.lapproved=".$postedtran."";
 }
 
-if($trantype=="Trade"){
+//if($trantype=="Trade"){
 
 	$result=mysqli_query($con,"select b.dcutdate, a.ctranno, d.ccustomertype as ctype, e.cdesc as typdesc, b.ccode, d.ctradename as cname, b.lapproved, a.citemno, c.citemdesc, a.cunit, a.nqty, a.nprice, a.ndiscount, a.namount
 	From sales_t a	
@@ -93,7 +98,7 @@ if($trantype=="Trade"){
 		$finarray[] = $row;
 	}
 
-}elseif($trantype=="Non-Trade"){
+/*}elseif($trantype=="Non-Trade"){
 
 	$result=mysqli_query($con,"select b.dcutdate, a.ctranno, d.ccustomertype as ctype, e.cdesc as typdesc, b.ccode, d.ctradename as cname, b.lapproved, a.citemno, c.citemdesc, a.cunit, a.nqty, a.nprice, a.ndiscount, a.namount
 	From ntsales_t a	
@@ -135,7 +140,7 @@ if($trantype=="Trade"){
 	while($row = mysqli_fetch_array($result, MYSQLI_ASSOC)){
 		$finarray[] = $row;
 	}
-}
+}*/
 
 	$salesno = "";
 	$remarks = "";

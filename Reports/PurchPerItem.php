@@ -1,11 +1,12 @@
 <?php
-if(!isset($_SESSION)){
-session_start();
-}
-$_SESSION['pageid'] = "PurchPerItem.php";
-include('../Connection/connection_string.php');
-include('../include/denied.php');
-include('../include/access.php');
+    if(!isset($_SESSION)){
+        session_start();
+    }
+
+    $_SESSION['pageid'] = "PurchPerItem";
+    include('../Connection/connection_string.php');
+    include('../include/denied.php');
+    include('../include/access.php');
 
 ?><html>
 <head>

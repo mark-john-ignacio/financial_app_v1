@@ -2,7 +2,12 @@
 	if(!isset($_SESSION)){
 		session_start();
 	}
+	$_SESSION['pageid'] = "ARMonitoring";
+
 	include('../../Connection/connection_string.php');
+	include('../../include/denied.php');
+	include('../../include/access2.php');
+
 	$company = $_SESSION['companyid'];
 	$sql = "select * From company where compcode='$company'";
 	$result=mysqli_query($con,$sql);
@@ -15,7 +20,6 @@
 	{
 		$compname =  $row['compname'];
 	}
-
 
 	@$allqinfo = array();
 	$sql = "select * From quote_t_info where compcode='$company'";
@@ -67,6 +71,7 @@
 	<th nowrap align="right">Sales Amount</th>
 	<th nowrap style="text-align: center">EWT</th>
 	<th nowrap align="right">EWT Amount</th>
+	<th nowrap align="right">Adjustments</th>
 	<th nowrap align="right">AR Balance<br>Net of TAX</th>
 	<th nowrap align="right">Amount Collected</th>
 	<th nowrap align="right">Balance</th>
@@ -111,20 +116,10 @@
 			@$arrpaymnts[] = $rowardj;
 		}
 
-		$transctions = array();
-		$sqlx = "Select A.type, A.ctranno, A.ccode, A.cname, A.cacctid, A.cacctdesc, IFNULL(A.ctaxcode,'') as ctaxcode, A.nrate, IFNULL(A.cewtcode,'') as cewtcode, A.newtrate, A.dcutdate, SUM(ROUND(A.namountfull,2)) as ngross, SUM(ROUND(A.namount,2)) as cm, SUM(nvatgross) as nvatgross, (SUM(ROUND(A.namountfull,2)) - SUM(ROUND(A.namount,2)) - SUM(nvatgross)) as vatamt, A.lcancelled, A.lvoid, A.lapproved
-		From (
-			Select 'SI' as type, A.ctranno, B.ccode, COALESCE(C.ctradename, C.cname) as cname, A.citemno, ((A.nqtyreturned) * (A.nprice-A.ndiscount)) as namount, (A.nqty * (A.nprice-A.ndiscount)) as namountfull, B.dcutdate, D.cacctid, D.cacctdesc, A.ctaxcode, A.nrate, A.cewtcode, A.newtrate, CASE WHEN IFNULL(A.nrate,0) <> 0 THEN ROUND(((A.nqty-A.nqtyreturned)*(A.nprice-A.ndiscount))/(1 + (A.nrate/100)),2) ELSE A.namount END as nvatgross, B.lcancelled, B.lvoid, B.lapproved
-		From sales_t A 
-		left join sales B on A.compcode=B.compcode and A.ctranno=B.ctranno 
-		left join customers C on B.compcode=C.compcode and B.ccode=C.cempid 
-		left join accounts D on C.compcode=D.compcode and C.cacctcodesales=D.cacctno 
-		left join wtaxcodes E on A.compcode=E.compcode and A.cewtcode=E.ctaxcode 
-		where A.compcode='$company' and B.dcutdate between STR_TO_DATE('$date1', '%m/%d/%Y') and STR_TO_DATE('$date2', '%m/%d/%Y') ".$qryposted."
-		
+		/*
 		UNION ALL
 
-		Select 'BS' as type, A.ctranno, B.ccode, COALESCE(C.ctradename, C.cname) as cname, '' as citemno, 0 as namount, A.namount as namountfull, B.dcutdate, '' as cacctid, '' as cacctdesc, CASE WHEN B.cvattype='VatIn' THEN F.ctaxcode ELSE '' END as ctaxcode, CASE WHEN B.cvattype='VatIn' THEN F.nrate ELSE '' END as nrate, '' as cewtcode, 0 as newtrate, 	
+			Select 'BS' as type, A.ctranno, B.ccode, COALESCE(C.ctradename, C.cname) as cname, '' as citemno, 0 as namount, A.namount as namountfull, B.dcutdate, '' as cacctid, '' as cacctdesc, CASE WHEN B.cvattype='VatIn' THEN F.ctaxcode ELSE '' END as ctaxcode, CASE WHEN B.cvattype='VatIn' THEN F.nrate ELSE '' END as nrate, '' as cewtcode, 0 as newtrate, 	
 						CASE 
 							WHEN B.cvattype='VatIn'
 							THEN 
@@ -132,17 +127,30 @@
 							ELSE 
 								A.namount 
 							END as nvatgross, B.lcancelled, B.lvoid, B.lapproved
-		From quote_t A
-		left join quote B on A.compcode=B.compcode and A.ctranno=B.ctranno
-		left join customers C on B.compcode=C.compcode and B.ccode=C.cempid 
-		left join items E on A.compcode=E.compcode and A.citemno=E.cpartno 
-		left join taxcode F on E.compcode=F.compcode and E.ctaxcode=F.ctaxcode
-		left join (
-			Select Y.creference From sales_t Y left join sales X on Y.compcode=X.compcode and Y.ctranno=X.ctranno 
-			where Y.compcode='$company' and X.lcancelled=0 and X.lvoid=0
-		) G on A.ctranno=G.creference
-		where A.compcode='$company' and B.quotetype='billing' and B.dcutdate between STR_TO_DATE('$date1', '%m/%d/%Y') and STR_TO_DATE('$date2', '%m/%d/%Y') ".$qryposted." and IFNULL(G.creference,'') = ''
+			From quote_t A
+			left join quote B on A.compcode=B.compcode and A.ctranno=B.ctranno
+			left join customers C on B.compcode=C.compcode and B.ccode=C.cempid 
+			left join items E on A.compcode=E.compcode and A.citemno=E.cpartno 
+			left join taxcode F on E.compcode=F.compcode and E.ctaxcode=F.ctaxcode
+			left join (
+				Select Y.creference From sales_t Y left join sales X on Y.compcode=X.compcode and Y.ctranno=X.ctranno 
+				where Y.compcode='$company' and X.lcancelled=0 and X.lvoid=0
+			) G on A.ctranno=G.creference
+			where A.compcode='$company' and B.quotetype='billing' and B.dcutdate between STR_TO_DATE('$date1', '%m/%d/%Y') and STR_TO_DATE('$date2', '%m/%d/%Y') ".$qryposted." and IFNULL(G.creference,'') = ''
+*/
 
+
+		$transctions = array();
+		$sqlx = "Select A.type, A.ctranno, A.ccode, A.cname, A.cacctid, A.cacctdesc, IFNULL(A.ctaxcode,'') as ctaxcode, A.nrate, IFNULL(A.cewtcode,'') as cewtcode, A.newtrate, A.dcutdate, SUM(ROUND(A.namountfull,2)) as ngross, SUM(ROUND(A.namount,2)) as cm, SUM(nvatgross) as nvatgross, (SUM(ROUND(A.namountfull,2)) - SUM(ROUND(A.namount,2)) - SUM(nvatgross)) as vatamt, A.lcancelled, A.lvoid, A.lapproved
+		From (
+			Select 'SI' as type, A.ctranno, B.ccode, COALESCE(C.ctradename, C.cname) as cname, A.citemno, ((A.nqtyreturned) * (A.nprice-A.ndiscount)) as namount, (A.nqty * (A.nprice-A.ndiscount)) as namountfull, B.dcutdate, D.cacctid, D.cacctdesc, A.ctaxcode, A.nrate, B.cewtcode, IFNULL(E.nrate,0) as newtrate, CASE WHEN IFNULL(A.nrate,0) <> 0 THEN ROUND(((A.nqty-A.nqtyreturned)*(A.nprice-A.ndiscount))/(1 + (A.nrate/100)),2) ELSE A.namount END as nvatgross, B.lcancelled, B.lvoid, B.lapproved
+			From sales_t A 
+			left join sales B on A.compcode=B.compcode and A.ctranno=B.ctranno 
+			left join customers C on B.compcode=C.compcode and B.ccode=C.cempid 
+			left join accounts D on C.compcode=D.compcode and C.cacctcodesales=D.cacctno 
+			left join wtaxcodes E on A.compcode=E.compcode and B.cewtcode=E.ctaxcode 
+			where A.compcode='$company' and B.dcutdate between STR_TO_DATE('$date1', '%m/%d/%Y') and STR_TO_DATE('$date2', '%m/%d/%Y') ".$qryposted."
+			
 		) A
 		Group By A.ctranno, A.ccode, A.cname, A.cacctid, A.cacctdesc, A.ctaxcode, A.nrate, A.cewtcode, A.newtrate, A.dcutdate, A.lcancelled, A.lvoid, A.lapproved
 		order by A.dcutdate, A.ctranno";
@@ -164,6 +172,10 @@
 	$classcode="";
 	$totAmount=0;	
 	$ngross = 0;
+
+	$ARBal = 0;
+	$CollBal = 0;
+	$BalBal = 0;
 	foreach($finarray as $row)
 	{
 		//if($salesno==""){
@@ -238,8 +250,34 @@
 		</td>
 		<td nowrap style="text-align: right">
 			<?php
-				$netvatamt = floatval($row['ngross']) - floatval($phpewtamt);
+				$nadjs = 0;
+				$nadjsdm = 0;
+				$nadjscm = 0;
+				foreach(@$arrpaymnts as $rxpymnts){
+					if($row['ctranno']==$rxpymnts['csalesno']){
+					
+						if($rxpymnts['ndm']>1){
+							$nadjsdm = $nadjsdm + floatval($rxpymnts['ndm']);
+						}
+
+						if($rxpymnts['ncm']>1){
+							$nadjscm = $nadjscm + floatval($rxpymnts['ncm']);
+						}
+						
+					}
+				}
+
+				$nadjs = ($nadjs + $nadjsdm) - $nadjscm;
+
+				echo (floatval($nadjs)!=0) ? number_format($nadjs,2) : "";
+			?>
+		</td>
+		<td nowrap style="text-align: right">
+			<?php
+				$netvatamt = floatval($row['ngross']) - floatval($phpewtamt) + $nadjs;
 				echo number_format($netvatamt,2);
+
+				$ARBal += floatval($netvatamt);
 			?>
 		</td>
 		<td nowrap style="text-align: right">
@@ -247,7 +285,7 @@
 				$npay = 0;
 				$cntofist = 0;
 				foreach(@$arrpaymnts as $rxpymnts){
-					if($row['ctranno']==$rxpymnts['csalesno'] && $row['ctaxcode']==$rxpymnts['ctaxcodeorig'] && $row['cewtcode']==$rxpymnts['cewtcodeorig']){
+					if($row['ctranno']==$rxpymnts['csalesno']){
 						$cntofist++;
 						
 						if($cntofist==1){
@@ -259,6 +297,7 @@
 				}
 
 				echo (floatval($npay)!=0) ? number_format($npay,2) : "";
+				$CollBal += floatval($npay);
 			?>
 		</td>
 		<td nowrap style="text-align: right">
@@ -266,17 +305,22 @@
 				$nbalace = floatval($netvatamt) - floatval($npay);
 
 				echo (floatval($nbalace)!=0) ? number_format($nbalace,2) : "";
+
+				$BalBal += floatval($nbalace);
 			?>
 		</td>
 	</tr>
-<?php 
+<?php 		
+		
 	}
 ?>
 
-    <!--<tr class='rptGrand'>
-    	<td colspan="12" align="right"><b>G R A N D&nbsp;&nbsp;T O T A L:</b></td>
-        <td align="right"><b><?//php echo number_format($totAmount,2);?></b></td>
-    </tr>-->
+    <tr class='rptGrand'>
+    	<td colspan="13" align="right"><b>G R A N D&nbsp;&nbsp;T O T A L:</b></td>
+        <td align="right"><b><?=(floatval($ARBal)!=0) ? number_format($ARBal,2) : ""?></b></td>
+		<td align="right"><b><?=(floatval($CollBal)!=0) ? number_format($CollBal,2) : ""?></b></td>
+		<td align="right"><b><?=(floatval($BalBal)!=0) ? number_format($BalBal,2) : ""?></b></td>
+    </tr>
 </table>
 
 

@@ -59,7 +59,7 @@
 	</style>
 </head>
 
-<body >
+<body onLoad="window.print()">
 
 	<center><h2> MATERIAL ISSUANCE SLIP</h2></center>
 	<table border="1" width="100%" style="border-collapse:collapse" cellpadding="5px">
@@ -68,7 +68,7 @@
 			<td width="15%" valign="top"> <b>Date:</b> <br><br><br><?=date_format(date_create($hddatecnt), "F d, Y")?></td>
 			<td width="20%" valign="top"> <b>Received By:</b> </td>
 			<td width="20%" valign="top"> <b>Encoded By:</b> </td>
-			<td width="25%" valign="top"> <b>MRS No.:</b> <?=$cno?><br><br><b>Model No.: </b><?=$hdremarks?><br></td>
+			<td width="25%" valign="top"> <b>MIS No.:</b> <?=$cno?><br><br><b>Model No.: </b><?=$hdremarks?><br></td>
 		</tr>			
 	</table>
 

@@ -32,7 +32,7 @@ require_once "../../Connection/connection_string.php";
 			(
 				Select A.compcode, A.ctranno, A.capvno, A.cacctno, A.npayable as ngross
 				From rfp_t A left join rfp B on A.compcode=B.compcode and A.ctranno=B.ctranno
-				Where A.compcode='$company' and B.lcancelled=0
+				Where A.compcode='$company' and B.lcancelled=0 and B.lvoid=0
 			) C on B.compcode=C.compcode and A.ctranno=C.capvno and A.cacctno=C.cacctno
 		left join accounts D on A.compcode=D.compcode and A.cacctno=D.cacctid 
 		where A.compcode='$company' and B.lapproved=1  and B.lvoid=0 and B.ccode='$code'

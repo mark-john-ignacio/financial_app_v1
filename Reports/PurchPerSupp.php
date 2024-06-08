@@ -2,7 +2,7 @@
     if(!isset($_SESSION)){
         session_start();
     }
-    $_SESSION['pageid'] = "PurchPerSupp.php";
+    $_SESSION['pageid'] = "PurchPerSupp";
     include('../Connection/connection_string.php');
     include('../include/denied.php');
     include('../include/access.php');

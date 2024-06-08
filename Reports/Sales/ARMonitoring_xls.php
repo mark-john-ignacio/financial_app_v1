@@ -64,13 +64,14 @@
 		->setCellValue('J5', 'Sales Amount')
 		->setCellValue('K5', 'EWT')
 		->setCellValue('L5', 'EWT Amount')
-		->setCellValue('M5', 'AR Balance Net of TAX')
-		->setCellValue('N5', 'Amount Collected')
-		->setCellValue('O5', 'Balance')
-		->setCellValue('P5', 'Status');
+		->setCellValue('M5', 'Adjustments')
+		->setCellValue('N5', 'AR Balance Net of TAX')
+		->setCellValue('O5', 'Amount Collected')
+		->setCellValue('P5', 'Balance')
+		->setCellValue('Q5', 'Status');
 
 	$spreadsheet->getActiveSheet()->mergeCells("E5:F5");
-	$spreadsheet->getActiveSheet()->getStyle('A5:P5')->getFont()->setBold(true);
+	$spreadsheet->getActiveSheet()->getStyle('A5:Q5')->getFont()->setBold(true);
 
 	$postedtran = $_POST["selrpt"];
 
@@ -97,48 +98,44 @@
 		@$arrpaymnts[] = $rowardj;
 	}
 
+	/*
+
+			UNION ALL
+
+			Select 'BS' as type, A.ctranno, B.ccode, COALESCE(C.ctradename, C.cname) as cname, '' as citemno, 0 as namount, A.namount as namountfull, B.dcutdate, '' as cacctid, '' as cacctdesc, CASE WHEN B.cvattype='VatIn' THEN F.ctaxcode ELSE '' END as ctaxcode, CASE WHEN B.cvattype='VatIn' THEN F.nrate ELSE '' END as nrate, '' as cewtcode, 0 as newtrate, 	
+						CASE 
+							WHEN B.cvattype='VatIn'
+							THEN 
+								ROUND((A.nqty*A.nprice)/(1 + (F.nrate/100)),2)
+							ELSE 
+								A.namount 
+							END as nvatgross, B.lcancelled, B.lvoid, B.lapproved
+			From quote_t A
+			left join quote B on A.compcode=B.compcode and A.ctranno=B.ctranno
+			left join customers C on B.compcode=C.compcode and B.ccode=C.cempid 
+			left join items E on A.compcode=E.compcode and A.citemno=E.cpartno 
+			left join taxcode F on E.compcode=F.compcode and E.ctaxcode=F.ctaxcode
+			left join (
+				Select Y.creference From sales_t Y left join sales X on Y.compcode=X.compcode and Y.ctranno=X.ctranno 
+				where Y.compcode='$company' and X.lcancelled=0 and X.lvoid=0
+			) G on A.ctranno=G.creference
+			where A.compcode='$company' and B.quotetype='billing' and B.dcutdate between STR_TO_DATE('$date1', '%m/%d/%Y') and STR_TO_DATE('$date2', '%m/%d/%Y') ".$qryposted." and IFNULL(G.creference,'') = ''
+
+	*/
+
 	$transctions = array();
 	$sqlx = "Select A.type, A.ctranno, A.ccode, A.cname, A.cacctid, A.cacctdesc, IFNULL(A.ctaxcode,'') as ctaxcode, A.nrate, IFNULL(A.cewtcode,'') as cewtcode, A.newtrate, A.dcutdate, SUM(ROUND(A.namountfull,2)) as ngross, SUM(ROUND(A.namount,2)) as cm, SUM(nvatgross) as nvatgross, (SUM(ROUND(A.namountfull,2)) - SUM(ROUND(A.namount,2)) - SUM(nvatgross)) as vatamt, A.lcancelled, A.lvoid, A.lapproved
-	From (
-		Select 'SI' as type, A.ctranno, B.ccode, COALESCE(C.ctradename, C.cname) as cname, A.citemno, ((A.nqtyreturned) * (A.nprice-A.ndiscount)) as namount, (A.nqty * (A.nprice-A.ndiscount)) as namountfull, B.dcutdate, D.cacctid, D.cacctdesc, A.ctaxcode, A.nrate, A.cewtcode, A.newtrate, 
-			CASE 
-				WHEN IFNULL(A.nrate,0) <> 0 
-				THEN 
-					ROUND(((A.nqty-A.nqtyreturned)*(A.nprice-A.ndiscount))/(1 + (A.nrate/100)),2)
-				ELSE 
-					A.namount 
-				END as nvatgross, B.lcancelled, B.lvoid, B.lapproved
-	From sales_t A 
-	left join sales B on A.compcode=B.compcode and A.ctranno=B.ctranno 
-	left join customers C on B.compcode=C.compcode and B.ccode=C.cempid 
-	left join accounts D on C.compcode=D.compcode and C.cacctcodesales=D.cacctno 
-	left join wtaxcodes E on A.compcode=E.compcode and A.cewtcode=E.ctaxcode 
-	where A.compcode='$company' and B.dcutdate between STR_TO_DATE('$date1', '%m/%d/%Y') and STR_TO_DATE('$date2', '%m/%d/%Y') ".$qryposted."
-	
-	UNION ALL
-
-	Select 'BS' as type, A.ctranno, B.ccode, COALESCE(C.ctradename, C.cname) as cname, '' as citemno, 0 as namount, A.namount as namountfull, B.dcutdate, '' as cacctid, '' as cacctdesc, CASE WHEN B.cvattype='VatIn' THEN F.ctaxcode ELSE '' END as ctaxcode, CASE WHEN B.cvattype='VatIn' THEN F.nrate ELSE '' END as nrate, '' as cewtcode, 0 as newtrate, 	
-		CASE 
-			WHEN B.cvattype='VatIn'
-			THEN 
-				ROUND((A.nqty*A.nprice)/(1 + (F.nrate/100)),2)
-			ELSE 
-				A.namount 
-			END as nvatgross, B.lcancelled, B.lvoid, B.lapproved
-	From quote_t A
-	left join quote B on A.compcode=B.compcode and A.ctranno=B.ctranno
-	left join customers C on B.compcode=C.compcode and B.ccode=C.cempid 
-	left join items E on A.compcode=E.compcode and A.citemno=E.cpartno 
-	left join taxcode F on E.compcode=F.compcode and E.ctaxcode=F.ctaxcode
-	left join (
-		Select Y.creference From sales_t Y left join sales X on Y.compcode=X.compcode and Y.ctranno=X.ctranno 
-		where Y.compcode='$company' and X.lcancelled=0 and X.lvoid=0
-	) G on A.ctranno=G.creference
-	where A.compcode='$company' and B.quotetype='billing' and B.dcutdate between STR_TO_DATE('$date1', '%m/%d/%Y') and STR_TO_DATE('$date2', '%m/%d/%Y') ".$qryposted." and IFNULL(G.creference,'') = ''
-
-	) A
-	Group By A.ctranno, A.ccode, A.cname, A.cacctid, A.cacctdesc, A.ctaxcode, A.nrate, A.cewtcode, A.newtrate, A.dcutdate, A.lcancelled, A.lvoid, A.lapproved
-	order by A.dcutdate, A.ctranno";
+		From (
+			Select 'SI' as type, A.ctranno, B.ccode, COALESCE(C.ctradename, C.cname) as cname, A.citemno, ((A.nqtyreturned) * (A.nprice-A.ndiscount)) as namount, (A.nqty * (A.nprice-A.ndiscount)) as namountfull, B.dcutdate, D.cacctid, D.cacctdesc, A.ctaxcode, A.nrate, B.cewtcode, IFNULL(E.nrate,0) as newtrate, CASE WHEN IFNULL(A.nrate,0) <> 0 THEN ROUND(((A.nqty-A.nqtyreturned)*(A.nprice-A.ndiscount))/(1 + (A.nrate/100)),2) ELSE A.namount END as nvatgross, B.lcancelled, B.lvoid, B.lapproved
+			From sales_t A 
+			left join sales B on A.compcode=B.compcode and A.ctranno=B.ctranno 
+			left join customers C on B.compcode=C.compcode and B.ccode=C.cempid 
+			left join accounts D on C.compcode=D.compcode and C.cacctcodesales=D.cacctno 
+			left join wtaxcodes E on A.compcode=E.compcode and B.cewtcode=E.ctaxcode 
+			where A.compcode='$company' and B.dcutdate between STR_TO_DATE('$date1', '%m/%d/%Y') and STR_TO_DATE('$date2', '%m/%d/%Y') ".$qryposted."
+		) A
+		Group By A.ctranno, A.ccode, A.cname, A.cacctid, A.cacctdesc, A.ctaxcode, A.nrate, A.cewtcode, A.newtrate, A.dcutdate, A.lcancelled, A.lvoid, A.lapproved
+		order by A.dcutdate, A.ctranno";
 
 	//echo $sqlx;
 
@@ -158,6 +155,11 @@
 	$classcode="";
 	$totAmount=0;	
 	$ngross = 0;
+
+	$ARBal = 0;
+	$CollBal = 0;
+	$BalBal = 0;
+
 	foreach($finarray as $row)
 	{
 		$invval = 
@@ -192,12 +194,14 @@
 			$phpewtamt = floatval($row['nvatgross']) * (floatval($ewtcode)/100);
 		}
 
-		$netvatamt = floatval($row['ngross']) - floatval($phpewtamt);
-
 		$npay = 0;
 		$cntofist = 0;
+		$nadjs = 0;
+		$nadjsdm = 0;
+		$nadjscm = 0;
+
 		foreach(@$arrpaymnts as $rxpymnts){
-			if($row['ctranno']==$rxpymnts['csalesno'] && $row['ctaxcode']==$rxpymnts['ctaxcodeorig'] && $row['cewtcode']==$rxpymnts['cewtcodeorig']){
+			if($row['ctranno']==$rxpymnts['csalesno']){
 				$cntofist++;
 				
 				if($cntofist==1){
@@ -205,9 +209,20 @@
 				}
 
 				$npay = $npay + floatval($rxpymnts['napplied']);
+
+				if($rxpymnts['ndm']>1){
+					$nadjsdm = $nadjsdm + floatval($rxpymnts['ndm']);
+				}
+
+				if($rxpymnts['ncm']>1){
+					$nadjscm = $nadjscm + floatval($rxpymnts['ncm']);
+				}
 			}
 		}
 
+		$nadjs = ($nadjs + $nadjsdm) - $nadjscm;
+
+		$netvatamt = floatval($row['ngross']) - floatval($phpewtamt) + $nadjs;
 		$nbalace = floatval($netvatamt) - floatval($npay);
 
 		if($row['lcancelled']==1 || $row['lvoid']==1){
@@ -227,6 +242,10 @@
 			}
 		}
 
+		$ARBal += floatval($netvatamt);
+		$CollBal += floatval($npay);
+		$BalBal += floatval($nbalace);
+
 		$cnt++;
 
 		$spreadsheet->setActiveSheetIndex(0)
@@ -242,10 +261,11 @@
 		->setCellValue('J'.$cnt, (floatval($row['ngross'])!=0) ? $row['ngross'] : "")
 		->setCellValue('K'.$cnt, (intval($ewtcode)!=0 && intval($ewtcode)!="") ? number_format($ewtcode)."%" : "")
 		->setCellValue('L'.$cnt, (floatval($phpewtamt)!=0) ? $phpewtamt : "")
-		->setCellValue('M'.$cnt, $netvatamt)
-		->setCellValue('N'.$cnt, (floatval($npay)!=0) ? $npay : "")
-		->setCellValue('O'.$cnt, $nbalace)
-		->setCellValue('P'.$cnt, $xycolor);
+		->setCellValue('M'.$cnt, $nadjs)
+		->setCellValue('N'.$cnt, $netvatamt)
+		->setCellValue('O'.$cnt, (floatval($npay)!=0) ? $npay : "")
+		->setCellValue('P'.$cnt, $nbalace)
+		->setCellValue('Q'.$cnt, $xycolor);
 
 		$spreadsheet->setActiveSheetIndex(0)->getStyle('G'.$cnt)->getNumberFormat()->setFormatCode("_(* #,##0.00_);_(* \(#,##0.00\);_(* \"-\"??_);_(@_)");
 		$spreadsheet->setActiveSheetIndex(0)->getStyle('J'.$cnt)->getNumberFormat()->setFormatCode("_(* #,##0.00_);_(* \(#,##0.00\);_(* \"-\"??_);_(@_)");
@@ -253,9 +273,22 @@
 		$spreadsheet->setActiveSheetIndex(0)->getStyle('M'.$cnt)->getNumberFormat()->setFormatCode("_(* #,##0.00_);_(* \(#,##0.00\);_(* \"-\"??_);_(@_)");
 		$spreadsheet->setActiveSheetIndex(0)->getStyle('N'.$cnt)->getNumberFormat()->setFormatCode("_(* #,##0.00_);_(* \(#,##0.00\);_(* \"-\"??_);_(@_)");
 		$spreadsheet->setActiveSheetIndex(0)->getStyle('O'.$cnt)->getNumberFormat()->setFormatCode("_(* #,##0.00_);_(* \(#,##0.00\);_(* \"-\"??_);_(@_)");
-
+		$spreadsheet->setActiveSheetIndex(0)->getStyle('P'.$cnt)->getNumberFormat()->setFormatCode("_(* #,##0.00_);_(* \(#,##0.00\);_(* \"-\"??_);_(@_)");
+		$spreadsheet->setActiveSheetIndex(0)->getStyle('Q'.$cnt)->getNumberFormat()->setFormatCode("_(* #,##0.00_);_(* \(#,##0.00\);_(* \"-\"??_);_(@_)");
 	}
 
+	$cnt++;
+	$spreadsheet->setActiveSheetIndex(0)
+		->setCellValue('A'.$cnt, "GRAND TOTAL")
+		->setCellValue('N'.$cnt, $ARBal)
+		->setCellValue('O'.$cnt, $CollBal)
+		->setCellValue('P'.$cnt, $BalBal);
+
+	$spreadsheet->getActiveSheet()->mergeCells("A".$cnt.":M".$cnt);
+	$spreadsheet->getActiveSheet()->getStyle("A".$cnt.":P".$cnt)->getFont()->setBold(true);
+	$spreadsheet->setActiveSheetIndex(0)->getStyle('N'.$cnt)->getNumberFormat()->setFormatCode("_(* #,##0.00_);_(* \(#,##0.00\);_(* \"-\"??_);_(@_)");
+	$spreadsheet->setActiveSheetIndex(0)->getStyle('O'.$cnt)->getNumberFormat()->setFormatCode("_(* #,##0.00_);_(* \(#,##0.00\);_(* \"-\"??_);_(@_)");
+	$spreadsheet->setActiveSheetIndex(0)->getStyle('P'.$cnt)->getNumberFormat()->setFormatCode("_(* #,##0.00_);_(* \(#,##0.00\);_(* \"-\"??_);_(@_)");
 
 // Rename worksheet
 $spreadsheet->getActiveSheet()->setTitle('ARMonitoring');

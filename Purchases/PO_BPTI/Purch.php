@@ -2,7 +2,7 @@
 if(!isset($_SESSION)){
 session_start();
 }
-$_SESSION['pageid'] = "Purch.php";
+$_SESSION['pageid'] = "Purch";
 include('../../Connection/connection_string.php');
 include('../../include/denied.php');
 include('../../include/access2.php');
@@ -26,7 +26,7 @@ $company = $_SESSION['companyid'];
 
 	//UNPOST
 	$unpostat = "True";
-	$sql = mysqli_query($con,"select * from users_access where userid = '$employeeid' and pageid = 'Purch_unpost.php'");
+	$sql = mysqli_query($con,"select * from users_access where userid = '$employeeid' and pageid = 'Purch_unpost'");
 	if(mysqli_num_rows($sql) == 0){
 		$unpostat = "False";
 	}
@@ -84,10 +84,10 @@ $company = $_SESSION['companyid'];
 					<div class="col-xs-2 text-right nopadwleft">
 						<select  class="form-control input-sm" name="selstats" id="selstats">
 							<option value=""> All Transactions</option>
-							<option value="post"> Posted </option>
-							<option value="cancel"> Cancelled </option>
-							<option value="void"> Voided </option>
-							<option value="pending"> Pending </option>
+							<option value="post" <?=(isset($_REQUEST['st'])) ? (($_REQUEST['st']=="post") ? "selected" : "" ) : "";?>> Posted </option>
+							<option value="cancel" <?=(isset($_REQUEST['st'])) ? (($_REQUEST['st']=="cancel") ? "selected" : "" ) : "";?>> Cancelled </option>
+							<option value="void" <?=(isset($_REQUEST['st'])) ? (($_REQUEST['st']=="void") ? "selected" : "" ) : "";?>> Voided </option>
+							<option value="pending" <?=(isset($_REQUEST['st'])) ? (($_REQUEST['st']=="pending") ? "selected" : "" ) : "";?>> Pending </option>
 						</select>
 					</div>
 				</div>
@@ -113,6 +113,7 @@ $company = $_SESSION['companyid'];
 <form name="frmedit" id="frmedit" method="post" action="Purch_edit.php">
 	<input type="hidden" name="txtctranno" id="txtctranno" />
 	<input type="hidden" name="hdnsrchval" id="hdnsrchval" />
+	<input type="hidden" name="hdnsrchsta" id="hdnsrchsta" />
 </form>		
 
 
@@ -159,8 +160,9 @@ $company = $_SESSION['companyid'];
 	</div>
 </div>
 
-  <link rel="stylesheet" type="text/css" href="../../Bootstrap/DataTable/DataTable.css"> 
+  	<link rel="stylesheet" type="text/css" href="../../Bootstrap/DataTable/DataTable.css"> 
 	<script type="text/javascript" language="javascript" src="../../Bootstrap/DataTable/jquery.dataTables.min.js"></script>
+	<script type="text/javascript" src="../../global/plugins/bootbox/bootbox.min.js"></script>
 	
 	<script>
 		
@@ -173,12 +175,13 @@ $company = $_SESSION['companyid'];
 
 		$(document).ready(function() {
 				
-			fill_datatable("<?=(isset($_REQUEST['ix'])) ? $_REQUEST['ix'] : "";?>");	
+			fill_datatable("<?=(isset($_REQUEST['ix'])) ? $_REQUEST['ix'] : "";?>",$('#selstats').val());	
 
 			$("#searchByName").keyup(function(){
 				var searchByName = $('#searchByName').val();
 				var searchBystat = $('#selstats').val(); 
 
+				$('#example').DataTable().state.clear();
 				$('#example').DataTable().destroy();
 				fill_datatable(searchByName, searchBystat);
 			});
@@ -187,16 +190,44 @@ $company = $_SESSION['companyid'];
 				var searchByName = $('#searchByName').val(); 
 				var searchBystat = $('#selstats').val(); 
 
+				$('#example').DataTable().state.clear();
 				$('#example').DataTable().destroy();
 				fill_datatable(searchByName, searchBystat);
 
 			});
+
+			$('body').tooltip({
+				selector: '.canceltool',
+				title: fetchData,
+				html: true,
+				placement: 'top'
+			});
+
+			function fetchData()
+			{
+				var fetch_data = '';
+				var element = $(this);
+				var id = element.attr("data-id");
+				var stat = element.attr("data-stat");
+				$.ajax({
+					url:"../../include/fetchcancel.php",
+					method:"POST",
+					async: false,
+					data:{id:id, stat:stat},
+					success:function(data)
+					{
+						fetch_data = data;
+					}
+				});   
+				return fetch_data;
+			}
 
 		});
 
 		function editfrm(x){
 			$('#txtctranno').val(x); 
 			$('#hdnsrchval').val($('#searchByName').val()); 
+			$('#hdnsrchsta').val($('#selstats').val());
 			document.getElementById("frmedit").submit();
 		}
 
@@ -222,14 +253,13 @@ $company = $_SESSION['companyid'];
 		function track(xno){
 
 			$.ajax({
-        type: "POST",
-        url: "th_getapprovers.php",
+				type: "POST",
+				url: "th_getapprovers.php",
 				data: 'x='+xno,
-        //contentType: "application/json; charset=utf-8",
-        success: function(result) {
-            $("#divtracker").html(result);
-        }
-      });
+				success: function(result) {
+					$("#divtracker").html(result);
+				}
+			});
 
 
 			$("#TrackMod").modal("show");
@@ -242,23 +272,38 @@ $company = $_SESSION['companyid'];
 			var num = "";
 			var msg = "";
 
-					if(idz=="OK"){
-						var x = $("#typ").val();
-						var num = $("#modzx").val();
-						
-						if(x=="POST"){
-							var msg = "POSTED";
-						}
-						else if(x=="CANCEL" || x=="CANCEL1"){
-							var msg = "CANCELLED";
-						}
-						else if(x=="SEND"){
-							var msg = "SENT";
-						}
+			var x = $("#typ").val();
+			var num = $("#modzx").val();
 
+			if(idz=="OK" && (x=="POST" || x=="SEND")){
+
+				$.ajax ({
+					url: "Purch_Tran.php",
+					data: { x: num, typ: x, canmsg: "" },
+					dataType: "json",
+					beforeSend: function() {
+						$("#AlertMsg").html("&nbsp;&nbsp;<b>Processing " + num + ": </b> Please wait a moment...");
+						$("#alertbtnOK").css("display", "none");
+						$("#OK").css("display", "none");
+						$("#Cancel").css("display", "none");
+					},
+					success: function( data ) {
+						console.log(data);
+						setmsg(data,num);
+					}
+				});
+				
+			}else if(idz=="OK" && (x=="CANCEL" || x=="CANCEL1")){
+
+				bootbox.prompt({
+					title: 'Enter reason for cancellation.',
+					inputType: 'text',
+					centerVertical: true,
+					callback: function (result) {
+						if(result!="" && result!=null){
 							$.ajax ({
 								url: "Purch_Tran.php",
-								data: { x: num, typ: x },
+								data: { x: num, typ: x, canmsg: result },
 								dataType: "json",
 								beforeSend: function() {
 									$("#AlertMsg").html("&nbsp;&nbsp;<b>Processing " + num + ": </b> Please wait a moment...");
@@ -271,199 +316,197 @@ $company = $_SESSION['companyid'];
 									setmsg(data,num);
 								}
 							});
-						
-
+						}else{
+							$("#AlertMsg").html("Reason for cancellation is required!");
+							$("#alertbtnOK").css("display", "inline");
+							$("#OK").css("display", "none");
+							$("#Cancel").css("display", "none");
+						}						
 					}
-					else if(idz=="Cancel"){
-						
-						$("#AlertMsg").html("");
-						$("#AlertModal").modal('hide');
-						
-					}
+				});
+		
+			}else if(idz=="Cancel"){
+			
+			$("#AlertMsg").html("");
+			$("#AlertModal").modal('hide');
+				
+			}
 
 		}
 
 		function setmsg(data,num){
-									$.each(data,function(key,value){
-
-									//	alert( key + ": " + value );
-										
-									//	itmstat = value.stat;
-
-									//	alert(value.ms);
-										
-										
-										if(value.stat!="False"){
-											$("#msg"+num).html(value.stat);
-											
-												
-											$("#AlertMsg").html("");
-												
-												$("#AlertMsg").html("&nbsp;&nbsp;<b>" + num + ": </b> Successfully "+value.stat+"...");
-												$("#alertbtnOK").show();
-												$("#OK").hide();
-												$("#Cancel").hide();
-												$("#AlertModal").modal('show');
-
-											
+			$.each(data,function(key,value){							
+				if(value.stat!="False"){
+					$("#msg"+num).html(value.stat);
+					
 						
-										}
-										else{
-										//	alert(item.ms);
-
-											
-											$("#AlertMsg").html("");
-											
-											$("#AlertMsg").html(value.ms);
-											$("#alertbtnOK").show();
-											$("#OK").hide();
-											$("#Cancel").hide();
-											$("#AlertModal").modal('show');
-											
+					$("#AlertMsg").html("");
 						
-										}
-									});
+						$("#AlertMsg").html("&nbsp;&nbsp;<b>" + num + ": </b> Successfully "+value.stat+"...");
+						$("#alertbtnOK").show();
+						$("#OK").hide();
+						$("#Cancel").hide();
+						$("#AlertModal").modal('show');
+
+					
+
+				}
+				else{
+					//	alert(item.ms);
+
+					
+					$("#AlertMsg").html("");
+					
+					$("#AlertMsg").html(value.ms);
+					$("#alertbtnOK").show();
+					$("#OK").hide();
+					$("#Cancel").hide();
+					$("#AlertModal").modal('show');
+					
+
+				}
+			});
 		}
 
 		function fill_datatable(searchByName = '', searchBystat = '')
 		{
-				var dataTable = $('#example').DataTable({
-					stateSave: true,
-					"processing" : true,
-					"serverSide" : true,
-					"lengthChange": true,
-					"order" : [],
-					"searching" : false,
-					"ajax" : {
-						url:"th_datatable.php",
-						type:"POST",
-						data:{
-							searchByName: searchByName, searchBystat: searchBystat
-						}
-					},
-					"columns": [
-						{ "data": null,
-							"render": function (data, type, full, row) {
-								var sts = "";
-								if (full[5] == 1 || full[8] == 1) {
-									sts="class='text-danger'";
-								}
-
-										return "<a "+sts+" href=\"javascript:;\" onClick=\"editfrm('"+full[0]+"');\">"+full[0]+"</a>";
-									
-							}
-								
-						},
-						{ "data": 6 },
-						{ "data": null,
-							"render": function (data, type, full, row) {
-
-								return full[1]+" - "+full[2];
-									
-							}
-								
-						},
-						{ "data": 9 },
-						{ "data": 3 },
-						{ "data": null,
-								"render": function (data, type, full, row) {
-		
-									if(full[7] == 0 && full[5]==0){
-										return "For Sending";
-									}else{
-										if (full[4] == 0 && (full[5] == 0)) {
-											return "For Approval";
-										}else{
-											if (full[4] == 1) {		
-												if(full[8] == 1){
-													return '<b>Voided</b>';
-												}else{
-													return 'Posted';
-												}			
-																						
-											}else if (full[5] == 1) { //12 sent 13 void 4 apprve 5 cancel
-												return '<b>Cancelled</b>';
-											}else{
-												return 'Pending';
-											}
-										}
-									}
-									
-								}
-							},
-							{ "data": null,		
-									"render": function (data, type, full, row) {
-
-										$msgx = "";
-										if(full[7] == 0 && full[5]==0){
-
-											$msgx = "<a href=\"javascript:;\" onClick=\"trans('SEND','"+full[0]+"')\" class=\"btn btn-xs btn-default\"> <i class=\"fa fa-share\" style=\"font-size:20px;color: #ffb533;\" title=\"Send transaction\"></i></a> <a href=\"javascript:;\" onClick=\"trans('CANCEL1','"+full[0]+"')\" class=\"btn btn-xs btn-default<?=($cancstat!="True") ? " disabled" : ""?>\"><i class=\"fa fa-thumbs-down\" style=\"font-size:20px;color:Red ;\" title=\"Cancel transaction\"></i></a>";
-
-										}else{
-
-											if(full[4] == 0 && full[5]==0){
-
-												var chkrejstat1 = "disabled";
-												var chkrejstat2 = "disabled";
-												var xcz = '<?=json_encode(@$chkapprovals)?>';
-												if(xcz!=""){
-													$.each( JSON.parse(xcz), function( key, val ) {
-														if(val==full[0]){
-															chkrejstat1 = "";
-															chkrejstat2 = "";
-														}
-														//console.log(key,val);
-													});
-												}
-
-												if(chkrejstat1==""){
-													chkrejstat1 = "<?=($poststat!="True") ? " disabled" : ""?>";
-												}
-
-												if(chkrejstat2==""){
-													chkrejstat2 = "<?=($cancstat!="True") ? " disabled" : ""?>";
-												}
-
-												$msgx =	"<button type=\"button\"  onClick=\"trans('POST','"+full[0]+"')\" class=\"btn btn-xs btn-defaul\" "+chkrejstat1+"><i class=\"fa fa-thumbs-up\" style=\"font-size:20px;color:Green ;\" title=\"Approve transaction\"></i></button> <button type=\"button\"  onClick=\"trans('CANCEL','"+full[0]+"')\" class=\"btn btn-xs btn-default\" "+chkrejstat2+"><i class=\"fa fa-thumbs-down\" style=\"font-size:20px;color:Red ;\" title=\"Cancel transaction\"></i></button>";
-											}
-
-										}
-
-										if(full[7] == 1) {
-											return "<div id=\"msg"+full[0]+"\"> "+ $msgx +" <button type=\"button\" onClick=\"track('"+full[0]+"')\" class=\"btn btn-xs btn-default\"> <i class=\"fa fa-file-text-o\" style=\"font-size:20px;color: #3374ff;\" title=\"Track transaction\"></i></button> </div>"
-										}else{
-											if($msgx==""){
-												$msgx = "-";
-											}
-											return "<div id=\"msg"+full[0]+"\"> "+ $msgx +" </div>";
-										}
-
-									}
-							},
-			
-					],
-					"columnDefs": [
-						{
-							"targets": [3,4],
-							"className": "text-center"
-						},
-						{
-							"targets": 1,
-							"className": "dt-body-nowrap"
-						},
-						{
-							"targets": [5,6],
-							"className": "text-center dt-body-nowrap"
-						}
-					],
-					"createdRow": function( row, data, dataIndex ) {
-							// Set the data-status attribute, and add a class
-							if(data[5]==1 || data[8] == 1){
-								$(row).addClass('text-danger');
-							}
-							
+			var dataTable = $('#example').DataTable({
+				stateSave: true,
+				"processing" : true,
+				"serverSide" : true,
+				"lengthChange": true,
+				"order" : [],
+				"searching" : false,
+				"ajax" : {
+					url:"th_datatable.php",
+					type:"POST",
+					data:{
+						searchByName: searchByName, searchBystat: searchBystat
 					}
-				});
+				},
+				"columns": [
+					{ "data": null,
+						"render": function (data, type, full, row) {
+							var sts = "";
+							if (full[5] == 1 || full[8] == 1) {
+								sts="class='text-danger'";
+							}
+
+									return "<a "+sts+" href=\"javascript:;\" onClick=\"editfrm('"+full[0]+"');\">"+full[0]+"</a>";
+								
+						}
+							
+					},
+					{ "data": 6 },
+					{ "data": null,
+						"render": function (data, type, full, row) {
+
+							return full[1]+" - "+full[2];
+								
+						}
+							
+					},
+					{ "data": 9 },
+					{ "data": 3 },
+					{ "data": null,
+							"render": function (data, type, full, row) {
+	
+								if(full[7] == 0 && full[5]==0){
+									return "For Sending";
+								}else{
+									if (full[4] == 0 && (full[5] == 0)) {
+										return "For Approval";
+									}else{
+										if (full[4] == 1) {		
+											if(full[8] == 1){
+												return '<a href="#" class="canceltool" data-id="'+full[0]+'" data-stat="VOID" style="color: red !important"><b>Voided</b></a>';
+											}else{
+												return 'Posted';
+											}			
+																					
+										}else if (full[5] == 1) { //12 sent 13 void 4 apprve 5 cancel
+											return '<a href="#" class="canceltool" data-id="'+full[0]+'" data-stat="CANCELLED" style="color: red !important"><b>Cancelled</b></a>';
+										}else{
+											return 'Pending';
+										}
+									}
+								}
+								
+							}
+						},
+						{ "data": null,		
+								"render": function (data, type, full, row) {
+
+									$msgx = "";
+									if(full[7] == 0 && full[5]==0){
+
+										$msgx = "<a href=\"javascript:;\" onClick=\"trans('SEND','"+full[0]+"')\" class=\"btn btn-xs btn-default\"> <i class=\"fa fa-share\" style=\"font-size:20px;color: #ffb533;\" title=\"Send transaction\"></i></a> <a href=\"javascript:;\" onClick=\"trans('CANCEL1','"+full[0]+"')\" class=\"btn btn-xs btn-default<?=($cancstat!="True") ? " disabled" : ""?>\"><i class=\"fa fa-thumbs-down\" style=\"font-size:20px;color:Red ;\" title=\"Cancel transaction\"></i></a>";
+
+									}else{
+
+										if(full[4] == 0 && full[5]==0){
+
+											var chkrejstat1 = "disabled";
+											var chkrejstat2 = "disabled";
+											var xcz = '<?=json_encode(@$chkapprovals)?>';
+											if(xcz!=""){
+												$.each( JSON.parse(xcz), function( key, val ) {
+													if(val==full[0]){
+														chkrejstat1 = "";
+														chkrejstat2 = "";
+													}
+													//console.log(key,val);
+												});
+											}
+
+											if(chkrejstat1==""){
+												chkrejstat1 = "<?=($poststat!="True") ? " disabled" : ""?>";
+											}
+
+											if(chkrejstat2==""){
+												chkrejstat2 = "<?=($cancstat!="True") ? " disabled" : ""?>";
+											}
+
+											$msgx =	"<button type=\"button\"  onClick=\"trans('POST','"+full[0]+"')\" class=\"btn btn-xs btn-defaul\" "+chkrejstat1+"><i class=\"fa fa-thumbs-up\" style=\"font-size:20px;color:Green ;\" title=\"Approve transaction\"></i></button> <button type=\"button\"  onClick=\"trans('CANCEL','"+full[0]+"')\" class=\"btn btn-xs btn-default\" "+chkrejstat2+"><i class=\"fa fa-thumbs-down\" style=\"font-size:20px;color:Red ;\" title=\"Cancel transaction\"></i></button>";
+										}
+
+									}
+
+									if(full[7] == 1) {
+										return "<div id=\"msg"+full[0]+"\"> "+ $msgx +" <button type=\"button\" onClick=\"track('"+full[0]+"')\" class=\"btn btn-xs btn-default\"> <i class=\"fa fa-file-text-o\" style=\"font-size:20px;color: #3374ff;\" title=\"Track transaction\"></i></button> </div>"
+									}else{
+										if($msgx==""){
+											$msgx = "-";
+										}
+										return "<div id=\"msg"+full[0]+"\"> "+ $msgx +" </div>";
+									}
+
+								}
+						},
+		
+				],
+				"columnDefs": [
+					{
+						"targets": [3,4],
+						"className": "text-center"
+					},
+					{
+						"targets": 1,
+						"className": "dt-body-nowrap"
+					},
+					{
+						"targets": [5,6],
+						"className": "text-center dt-body-nowrap"
+					}
+				],
+				"createdRow": function( row, data, dataIndex ) {
+						// Set the data-status attribute, and add a class
+						if(data[5]==1 || data[8] == 1){
+							$(row).addClass('text-danger');
+						}
+						
+				}
+			});
 		}
 	</script>
 

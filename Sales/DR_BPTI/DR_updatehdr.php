@@ -20,6 +20,7 @@ function chkgrp($valz) {
 	$cCustID = $_REQUEST['ccode'];
 	$dDelDate = $_REQUEST['ddate'];
 	$cRemarks = chkgrp($_REQUEST['crem']); 
+	$cRemarksLow = chkgrp($_REQUEST['cremlow']); 
 	$nGross = $_REQUEST['ngross'];
 	$nDRPrintNo = chkgrp($_REQUEST['cdrprintno']);
 
@@ -48,7 +49,7 @@ function chkgrp($valz) {
 
 	//INSERT HEADER
 
-	if (!mysqli_query($con, "UPDATE dr set `ccode` = '$cCustID', `cremarks` = $cRemarks, `dcutdate` = STR_TO_DATE('$dDelDate', '%m/%d/%Y'), `ngross` = '$nGross', `cacctcode` = $cacctcode, `cdrprintno` = $nDRPrintNo, `csalesman` = '$salesman', `cdelcode` = '$delcodes', `cdeladdno` = $delhousno, `cdeladdcity` = $delcity, `cdeladdstate` = $delstate, `cdeladdcountry` = $delcountry, `cdeladdzip` = '$delzip', `crefapcord` = $cdrapcord, `crefapcdr` = $cdrapcdr, `csign1` = $selSign1, `csign2` = $selSign2 where `compcode` = '$company' and `ctranno` = '$cSINo'")) {  
+	if (!mysqli_query($con, "UPDATE dr set `ccode` = '$cCustID', `clowremarks` = $cRemarksLow, `cremarks` = $cRemarks, `dcutdate` = STR_TO_DATE('$dDelDate', '%m/%d/%Y'), `ngross` = '$nGross', `cacctcode` = $cacctcode, `cdrprintno` = $nDRPrintNo, `csalesman` = '$salesman', `cdelcode` = '$delcodes', `cdeladdno` = $delhousno, `cdeladdcity` = $delcity, `cdeladdstate` = $delstate, `cdeladdcountry` = $delcountry, `cdeladdzip` = '$delzip', `crefapcord` = $cdrapcord, `crefapcdr` = $cdrapcdr, `csign1` = $selSign1, `csign2` = $selSign2 where `compcode` = '$company' and `ctranno` = '$cSINo'")) {  
 		echo "False";
 	} 
 	else {

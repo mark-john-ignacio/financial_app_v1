@@ -2,7 +2,7 @@
 if(!isset($_SESSION)){
 session_start();
 }
-$_SESSION['pageid'] = "PurchSummary.php";
+$_SESSION['pageid'] = "PurchSummary";
 
 include('../Connection/connection_string.php');
 include('../include/denied.php');
@@ -44,13 +44,11 @@ include('../include/access.php');
     <td width="150" style="padding-left:10px"><b>Filter By: </b></td>
     <td style="padding:2px">
 			<div class="col-xs-4 nopadding">	
-			  <select name="seltyp" id="seltyp" class="form-control input-sm" onChange="setact(this.value);">
-            
+			  <select name="seltyp" id="seltyp" class="form-control input-sm" onChange="setact(this.value);">            
           <option value="Purchases/PurchSumItem">Per Item</option>
-            <option value="Purchases/PurchSumSupp">Per Supplier</option>
-            <option value="Purchases/PurchSumInv">Per Transaction</option>
-            <option value="Purchases/PurchSumMonth">Per Month</option>
-            
+          <option value="Purchases/PurchSumSupp">Per Supplier</option>
+          <option value="Purchases/PurchSumInv">Per Transaction</option>
+          <option value="Purchases/PurchSumMonth">Per Month</option>           
         </select>
       </div>	
       <div class="col-xs-4 nopadwleft">

@@ -103,19 +103,18 @@
 	// Add some data
 	$spreadsheet->setActiveSheetIndex(0)
 		->setCellValue('A6', 'Transaction No.')
-		->setCellValue('B6', 'Reference')
-		->setCellValue('C6', 'Billing Date')
-		->setCellValue('D6', 'Due Date')
-		->setCellValue('E6', 'Customer')
-		->setCellValue('F6', '')
-		->setCellValue('G6', 'Recurr')
-		->setCellValue('H6', 'Sales Type')
-		->setCellValue('I6', 'VAT Type')
-		->setCellValue('J6', 'Gross')
-		->setCellValue('K6', 'Status');
+		->setCellValue('B6', 'Billing Date')
+		->setCellValue('C6', 'Due Date')
+		->setCellValue('D6', 'Customer Code')
+		->setCellValue('E6', 'Customer Name')
+		->setCellValue('F6', 'Recurr')
+		->setCellValue('G6', 'Sales Type')
+		->setCellValue('H6', 'VAT Type')
+		->setCellValue('I6', 'Total Amount')
+		->setCellValue('J6', 'Status');
 
-	$spreadsheet->getActiveSheet()->mergeCells("E6:F6");
-	$spreadsheet->getActiveSheet()->getStyle('A6:K6')->getFont()->setBold(true);
+	$spreadsheet->getActiveSheet()->mergeCells("D6:E6");
+	$spreadsheet->getActiveSheet()->getStyle('A6:J6')->getFont()->setBold(true);
 
 	$salesno = "";
 	$remarks = "";
@@ -127,10 +126,12 @@
 	$totAmount=0;	
 	$ngross = 0;
 	$cnt = 6;
+
+	$totbills = 0;
 	foreach($finarray as $row)
 	{
 		if($row['quotetype']=="billing"){
-
+			if(@$allrefx[$row['ctranno']]['ref']=="" || @$allrefx[$row['ctranno']]['ref']==null){
 			$cnt++;
 
 			if($row['lcancelled']==1 || $row['lvoid']==1){
@@ -150,22 +151,34 @@
 				}
 			}
 
+			$totbills += floatval($row['ngross']);
+
 			$spreadsheet->setActiveSheetIndex(0)
 			->setCellValue('A'.$cnt, $row['ctranno'])
-			->setCellValue('B'.$cnt, @$allrefx[$row['ctranno']]['ref'])
-			->setCellValue('C'.$cnt, date_format(date_create($row['dtrandate']),"m/d/Y"))
-			->setCellValue('D'.$cnt, date_format(date_create($row['dcutdate']),"m/d/Y"))
-			->setCellValue('E'.$cnt, $row['ccode'])
-			->setCellValue('F'.$cnt, $row['cname'])
-			->setCellValue('G'.$cnt, strtoupper($row['crecurrtype']))
-			->setCellValue('H'.$cnt, $row['csalestype'])
-			->setCellValue('I'.$cnt, $row['cvattype'])
-			->setCellValue('J'.$cnt, $row['ngross'])
-			->setCellValue('K'.$cnt, $xycolor);
+			->setCellValue('B'.$cnt, date_format(date_create($row['dtrandate']),"m/d/Y"))
+			->setCellValue('C'.$cnt, date_format(date_create($row['dcutdate']),"m/d/Y"))
+			->setCellValue('D'.$cnt, $row['ccode'])
+			->setCellValue('E'.$cnt, $row['cname'])
+			->setCellValue('F'.$cnt, strtoupper($row['crecurrtype']))
+			->setCellValue('G'.$cnt, $row['csalestype'])
+			->setCellValue('H'.$cnt, $row['cvattype'])
+			->setCellValue('I'.$cnt, $row['ngross'])
+			->setCellValue('J'.$cnt, $xycolor);
 
-			$spreadsheet->setActiveSheetIndex(0)->getStyle('J'.$cnt)->getNumberFormat()->setFormatCode("_(* #,##0.00_);_(* \(#,##0.00\);_(* \"-\"??_);_(@_)");			
+			$spreadsheet->setActiveSheetIndex(0)->getStyle('I'.$cnt)->getNumberFormat()->setFormatCode("_(* #,##0.00_);_(* \(#,##0.00\);_(* \"-\"??_);_(@_)");		
+			
+		}
 		}
 	}
+
+	$cnt++;
+
+	$spreadsheet->setActiveSheetIndex(0)
+	->setCellValue('A'.$cnt, 'Total')
+	->setCellValue('I'.$cnt, $totbills);
+	$spreadsheet->getActiveSheet()->mergeCells("A".$cnt.":H".$cnt);
+	$spreadsheet->setActiveSheetIndex(0)->getStyle('I'.$cnt)->getNumberFormat()->setFormatCode("_(* #,##0.00_);_(* \(#,##0.00\);_(* \"-\"??_);_(@_)");	
+	$spreadsheet->getActiveSheet()->getStyle("A".$cnt.":J".$cnt)->getFont()->setBold(true);
 
 	$cnt++;
 	$cnt++;
@@ -178,18 +191,15 @@
 	$cnt++;
 	$spreadsheet->setActiveSheetIndex(0)
 		->setCellValue('A'.$cnt, 'Transaction No.')
-		->setCellValue('B'.$cnt, 'Reference')
-		->setCellValue('C'.$cnt, 'Quote Date')
-		->setCellValue('D'.$cnt, 'Effectivity Date')
-		->setCellValue('E'.$cnt, 'Customer')
-		->setCellValue('F'.$cnt, '')
-		->setCellValue('G'.$cnt, 'Sales Type')
-		->setCellValue('H'.$cnt, 'VAT Type')
-		->setCellValue('I'.$cnt, 'Gross')
-		->setCellValue('J'.$cnt, 'Status');
-
-	$spreadsheet->getActiveSheet()->mergeCells("E".$cnt.":F".$cnt);
-	$spreadsheet->getActiveSheet()->getStyle("A".$cnt.":K".$cnt)->getFont()->setBold(true);
+		->setCellValue('B'.$cnt, 'Quote Date')
+		->setCellValue('C'.$cnt, 'Effectivity Date')
+		->setCellValue('D'.$cnt, 'Customer Code')
+		->setCellValue('E'.$cnt, 'Customer Name')
+		->setCellValue('F'.$cnt, 'Sales Type')
+		->setCellValue('G'.$cnt, 'VAT Type')
+		->setCellValue('H'.$cnt, 'Total Amount')
+		->setCellValue('I'.$cnt, 'Status');
+	$spreadsheet->getActiveSheet()->getStyle("A".$cnt.":I".$cnt)->getFont()->setBold(true);
 
 	$salesno = "";
 	$remarks = "";
@@ -200,10 +210,12 @@
 	$classcode="";
 	$totAmount=0;	
 	$ngross = 0;
+
+	$totbills = 0;
 	foreach($finarray as $row)
 	{
 		if($row['quotetype']=="quote"){
-
+			if(@$allrefx[$row['ctranno']]['ref']=="" || @$allrefx[$row['ctranno']]['ref']==null){
 			$cnt++;
 
 			if($row['lcancelled']==1 || $row['lvoid']==1){
@@ -223,21 +235,31 @@
 				}
 			}
 
+			$totbills += floatval($row['ngross']);
+
 			$spreadsheet->setActiveSheetIndex(0)
 			->setCellValue('A'.$cnt, $row['ctranno'])
-			->setCellValue('B'.$cnt, @$allrefx[$row['ctranno']]['ref'])
-			->setCellValue('C'.$cnt, date_format(date_create($row['dtrandate']),"m/d/Y"))
-			->setCellValue('D'.$cnt, date_format(date_create($row['dcutdate']),"m/d/Y"))
-			->setCellValue('E'.$cnt, $row['ccode'])
-			->setCellValue('F'.$cnt, $row['cname'])
-			->setCellValue('G'.$cnt, $row['csalestype'])
-			->setCellValue('H'.$cnt, $row['cvattype'])
-			->setCellValue('I'.$cnt, $row['ngross'])
-			->setCellValue('J'.$cnt, $xycolor);
+			->setCellValue('B'.$cnt, date_format(date_create($row['dtrandate']),"m/d/Y"))
+			->setCellValue('D'.$cnt, $row['ccode'])
+			->setCellValue('E'.$cnt, $row['cname'])
+			->setCellValue('F'.$cnt, $row['csalestype'])
+			->setCellValue('G'.$cnt, $row['cvattype'])
+			->setCellValue('H'.$cnt, $row['ngross'])
+			->setCellValue('I'.$cnt, $xycolor);
 
-			$spreadsheet->setActiveSheetIndex(0)->getStyle('I'.$cnt)->getNumberFormat()->setFormatCode("_(* #,##0.00_);_(* \(#,##0.00\);_(* \"-\"??_);_(@_)");			
+			$spreadsheet->setActiveSheetIndex(0)->getStyle('H'.$cnt)->getNumberFormat()->setFormatCode("_(* #,##0.00_);_(* \(#,##0.00\);_(* \"-\"??_);_(@_)");		
+		}	
 		}
 	}	
+
+	$cnt++;
+
+	$spreadsheet->setActiveSheetIndex(0)
+	->setCellValue('A'.$cnt, 'Total')
+	->setCellValue('H'.$cnt, $totbills);
+	$spreadsheet->getActiveSheet()->mergeCells("A".$cnt.":G".$cnt);
+	$spreadsheet->setActiveSheetIndex(0)->getStyle('H'.$cnt)->getNumberFormat()->setFormatCode("_(* #,##0.00_);_(* \(#,##0.00\);_(* \"-\"??_);_(@_)");	
+	$spreadsheet->getActiveSheet()->getStyle("A".$cnt.":H".$cnt)->getFont()->setBold(true);
 
 
 // Rename worksheet

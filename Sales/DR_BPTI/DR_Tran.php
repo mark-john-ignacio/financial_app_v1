@@ -58,8 +58,8 @@ if($_REQUEST['typ']=="POST"){
 							$status = "Posted";
 						}
 						
-						mysqli_query($con,"INSERT INTO logfile(`ctranno`, `cuser`, `ddate`, `cevent`,`module`, `cmachine`, `cremarks`) 
-			values('$tranno','$preparedby',NOW(),'POSTED','DELIVERY RECEIPT','$compname','Post Record')");
+						mysqli_query($con,"INSERT INTO logfile(`compcode`, `ctranno`, `cuser`, `ddate`, `cevent`,`module`, `cmachine`, `cremarks`) 
+			values('$company', '$tranno','$preparedby',NOW(),'POSTED','DELIVERY RECEIPT','$compname','Post Record')");
 
 
 				}
@@ -97,8 +97,8 @@ if($_REQUEST['typ']=="CANCEL"){
 		mysqli_query($con,"Delete From glactivity where compcode='$company' and ctranno='$tranno'");
 	}
 
-mysqli_query($con,"INSERT INTO logfile(`ctranno`, `cuser`, `ddate`, `cevent`,`module`, `cmachine`, `cremarks`) 
-	values('$tranno','$preparedby',NOW(),'CANCELLED','DELIVERY RECEIPT','$compname','Cancel Record')");
+	mysqli_query($con,"INSERT INTO logfile(`compcode`, `ctranno`, `cuser`, `ddate`, `cevent`,`module`, `cmachine`, `cremarks`, `cancel_rem`) 
+	values('$company', '$tranno','$preparedby',NOW(),'CANCELLED','DELIVERY RECEIPT','$compname','Cancel Record','".$_REQUEST['canmsg']."')");
 
 }
 

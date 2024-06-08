@@ -2,7 +2,7 @@
 	if(!isset($_SESSION)){
 		session_start();
 	}
-	$_SESSION['pageid'] = "SalesOrders.php";
+	$_SESSION['pageid'] = "SalesOrders";
 
 	include('../../Connection/connection_string.php');
 	include('../../include/denied.php');

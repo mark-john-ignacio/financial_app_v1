@@ -2,8 +2,14 @@
 if(!isset($_SESSION)){
     session_start();
 }
+$_SESSION['pageid'] = "BIRQAP";
+
 require_once  "../../../vendor2/autoload.php";
+
 require_once "../../../Connection/connection_string.php";
+include('../../../include/denied.php');
+include('../../../include/access.php');
+
 require_once "../../../Model/helper.php";
 
 //use PhpOffice\PhpSpreadsheet\Helper\Sample;
@@ -15,14 +21,35 @@ use PhpOffice\PhpSpreadsheet\Style\Fill;
 // Create new Spreadsheet object
 $spreadsheet = new Spreadsheet();
 $company = $_SESSION['companyid'];
-$month_text = $_POST['months'];
+//$month_text = $_POST['months'];
+
+switch($_POST['selqrtr']){
+    case 1:
+        $xendingmonth = 3;
+        break;
+    case 2:
+        $xendingmonth = 6;
+        break;
+    case 3:
+        $xendingmonth = 9;
+        break;
+    case 4:
+        $xendingmonth = 12;
+        break;
+    default: 
+        $months = "";
+        break;
+}
+
+$dateObj   = DateTime::createFromFormat('!m', $xendingmonth);
+$month_text = $dateObj->format('F');
+
 // $month = $_POST['months'];
 // $year = $_POST['years'];
 
 
 $year = date("Y", strtotime($_POST['years']));
 $quartersAndMonths = getQuartersAndMonths($year);
-
 
 // Set document properties
 $spreadsheet->getProperties()->setCreator('Myx Financials')
@@ -193,7 +220,7 @@ $spreadsheet->getProperties()->setCreator('Myx Financials')
 
 	// Redirect output to a client’s web browser (Xlsx)
 	header('Content-Type: application/vnd.openxmlformats-officedocument.spreadsheetml.sheet');
-	header('Content-Disposition: attachment;filename="QAP-Q2 ' . $year . ' - ' . $month_text . '.xlsx"');
+	header('Content-Disposition: attachment;filename="QAP-Q'.$_POST['selqrtr'].' ' . $year . ' - ' . $month_text . '.xlsx"');
 	header('Cache-Control: max-age=0');
 	// If you're serving to IE 9, then the following may be needed
 	header('Cache-Control: max-age=1');

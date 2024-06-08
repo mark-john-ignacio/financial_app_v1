@@ -78,29 +78,22 @@
     
 	<link rel="stylesheet" type="text/css" href="../../global/plugins/font-awesome/css/font-awesome.min.css"/>
 	<link rel="stylesheet" type="text/css" href="../../Bootstrap/css/bootstrap.css?t=<?php echo time();?>">
-  <link rel="stylesheet" type="text/css" href="../../Bootstrap/css/alert-modal.css">
-  <link rel="stylesheet" type="text/css" href="../../Bootstrap/css/bootstrap-datetimepicker.css">
+  	<link rel="stylesheet" type="text/css" href="../../Bootstrap/css/alert-modal.css">
+  	<link rel="stylesheet" type="text/css" href="../../Bootstrap/css/bootstrap-datetimepicker.css">
     
+	<link rel="stylesheet" type="text/css" href="../../global/plugins/bootstrap-fileinput/bootstrap-fileinput.css"/>
+    <link href="../../global/css/components.css" id="style_components" rel="stylesheet" type="text/css"/>
+
 	<script src="../../Bootstrap/js/jquery-3.2.1.min.js"></script>
 	<script src="../../Bootstrap/js/bootstrap3-typeahead.js"></script>
+	<script src="../../global/plugins/bootstrap-fileinput/bootstrap-fileinput.js" type="text/javascript" ></script>
+
 	<script src="../../include/autoNumeric.js"></script>
-	<script src="../../include/tableDnd/js/jquery.tablednd.js" type="text/javascript"></script>
 
 	<script src="../../Bootstrap/js/bootstrap.js"></script>
 	<script src="../../Bootstrap/js/moment.js"></script>
 	<script src="../../Bootstrap/js/bootstrap-datetimepicker.min.js"></script>
 
-	<!--
-	--
-	-- FileType Bootstrap Scripts and Link
-	--
-	-->
-	<link rel="stylesheet" type="text/css" href="../../Bootstrap/bs-icons/font/bootstrap-icons.css?h=<?php echo time();?>"/>
-	<link href="../../Bootstrap/bs-file-input/css/fileinput.css" media="all" rel="stylesheet" type="text/css"/>
-	<script src="../../Bootstrap/bs-file-input/js/plugins/buffer.min.js" type="text/javascript"></script>
-	<script src="../../Bootstrap/bs-file-input/js/plugins/filetype.min.js" type="text/javascript"></script>
-	<script src="../../Bootstrap/bs-file-input/js/fileinput.js" type="text/javascript"></script>
-	<script src="../../Bootstrap/bs-file-input/themes/explorer-fa5/theme.js" type="text/javascript"></script>
 
 	<style>
 		.bg-level1 {
@@ -148,17 +141,17 @@
 
 
 		<div class="col-xs-12 nopadding" style="border-bottom: 2px solid #cce">	 
-				<div class="col-xs-8 nopadding" >	
-					<font size="+1"><b>Bill of Materials</b></font>
-				</div>
+			<div class="col-xs-8 nopadding" >	
+				<font size="+1"><b>Bill of Materials</b></font>
+			</div>
 
-				<div class="col-xs-2 nopadwdown">	
-					<button type="button" class="btn btn-sm btn-warning btn-block" name="btnaddversion" id="btnaddversion"><i class="fa fa-plus" aria-hidden="true"></i>&nbsp;Add Version</button>
-				</div>
+			<div class="col-xs-2 nopadwdown">	
+				<button type="button" class="btn btn-sm btn-warning btn-block" name="btnaddversion" id="btnaddversion"><i class="fa fa-plus" aria-hidden="true"></i>&nbsp;Add Version</button>
+			</div>
 
-				<div class="col-xs-2 nopadwleft">	
-					<button type="button" class="btn btn-sm btn-success btn-block" name="btnuploadexcel" id="btnuploadexcel"><i class="fa fa-file-excel-o" aria-hidden="true"></i>&nbsp;Upload Excel</button> 
-				</div>
+			<div class="col-xs-2 nopadwleft">	
+				<button type="button" class="btn btn-sm btn-success btn-block" name="btnuploadexcel" id="btnuploadexcel"><i class="fa fa-file-excel-o" aria-hidden="true"></i>&nbsp;Upload Excel</button> 
+			</div>
 		</div>
 
 		<div class="col-xs-12 nopadwtop">&nbsp;</div>
@@ -274,7 +267,7 @@
 										<div class="col-xs-3 nopadwleft"> <input type="text" class="form-control input-sm" name="bomecoprep<?=$rowx['nversion']?>" id="bomecoprep<?=$rowx['nversion']?>" value="<?=$rowx['ecoPrepared']?>" placeholder="Prepared By"> </div>
 
 										<div class="col-xs-1 text-right" style="padding-top: 6px !important; padding-left: 0 !important"> <b>Date: </b> </div>
-										<div class="col-xs-2 nopadwleft"> <input type="text" class="form-control input-sm" name="bomecodate<?=$rowx['nversion']?>" id="bomecodate<?=$rowx['nversion']?>" value="<?=$rowx['ecoDate']?>" placeholder="Date"> </div>
+										<div class="col-xs-2 nopadwleft"> <input type="date" class="form-control input-sm" name="bomecodate<?=$rowx['nversion']?>" id="bomecodate<?=$rowx['nversion']?>" value="<?=$rowx['ecoDate']?>" placeholder="Date"> </div>
 
 									</div>
 
@@ -329,57 +322,57 @@
 
 					&nbsp;
 					<hr style="border: 1px solid DodgerBlue;"><h4>Process List</h4>
-          	<input type="button" value="Add Process" name="btnaddprocess" id="btnaddprocess" class="btn btn-primary btn-xs" onClick="addprocess();">                                
-            <input name="hdnprocesslist" id="hdnprocesslist" type="hidden" value="0">
+          		<input type="button" value="Add Process" name="btnaddprocess" id="btnaddprocess" class="btn btn-primary btn-xs" onClick="addprocess();">                                
+            	<input name="hdnprocesslist" id="hdnprocesslist" type="hidden" value="0">
 
-            <table width="50%" border="0" cellpadding="2" id="myProcessTable" style="margin-top: 10px;">
-              <tr>
-								<th scope="col" width="50px">&nbsp;</th>
-                <th scope="col">PROCESS</th>
-                <th scope="col" width="80">&nbsp;</th>
-              </tr>
+				<table width="50%" border="0" cellpadding="2" id="myProcessTable" style="margin-top: 10px;">
+				<tr>
+									<th scope="col" width="50px">&nbsp;</th>
+					<th scope="col">PROCESS</th>
+					<th scope="col" width="80">&nbsp;</th>
+				</tr>
 
-              <?php
-                $cbtr = 0;
-                $sqlprocess = mysqli_query($con,"SELECT * FROM `mrp_process_t` WHERE compcode='$company' and citemno='".$itm."' Order by nid"); 
-                if (mysqli_num_rows($sqlprocess)!=0) {
-                  while($row = mysqli_fetch_array($sqlprocess, MYSQLI_ASSOC)){
-                    $cbtr++;
-              ?>
+				<?php
+					$cbtr = 0;
+					$sqlprocess = mysqli_query($con,"SELECT * FROM `mrp_process_t` WHERE compcode='$company' and citemno='".$itm."' Order by nid"); 
+					if (mysqli_num_rows($sqlprocess)!=0) {
+					while($row = mysqli_fetch_array($sqlprocess, MYSQLI_ASSOC)){
+						$cbtr++;
+				?>
 
-              <tr>
-								<td>
-									<div class="nopadwright"><input type="text" readonly class="form-control input-sm text-center" id="nitemsort<?=$cbtr?>" value="<?=$cbtr?>"></div>
-								</td>
-                <td style="padding-top:1px">
-                  <div id='divselproc<?=$cbtr?>' class="col-xs-12 nopadwright">
-										<select name='selproc<?=$cbtr?>' id='selproc<?=$cbtr?>' class='form-control input-sm selectpicker'>
-											<?php
-												foreach(@$arrprocess as $xcv){
-													$xselec = "";
-													if($xcv['nid']==$row['items_process_id']){
-														$xselec = " selected";
+				<tr>
+									<td>
+										<div class="nopadwright"><input type="text" readonly class="form-control input-sm text-center" id="nitemsort<?=$cbtr?>" value="<?=$cbtr?>"></div>
+									</td>
+					<td style="padding-top:1px">
+					<div id='divselproc<?=$cbtr?>' class="col-xs-12 nopadwright">
+											<select name='selproc<?=$cbtr?>' id='selproc<?=$cbtr?>' class='form-control input-sm selectpicker'>
+												<?php
+													foreach(@$arrprocess as $xcv){
+														$xselec = "";
+														if($xcv['nid']==$row['items_process_id']){
+															$xselec = " selected";
+														}
+
+														echo "<option value='".$xcv['nid']."'".$xselec."> ".$xcv['cdesc']." </option>";
 													}
+												?>
+											</select>
+					</div>  
+					</td>
+					<td style="padding-top:1px">
+										<button class='btn btn-danger btn-xs' type='button' id='row_<?=$cbtr?>_delete' class='delete' onClick="delProcRow(this);"> <i class="fa fa-trash"></i></button>
+					</td>
+				</tr>
 
-													echo "<option value='".$xcv['nid']."'".$xselec."> ".$xcv['cdesc']." </option>";
-												}
-											?>
-										</select>
-                  </div>  
-                </td>
-                <td style="padding-top:1px">
-									<button class='btn btn-danger btn-xs' type='button' id='row_<?=$cbtr?>_delete' class='delete' onClick="delProcRow(this);"> <i class="fa fa-trash"></i></button>
-                </td>
-              </tr>
-
-              <?php
-                  }
-                }
-              ?>
-            </table>
-				</div>
-
+				<?php
+					}
+					}
+				?>
+				</table>
 			</div>
+
+		</div>
 
 		
 		<?php
@@ -424,47 +417,47 @@
 	</form>
 
 
-				<!-- 1) Alert Modal -->
-				<div class="modal fade" id="AlertModal" tabindex="-1" role="dialog" data-keyboard="false" data-backdrop="static" aria-hidden="true">
-					<div class="vertical-alignment-helper">
-						<div class="modal-dialog vertical-align-top">
-							<div class="modal-content">
-								<div class="alert-modal-danger">
-										<p id="AlertMsg"></p>
-									<p>
-											<center>
-													<button type="button" class="btn btn-primary btn-sm" data-dismiss="modal" id="alertbtnOK">Ok</button>
-											</center>
-									</p>
-								</div>
-							</div>
-						</div>
+	<!-- 1) Alert Modal -->
+	<div class="modal fade" id="AlertModal" tabindex="-1" role="dialog" data-keyboard="false" data-backdrop="static" aria-hidden="true">
+		<div class="vertical-alignment-helper">
+			<div class="modal-dialog vertical-align-top">
+				<div class="modal-content">
+					<div class="alert-modal-danger">
+							<p id="AlertMsg"></p>
+						<p>
+								<center>
+										<button type="button" class="btn btn-primary btn-sm" data-dismiss="modal" id="alertbtnOK">Ok</button>
+								</center>
+						</p>
 					</div>
 				</div>
+			</div>
+		</div>
+	</div>
 
-				<!-- 1) Add Sub Item Modal
-					<div class="modal fade" id="modaddsub" tabindex="-1" role="dialog" data-keyboard="false" data-backdrop="static" aria-hidden="true">
-						<div class="modal-dialog  modal-lg">
-							<div class="modal-content">
+	<!-- 1) Add Sub Item Modal
+		<div class="modal fade" id="modaddsub" tabindex="-1" role="dialog" data-keyboard="false" data-backdrop="static" aria-hidden="true">
+			<div class="modal-dialog  modal-lg">
+				<div class="modal-content">
 
-								<div class="modal-header">
-									Add Sub Level
-								</div>
-								<div class="modal-body" style="height:20vh">
-											<center>
-												<input type="text" class="form-control input-sm" id="txtscan2" value="" placeholder="Sub - Search Item Name...">
-												<input type="hidden" id="levelsub" value="">
-												<input type="hidden" id="levelindex" value="">
-											</center>
-								</div>
+					<div class="modal-header">
+						Add Sub Level
+					</div>
+					<div class="modal-body" style="height:20vh">
+								<center>
+									<input type="text" class="form-control input-sm" id="txtscan2" value="" placeholder="Sub - Search Item Name...">
+									<input type="hidden" id="levelsub" value="">
+									<input type="hidden" id="levelindex" value="">
+								</center>
+					</div>
 
-								<div class="modal-footer">
-										<button type="button" class="btn btn-danger" data-dismiss="modal">Done</button>
-								</div>
+					<div class="modal-footer">
+							<button type="button" class="btn btn-danger" data-dismiss="modal">Done</button>
+					</div>
 
-							</div>
-						</div>
-					</div> -->
+				</div>
+			</div>
+		</div> -->
 
 					<!-- Upload Excel -->
 
@@ -476,18 +469,14 @@
 								<div class="modal-header">
 									Upload Excel
 								</div>
-								<div class="modal-body" style="height:20vh">
+								<div class="modal-body" style="height:30vh">
 
 										<fieldset>
 
 											<div class="row">
 												<div class="col-xs-3">&nbsp;</div>
 												<div class="col-xs-6 text-center">
-
 													<h4>Select bom template to upload:</h4>
-													<br>
-													<input type="file" name="file" id="file" class="form-control">
-													<input type="hidden" name="xcitemno" id="xcitemno" value="<?=$_REQUEST['itm']?>">
 													<br>
 												</div>
 
@@ -495,7 +484,48 @@
 
 											</div>
 
-											
+											<div class="row">
+												<div class="col-xs-4 text-right"><b>Select Version: </b></div>
+												<div class="col-xs-5"> 
+													<select name="selver" id="selver" class="form-control" required>
+														<option value="0">All Version</option>
+														<?php
+															foreach($rowlabelname as $rowx){
+																echo "<option value=\"".$rowx['nversion']."\">".$rowx['cdesc']."</option>";
+															}
+														?>
+													</select>
+												</div>
+											</div>
+
+											<div class="row" style="padding-top: 5px !important">
+												<div class="col-xs-4 nopadwtop2x text-right"><b>Select To Import File: </b></div>
+												<div class="col-xs-8">
+													<div class="form-group">
+														<div class="col-md-12 nopadding">
+															<div class="fileinput fileinput-new" data-provides="fileinput">
+																<div class="input-group">
+																	
+																	<span class="input-group-addon btn btn-success default btn-file">
+																	<span class="fileinput-new">
+																	Select file </span>
+																	<span class="fileinput-exists">
+																	Change </span>
+																	<input type="file" type="file" name="file" id="file" accept=".xlsx, .xls" required> 
+																	</span>
+																	<a href="#" class="input-group-addon btn red fileinput-exists" data-dismiss="fileinput">
+																	Remove </a>
+																	<div class="form-control uneditable-input" data-trigger="fileinput">
+																		<i class="fa fa-file fileinput-exists"></i>&nbsp; <span class="fileinput-filename">
+																		</span>
+																	</div>
+																</div>
+															</div>
+														</div>
+													</div>
+													<input type="hidden" name="xcitemno" id="xcitemno" value="<?=$_REQUEST['itm']?>">
+												</div>
+											</div>
 
 										</fieldset>									
 								</div>
@@ -672,9 +702,9 @@
 		});*/
 
 		$(".btnact").on("click", function(){
-      var radioValue = $(this).data("id");
+			var radioValue = $(this).data("id");
 
-      if(radioValue){
+			if(radioValue){
 				$.ajax({
 					url: "set_default.php",
 					dataType: "text",
@@ -686,8 +716,8 @@
 
 					}
 				});
-       }
-    });
+       		}
+    	});
 
 	});
 

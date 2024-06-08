@@ -2716,14 +2716,14 @@ if(mysqli_num_rows($sql) != 0){
 
 
 
-									<div class="col-xs-12" style="margin-top: 10px !important; margin-left: 15px !important; padding-top: 10px !important">
+									<!--<div class="col-xs-12" style="margin-top: 10px !important; margin-left: 15px !important; padding-top: 10px !important">
 										<b>Default Email Body</b>
 										<div id="divPOBodyEmail" style="display:inline; padding-left:5px"></div>
 									</div>
 									<div class="col-xs-12" style="margin-left: 15px !important; margin-bottom: 15px !important;">
 										<textarea rows="5" class="form-control input-sm" name="txtPOBodyEmail" id="txtPOBodyEmail">													
 										</textarea>
-									</div>
+									</div>-->
 
 									<div class="col-xs-12" style="margin-top: 5px !important; margin-left: 15px !important; padding-top: 10px !important">
 										<b>Default Delivery Details</b>
@@ -5445,7 +5445,7 @@ if(mysqli_num_rows($sql) != 0){
 				}
 			});
 
-			$("#txtPOBodyEmail").on("blur", function(){
+			/*$("#txtPOBodyEmail").on("blur", function(){
 				$.ajax({
 					url: 'updtequote.php',
 					data: { val: $(this).val(), nme:"POEMAILBODY" },
@@ -5459,7 +5459,7 @@ if(mysqli_num_rows($sql) != 0){
 							}
 						},
 				});
-			});
+			});*/
 
 			$("#txtQuotePrintHdr").on("blur", function(){
 					$.ajax({

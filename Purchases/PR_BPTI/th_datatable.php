@@ -5,7 +5,7 @@
 
 	include('../../Connection/connection_string.php');
 
-	$column = array('A.ctranno', 'CONCAT(B.Lname,", ",B.Fname)', 'C.cdesc', 'A.dneeded', 'A.ddate', 'CASE WHEN a.lapproved=1 THEN CASE WHEN a.lvoid=1 THEN "Voided" ELSE "Posted" END WHEN a.lcancelled=1 THEN "Cancelled" ELSE CASE WHEN a.lsent=0 THEN "For Sending" ELSE "For Approval" END END');
+	$column = array('A.ctranno', 'CONCAT(B.Lname,", ",B.Fname)', 'D.cdesc', 'C.cdesc', 'A.dneeded', 'A.ddate', 'CASE WHEN a.lapproved=1 THEN CASE WHEN a.lvoid=1 THEN "Voided" ELSE "Posted" END WHEN a.lcancelled=1 THEN "Cancelled" ELSE CASE WHEN a.lsent=0 THEN "For Sending" ELSE "For Approval" END END');
 
 	$query = "SELECT A.ctranno, B.Lname, B.Fname, C.cdesc, A.dneeded, A.ddate, A.lapproved, A.lcancelled, A.lsent, A.lvoid, D.cdesc as cReqName FROM `purchrequest` A LEFT JOIN `users` B ON A.`cpreparedby` = B.`Userid` LEFT JOIN `locations` C ON A.`locations_id` = C.`nid` left join `mrp_operators` D on A.compcode=D.compcode and A.crequestedby=D.nid where A.compcode='".$_SESSION['companyid']."' ";
 
@@ -16,7 +16,9 @@
 
 	if(isset($_POST['searchBySec']) && $_POST['searchBySec'] != '')
 	{
-		$query .= "and A.locations_id = ".$_POST['searchByName']."";
+		$query .= "and A.locations_id = ".$_POST['searchBySec']."";
+	}else{
+		$query .= "and A.locations_id = ''";
 	}
 
 	if(isset($_POST['searchBystat']) && $_POST['searchBystat'] != '')
@@ -56,8 +58,6 @@
 		$query1 = 'LIMIT ' . $_POST['start'] . ', ' . $_POST['length'];
 	}
 	
-
-
 	$statement = $connect->prepare($query);
 
 	$statement->execute();

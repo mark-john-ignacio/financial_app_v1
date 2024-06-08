@@ -2,7 +2,7 @@
 	if(!isset($_SESSION)){
 		session_start();
 	}
-	$_SESSION['pageid'] = "Purch_new.php";
+	$_SESSION['pageid'] = "Purch_new";
 
 	include('../../Connection/connection_string.php');
 	include('../../include/denied.php');
@@ -1486,25 +1486,25 @@ function myFunctionadd(){
 
 	function convertCurrency(fromCurrency) {
 	
-	toCurrency = $("#basecurrvalmain").val(); //statgetrate
-	$.ajax ({
-		url: "../../Sales/th_convertcurr.php",
-		data: { fromcurr: fromCurrency, tocurr: toCurrency },
-		async: false,
-		beforeSend: function () {
-			$("#statgetrate").html(" <i>Getting exchange rate please wait...</i>");
-		},
-		success: function( data ) {
+		toCurrency = $("#basecurrvalmain").val(); //statgetrate
+		$.ajax ({
+			url: "../../Sales/th_convertcurr.php",
+			data: { fromcurr: fromCurrency, tocurr: toCurrency },
+			async: false,
+			beforeSend: function () {
+				$("#statgetrate").html(" <i>Getting exchange rate please wait...</i>");
+			},
+			success: function( data ) {
 
-			$("#basecurrval").val(data);
-			$("#hidcurrvaldesc").val($( "#selbasecurr option:selected" ).text()); 
+				$("#basecurrval").val(data);
+				$("#hidcurrvaldesc").val($( "#selbasecurr option:selected" ).text()); 
 
-		},
-		complete: function(){
-			$("#statgetrate").html("");
-			recomputeCurr();
-		}
-	});
+			},
+			complete: function(){
+				$("#statgetrate").html("");
+				recomputeCurr();
+			}
+		});
 
 	}
 
@@ -1537,21 +1537,21 @@ function myFunctionadd(){
 	function getcontact(cid){
 
 		$.ajax({
-					url:'../get_contactinfo.php',
-					data: 'c_id='+ cid,                 
-					success: function(value){
-						if(value!=""){
-							if(value.trim()=="Multi"){
-								$("#btnSearchCont").click();
-							}else{
-									var data = value.split(":");
-									
-									$('#txtcontactname').val(data[0]);
-									//$('#txtcontactdesig').val(data[1]);
-						//$('#txtcontactdept').val(data[2]);
-						$("#contact_email").val(data[3]);
-							}
-						}
+			url:'../get_contactinfo.php',
+			data: 'c_id='+ cid,                 
+			success: function(value){
+				if(value!=""){
+					if(value.trim()=="Multi"){
+						$("#btnSearchCont").click();
+					}else{
+							var data = value.split(":");
+							
+							$('#txtcontactname').val(data[0]);
+							//$('#txtcontactdesig').val(data[1]);
+				//$('#txtcontactdept').val(data[2]);
+				$("#contact_email").val(data[3]);
+					}
+				}
 			}
 		});
 
@@ -1574,43 +1574,43 @@ function myFunctionadd(){
 			method: 'post',
 			success: function (data) {
 
-					$("#allbox").prop('checked', false);
+				$("#allbox").prop('checked', false);
 							
-			console.log(data);
-			$.each(data,function(index,item){
+				console.log(data);
+				$.each(data,function(index,item){
 									
-						if(item.cpono=="NONE"){
-							$("#AlertMsg").html("No Purchase Request Available");
-							$("#alertbtnOK").show();
-							$("#AlertModal").modal('show');
+					if(item.cpono=="NONE"){
+						$("#AlertMsg").html("No Purchase Request Available");
+						$("#alertbtnOK").show();
+						$("#AlertModal").modal('show');
 
-							xstat = "NO";
-										
-							$("#txtcustid").attr("readonly", false);
-							$("#txtcust").attr("readonly", false);
+						xstat = "NO";
+									
+						$("#txtcustid").attr("readonly", false);
+						$("#txtcust").attr("readonly", false);
 
-						}
-						else{
-							$("<tr>").append(
-								$("<td id='td"+item.cprno+"'>").text(item.cprno),
-								$("<td>").text(item.cdesc)
-							).appendTo("#MyInvTbl tbody");
-										
-										
-							$("#td"+item.cprno).on("click", function(){
-								opengetdet($(this).text());
-							});
-										
-							$("#td"+item.cprno).on("mouseover", function(){
-								$(this).css('cursor','pointer');
-							});
-						}
-
-					});
-							
-					if(xstat=="YES"){
-						$('#mySIRef').modal('show');
 					}
+					else{
+						$("<tr>").append(
+							$("<td id='td"+item.cprno+"'>").text(item.cprno),
+							$("<td>").text(item.cdesc)
+						).appendTo("#MyInvTbl tbody");
+									
+									
+						$("#td"+item.cprno).on("click", function(){
+							opengetdet($(this).text());
+						});
+									
+						$("#td"+item.cprno).on("mouseover", function(){
+							$(this).css('cursor','pointer');
+						});
+					}
+
+				});
+						
+				if(xstat=="YES"){
+					$('#mySIRef').modal('show');
+				}
 			},
 			error: function (req, status, err) {
 

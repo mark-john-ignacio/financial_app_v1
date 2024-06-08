@@ -2,7 +2,7 @@
 	if(!isset($_SESSION)){
 		session_start();
 	}
-	$_SESSION['pageid'] = "PurchReg.php";
+	$_SESSION['pageid'] = "PJournal";
 
 	include('../../Connection/connection_string.php');
 	include('../../include/denied.php');

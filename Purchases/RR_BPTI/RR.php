@@ -2,7 +2,7 @@
 	if(!isset($_SESSION)){
 		session_start();
 	}
-	$_SESSION['pageid'] = "Receive.php";
+	$_SESSION['pageid'] = "Receive";
 	include('../../Connection/connection_string.php');
 	include('../../include/denied.php');
 	include('../../include/access2.php'); // nandito ung $employeeid
@@ -25,7 +25,7 @@
 
 	//UNPOST
 	$unpostat = "True";
-	$sql = mysqli_query($con,"select * from users_access where userid = '$employeeid' and pageid = 'Receive_unpost.php'");
+	$sql = mysqli_query($con,"select * from users_access where userid = '$employeeid' and pageid = 'Receive_unpost'");
 	if(mysqli_num_rows($sql) == 0){
 		$unpostat = "False";
 	}
@@ -49,52 +49,51 @@
 	<div>
 		<section>
 			<font size="+2"><u></u></font>
-        <div>
-        	<div style="float:left; width:50%">
-				<font size="+2"><u>Receiving List</u></font>	
-            </div>
-        </div>
-			
-				<div class="col-xs-12 nopadwdown">
-					<div class="col-xs-4 nopadding">
-						<button type="button" class="btn btn-primary btn-sm"  onClick="location.href='RR_new.php'" id="btnNew" name="btnNew"><span class="glyphicon glyphicon glyphicon-file"></span>&nbsp;Create New (F1)</button>
-
-						<?php
-							if($unpostat=="True"){
-						?>
-							<button type="button" class="btn btn-danger btn-sm" onClick="location.href='RR_void.php'"><span class="fa fa-times"></span>&nbsp;Void Transaction</button>
-						<?php
-							}
-						?>
-					</div>
-					<div class="col-xs-3 nopadwtop text-right" style="height:30px !important; padding-right: 10px !important">
-						<b> Search Supplier / RR No / Ref No.: </b>
-					</div>
-					<div class="col-xs-3 text-right nopadding">
-						<input type="text" name="searchByName" id="searchByName" value="<?=(isset($_REQUEST['ix'])) ? $_REQUEST['ix'] : ""?>" class="form-control input-sm" placeholder="Search Supplier, RR No, Reference...">
-					</div>
-					<div class="col-xs-2 text-right nopadwleft">
-						<select  class="form-control input-sm" name="selstats" id="selstats">
-							<option value=""> All Transactions</option>
-							<option value="post"> Posted </option>
-							<option value="cancel"> Cancelled </option>
-							<option value="void"> Voided </option>
-							<option value="pending"> Pending </option>
-						</select>
-					</div>
+			<div>
+				<div style="float:left; width:50%">
+					<font size="+2"><u>Receiving List</u></font>	
 				</div>
+			</div>
+		
+			<div class="col-xs-12 nopadwdown">
+				<div class="col-xs-4 nopadding">
+					<button type="button" class="btn btn-primary btn-sm"  onClick="location.href='RR_new.php'" id="btnNew" name="btnNew"><span class="glyphicon glyphicon glyphicon-file"></span>&nbsp;Create New (F1)</button>
 
-			
+					<?php
+						if($unpostat=="True"){
+					?>
+						<button type="button" class="btn btn-danger btn-sm" onClick="location.href='RR_void.php'"><span class="fa fa-times"></span>&nbsp;Void Transaction</button>
+					<?php
+						}
+					?>
+				</div>
+				<div class="col-xs-3 nopadwtop text-right" style="height:30px !important; padding-right: 10px !important">
+					<b> Search Supplier / RR No / Ref No.: </b>
+				</div>
+				<div class="col-xs-3 text-right nopadding">
+					<input type="text" name="searchByName" id="searchByName" value="<?=(isset($_REQUEST['ix'])) ? $_REQUEST['ix'] : ""?>" class="form-control input-sm" placeholder="Search Supplier, RR No, Reference...">
+				</div>
+				<div class="col-xs-2 text-right nopadwleft">
+					<select  class="form-control input-sm" name="selstats" id="selstats">
+						<option value=""> All Transactions</option>
+						<option value="post" <?=(isset($_REQUEST['st'])) ? (($_REQUEST['st']=="post") ? "selected" : "" ) : "";?>> Posted </option>
+						<option value="cancel" <?=(isset($_REQUEST['st'])) ? (($_REQUEST['st']=="cancel") ? "selected" : "" ) : "";?>> Cancelled </option>
+						<option value="void" <?=(isset($_REQUEST['st'])) ? (($_REQUEST['st']=="void") ? "selected" : "" ) : "";?>> Voided </option>
+						<option value="pending" <?=(isset($_REQUEST['st'])) ? (($_REQUEST['st']=="pending") ? "selected" : "" ) : "";?>> Pending </option>
+					</select>
+				</div>
+			</div>
 
-      <br><br>
+      		<br><br>
+
 			<table id="example" class="display" cellspacing="0" width="100%">
 				<thead>
 					<tr>
 						<th>RR No</th>
 						<th>Reference</th>
 						<th>Supplier</th>
-            <th class="text-center">Received Date</th>
-            <th class="text-center">Status</th>
+						<th class="text-center">Received Date</th>
+						<th class="text-center">Status</th>
 					</tr>
 				</thead>
 			</table>
@@ -105,6 +104,7 @@
 <form name="frmedit" id="frmedit" method="post" action="RR_edit.php">
 	<input type="hidden" name="txtctranno" id="txtctranno" />
 	<input type="hidden" name="hdnsrchval" id="hdnsrchval" />
+	<input type="hidden" name="hdnsrchsta" id="hdnsrchsta" />
 </form>		
 
 
@@ -138,6 +138,7 @@
 
 <link rel="stylesheet" type="text/css" href="../../Bootstrap/DataTable/DataTable.css"> 
 <script type="text/javascript" language="javascript" src="../../Bootstrap/DataTable/jquery.dataTables.min.js"></script>
+<script type="text/javascript" src="../../global/plugins/bootbox/bootbox.min.js"></script>
 
 <script type="text/javascript">
 	$(document).keydown(function(e) {	 
@@ -148,12 +149,13 @@
 
 	$(document).ready(function() {
 
-		fill_datatable("<?=(isset($_REQUEST['ix'])) ? $_REQUEST['ix'] : "";?>");	
+		fill_datatable("<?=(isset($_REQUEST['ix'])) ? $_REQUEST['ix'] : "";?>",$('#selstats').val());	
 
 		$("#searchByName").keyup(function(){
 			var searchByName = $('#searchByName').val();
 			var searchBystat = $('#selstats').val(); 
 
+			$('#example').DataTable().state.clear();
 			$('#example').DataTable().destroy();
 			fill_datatable(searchByName, searchBystat);
 		});
@@ -162,6 +164,7 @@
 			var searchByName = $('#searchByName').val(); 
 			var searchBystat = $('#selstats').val(); 
 
+			$('#example').DataTable().state.clear();
 			$('#example').DataTable().destroy();
 			fill_datatable(searchByName, searchBystat);
 
@@ -181,94 +184,53 @@
 				if(idz=="OK"){
 					var x = $("#typ").val();
 					var num = $("#modzx").val();
-					
+
 					if(x=="POST"){
+						///insert o inventory
 						var msg = "POSTED";
+						$.ajax ({
+							dataType: "text",
+							url: "../../include/th_toInvbpti.php",
+							data: { tran: num, type: "RR" },
+							async: false,
+							success: function( data ) {
+								//	alert(data.trim());
+								if(data.trim()=="True"){
+									gotrans(x,num,"",msg);					
+								}
+								else{
+									itmstat = data.trim();	
+								}
+							}
+						});
+														
 					}
 					else if(x=="CANCEL"){
 						var msg = "CANCELLED";
-					}
-
-
-					if(x=="POST"){
-							///insert o inventory
-							$.ajax ({
-								dataType: "text",
-								url: "../../include/th_toInv.php",
-								data: { tran: num, type: "RR" },
-								async: false,
-								success: function( data ) {
-								//	alert(data.trim());
-								if(data.trim()=="True"){
-										itmstat = "OK";							
-									}
-									else{
-										itmstat = data.trim();	
-									}
-								}
-							});
-							//alert(itmstat);
-								
-					}
-					else{
-						var itmstat = "OK";	
-					}
-
-
-					if(itmstat=="OK"){
-
-						$.ajax ({
-							url: "RR_Tran.php",
-							data: { x: num, typ: x },
-							async: false,
-							dataType: "json",
-							beforeSend: function(){
-								$("#AlertMsg").html("&nbsp;&nbsp;<b>Processing " + num + ": </b> Please wait a moment...");
-								$("#alertbtnOK").hide();
-								$("#OK").hide();
-								$("#Cancel").hide();
-								$("#AlertModal").modal('show');
-							},
-							success: function( data ) {
-								console.log(data);
-								$.each(data,function(index,item){
-									
-									itmstat = item.stat;
-									
-									if(itmstat!="False"){
-										$("#msg"+num).html(item.stat);
-										
-											$("#AlertMsg").html("");
-											
-											$("#AlertMsg").html("&nbsp;&nbsp;<b>" + num + ": </b> Successfully "+msg+"...");
-											$("#alertbtnOK").show();
-											$("#OK").hide();
-											$("#Cancel").hide();
-											$("#AlertModal").modal('show');
-
-									}
-									else{
-										$("#AlertMsg").html("");
-										
-										$("#AlertMsg").html(item.ms);
-										$("#alertbtnOK").show();
-										$("#OK").hide();
-										$("#Cancel").hide();
-										$("#AlertModal").modal('show');
-
-									}
-								});
+						
+						bootbox.prompt({
+							title: 'Enter reason for cancellation.',
+							inputType: 'text',
+							centerVertical: true,
+							callback: function (result) {
+								if(result!="" && result!=null){
+									gotrans(x,num,result,msg);	
+								}else{
+									$("#AlertMsg").html("Reason for cancellation is required!");
+									$("#alertbtnOK").css("display", "inline");
+									$("#OK").css("display", "none");
+									$("#Cancel").css("display", "none");
+								}						
 							}
 						});
-						
 					}else{
-										$("#AlertMsg").html("");
+						$("#AlertMsg").html("");
 
-										$("#AlertMsg").html("<b>ERROR: </b>There's a problem with your transaction!<br>"+itmstat);
-										$("#alertbtnOK").show();
-										$("#OK").hide();
-										$("#Cancel").hide();
-										$("#AlertModal").modal('show');
+						$("#AlertMsg").html("<b>ERROR: </b>There's a problem with your transaction!<br>"+itmstat);
+						$("#alertbtnOK").show();
+						$("#OK").hide();
+						$("#Cancel").hide();
+						$("#AlertModal").modal('show');
 					}
 
 					//----------------------------------------------
@@ -287,12 +249,85 @@
 			
 		});
 
+		$('body').tooltip({
+			selector: '.canceltool',
+			title: fetchData,
+			html: true,
+			placement: 'top'
+		});
+
+		function fetchData()
+		{
+			var fetch_data = '';
+			var element = $(this);
+			var id = element.attr("data-id");
+			var stat = element.attr("data-stat");
+			$.ajax({
+				url:"../../include/fetchcancel.php",
+				method:"POST",
+				async: false,
+				data:{id:id, stat:stat},
+				success:function(data)
+				{
+					fetch_data = data;
+				}
+			});   
+			return fetch_data;
+		}
+
 	});
+
+	function gotrans(x,num,canmsg,msg){
+		$.ajax ({
+			url: "RR_Tran.php",
+			data: { x: num, typ: x, canmsg:canmsg },
+			async: false,
+			dataType: "json",
+			beforeSend: function(){
+				$("#AlertMsg").html("&nbsp;&nbsp;<b>Processing " + num + ": </b> Please wait a moment...");
+				$("#alertbtnOK").hide();
+				$("#OK").hide();
+				$("#Cancel").hide();
+				$("#AlertModal").modal('show');
+			},
+			success: function( data ) {
+				console.log(data);
+				$.each(data,function(index,item){
+					
+					itmstat = item.stat;
+					
+					if(itmstat!="False"){
+						$("#msg"+num).html(item.stat);
+						
+						$("#AlertMsg").html("");
+						
+						$("#AlertMsg").html("&nbsp;&nbsp;<b>" + num + ": </b> Successfully "+msg+"...");
+						$("#alertbtnOK").show();
+						$("#OK").hide();
+						$("#Cancel").hide();
+						$("#AlertModal").modal('show');
+
+					}
+					else{
+						$("#AlertMsg").html("");
+						
+						$("#AlertMsg").html(item.ms);
+						$("#alertbtnOK").show();
+						$("#OK").hide();
+						$("#Cancel").hide();
+						$("#AlertModal").modal('show');
+
+					}
+				});
+			}
+		});
+	}
 
 
 	function editfrm(x){
 		$('#txtctranno').val(x); 
 		$('#hdnsrchval').val($('#searchByName').val()); 
+		$('#hdnsrchsta').val($('#selstats').val());
 		document.getElementById("frmedit").submit();
 	}
 
@@ -302,91 +337,91 @@
 		$("#typ").val(x);
 		$("#modzx").val(num);
 
-			$("#AlertMsg").html("");
-								
-			$("#AlertMsg").html("Are you sure you want to "+x+" RR No.: "+num);
-			$("#alertbtnOK").hide();
-			$("#OK").show();
-			$("#Cancel").show();
-			$("#AlertModal").modal('show');
+		$("#AlertMsg").html("");
+							
+		$("#AlertMsg").html("Are you sure you want to "+x+" RR No.: "+num);
+		$("#alertbtnOK").hide();
+		$("#OK").show();
+		$("#Cancel").show();
+		$("#AlertModal").modal('show');
 
 	}
 
-		function fill_datatable(searchByName = '', searchBystat = ''){
-			var dataTable = $('#example').DataTable( {
-				stateSave: true,
-				"processing" : true,
-				"serverSide" : true,
-				"lengthChange": true,
-				"order" : [],
-				"searching" : false,
-				"ajax" : {
-					url:"th_datatable.php",
-					type:"POST",
-					data:{
-						searchByName: searchByName, searchBystat: searchBystat
-					}
+	function fill_datatable(searchByName = '', searchBystat = ''){
+		var dataTable = $('#example').DataTable( {
+			stateSave: true,
+			"processing" : true,
+			"serverSide" : true,
+			"lengthChange": true,
+			"order" : [],
+			"searching" : false,
+			"ajax" : {
+				url:"th_datatable.php",
+				type:"POST",
+				data:{
+					searchByName: searchByName, searchBystat: searchBystat
+				}
+			},
+			"columns": [
+				{ "data": null,
+						"render": function (data, type, full, row) {
+								var sts = "";
+								if (full[6] == 1 || full[7] == 1) {
+									sts="class='text-danger'";
+								}
+								return "<a "+sts+" href=\"javascript:;\" onclick=\"editfrm('"+full[0]+"')\">"+full[0]+"</a>";
+						}								
 				},
-				"columns": [
-					{ "data": null,
-							"render": function (data, type, full, row) {
-									var sts = "";
-									if (full[6] == 1 || full[7] == 1) {
-										sts="class='text-danger'";
-									}
-									return "<a "+sts+" href=\"javascript:;\" onclick=\"editfrm('"+full[0]+"')\">"+full[0]+"</a>";
-							}								
-					},
-					{ "data": 1 },
-					{ "data": null,
-							"render": function (data, type, full, row) {
+				{ "data": 1 },
+				{ "data": null,
+						"render": function (data, type, full, row) {
 
-								return full[2]+" - "+full[3];
-									
+							return full[2]+" - "+full[3];
+								
+						}
+							
+				},	
+				{ "data": 4 },
+				{ "data": null,
+						"render": function (data, type, full, row) {
+		
+							if (full[5] == 1) {
+								if(full[7] == 1){
+									return '<a href="#" class="canceltool" data-id="'+full[0]+'" data-stat="VOID" style="color: red !important"><b>Voided</b></a>';
+								}else{										
+									return 'Posted';
+								}
+								
 							}
 								
-					},	
-					{ "data": 4 },
-					{ "data": null,
-							"render": function (data, type, full, row) {
-			
-								if (full[5] == 1) {
-									if(full[7] == 1){
-										return '<b>Voided</b>';
-									}else{										
-										return 'Posted';
-									}
-									
-								}
-									
-								else if (full[6] == 1) {
-									
-									return '<b>Cancelled</b>';
-									
-								}
-									
-								else{
+							else if (full[6] == 1) {
+								
+								return '<a href="#" class="canceltool" data-id="'+full[0]+'" data-stat="CANCELLED" style="color: red !important"><b>Cancelled</b></a>';
+								
+							}
+								
+							else{
 
-									return 	"<div id=\"msg"+full[0]+"\"> <a href=\"javascript:;\" onClick=\"trans('POST','"+full[0]+"')\" class=\"btn btn-xs btn-default<?=($poststat!="True") ? " disabled" : ""?>\"><i class=\"fa fa-thumbs-up\" style=\"font-size:20px;color:Green ;\" title=\"Approve transaction\"></i></a> <a href=\"javascript:;\" onClick=\"trans('CANCEL','"+full[0]+"')\" class=\"btn btn-xs btn-default<?=($cancstat!="True") ? " disabled" : ""?>\"><i class=\"fa fa-thumbs-down\" style=\"font-size:20px;color:Red ;\" title=\"Cancel transaction\"></i></a> </div>";
+								return 	"<div id=\"msg"+full[0]+"\"> <a href=\"javascript:;\" onClick=\"trans('POST','"+full[0]+"')\" class=\"btn btn-xs btn-default<?=($poststat!="True") ? " disabled" : ""?>\"><i class=\"fa fa-thumbs-up\" style=\"font-size:20px;color:Green ;\" title=\"Approve transaction\"></i></a> <a href=\"javascript:;\" onClick=\"trans('CANCEL','"+full[0]+"')\" class=\"btn btn-xs btn-default<?=($cancstat!="True") ? " disabled" : ""?>\"><i class=\"fa fa-thumbs-down\" style=\"font-size:20px;color:Red ;\" title=\"Cancel transaction\"></i></a> </div>";
 
-								}
 							}
 						}
-				],
-				"columnDefs": [ 
-					{
-						"targets": [3,4],
-						"className": "text-center dt-body-nowrap"
 					}
-				],
-				"createdRow": function( row, data, dataIndex ) {
-					// Set the data-status attribute, and add a class
-					if(data[6]==1 || data[7] == 1){
-						$(row).addClass('text-danger');
-					}
-							
+			],
+			"columnDefs": [ 
+				{
+					"targets": [3,4],
+					"className": "text-center dt-body-nowrap"
 				}
-			});
-		}
+			],
+			"createdRow": function( row, data, dataIndex ) {
+				// Set the data-status attribute, and add a class
+				if(data[6]==1 || data[7] == 1){
+					$(row).addClass('text-danger');
+				}
+						
+			}
+		});
+	}
 
 </script>

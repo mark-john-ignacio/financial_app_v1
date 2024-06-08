@@ -2,7 +2,7 @@
 	if(!isset($_SESSION)){
 		session_start();
 	}
-	$_SESSION['pageid'] = "SalesSummary.php";
+	$_SESSION['pageid'] = "SalesSummary";
 
 	include('../../Connection/connection_string.php');
 	include('../../include/denied.php');
@@ -69,7 +69,7 @@
 		$qryposted = " and b.lapproved=".$postedtran."";
 	}
 
-	if($trantype=="Trade"){
+	//if($trantype=="Trade"){
 		//and b.dcutdate between STR_TO_DATE('$date1', '%m/%d/%Y') and STR_TO_DATE('$date2', '%m/%d/%Y')
 
 		$sqlx = "select MONTH(b.dcutdate) as mdate, YEAR(b.dcutdate) as ydate, a.compcode, a.citemno, c.citemdesc, c.cclass, e.cdesc as classdesc, 
@@ -83,7 +83,7 @@
 			".$qryitm.$qrycust.$qryposted."
 			Group By MONTH(b.dcutdate), YEAR(b.dcutdate), a.compcode, a.citemno, c.citemdesc, c.cclass, e.cdesc
 			order by c.cclass, c.citemdesc, YEAR(b.dcutdate), MONTH(b.dcutdate)";
-	}elseif($trantype=="Non-Trade"){
+	/*}elseif($trantype=="Non-Trade"){
 
 		$sqlx = "select MONTH(b.dcutdate) as mdate, YEAR(b.dcutdate) as ydate, a.compcode, a.citemno, c.citemdesc, c.cclass, e.cdesc as classdesc, 
 		sum(a.nqty) as nqty, sum(A.namount) as namount
@@ -126,7 +126,7 @@
 		Group By A.mdate, A.ydate, A.compcode, A.citemno, A.citemdesc, A.cclass, A.classdesc 
 		order by A.cclass, A.citemdesc, ydate, mdate";
 
-	}
+	}*/
 
 	//echo $sqlx;
 

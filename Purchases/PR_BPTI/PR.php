@@ -3,7 +3,7 @@
 	if(!isset($_SESSION)){
 		session_start();
 	}
-	$_SESSION['pageid'] = "PR.php";
+	$_SESSION['pageid'] = "PR";
 	include('../../Connection/connection_string.php');
 	include('../../include/denied.php');
 	include('../../include/access2.php');
@@ -26,7 +26,7 @@
 
 	//UNPOST
 	$unpostat = "True";
-	$sql = mysqli_query($con,"select * from users_access where userid = '$employeeid' and pageid = 'PR_unpost.php'");
+	$sql = mysqli_query($con,"select * from users_access where userid = '$employeeid' and pageid = 'PR_unpost'");
 	if(mysqli_num_rows($sql) == 0){
 		$unpostat = "False";
 	}
@@ -97,19 +97,24 @@
 						}
 					?>
 				</div>
-        <div class="col-xs-1 nopadwtop text-right" style="height:30px !important; padding-right: 10px !important">
-          <b> Search PR No: </b>
-        </div>
+				<div class="col-xs-1 nopadwtop text-right" style="height:30px !important; padding-right: 10px !important">
+				<b> Search PR No: </b>
+				</div>
 				<div class="col-xs-2 text-right nopadding">
 					<input type="text" name="searchByName" id="searchByName" value="<?=(isset($_REQUEST['ix'])) ? $_REQUEST['ix'] : "";?>" class="form-control input-sm" placeholder="Search PR No...">
 				</div>
 				<div class="col-xs-3 text-right nopadwleft">
 					<select class="form-control input-sm" name="selwhfrom" id="selwhfrom"> 
-						<option value="">All Sections</option>	
 						<?php
-								foreach($rowdetloc as $localocs){									
+							foreach($rowdetloc as $localocs){		
+								$slctd = "";
+								if(isset($_REQUEST['loc'])){
+									if($_REQUEST['loc']==$localocs['nid']){
+										$slctd = "selected";
+									}
+								}	
 						?>
-									<option value="<?php echo $localocs['nid'];?>"><?php echo $localocs['cdesc'];?></option>										
+								<option value="<?php echo $localocs['nid'];?>" <?=$slctd?>><?php echo $localocs['cdesc'];?></option>										
 						<?php	
 								}						
 						?>
@@ -118,10 +123,10 @@
 				<div class="col-xs-2 text-right nopadwleft">
 					<select  class="form-control input-sm" name="selstats" id="selstats">
 						<option value=""> All Transactions</option>
-						<option value="post"> Posted </option>
-						<option value="cancel"> Cancelled </option>
-						<option value="void"> Voided </option>
-						<option value="pending"> Pending </option>
+						<option value="post" <?=(isset($_REQUEST['st'])) ? (($_REQUEST['st']=="post") ? "selected" : "" ) : "";?>> Posted </option>
+						<option value="cancel" <?=(isset($_REQUEST['st'])) ? (($_REQUEST['st']=="cancel") ? "selected" : "" ) : "";?>> Cancelled </option>
+						<option value="void" <?=(isset($_REQUEST['st'])) ? (($_REQUEST['st']=="void") ? "selected" : "" ) : "";?>> Voided </option>
+						<option value="pending" <?=(isset($_REQUEST['st'])) ? (($_REQUEST['st']=="pending") ? "selected" : "" ) : "";?>> Pending </option>
 					</select>
 				</div>
 			</div>
@@ -136,7 +141,7 @@
 						<th>Section</th>
 						<th>Date Needed</th>
 						<th>Created Date</th>
-            <th class="text-center">Status</th>
+            			<th class="text-center">Status</th>
 						<th class="text-center">Actions</th>
 					</tr>
 				</thead>
@@ -149,31 +154,32 @@
 		<input type="hidden" name="txtctranno" id="txtctranno" />
 		<input type="hidden" name="hdnsrchval" id="hdnsrchval" /> 
 		<input type="hidden" name="hdnsrchsec" id="hdnsrchsec" />
+		<input type="hidden" name="hdnsrchsta" id="hdnsrchsta" />
 	</form>		
 
 	<!-- 1) Alert Modal -->
 	<div class="modal fade" id="AlertModal" tabindex="-1" role="dialog" data-keyboard="false" data-backdrop="static" aria-hidden="true">
-			<div class="vertical-alignment-helper">
-					<div class="modal-dialog vertical-align-top">
-							<div class="modal-content">
-								<div class="alert-modal-danger">
-										<p id="AlertMsg"></p>
-									<p>
-											<center>
-													<button type="button" class="btn btn-primary btn-sm" id="OK" onclick="trans_send('OK')">Ok</button>
-													<button type="button" class="btn btn-danger btn-sm" id="Cancel" onclick="trans_send('Cancel')">Cancel</button>
-													
-													
-													<button type="button" class="btn btn-primary btn-sm" data-dismiss="modal" id="alertbtnOK">Ok</button>
-													
-													<input type="hidden" id="typ" name="typ" value = "">
-													<input type="hidden" id="modzx" name="modzx" value = "">
-											</center>
-									</p>
-								</div> 
-							</div>
-					</div>
+		<div class="vertical-alignment-helper">
+			<div class="modal-dialog vertical-align-top">
+				<div class="modal-content">
+					<div class="alert-modal-danger">
+						<p id="AlertMsg"></p>
+						<p>
+							<center>
+									<button type="button" class="btn btn-primary btn-sm" id="OK" onclick="trans_send('OK')">Ok</button>
+									<button type="button" class="btn btn-danger btn-sm" id="Cancel" onclick="trans_send('Cancel')">Cancel</button>
+									
+									
+									<button type="button" class="btn btn-primary btn-sm" data-dismiss="modal" id="alertbtnOK">Ok</button>
+									
+									<input type="hidden" id="typ" name="typ" value = "">
+									<input type="hidden" id="modzx" name="modzx" value = "">
+							</center>
+						</p>
+					</div> 
+				</div>
 			</div>
+		</div>
 	</div>
 
 	<!-- 1) TRACKER Modal -->
@@ -197,19 +203,21 @@
 </body>
 </html>
 
-  <link rel="stylesheet" type="text/css" href="../../Bootstrap/DataTable/DataTable.css"> 
-	<script type="text/javascript" language="javascript" src="../../Bootstrap/DataTable/jquery.dataTables.min.js"></script>
-	
+<link rel="stylesheet" type="text/css" href="../../Bootstrap/DataTable/DataTable.css"> 
+<script type="text/javascript" language="javascript" src="../../Bootstrap/DataTable/jquery.dataTables.min.js"></script>
+<script type="text/javascript" src="../../global/plugins/bootbox/bootbox.min.js"></script>
+
 	<script>
 		$(document).ready(function() {
 
-			fill_datatable("<?=(isset($_REQUEST['ix'])) ? $_REQUEST['ix'] : "";?>");
+			fill_datatable("<?=(isset($_REQUEST['ix'])) ? $_REQUEST['ix'] : "";?>",$('#selwhfrom').val(),$('#selstats').val());
 
 			$("#searchByName").keyup(function(){
 					var searchByName = $('#searchByName').val();
 					var searchBySec = $('#selwhfrom').val();
 					var searchBystat = $('#selstats').val();
 
+					$('#example').DataTable().state.clear();
 					$('#example').DataTable().destroy();
 					fill_datatable(searchByName, searchBySec, searchBystat);
 
@@ -220,6 +228,7 @@
 				var searchBySec = $('#selwhfrom').val();
 				var searchBystat = $('#selstats').val();
 
+				$('#example').DataTable().state.clear();
 				$('#example').DataTable().destroy();
 				fill_datatable(searchByName, searchBySec, searchBystat);
 			});
@@ -229,162 +238,190 @@
 				var searchBySec = $('#selwhfrom').val();
 				var searchBystat = $('#selstats').val(); 
 
+				$('#example').DataTable().state.clear();
 				$('#example').DataTable().destroy();
 				fill_datatable(searchByName, searchBySec, searchBystat);
 
 			});
 
+			$('body').tooltip({
+				selector: '.canceltool',
+				title: fetchData,
+				html: true,
+				placement: 'top'
+			});
+
+			function fetchData()
+			{
+				var fetch_data = '';
+				var element = $(this);
+				var id = element.attr("data-id");
+				var stat = element.attr("data-stat");
+				$.ajax({
+					url:"../../include/fetchcancel.php",
+					method:"POST",
+					async: false,
+					data:{id:id, stat:stat},
+					success:function(data)
+					{
+						fetch_data = data;
+					}
+				});   
+				return fetch_data;
+			}
+
 		});
 
 		
 		$(document).keydown(function(e) {		 
-				if(e.keyCode == 112) { //F2
-					e.preventDefault();
-					window.location = "PR_new.php";
-				}
+			if(e.keyCode == 112) { //F2
+				e.preventDefault();
+				window.location = "PR_new.php";
+			}
 		});
-
 
 		function editfrm(x){
 			$('#txtctranno').val(x); 
 			$('#hdnsrchval').val($('#searchByName').val()); 
-			$('#hdnsrchsec').val($('#selwhfrom').val()); 
+			$('#hdnsrchsec').val($('#selwhfrom').val());  
+			$('#hdnsrchsta').val($('#selstats').val());
 			document.getElementById("frmedit").submit();
 		}
 		
 		function fill_datatable(searchByName = '', searchBySec = '', searchBystat = ''){
 			var dataTable = $('#example').DataTable( {
 				stateSave: true,
-		    "processing" : true,
-		    "serverSide" : true,
-		    "lengthChange": true,
-		    "order" : [],
-		    "searching" : false,
-		    "ajax" : {
+				"processing" : true,
+				"serverSide" : true,
+				"lengthChange": true,
+				"order" : [],
+				"searching" : false,
+				"ajax" : {
 					url:"th_datatable.php",
 					type:"POST",
 					data:{ searchByName: searchByName, searchBySec: searchBySec, searchBystat: searchBystat }
-		    },
-					"columns": [
-						{ "data": null,
-								"render": function (data, type, full, row) {
-										var sts = "";
-										if (full[6] == 1 || full[8] == 1) {
-											sts="class='text-danger'";
-										}
-										return "<a "+sts+" href=\"javascript:;\" onclick=\"editfrm('"+full[0]+"')\">"+full[0]+"</a>";
-								}								
-						},
-						{ "data": 1 },
-						{ "data": 9 },
-						{ "data": 2 },
-						{ "data": 3 },
-						{ "data": 4 },	
-						{ "data": null,
-							"render": function(data, type, full, row) {
+				},
+				"columns": [
+					{ "data": null,
+						"render": function (data, type, full, row) {
+							var sts = "";
+							if (full[6] == 1 || full[8] == 1) {
+								sts="class='text-danger'";
+							}
+							return "<a "+sts+" href=\"javascript:;\" onclick=\"editfrm('"+full[0]+"')\">"+full[0]+"</a>";
+						}								
+					},
+					{ "data": 1 },
+					{ "data": 9 },
+					{ "data": 2 },
+					{ "data": 3 },
+					{ "data": 4 },	
+					{ "data": null,
+						"render": function(data, type, full, row) {
 
-								if(full[7]==0 && full[6]==0){
-									return "For Sending";
+							if(full[7]==0 && full[6]==0){
+								return "For Sending";
+							}else{
+								if(full[5]==0 && full[6]==0){
+									return "For Approval";
 								}else{
-									if(full[5]==0 && full[6]==0){
-										return "For Approval";
-									}else{
-										if(full[5]==1){
-											if(full[8] == 1){
-												return '<b>Voided</b>';
-											}else{
-												return 'Posted';
-											}
-										}else if(full[6]==1){
-											return '<b>Cancelled</b>';
+									if(full[5]==1){
+										if(full[8] == 1){
+											return '<a href="#" class="canceltool" data-id="'+full[0]+'" data-stat="VOID" style="color: red !important"><b>Voided</b></a>';
 										}else{
-											return "Pending";
+											return 'Posted';
 										}
-									}
-
-								}
-							}
-						},
-						{ "data": null,
-
-							"render": function(data, type, full, row) {
-
-								var	mgsx = "<div id=\"msg"+full[0]+"\"> ";
-
-								if(full[6] == 1){
-									mgsx = mgsx + "-";
-								}else{
-								
-
-									if(full[7]==0){
-
-										mgsx = mgsx + "<a href=\"javascript:;\" onClick=\"trans('SEND','"+full[0]+"','"+full[10]+"')\" class=\"btn btn-xs btn-default\"><i class=\"fa fa-share\" style=\"font-size:20px;color: #ffb533;\" title=\"Send transaction\"></i></a> <a href=\"javascript:;\" onClick=\"trans('CANCEL1','"+full[0]+"','"+full[10]+"')\" class=\"btn btn-xs btn-default\"><i class=\"fa fa-thumbs-down\" style=\"font-size:20px;color: Red;\" title=\"Cancel transaction\"></i></a>";
-										
+									}else if(full[6]==1){
+										return '<a href="#" class="canceltool" data-id="'+full[0]+'" data-stat="CANCELLED" style="color: red !important"><b>Cancelled</b></a>';
 									}else{
+										return "Pending";
+									}
+								}
 
-										if(full[5]==0 && full[6] == 0 && full[7] == 1){
-											var chkrejstat1 = "disabled";
-											var chkrejstat2 = "disabled";
-											var xcz = '<?=json_encode(@$chkapprovals)?>';
-											if(xcz!=""){
-												$.each( JSON.parse(xcz), function( key, val ) {
-													if(val==full[0]){
-														chkrejstat1 = "";
-														chkrejstat2 = "";
-													}
-													//console.log(key,val);
-												});
-											}
+							}
+						}
+					},
+					{ "data": null,
 
-											if(chkrejstat1==""){
-												chkrejstat1 = "<?=($poststat!="True") ? " disabled" : ""?>";
-											}
+						"render": function(data, type, full, row) {
 
-											if(chkrejstat2==""){
-												chkrejstat2 = "<?=($cancstat!="True") ? " disabled" : ""?>";
-											}
-											
-											mgsx = mgsx + "<button type=\"button\" onClick=\"trans('POST','"+full[0]+"','"+full[10]+"')\" class=\"btn btn-xs btn-default\" "+chkrejstat1+"><i class=\"fa fa-thumbs-up\" style=\"font-size:20px;color:Green ;\" title=\"Approve transaction\"></i></button> <button type=\"button\" onClick=\"trans('CANCEL','"+full[0]+"','"+full[10]+"')\" class=\"btn btn-xs btn-default\" "+chkrejstat2+"><i class=\"fa fa-thumbs-down\" style=\"font-size:20px;color:Red ;\" title=\"Cancel transaction\"></i></button>";
+							var	mgsx = "<div id=\"msg"+full[0]+"\"> ";
+
+							if(full[6] == 1){
+								if(full[7]==0){
+									mgsx = mgsx + "-";
+								}
+							}else{
+							
+								if(full[7]==0){
+
+									mgsx = mgsx + "<a href=\"javascript:;\" onClick=\"trans('SEND','"+full[0]+"','"+full[10]+"')\" class=\"btn btn-xs btn-default\"><i class=\"fa fa-share\" style=\"font-size:20px;color: #ffb533;\" title=\"Send transaction\"></i></a> <a href=\"javascript:;\" onClick=\"trans('CANCEL1','"+full[0]+"','"+full[10]+"')\" class=\"btn btn-xs btn-default\"><i class=\"fa fa-thumbs-down\" style=\"font-size:20px;color: Red;\" title=\"Cancel transaction\"></i></a>";
+									
+								}else{
+
+									if(full[5]==0 && full[6] == 0 && full[7] == 1){
+										var chkrejstat1 = "disabled";
+										var chkrejstat2 = "disabled";
+										var xcz = '<?=json_encode(@$chkapprovals)?>';
+										if(xcz!=""){
+											$.each( JSON.parse(xcz), function( key, val ) {
+												if(val==full[0]){
+													chkrejstat1 = "";
+													chkrejstat2 = "";
+												}
+												//console.log(key,val);
+											});
 										}
+
+										if(chkrejstat1==""){
+											chkrejstat1 = "<?=($poststat!="True") ? " disabled" : ""?>";
+										}
+
+										if(chkrejstat2==""){
+											chkrejstat2 = "<?=($cancstat!="True") ? " disabled" : ""?>";
+										}
+										
+										mgsx = mgsx + "<button type=\"button\" onClick=\"trans('POST','"+full[0]+"','"+full[10]+"')\" class=\"btn btn-xs btn-default\" "+chkrejstat1+"><i class=\"fa fa-thumbs-up\" style=\"font-size:20px;color:Green ;\" title=\"Approve transaction\"></i></button> <button type=\"button\" onClick=\"trans('CANCEL','"+full[0]+"','"+full[10]+"')\" class=\"btn btn-xs btn-default\" "+chkrejstat2+"><i class=\"fa fa-thumbs-down\" style=\"font-size:20px;color:Red ;\" title=\"Cancel transaction\"></i></button>";
 									}
-
 								}
-
-								
-								if(full[7] == 1){
-									if(mgsx=="-"){
-										mgsx = "";
-									}
-									mgsx = mgsx + " <button type=\"button\" onClick=\"track('"+full[0]+"')\" class=\"btn btn-xs btn-default\"><i class=\"fa fa-file-text-o\" style=\"font-size:20px;color: #3374ff;\" title=\"Track transaction\"></i></button>";
-								}
-
-								mgsx = mgsx +  " </div>";
-								
-								return mgsx;
 
 							}
 
-						}	
-					],
-					"columnDefs": [ 
-						{
-							"targets": [4,5],
-							"className": "text-right"
-						},
-						{
-							"targets": [6,7],
-							"className": "text-center",
-							orderable: false
+							
+							if(full[7] == 1){
+								if(mgsx=="-"){
+									mgsx = "";
+								}
+								mgsx = mgsx + " <button type=\"button\" onClick=\"track('"+full[0]+"')\" class=\"btn btn-xs btn-default\"><i class=\"fa fa-file-text-o\" style=\"font-size:20px;color: #3374ff;\" title=\"Track transaction\"></i></button>";
+							}
+
+							mgsx = mgsx +  " </div>";
+							
+							return mgsx;
+
 						}
-					],
-					"createdRow": function( row, data, dataIndex ) {
-						// Set the data-status attribute, and add a class
-						if(data[6]==1 || data[8] == 1){
-							$(row).addClass('text-danger');
-						}
-						
+
+					}	
+				],
+				"columnDefs": [ 
+					{
+						"targets": [4,5],
+						"className": "text-right"
+					},
+					{
+						"targets": [6,7],
+						"className": "text-center",
+						orderable: false
 					}
-				});
+				],
+				"createdRow": function( row, data, dataIndex ) {
+					// Set the data-status attribute, and add a class
+					if(data[6]==1 || data[8] == 1){
+						$(row).addClass('text-danger');
+					}
+					
+				}
+			});
 		}
 
 		function trans(x,num){
@@ -418,7 +455,6 @@
 				}
 			});
 
-
 			$("#TrackMod").modal("show");
 		}
 
@@ -429,39 +465,59 @@
 			var num = "";
 			var msg = "";
 
-			if(idz=="OK"){
-				var x = $("#typ").val();
-				var num = $("#modzx").val();
-				
-				if(x=="POST"){
-					var msg = "POSTED";
-				}
-				else if(x=="CANCEL" || x=="CANCEL1"){
-					var msg = "CANCELLED";
-				}
-				else if(x=="SEND"){
-					var msg = "SENT";
-				}
+			var x = $("#typ").val();
+			var num = $("#modzx").val();
 
-					$.ajax ({
-						url: "PR_Tran.php",
-						data: { x: num, typ: x },
-						dataType: "json",
-						beforeSend: function() {
-							$("#AlertMsg").html("&nbsp;&nbsp;<b>Processing " + num + ": </b> Please wait a moment...");
-							$("#alertbtnOK").css("display", "none");
+			if(idz=="OK" && (x=="POST" || x=="SEND")){
+
+				$.ajax ({
+					url: "PR_Tran.php",
+					data: { x: num, typ: x, canmsg: "" },
+					dataType: "json",
+					beforeSend: function() {
+						$("#AlertMsg").html("&nbsp;&nbsp;<b>Processing " + num + ": </b> Please wait a moment...");
+						$("#alertbtnOK").css("display", "none");
+						$("#OK").css("display", "none");
+						$("#Cancel").css("display", "none");
+					},
+					success: function( data ) {
+						console.log(data);
+						setmsg(data,num);
+					}
+				});
+				
+
+			}else if(idz=="OK" && (x=="CANCEL" || x=="CANCEL1")){
+				bootbox.prompt({
+					title: 'Enter reason for cancellation.',
+					inputType: 'text',
+					centerVertical: true,
+					callback: function (result) {
+						if(result!="" && result!=null){
+							$.ajax ({
+								url: "PR_Tran.php",
+								data: { x: num, typ: x, canmsg: result },
+								dataType: "json",
+								beforeSend: function() {
+									$("#AlertMsg").html("&nbsp;&nbsp;<b>Processing " + num + ": </b> Please wait a moment...");
+									$("#alertbtnOK").css("display", "none");
+									$("#OK").css("display", "none");
+									$("#Cancel").css("display", "none");
+								},
+								success: function( data ) {
+									console.log(data);
+									setmsg(data,num);
+								}
+							});
+						}else{
+							$("#AlertMsg").html("Reason for cancellation is required!");
+							$("#alertbtnOK").css("display", "inline");
 							$("#OK").css("display", "none");
 							$("#Cancel").css("display", "none");
-						},
-						success: function( data ) {
-							console.log(data);
-							setmsg(data,num);
-						}
-					});
-				
-
-			}
-			else if(idz=="Cancel"){
+						}						
+					}
+				});
+			}else if(idz=="Cancel"){
 				
 				$("#AlertMsg").html("");
 				$("#AlertModal").modal('hide');
@@ -473,34 +529,32 @@
 		function setmsg(data,num){
 			$.each(data,function(key,value){
 														
-							if(value.stat!="False"){
-								$("#msg"+num).html(value.stat);								
-									
-								$("#AlertMsg").html("");
-									
-									$("#AlertMsg").html("&nbsp;&nbsp;<b>" + num + ": </b> Successfully "+value.stat+"...");
-									$("#alertbtnOK").show();
-									$("#OK").hide();
-									$("#Cancel").hide();
-									$("#AlertModal").modal('show');
+				if(value.stat!="False"){
+					$("#msg"+num).html(value.stat);								
+						
+					$("#AlertMsg").html("");
+						
+					$("#AlertMsg").html("&nbsp;&nbsp;<b>" + num + ": </b> Successfully "+value.stat+"...");
+					$("#alertbtnOK").show();
+					$("#OK").hide();
+					$("#Cancel").hide();
+					$("#AlertModal").modal('show');					
 
-								
-			
-							}
-							else{
-							//	alert(item.ms);
+				}
+				else{
+				//	alert(item.ms);
 
-								
-								$("#AlertMsg").html("");
-								
-								$("#AlertMsg").html(value.ms);
-								$("#alertbtnOK").show();
-								$("#OK").hide();
-								$("#Cancel").hide();
-								$("#AlertModal").modal('show');
-								
-			
-							}
-						});
-			}
+					
+					$("#AlertMsg").html("");
+					
+					$("#AlertMsg").html(value.ms);
+					$("#alertbtnOK").show();
+					$("#OK").hide();
+					$("#Cancel").hide();
+					$("#AlertModal").modal('show');
+					
+
+				}
+			});
+		}
 	</script>

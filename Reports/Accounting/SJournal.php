@@ -2,9 +2,15 @@
     if(!isset($_SESSION)){
         session_start();
     }
+
+    $_SESSION['pageid'] = "SJournal";
+
     require_once  "../../vendor2/autoload.php";
-    include ("../../Connection/connection_string.php");
+	include('../../Connection/connection_string.php');
+	include('../../include/denied.php');
+	include('../../include/access2.php');
     require_once("../../Model/helper.php");
+
     $company_code = $_SESSION['companyid'];
 
     $date1 = $_REQUEST["date1"];

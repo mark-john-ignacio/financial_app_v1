@@ -9,8 +9,9 @@ $company = $_SESSION['companyid'];
 $csalesno = "";
 $dcutdate = "";
 $sqlhead = mysqli_query($con,"select * from sales_post where crem = 'N' order by csalesno");
-
+$mcccnt = 0;
 if (mysqli_num_rows($sqlhead)!=0) {
+	$mcccnt = mysqli_num_rows($sqlhead);
 	while($row = mysqli_fetch_array($sqlhead, MYSQLI_ASSOC)){
 		
 		$csalesno = $row["csalesno"];
@@ -28,6 +29,7 @@ if ($csalesno!=""){
 <form name="frmact" id="frmact" action="POS_Frame.php" method="POST">
 	<input name="csalesno" id="csalesno" value="<?php echo $csalesno;?>" />
     <input name="dcutdate" id="dcutdate" value="<?php echo $dcutdate;?>" />
+	<input name="dcnt" id="dcnt" value="<?php echo $mcccnt;?>" />
 </form>
 
 <script>

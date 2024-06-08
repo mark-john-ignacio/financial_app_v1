@@ -20,6 +20,7 @@ include('../../include/denied.php');
 			$companydesc = $rowcomp['compdesc'];
 			$companyadd = $rowcomp['compadd'];
 			$companytin = $rowcomp['comptin'];
+      $companylogx = $rowcomp['clogoname'];
 		}
 
 	}
@@ -48,15 +49,44 @@ if (mysqli_num_rows($sqlhead)!=0) {
 
 <!DOCTYPE html>
 <html>
-<link rel="stylesheet" type="text/css" href="../../css/cssbig.css?x=<?=time()?>">
-
+<style>
+  body{
+			font-family: Arial, sans-serif;
+			font-size: 9pt;
+		}
+		.tdpadx{
+			padding-top: 5px; 
+			padding-bottom: 5px
+		}
+		.tddetz{
+			border-left: 1px solid; 
+			border-right: 1px solid;
+		}
+		.tdright{
+			padding-right: 10px;
+		}
+    #imgcontent {
+        position: relative;
+    }
+    #imgcontent img {
+        position: absolute;
+        top: 2px;
+        left: 3px;
+    }
+</style>
 <head>
 </head>
 
 <body style="padding:5px" onLoad="window.print();">
-<table width="100%" border="0" cellpadding="3" style="border-collapse:collapse;">
+<div id="imgcontent">
+    <img src="../<?=$companylogx?>" class="ribbon" alt="" width="150px"/>
+</div>
+<table width="100%" border="0" cellpadding="3" style="border-collapse: collapse;">
   <tr>
-    <td colspan="4" align="center"><font size="5"><b>SALES ORDER</b></font></td>
+    <td colspan="4" align="center" height="50px"><font style="font-size: 24px;">SALES ORDER</font></td>
+  </tr>
+  <tr>
+    <td colspan="4" align="center">&nbsp;</td>
   </tr>
   <tr>
     <td width="100"><b>Customer: </b></td>
@@ -74,7 +104,7 @@ if (mysqli_num_rows($sqlhead)!=0) {
   <tr>
     <td colspan="4">
     
-      <table width="100%" border="1" cellpadding="3">
+      <table width="100%" border="1" cellpadding="3" style="border-collapse: collapse;">
         <tr>
           <th scope="col" height="30" width="20px">No.</th>
           <th scope="col" height="30" width="150px">PO No.</th>
@@ -117,7 +147,7 @@ if (mysqli_num_rows($sqlhead)!=0) {
   </tr>
 
   <tr>
-    <td colspan="4" align="center" style="padding-top: 20px">
+    <td colspan="4" align="center" style="padding-top: 20px; border-collapse: collapse;">
       <table width="100%" border="1" cellpadding="3">
         <tr>
           <td height="50px" valign="top">Prepared By: </td>
@@ -125,7 +155,7 @@ if (mysqli_num_rows($sqlhead)!=0) {
           <td height="50px" valign="top">Approved By: </td>
         </tr>
       </table>
-    <td>
+    </td>
   </tr>
 </table>
 </body>

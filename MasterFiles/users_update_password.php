@@ -30,7 +30,7 @@
         //$sql = "UPDATE `users` SET `password` = '$hashpassword', `modify` = '$dateNow' WHERE `Userid` = '$id' AND  `modify` NOT BETWEEN '$dateNow' AND '$date30'";
 
         if( $dateNow > @$modifyDate || $dateNow < @$date30 || @$modifyDate == null){
-            $sqls = "update `users` set `password`= '$hashpassword', `modify` = '$dateNow' where Userid='$id' ";
+            $sqls = "update `users` set `password`= '$hashpassword', `modify` = '$dateNow' where Userid= BINARY '$id' ";
             $result = mysqli_query($con, $sqls);
             if(mysqli_query($con, $sqls)){
                 echo json_encode([ 

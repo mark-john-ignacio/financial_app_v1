@@ -289,8 +289,10 @@
 			if($row['ctype']=="Details"){
 
 				if($row['cacctid']==$acct_retained){
+					$xcvb11 = gettotal($row['cacctid'], $row['ccategory']);
+
 					$tagwithRetained = 1;
-					$xcvb = $RetainedGross;
+					$xcvb = $RetainedGross + $xcvb11;
 				}else{
 					$xcvb = gettotal($row['cacctid'], $row['ccategory']);
 				}

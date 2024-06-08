@@ -152,8 +152,8 @@ if (mysqli_num_rows($sqlhead)!=0) {
 
 		$lSent = $row['lsent'];
 
-    $cpreparedBy = $row['Fname']." ".$row['Minit'].(($row['Minit']!=="" && $row['Minit']!==null) ? " " : "").$row['Lname'];
-    $cpreparedByDesig = $row['cdesignation'];
+		$cpreparedBy = $row['Fname']." ".$row['Minit'].(($row['Minit']!=="" && $row['Minit']!==null) ? " " : "").$row['Lname'];
+		$cpreparedByDesig = $row['cdesignation'];
 		$cpreparedBySign = $row['cusersign'];
 	}
 }
@@ -414,10 +414,10 @@ if (mysqli_num_rows($sqlhead)!=0) {
 				?>
 
         <tr>
-          <td align="center" style="padding-top: <?=$tpad0?>"> <?=$tsentapp?></td>
-          <td align="center" style="padding-top: <?=$tpad1?>"> <?=$unapp?> </td>
-          <td align="center" style="padding-top: <?=$tpad2?>"> <?=$dalapp?> </td>
-					<td align="center" style="padding-top: <?=$tpad3?>"> <?=$tatpp?> </td>
+          	<td align="center" style="padding-top: <?=$tpad0?>"> <?=$tsentapp?></td>
+          	<td align="center" style="padding-top: <?=$tpad1?>"> <?=$unapp?> </td>
+          	<td align="center" style="padding-top: <?=$tpad2?>"> <?=$dalapp?> </td>
+			<td align="center" style="padding-top: <?=$tpad3?>"> <?=$tatpp?> </td>
         </tr>
       </table> 
 		</td>

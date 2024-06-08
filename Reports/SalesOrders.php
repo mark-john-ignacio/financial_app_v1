@@ -3,7 +3,7 @@
         session_start();
     }
     
-    $_SESSION['pageid'] = "SalesOrders.php";
+    $_SESSION['pageid'] = "SalesOrders";
     include('../Connection/connection_string.php');
     include('../include/denied.php');
     include('../include/access.php');
@@ -91,7 +91,7 @@
                 <td style="padding:2px">
                     <div class="col-xs-8 nopadding">
                         <select id="seliclass" name="seliclass" class="form-control input-sm selectpicker"  tabindex="4">
-                            <option value="">All Items</option>
+                            <option value="">All Classification</option>
                             <?php
                                 $sql = "select * from groupings where compcode='$company' and ctype='ITEMCLS' order by cdesc";
                                 $result=mysqli_query($con,$sql);

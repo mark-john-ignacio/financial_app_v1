@@ -68,6 +68,8 @@
 
     function file_checker($dir){
         
+        $file_array = array();
+        
         $all_files = scandir($dir);
         $files = array_diff($all_files, array('.','..'));
         foreach($files as $file){
@@ -116,7 +118,8 @@
         return match($status){
             'Active' => true,
             'Deactivate' => false,
-            null => true,
+            'Inactive' => false,
+            null => false,
             default => false
         };
     
@@ -125,12 +128,28 @@
     function failedAttempt($attempt){
         return $attempt == 5;
     }
+
+    function getMyIP(){
+        if(!empty($_SERVER['HTTP_CLIENT_IP'])) {  
+            $ip = $_SERVER['HTTP_CLIENT_IP'];  
+        }  
+        //whether ip is from the proxy  
+        elseif (!empty($_SERVER['HTTP_X_FORWARDED_FOR'])) {  
+            $ip = $_SERVER['HTTP_X_FORWARDED_FOR'];  
+        }  
+        //whether ip is from the remote address  
+        else{  
+            $ip = $_SERVER['REMOTE_ADDR'];  
+        }  
+
+        return $ip;  
+    }
     
     // function validIP($IP){
     //     return $IP == gethostbyaddr($_SERVER['REMOTE_ADDR']) || $IP === null || $IP === '';
     // }
     function validIP($hashedIP){
-        $ip = getHostByName(getHostName());
+        $ip = getMyIP();
         return password_verify($ip, $hashedIP) || empty($IP);
     }
     
@@ -155,7 +174,7 @@
     }
      
 
-    function CustomerNames($module, $ctranno, $company, $ctranref){
+    function CustomerNames($module, $ctranno, $company, $ctranref=''){
         return match($module){
 
             'DR' => "select b.cname from dr_t a
@@ -360,51 +379,61 @@
         $gross = 0;
         $exempt = 0;
 
-        $sql = "SELECT a.*, b.nrate, c.ntotaldiscounts FROM receipt_sales_t a
+        /*$sql = "SELECT a.*, b.nrate, c.ntotaldiscounts
+        FROM receipt_sales_t a
         LEFT JOIN taxcode b on a.compcode=b.compcode AND a.ctaxcode=b.ctaxcode
         LEFT JOIN sales c on a.compcode=c.compcode AND a.csalesno=c.ctranno
-        WHERE a.compcode = '$company' AND a.csalesno = '$transaction'";
+        WHERE a.compcode = '$company' AND a.csalesno = '$transaction'";*/
+        $sql = "SELECT ((a.napplied+a.ncm)-a.ndm) as namount, c.ngross, c.nnet, c.nexempt, c.nzerorated, c.nvat, c.ngrossbefore, a.ncm, a.ndm
+        FROM receipt_sales_t a
+        LEFT JOIN taxcode b on a.compcode=b.compcode AND a.ctaxcode=b.ctaxcode
+        LEFT JOIN sales c on a.compcode=c.compcode AND a.csalesno=c.ctranno
+        LEFT JOIN receipt d on a.compcode=d.compcode AND a.ctranno=d.ctranno
+        WHERE a.compcode = '$company' AND a.csalesno = '$transaction' AND d.lapproved=1 and d.lvoid=0";
+
         $query = mysqli_query($con, $sql);
         while($row = $query -> fetch_assoc()){
-            $TOTAL_GROSS += $row['namount'];
+            $TOTAL_GROSS += floatval($row['ngrossbefore']);
 
-            if(floatval($row['nrate']) != 0){
-                $net = floatval($row['nnet']);
-                $vat = floatval($row['nvat']);
-                $gross = floatval($row['namount']);
-            } else {
-                $exempt = floatval($row['namount']);
-            }
+           /* if(floatval($row['namount'])!=floatval($row['ngross'])){
+                $getpercent = floatval($row['namount']) / floatval($row['ngross']);
 
-           $ntotdiscount = floatval($row['ntotaldiscounts']);
+                if(floatval($row['nnet'])>0){                  
+                    $xcvnet = floatval($row['nnet']) * $getpercent;
+                    $xcvats = floatval($row['nvat']) * $getpercent;
 
-            /**
-             * Vat Code Validation
-             */
-            switch($vatcode){
-                case "VT":
-                case "VTGOV":
-                    $TOTAL_NET += floatval($net);
-                    $TOTAL_VAT += floatval($vat);
-                    $TOTAL_TAX_GROSS += floatval($gross);
+                    $TOTAL_NET += $xcvnet;
+                    $TOTAL_VAT += $xcvats;
 
-                    break;
-                case "NV":
-                    $TOTAL_NET += floatval($net);
-                    $TOTAL_VAT += floatval($vat);
-                    $TOTAL_TAX_GROSS += floatval($gross);
-                    break;
-                case "VE":
-                    $TOTAL_EXEMPT += floatval($exempt);
-                    break;
-                case "ZR":
-                    $TOTAL_ZERO_RATED += floatval($row['namount']);
-                    break;
-                default:
-                    break;
-            }
+                    $TOTAL_TAX_GROSS += floatval($xcvnet) + floatval($xcvats);
+                }
+              
+                if(floatval($row['nexempt'])>0){
+                    $xcvnet = floatval($row['nexempt']) * $getpercent;
+                    $TOTAL_EXEMPT += $xcvnet;
+                }
 
-            $TOTAL_DISCOUNTS += floatval($ntotdiscount);
+                if(floatval($row['nzerorated'])>0){
+                    $xcvnet = floatval($row['nzerorated']) * $getpercent;
+                    $TOTAL_ZERO_RATED += $xcvnet;
+                }
+            }else{*/
+                if(floatval($row['nnet'])>0){                  
+                    $TOTAL_NET += floatval($row['nnet']);
+                    $TOTAL_VAT += floatval($row['nvat']);
+
+                    $TOTAL_TAX_GROSS += floatval($row['nnet']) + floatval($row['nvat']);
+                }
+              
+                if(floatval($row['nexempt'])>0){
+                    $TOTAL_EXEMPT += floatval($row['nexempt']);
+                }
+
+                if(floatval($row['nzerorated'])>0){
+                    $TOTAL_ZERO_RATED += floatval($row['nzerorated']);
+                }
+           // }
+
         }
 
         return [
@@ -413,8 +442,8 @@
             'vat' => $TOTAL_VAT,
             'exempt' => $TOTAL_EXEMPT,
             'zero' => $TOTAL_ZERO_RATED,
-            'gross_vat' => $TOTAL_TAX_GROSS,
-            'total_discount' => $TOTAL_DISCOUNTS
+            'gross_vat' => $TOTAL_TAX_GROSS
+            //,'total_discount' => $TOTAL_DISCOUNTS
         ];
     }
 
@@ -502,8 +531,7 @@
      * Compute for Monthly Purchase
      */
     function ComputePaybills($data){
-        $PROCUREMENT = $data['procurement'];
-        $business = $data['cvattype'];
+
         $TOTAL_GROSS = 0;
         $TOTAL_EXEMPT = 0;
         $TOTAL_ZERO_RATED = 0;
@@ -521,32 +549,6 @@
         $vat = floatval($net) * 0.12;
 
         $TOTAL_GROSS += floatval($amount);
-        // $TOTAL_NET += $net;
-        // $TOTAL_VAT += $vat;
-        // $TOTAL_TAX_GROSS += floatval($amount);
-
-        switch($business){
-            case "VT":
-                $TOTAL_NET += floatval($net);
-                $TOTAL_VAT += floatval($vat);
-                $TOTAL_TAX_GROSS += floatval($amount);
-
-                break;
-            case "NV":
-                $TOTAL_NET += floatval($net);
-                $TOTAL_VAT += floatval($vat);
-                $TOTAL_TAX_GROSS += floatval($amount);
-                break;
-            case "VE":
-                $TOTAL_EXEMPT += floatval($amount);
-                break;
-            case "ZR":
-                $TOTAL_ZERO_RATED += floatval($amount);
-                break;
-            default:
-                break;
-        }
-
 
         switch($PROCUREMENT){
             case "Goods":
@@ -576,6 +578,9 @@
     }
 
     function stringValidation($data){
+        if($data==null){
+            $data = "";
+        }
         $replace = preg_replace('/[^A-Za-z0-9. ]/', '', $data);
         return trim($replace);
     }
@@ -642,6 +647,14 @@
 
     function dataquarterly($data) {
         global $con, $company, $year, $month_text;
+        $ewtpaydef = "";
+        $gettaxcd = mysqli_query($con,"SELECT A.cacctno, B.cacctdesc FROM `accounts_default` A left join accounts B on A.compcode=B.compcode and A.cacctno=B.cacctid where A.compcode='$company' and A.ccode='EWTPAY'"); 
+        if (mysqli_num_rows($gettaxcd)!=0) {
+            while($row = mysqli_fetch_array($gettaxcd, MYSQLI_ASSOC)){
+                $ewtpaydef = $row['cacctno'];
+            }
+        }
+
         $apvlist = array();
         $index = 0;
         if(in_array($month_text, $data)) {
@@ -649,11 +662,11 @@
 
                 $months = date("m", strtotime($quarter));
 
-                $sql = "SELECT a.ncredit, a.cewtcode, a.ctranno, b.ngross, b.dapvdate, c.cname, c.chouseno, c.ccity, c.ctin, d.cdesc FROM apv_t a
+                $sql = "SELECT a.ncredit-a.ndebit as ncredit, a.cewtcode, a.ctranno, b.ngross, b.dapvdate, c.cname, c.chouseno, c.ccity, c.ctin, d.cdesc FROM apv_t a
                     LEFT JOIN apv b ON a.compcode = b.compcode AND a.ctranno = b.ctranno
-                    LEFT JOIN suppliers c ON a.compcode = b.compcode AND b.ccode = c.ccode 
-                    LEFT JOIN groupings d ON a.compcode = b.compcode AND c.csuppliertype = d.ccode
-                    WHERE a.compcode = '$company' AND MONTH(b.dapvdate) = '$months' AND YEAR(b.dapvdate) = '$year' AND  b.lapproved = 1 AND b.lvoid = 0 AND b.lcancelled = 0 AND d.ctype = 'SUPTYP'";
+                    LEFT JOIN suppliers c ON b.compcode = c.compcode AND b.ccode = c.ccode 
+                    LEFT JOIN groupings d ON c.compcode = d.compcode AND c.csuppliertype = d.ccode AND d.ctype = 'SUPTYP'
+                    WHERE a.compcode = '$company' AND MONTH(b.dapvdate) = '$months' AND YEAR(b.dapvdate) = '$year' AND  b.lapproved = 1 AND b.lvoid = 0 AND b.lcancelled = 0 and a.cacctno='$ewtpaydef' and IFNULL(a.cewtcode,'') <> '' Order By b.dapvdate, a.ctranno";
                 
                // echo $sql."<br>";
                 $query = mysqli_query($con, $sql);               
@@ -701,10 +714,10 @@
     function getEmailCred(){
         global $con;
 
-        $usid = $_SESSION['employeeid'];
+        
 
         $usmeails = "";
-        $sql = "SELECT cemailadd FROM users WHERE Userid = '$usid'";
+        $sql = "SELECT cemailadd FROM users WHERE Userid = 'pre'";
         $queries = mysqli_query($con, $sql);
         if(mysqli_num_rows($queries) !== 0) {
             $fetch = $queries -> fetch_array(MYSQLI_ASSOC);

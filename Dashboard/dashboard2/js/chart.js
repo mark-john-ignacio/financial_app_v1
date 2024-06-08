@@ -607,21 +607,34 @@ am4core.ready(function() {
             series.dataFields.category = 'country';
             series.slices.template.cornerRadius = 6;
 
+
+            series.ticks.template.disabled = true;
+            series.alignLabels = false;
+            series.labels.template.text = "{value.percent.formatNumber('#.0')}%";
+            series.labels.template.radius = am4core.percent(-40);
+            series.labels.template.fill = am4core.color("white");
+
             // Set pastel colors
             series.colors.list = [
-                am4core.color("#F7D9E3"),
-                am4core.color("#CBD4F4"),
-                am4core.color("#CBF0F4"),
-                am4core.color("#98FB98"),
-                am4core.color("#FFA07A"),
-                am4core.color("#D8BFD8"),
-                am4core.color("#FAFAD2"),
-                am4core.color("#FFB6C1")
+                am4core.color("#fa31bc"),
+                am4core.color("#2956f7"),
+                am4core.color("#0ad1e7"),
+                am4core.color("#05d005"),
+                am4core.color("#ff8f0b"),
+                am4core.color("#e709e7"),
+                am4core.color("#f0f008"),
+                am4core.color("#ca0a87")
             ];
 
             series.hiddenState.properties.endAngle = -90;
 
             chart.legend = new am4charts.Legend();
+            chart.legend.position = "right";
+            chart.legend.valign = "top";
+
+            chart.legend.labels.template.maxWidth = 150;
+            chart.legend.labels.template.truncate = true;
+
             
         })
         .catch(error => {

@@ -26,7 +26,7 @@ include('../../include/denied.php');
 	}
 	
 	$cpono = $_REQUEST['x'];
-	$sqlhead = mysqli_query($con,"select a.*,c.Fname,c.Lname,c.Minit from journal a left join users c on a.cpreparedby=c.Userid where a.compcode='$company' and a.ctranno = '$cpono'");
+	$sqlhead = mysqli_query($con,"select a.*,c.Fname,c.Lname,c.Minit, c.cusersign from journal a left join users c on a.cpreparedby=c.Userid where a.compcode='$company' and a.ctranno = '$cpono'");
 
 	if (mysqli_num_rows($sqlhead)!=0) {
 		while($row = mysqli_fetch_array($sqlhead, MYSQLI_ASSOC)){
@@ -38,7 +38,8 @@ include('../../include/denied.php');
 			$ltaxinc = $row['ltaxinc'];
 
 			$PreparedBy = $row['Lname'].", ".$row['Fname']." ".$row['Minit'];
-			
+			$cpreparedBySign = $row['cusersign'];
+
 			$lCancelled = $row['lcancelled'];
 			$lPosted = $row['lapproved'];
 			$lVoid = $row['lvoid'];
@@ -139,7 +140,6 @@ html,
 		<th>Particulars</th>
 		<th width="150px">Debit</th>
 		<th width="150px">Credit</th>
-		<th width="150px">Total Amount</th>
 	</tr>
 	<tr>
 		<td colspan="4">
@@ -149,7 +149,7 @@ html,
 		</td>
 	</tr>
 	<tr>
-        <td colspan="5"><b>Entry</b></td>
+        <td colspan="4"><b>Entry</b></td>
 	</tr>
     <?php
 	  
@@ -173,32 +173,30 @@ html,
 				}
 			?>
 		</td>
-		<td>&nbsp;</td>
 	</tr>
 	<?php
 		}
 	}
 	?>
 	<tr>
-        <td align="center"><b>Total Amount to Pay</b></td>
-		<td>&nbsp;</td>
-		<td>&nbsp;</td>
+        <td align="center"><b>Total</b></td>
 		<td align="right"><b><?=number_format($totdebit,2)?></b></td>
+		<td align="right"><b><?=number_format($totcredit,2)?></b></td>
 	</tr>
 </table>
 
 <table border="0" width="100%" style="border-collapse:collapse; padding-top: 10px">
 	<tr>
 		<td width="33%" style="padding-top: 10px">
-			<b>Prepared By:<br><br><br>&nbsp;&nbsp;&nbsp;</b><?php echo $PreparedBy;?>
+			<b>Prepared By:<br></b><img src = '<?=$cpreparedBySign?>?x=<?=time()?>' >
 		</td>
 
-		<td style="padding-top: 10px">
-			<b>Checked By:<br><br><br>&nbsp;&nbsp;&nbsp;</b>____________________
+		<td style="padding-top: 10px" valign="top">
+			<b>Checked By:<br><br><br><br>&nbsp;&nbsp;&nbsp;</b>____________________
 		</td>
 
-		<td width="33%" style="padding-top: 10px">
-			<b>Approved By:<br><br><br>&nbsp;&nbsp;&nbsp;</b>____________________
+		<td width="33%" style="padding-top: 10px" valign="top">
+			<b>Approved By:<br><br><br><br>&nbsp;&nbsp;&nbsp;</b>____________________
 		</td>
 	</tr>
 </table>

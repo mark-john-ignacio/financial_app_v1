@@ -6292,12 +6292,10 @@ button.close {
 .modal-body {
   position: relative;
   padding: 15px;
-  height:300px;
 }
 .modal-bodylong {
   position: relative;
   padding: 15px;
-  height:11in;
 }
 .modal-footer {
   padding: 15px;
@@ -7368,4 +7366,7 @@ Input icons
 .input-icon.input-icon-sm > i {
   margin-top: 8px;
   font-size: 13px;
+}
+.my-popup .modal-content {
+  background: #FAEBD7 !important;
 }

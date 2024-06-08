@@ -7,15 +7,16 @@ Login page
 }
 
 .login .logo {
-  margin: 60px auto 20px auto;
+  margin: 10px auto 20px auto;
   padding: 15px;
   text-align: center;
 }
 
 .login .content {
-  background: url(../img/bg-white-lock.png) repeat;
+  /*background: url(../img/bg-white-lock.png) repeat;*/
+  background-color:#ffffff;
   width: 360px;
-  margin: 0 auto;
+  margin: 40px auto;
   margin-bottom: 0px;
   padding: 30px;
   padding-top: 20px;
@@ -28,16 +29,16 @@ Login page
 }
 
 .login .content h3 {
-  color: #eee;
+  color: #111010;
 }
 
 .login .content h4 {
-  color: #eee;
+  color: #111010;
 }
 
 .login .content p,
 .login .content label {
-  color: #fff;
+  color: #111010;
 }
 
 .login .content .login-form,

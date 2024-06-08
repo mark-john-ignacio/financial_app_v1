@@ -17,6 +17,15 @@ include('../../include/denied.php');
 		}
 	}
 
+  $siformname = "";
+  $sqlauto = mysqli_query($con,"select filename from nav_menu_prints where compcode='$company' and code='SI_PRINT'");
+	if(mysqli_num_rows($sqlauto) != 0){
+		while($rowauto = mysqli_fetch_array($sqlauto, MYSQLI_ASSOC))
+		{
+			$siformname = $rowauto['filename'];
+		}
+	}
+
 	
 	$sqlcomp = mysqli_query($con,"select * from company where compcode='$company'");
 
@@ -116,7 +125,7 @@ function PrintRed(x, version){
   if(version == 1){
     location.href = "SI_printv1.php?tranno=" +x;
   } else {
-    location.href = "SI_print.php?x="+x;
+    location.href = "<?=$siformname?>?x="+x;
   }
   
 }

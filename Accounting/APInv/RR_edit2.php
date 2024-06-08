@@ -13,7 +13,7 @@ $employeeid = $_SESSION['employeeid'];
 $company = $_SESSION['companyid'];
 
 $poststat = "True";
-$sql = mysqli_query($con,"select * from users_access where userid = '$employeeid' and pageid = 'SuppInv_edit.php'");
+$sql = mysqli_query($con,"select * from users_access where userid = '$employeeid' and pageid = 'SuppInv_edit'");
 if(mysqli_num_rows($sql) == 0){
 	$poststat = "False";
 }
@@ -389,9 +389,9 @@ if (mysqli_num_rows($sqlhead)!=0) {
 			<div class="col-xs-7">
 				<div class="portlet">
 					<div class="portlet-body">
-						<?php
-							if($poststat=="True"){
-						?>
+							<?php
+								if($poststat=="True"){
+							?>
 
 							<button type="button" class="btn btn-primary btn-sm" tabindex="6" onClick="window.location.href='RR.php?ix=<?=isset($_REQUEST['hdnsrchval']) ? $_REQUEST['hdnsrchval'] : ""?>';" id="btnMain" name="btnMain">
 								Back to Main<br>(ESC)
@@ -406,6 +406,8 @@ if (mysqli_num_rows($sqlhead)!=0) {
 							</button>
 
 							<?php
+								}
+
 								$sql = mysqli_query($con,"select * from users_access where userid = '".$_SESSION['employeeid']."' and pageid = 'SuppInv_print'");
 
 								if(mysqli_num_rows($sql) == 1){
@@ -419,6 +421,7 @@ if (mysqli_num_rows($sqlhead)!=0) {
 							<?php		
 								}
 
+								if($poststat=="True"){
 							?>
 
 							<button type="button" class="btn btn-warning btn-sm" tabindex="6" onClick="enabled();" id="btnEdit" name="btnEdit">
@@ -428,6 +431,10 @@ if (mysqli_num_rows($sqlhead)!=0) {
 							<button type="button" class="btn btn-success btn-sm" tabindex="6" onClick="return chkform();" id="btnSave" name="btnSave">
 								Save<br>(CTRL+S)
 							</button>
+
+							<?php		
+								}
+							?>
 					</div>
 				</div>
 			</div>
@@ -492,9 +499,6 @@ if (mysqli_num_rows($sqlhead)!=0) {
 			</div>
 		</div>
 				
-<?php
-	}
-?>
     </fieldset>
 </form>
 <?php
@@ -585,7 +589,7 @@ else{
 		 */
 		file_name.map(({name, ext}, i) => {
 
-			$vrx = encodeURIComponent(object.name);
+			$vrx = encodeURIComponent(name);
 			list_file.push("<?=$AttachUrlBase?>RI/<?=$company."_".$cpono?>/" + name)
 			console.log(ext);
 
@@ -1247,6 +1251,8 @@ else{
 		$("#btnNew").attr("disabled", false);
 		$("#btnPrint").attr("disabled", false);
 		$("#btnEdit").attr("disabled", false);
+
+		$(".kv-file-zoom").attr("disabled", false);
 	}
 
 	function enabled(){

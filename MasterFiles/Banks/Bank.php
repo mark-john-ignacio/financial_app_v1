@@ -1,32 +1,33 @@
 <?php
-if(!isset($_SESSION)){
-session_start();
-}
-$_SESSION['pageid'] = "Bank.php";
+	if(!isset($_SESSION)){
+		session_start();
+	}
+	$_SESSION['pageid'] = "Bank";
 
-include('../../Connection/connection_string.php');
-include('../../include/denied.php');
-include('../../include/access.php');
+	include('../../Connection/connection_string.php');
+	include('../../include/denied.php');
+	include('../../include/access.php');
+
+	$company = $_SESSION['companyid'];  
+
+	$posedit = "True";
+	$sql = mysqli_query($con,"select * from users_access where userid = '$employeeid' and pageid = 'Bank_Edit'");
+	if(mysqli_num_rows($sql) == 0){
+		$posedit = "False";
+	}
 ?>
 <!DOCTYPE html>
 <html>
 <head>
-<script type="text/javascript">
-function editfrm(x){
-	document.getElementById("txtcitemno").value = x;
-	document.getElementById("frmedit").submit();
-}
-
-</script>
 
 	<meta charset="utf-8">
 	<meta name="viewport" content="initial-scale=1.0, maximum-scale=2.0">
 
-	<title>Coop Financials</title>
+	<title>Myx Financials</title>
 
-<link rel="stylesheet" type="text/css" href="../../Bootstrap/css/bootstrap.css">    
+	<link rel="stylesheet" type="text/css" href="../../Bootstrap/css/bootstrap.css">    
     <link href="../../global/plugins/font-awesome/css/font-awesome.min.css" rel="stylesheet" type="text/css"/>  
-
+	<link rel="stylesheet" type="text/css" href="../../Bootstrap/css/alert-modal.css">
 
 <script src="../../Bootstrap/js/jquery-3.2.1.min.js"></script>
 <script src="../../Bootstrap/js/bootstrap.js"></script>
@@ -44,7 +45,16 @@ function editfrm(x){
             </div>
         </div>
 			<br><br>
-           			 <button type="button" class="btn btn-primary btn-sm" id="btnadd" name="btnadd"  onClick="location.href='Bank_new.php'"><span class="glyphicon glyphicon glyphicon-file"></span>&nbsp;Create New (F1)</button>
+
+			<div class="col-xs-12 nopadding">
+				<div class="col-xs-2 nopadding">
+					<button type="button" class="btn btn-primary btn-sm" id="btnadd" name="btnadd"  onClick="location.href='Bank_new.php'"><span class="glyphicon glyphicon glyphicon-file"></span>&nbsp;Create New (F1)</button>
+				</div>
+                <div class="col-xs-5" style="padding-top: 6px !important;">
+					<span id="itmerr" style="padding: 5px !important;"> </span>
+				</div>
+			</div>
+           			
 			<br><br>			
 			<table class="table table-hover" role="grid" id="MyTable">
 				<thead>
@@ -108,15 +118,28 @@ function editfrm(x){
 		</section>
 	</div>		
 
+	<form name="frmedit" id="frmedit" method="get" action="Bank_edit.php">
+		<input type="hidden" name="txtcitemno" id="txtcitemno" />
+	</form>		
 
-<form name="frmedit" id="frmedit" method="get" action="Bank_edit.php">
-	<input type="hidden" name="txtcitemno" id="txtcitemno" />
-</form>		
+	<!-- 1) Alert Modal -->
+	<div class="modal fade" id="AlertModal" tabindex="-1" role="dialog" data-keyboard="false" data-backdrop="static" aria-hidden="true">
+		<div class="vertical-alignment-helper">
+			<div class="modal-dialog vertical-align-top">
+				<div class="modal-content">
+				<div class="alert-modal-danger">
+					<p id="AlertMsg"></p>
+					<p>
+						<center>							
+							<button type="button" class="btn btn-primary btn-sm" data-dismiss="modal" id="alertbtnOK">Ok</button>
+						</center>
+					</p>
+				</div> 
+				</div>
+			</div>
+		</div>
+	</div>
 
-<?php
-
-mysqli_close($con);
-?>
 </body>
 </html>
 
@@ -124,48 +147,66 @@ mysqli_close($con);
 	<script type="text/javascript" language="javascript" src="../../Bootstrap/DataTable/jquery.dataTables.min.js"></script>
 
 	<script>
-	$(function() { 
-		$(".itmalert").hide();
-		$('#MyTable').DataTable();
-	});
+		$(function() { 
+			$(".itmalert").hide();
+			$('#MyTable').DataTable();
+		});
 
-	$(document).keydown(function(e) {
-		if(e.keyCode == 112){//F1
+		$(document).keydown(function(e) {
+			if(e.keyCode == 112){//F1
 				if(document.getElementById("btnNew").className=="btn btn-primary btn-md"){
 					e.preventDefault();
 					window.location.href='Bank_new.php';
 				}
-		}
-	});
+			}
+		});
 
-	function setStat(code, stat){
-			$.ajax ({
-				url: "th_supsetstat.php",
-				data: { code: code,  stat: stat },
-				async: false,
-				dataType: "text",
-				success: function( data ) {
-					//alert(jQuery.type(data));
-					if(data == "True"){
-						$("#itm"+code).html("<b>Error: </b>"+ data);
-						$("#itm"+code).attr("class", "itmalert alert alert-danger nopadding")
-						$("#itm"+code).show();
-					}
-					else{
-					  if(stat=="ACTIVE"){
-						 $("#itmstat"+code).html("<span class='label label-success'>Active</span>&nbsp;&nbsp;<a id=\"popoverData1\" href=\"#\" data-content=\"Set as Inactive\" rel=\"popover\" data-placement=\"bottom\" data-trigger=\"hover\" onClick=\"setStat('"+code+"','INACTIVE')\" ><i class=\"fa fa-refresh\" style=\"color: #f0ad4e\"></i></a>");
-					  }else{
-						 $("#itmstat"+code).html("<span class='label label-warning'>Inactive</span>&nbsp;&nbsp;<a id=\"popoverData2\" href=\"#\" data-content=\"Set as Active\" rel=\"popover\" data-placement=\"bottom\" data-trigger=\"hover\" onClick=\"setStat('"+code+"','ACTIVE')\"><i class=\"fa fa-refresh\" style=\"color: #5cb85c\"></i></a>");
-					  }
-						
-						$("#itm"+code).html("<b>SUCCESS: </b> Status changed to "+stat);
-						$("#itm"+code).attr("class", "itmalert alert alert-success nopadding")
-						$("#itm"+code).show();
-					}
-				}
+		function setStat(code, stat){
+			var x = "<?=$posedit;?>";
 			
-			});
+			if(x.trim()=="True"){
+				
+				$.ajax ({
+					url: "th_supsetstat.php",
+					data: { code: code,  stat: stat },
+					async: false,
+					dataType: "text",
+					success: function( data ) {
+						//alert(jQuery.type(data));
+						if(data != "True"){
+							$("#itmerr").html("<b>Error: </b>"+ data);
+							$("#itmerr").attr("class", "itmalert alert alert-success");
+							//$("#itmerr").css({'display':'inline', 'padding':'8px'});
 
-	}
+						}
+						else{
+							if(stat=="ACTIVE"){
+								$("#itmstat"+code).html("<span class='label label-success'>Active</span>&nbsp;&nbsp;<a id=\"popoverData1\" href=\"#\" data-content=\"Set as Inactive\" rel=\"popover\" data-placement=\"bottom\" data-trigger=\"hover\" onClick=\"setStat('"+code+"','INACTIVE')\" ><i class=\"fa fa-refresh\" style=\"color: #f0ad4e\"></i></a>");
+							}else{
+								$("#itmstat"+code).html("<span class='label label-warning'>Inactive</span>&nbsp;&nbsp;<a id=\"popoverData2\" href=\"#\" data-content=\"Set as Active\" rel=\"popover\" data-placement=\"bottom\" data-trigger=\"hover\" onClick=\"setStat('"+code+"','ACTIVE')\"><i class=\"fa fa-refresh\" style=\"color: #5cb85c\"></i></a>");
+							}
+							
+							$("#itmerr").html("<b>SUCCESS: </b> "+code+" Status changed to <b><u>"+stat+"</u></b>");
+							$("#itmerr").attr("class", "itmalert alert alert-success");
+							//$("#itmerr").css({'display':'inline', 'padding':'8px'});
+						}
+					}
+				
+				});
+
+			}else {
+				$("#AlertMsg").html("<center><b>ACCESS DENIED!</b></center>");
+				$("#AlertModal").modal('show');
+			}
+		}
+
+		function editfrm(x){
+			document.getElementById("txtcitemno").value = x;
+			document.getElementById("frmedit").submit();
+		}
 	</script>
-	
+
+
+<?php
+	mysqli_close($con);
+?>

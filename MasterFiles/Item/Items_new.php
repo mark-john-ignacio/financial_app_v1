@@ -2,7 +2,7 @@
     if(!isset($_SESSION)){
         session_start();
     }
-    $_SESSION['pageid'] = "Items_new.php";
+    $_SESSION['pageid'] = "Items_New";
 
     include('../../Connection/connection_string.php');
     include('../../include/denied.php');
@@ -52,6 +52,7 @@
     <script src="../../Bootstrap/js/jquery-3.2.1.min.js"></script>
     <script src="../../Bootstrap/js/bootstrap3-typeahead.js"></script>
     <script src="../../Bootstrap/js/bootstrap.js"></script>
+    <script src="../../Bootstrap/js/jquery.numeric.js"></script>
     
     <script src="../../Bootstrap/js/moment.js"></script>
     
@@ -1127,7 +1128,7 @@
         y.innerHTML = "<div class=\"nopadwright\" ><input type='checkbox' id='txtchkSI"+lastRow+"' name='txtchkSI"+lastRow+"' value='1'> </div>";
         z.innerHTML = "<input class='btn btn-danger btn-xs' type='button' id='row_" + lastRow + "_delete' class='delete' value='Delete' onClick=\"deleteRow(this);\"/>";
         
-        $("#txtfactor"+lastRow).autoNumeric('init',{mDec:2});
+        $("#txtfactor"+lastRow).numeric({decimalPlaces: 2});
 		$("#txtfactor"+lastRow).on("focus", function () {
 			$(this).select();
 		});

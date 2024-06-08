@@ -2,7 +2,7 @@
 	if(!isset($_SESSION)){
 		session_start();
 	}
-	$_SESSION['pageid'] = "InvCnt.php";
+	$_SESSION['pageid'] = "InvCnt";
 
 	include('../../Connection/connection_string.php');
 	include('../../include/denied.php');
@@ -15,11 +15,10 @@
 
 
 	$poststat = "True";
-	$sql = mysqli_query($con,"select * from users_access where userid = '$EmpID' and pageid = 'InvCnt_edit.php'");
+	$sql = mysqli_query($con,"select * from users_access where userid = '$EmpID' and pageid = 'InvCnt_edit'");
 	if(mysqli_num_rows($sql) == 0){
 		$poststat = "False";
 	}
-
 
 	$arrseclist = array();
 	$sqlempsec = mysqli_query($con,"select A.section_nid as nid, B.cdesc from users_sections A left join locations B on A.section_nid=B.nid where A.UserID='$EmpID' and B.cstatus='ACTIVE' Order By B.cdesc");
@@ -48,8 +47,8 @@
     
 	<link rel="stylesheet" type="text/css" href="../../global/plugins/font-awesome/css/font-awesome.min.css"/>
 	<link rel="stylesheet" type="text/css" href="../../Bootstrap/css/bootstrap.css?t=<?php echo time();?>">
-  <link rel="stylesheet" type="text/css" href="../../Bootstrap/css/alert-modal.css">
-  <link rel="stylesheet" type="text/css" href="../../Bootstrap/css/bootstrap-datetimepicker.css">
+  	<link rel="stylesheet" type="text/css" href="../../Bootstrap/css/alert-modal.css">
+  	<link rel="stylesheet" type="text/css" href="../../Bootstrap/css/bootstrap-datetimepicker.css">
     
 	<script src="../../Bootstrap/js/jquery-3.2.1.min.js"></script>
 	<script src="../../Bootstrap/js/bootstrap3-typeahead.js"></script>
@@ -266,39 +265,61 @@
 			</div>
 
 			<br>
-
-			<?php
-				if($poststat == "True"){
-			?>
-
 			<table width="100%" border="0" cellpadding="3">
 				<tr>
 					<td>
-					<button type="button" class="btn btn-primary btn-sm" tabindex="6" onClick="window.location.href='Inv.php';" id="btnMain" name="btnMain">
-						Back to Main<br>(ESC)
-					</button>
 
-					<button type="button" class="btn btn-default btn-sm" tabindex="6" onClick="window.location='https://<?=$_SERVER['SERVER_NAME']?>/Inventory/Count/InvCnt_New.php'" id="btnNew" name="btnNew">
-						New<br>(F1)
-					</button>
+						<?php
+							if($poststat == "True"){
+						?>
 
-					<button type="button" class="btn btn-danger btn-sm" tabindex="6" onClick="window.location='https://<?=$_SERVER['SERVER_NAME']?>/Inventory/Count/InvCnt_Edit.php?id=<?=$_REQUEST['id']?>'" id="btnUndo" name="btnUndo">
-						Undo Edit<br>(CTRL+Z)
-					</button>
+						<button type="button" class="btn btn-primary btn-sm" tabindex="6" onClick="window.location.href='Inv.php';" id="btnMain" name="btnMain">
+							Back to Main<br>(ESC)
+						</button>
 
-					<button type="button" class="btn btn-warning btn-sm" tabindex="6" onClick="enabled();" id="btnEdit" name="btnEdit">
-						Edit<br>(CTRL+E)
-					</button>
+						<button type="button" class="btn btn-default btn-sm" tabindex="6" onClick="window.location='https://<?=$_SERVER['SERVER_NAME']?>/Inventory/Count/InvCnt_New.php'" id="btnNew" name="btnNew">
+							New<br>(F1)
+						</button>
 
-					<button type="button" class="btn btn-success btn-sm" tabindex="6" onClick="return chkform();" id="btnSave" name="btnSave">SAVE<br> (CTRL+S)</button></td>
+						<button type="button" class="btn btn-danger btn-sm" tabindex="6" onClick="window.location='https://<?=$_SERVER['SERVER_NAME']?>/Inventory/Count/InvCnt_Edit.php?id=<?=$_REQUEST['id']?>'" id="btnUndo" name="btnUndo">
+							Undo Edit<br>(CTRL+Z)
+						</button>
 
-					</tr>
+						<?php
+							}
+
+							$sql = mysqli_query($con,"select * from users_access where userid = '".$_SESSION['employeeid']."' and pageid = 'SI_print'");
+
+							if(mysqli_num_rows($sql) == 1){
+							
+						?>
+							<button type="button" class="btn btn-info btn-sm" tabindex="6" onClick="printchk('<?=$_REQUEST['id']?>','Print');" id="btnPrint" name="btnPrint">
+								Print<br>(CTRL+P)
+							</button>
+						<?php		
+							}
+
+							if($poststat == "True"){
+						?>
+
+						<button type="button" class="btn btn-warning btn-sm" tabindex="6" onClick="enabled();" id="btnEdit" name="btnEdit">
+							Edit<br>(CTRL+E)
+						</button>
+
+						<button type="button" class="btn btn-success btn-sm" tabindex="6" onClick="return chkform();" id="btnSave" name="btnSave">SAVE<br> (CTRL+S)</button>
+					
+						<?php
+							}
+						?>
+					</td>
+
+				</tr>
 			</table>
 
-			<?php
-				}
-			?>
+		</form>
 
+		<form method="post" name="frmprint" id="frmprint" action="PrintCnt_PDF.php" target="_blank">
+			<input type="hidden" name="printid" id="printid" value="">
 		</form>
 
 	<?php
@@ -319,6 +340,7 @@
 					</table>
 			</fieldset>
 		</form>
+
 	<?php
 		}
 	?>
@@ -351,18 +373,24 @@
 	$("#txtscan").focus();
 
 	$(document).keydown(function(e) {	 
-	  if(e.keyCode == 83 && e.ctrlKey){//CTRL S
+		if(e.keyCode == 83 && e.ctrlKey){//CTRL S
 			if($("#btnSave").is(":disabled")==false){
 				e.preventDefault();
 				return chkform();
 			}
-	  }
-	  else if(e.keyCode == 27){//ESC
+		}
+		else if(e.keyCode == 80 && e.ctrlKey){//CTRL+P
+			if($("#btnPrint").is(":disabled")==false){
+				e.preventDefault();
+				printchk('<?=$_REQUEST['id']?>', 'Print');
+			}
+		}
+		else if(e.keyCode == 27){//ESC
 			if($("#btnMain").is(":disabled")==false){
 				e.preventDefault();
 				window.location.href='Inv.php';
 			}
-	  }
+		}
 
 	});
 
@@ -523,7 +551,7 @@
 		$("#frmCount :input").attr("disabled", true);
 
 		$("#btnMain").attr("disabled", false);
-		//$("#btnPrint").attr("disabled", false);
+		$("#btnPrint").attr("disabled", false);
 		$("#btnNew").attr("disabled", false);
 		$("#btnEdit").attr("disabled", false);
 
@@ -551,7 +579,7 @@
 			$("#seltempname").attr("disabled", true);
 			
 				$("#btnMain").attr("disabled", true);
-				//$("#btnPrint").attr("disabled", true);
+				$("#btnPrint").attr("disabled", true);
 				$("#btnNew").attr("disabled", true);
 				$("#btnEdit").attr("disabled", true);
 						
@@ -566,5 +594,19 @@
 		}
 	}
 
+	function printchk(x,typx){
+		if(document.getElementById("hdncancel").value==1){	
+			document.getElementById("statmsgz").innerHTML = "CANCELLED TRANSACTION CANNOT BE PRINTED!";
+			document.getElementById("statmsgz").style.color = "#FF0000";
+		}
+		else{
 
+			if(typx=="Print"){
+
+				$("#printid").val(x);
+				$("#frmprint").submit();
+			}
+
+		}
+	}
 </script>

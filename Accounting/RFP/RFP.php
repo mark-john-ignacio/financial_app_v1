@@ -3,7 +3,7 @@
 	if(!isset($_SESSION)){
 	session_start();
 	}
-	$_SESSION['pageid'] = "RFP.php";
+	$_SESSION['pageid'] = "RFP";
 
 	include('../../Connection/connection_string.php');
 	include('../../include/denied.php');
@@ -33,10 +33,10 @@
 	}
 
 	$chkapprovals = array();
-	$sqlappx = mysqli_query($con,"Select * from rfp_trans_approvals where compcode='$company' and lapproved=0 and lreject=0 and userid = '$employeeid' Group BY crfpno HAVING nlevel = MIN(nlevel) Order By crfpno, nlevel");
+	$sqlappx = mysqli_query($con,"Select * from rfp_trans_approvals where compcode='$company' and lapproved=0 and lreject=0 Group BY crfpno HAVING nlevel = MIN(nlevel) Order By crfpno, nlevel");
 	if (mysqli_num_rows($sqlappx)!=0) {
 		while($rows = mysqli_fetch_array($sqlappx, MYSQLI_ASSOC)){
-			@$chkapprovals[] = $rows['crfpno']; 
+			@$chkapprovals[] = $rows; 
 		}
 	}
 
@@ -180,6 +180,9 @@ mysqli_close($con);
 <script type="text/javascript" language="javascript" src="../../Bootstrap/DataTable/jquery.dataTables.min.js"></script>
 	
 <script>
+	var chkrejstat1 = "";
+	var chkrejstat2 = "";
+
 	$(document).ready(function() {
 		
 		fill_datatable("<?=(isset($_REQUEST['ix'])) ? $_REQUEST['ix'] : "";?>");	
@@ -406,14 +409,12 @@ mysqli_close($con);
 
 										if(full[7] == 0 && full[8]==0){
 
-											var chkrejstat1 = "disabled";
-											var chkrejstat2 = "disabled";
 											var xcz = '<?=json_encode(@$chkapprovals)?>';
 											if(xcz!=""){
 												$.each( JSON.parse(xcz), function( key, val ) {
-													if(val==full[0]){
+													if(val.crfpno==full[0] && val.userid=='<?=$employeeid?>'){
 														chkrejstat1 = "";
-														chkrejstat2 = "";
+														chkrejstat2 = "";											
 													}
 													//console.log(key,val);
 												});

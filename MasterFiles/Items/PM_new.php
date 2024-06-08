@@ -1,16 +1,16 @@
 <?php
-if(!isset($_SESSION)){
-session_start();
-}
-$_SESSION['pageid'] = "PM_new.php";
+	if(!isset($_SESSION)){
+		session_start();
+	}
+	$_SESSION['pageid'] = "PM_New";
 
-include('../../Connection/connection_string.php');
-include('../../include/accessinner.php');
+	include('../../Connection/connection_string.php');
+	include('../../include/accessinner.php');
 
-$str = $_REQUEST["hdnvers"];
-$result = explode(';',$str);
+	$str = $_REQUEST["hdnvers"];
+	$result = explode(';',$str);
 
-$cnt = count($result);
+	$cnt = count($result);
 
 
 	$mo = date("m");

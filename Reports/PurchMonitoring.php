@@ -1,13 +1,12 @@
 <?php
-if(!isset($_SESSION)){
-session_start();
-}
-$_SESSION['pageid'] = "PurchMonitoring.php";
+  if(!isset($_SESSION)){
+    session_start();
+  }
+  $_SESSION['pageid'] = "PurchMonitoring";
 
-include('../Connection/connection_string.php');
-include('../include/denied.php');
-include('../include/access.php');
-
+  include('../Connection/connection_string.php');
+  include('../include/denied.php');
+  include('../include/access.php');
 ?>
 
 <html>

@@ -9,7 +9,7 @@ include "../../../Connection/connection_string.php";
 
 $sql = "
    SELECT
-        c.ccode AS country,
+        c.cname AS country,
         SUM(a.namount) AS value
     FROM
         suppinv_t a
@@ -19,7 +19,7 @@ $sql = "
     WHERE
         a.compcode = '$company'
     GROUP BY
-        c.cname
+        b.ccode
     ORDER BY
         SUM(a.namount) DESC
     LIMIT 6

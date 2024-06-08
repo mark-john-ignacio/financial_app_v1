@@ -2,13 +2,28 @@
 	if(!isset($_SESSION)){
 		session_start();
 	}
-	$_SESSION['pageid'] = "InvTrans.php";
+	$_SESSION['pageid'] = "InvTrans";
 
 	include('../../Connection/connection_string.php');
 	include('../../include/denied.php');
 	include('../../include/access.php');
 
 	$company = $_SESSION['companyid'];
+
+	//POST
+	$poststat = "True";
+	$sql = mysqli_query($con,"select * from users_access where userid = '$employeeid' and pageid = 'InvTrans_post'");
+	if(mysqli_num_rows($sql) == 0){
+		$poststat = "False";
+	}
+
+	//CANCEL
+	$cancstat = "True";
+	$sql = mysqli_query($con,"select * from users_access where userid = '$employeeid' and pageid = 'InvTrans_cancel'");
+	if(mysqli_num_rows($sql) == 0){
+		$cancstat = "False";
+	}
+
 	$employeeid = $_SESSION['employeeid'];
 
 	$arrseclist = array();
@@ -188,7 +203,10 @@
 												<?php 
 													if(intval($row['lcancelled1'])==intval(0) && intval($row['lapproved1'])==intval(0)){
 												?>
-													<a href="javascript:;" onClick="trans('POST1','<?=$row['ctranno'];?>', 'msg1', '<?=$tocheck?>')">POST</a> | <a href="javascript:;" onClick="trans('CANCEL1','<?=$row['ctranno'];?>', 'msg1', 0)">CANCEL</a>
+
+													<a href="javascript:;" onClick="trans('POST1','<?=$row['ctranno'];?>', 'msg1', '<?=$tocheck?>')" class="btn btn-xs btn-default<?=($poststat!="True") ? " disabled" : ""?>"><i class="fa fa-thumbs-up" style="font-size:20px;color:Green ;" title="Approve transaction"></i></a> 
+													<a href="javascript:;" onClick="trans('CANCEL1','<?=$row['ctranno'];?>', 'msg1', 0)" class="btn btn-xs btn-default<?=($cancstat!="True") ? " disabled" : ""?>"><i class="fa fa-thumbs-down" style="font-size:20px;color:Red ;" title="Cancel transaction"></i></a>
+
 												<?php
 													}
 													else{
@@ -311,7 +329,9 @@
 												<?php 
 													if(intval($row['lcancelled2'])==intval(0) && intval($row['lapproved2'])==intval(0)){
 												?>
-													<a href="javascript:;" onClick="trans('POST2','<?=$row['ctranno'];?>', 'msgto2', '<?=$tocheck?>')">POST</a> | <a href="javascript:;" onClick="trans('CANCEL2','<?=$row['ctranno'];?>', 'msgto2', 0)">CANCEL</a>
+
+													<a href="javascript:;" onClick="trans('POST2','<?=$row['ctranno'];?>', 'msgto2', '<?=$tocheck?>')" class="btn btn-xs btn-default<?=($poststat!="True") ? " disabled" : ""?>"><i class="fa fa-thumbs-up" style="font-size:20px;color:Green ;" title="Approve transaction"></i></a> 
+													<a href="javascript:;" onClick="trans('CANCEL2','<?=$row['ctranno'];?>', 'msgto2', 0)" class="btn btn-xs btn-default<?=($cancstat!="True") ? " disabled" : ""?>"><i class="fa fa-thumbs-down" style="font-size:20px;color:Red ;" title="Cancel transaction"></i></a>
 												<?php
 													}
 													else{

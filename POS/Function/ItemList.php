@@ -8,6 +8,7 @@ include('../../Connection/connection_string.php');
 // include('../../include/access2.php');
 
 $company = $_SESSION['companyid'];
+$prepared = mysqli_real_escape_string($con, $_SESSION['employeeid']);
 
 $itemcode = $_REQUEST['code'];
 $date = date("Y-m-d");
@@ -27,6 +28,19 @@ $sql = "select a.cpartno, a.cpartno as cscancode, a.citemdesc, a.cunit, a.cstatu
 			WHERE a.compcode='$company' and a.cpartno = '$itemcode'";
 
 $query = mysqli_query($con, $sql);
+
+$sql_check = "SELECT * FROM pos_cart WHERE item = '$itemcode' AND employee_name = '$prepared'";
+$result = mysqli_query($con, $sql_check);
+
+if (mysqli_num_rows($result) == 0) {
+    $sql_insert = "INSERT INTO pos_cart (`item`, `quantity`, `employee_name`) VALUES ('$itemcode', '1', '$prepared')";
+    mysqli_query($con, $sql_insert);
+}
+else{
+    $sql_update = "UPDATE pos_cart SET quantity = quantity + 1 WHERE item = '$itemcode' AND employee_name = '$prepared'";
+    mysqli_query($con, $sql_update);
+}
+
 if(mysqli_num_rows($query) != 0){
     while($row = $query -> fetch_assoc()){
 

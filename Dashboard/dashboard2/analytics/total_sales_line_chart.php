@@ -8,11 +8,11 @@ include "../../../Connection/connection_string.php";
 
 //begin::Total Sales line chart
 // Calculate the start and end dates for the last 6 months
-$start_date = date("Y-m-01", strtotime("-6 months"));
-$end_date = date("Y-m-t", strtotime("-1 months"));
+$start_date = date("Y-m-01", strtotime("-5 months"));
+$end_date = date("Y-m-t");
 
 // Query to get the total net profit for each month
-$query = "SELECT YEAR(dcutdate) AS year, MONTH(dcutdate) AS month, SUM(nnet) AS total_net_profit
+$query = "SELECT YEAR(dcutdate) AS year, MONTH(dcutdate) AS month, SUM(ngross) AS total_net_profit
           FROM sales
           WHERE dcutdate >= '$start_date' AND dcutdate <= '$end_date'  AND compcode = '$company'
           GROUP BY YEAR(dcutdate), MONTH(dcutdate)

@@ -2,7 +2,7 @@
 	if(!isset($_SESSION)){
 		session_start();
 	}
-	$_SESSION['pageid'] = "POS.php";
+	$_SESSION['pageid'] = "SI";
 
 	include('../../Connection/connection_string.php');
 	include('../../include/denied.php');
@@ -21,7 +21,7 @@
 	$company = $_SESSION['companyid'];
 
 	$poststat = "True";
-	$sql = mysqli_query($con,"select * from users_access where userid = '$employeeid' and pageid = 'POS_edit.php'");
+	$sql = mysqli_query($con,"select * from users_access where userid = '$employeeid' and pageid = 'SI_edit'");
 	if(mysqli_num_rows($sql) == 0){
 		$poststat = "False";
 	}
@@ -585,7 +585,7 @@ $getdcnts = mysqli_query($con,"SELECT * FROM `discounts_list` where compcode='$c
 									if($poststat == "True"){
 								?>
 
-								<button type="button" class="btn btn-primary btn-sm" tabindex="6" onClick="window.location.href='SI.php?ix=<?=isset($_REQUEST['hdnsrchval']) ? $_REQUEST['hdnsrchval'] : ""?>';" id="btnMain" name="btnMain">
+								<button type="button" class="btn btn-primary btn-sm" tabindex="6" onClick="window.location.href='SI.php?ix=<?=isset($_REQUEST['hdnsrchval']) ? $_REQUEST['hdnsrchval'] : ""?>&st=<?=isset($_REQUEST['hdnsrchsta']) ? $_REQUEST['hdnsrchsta'] : ""?>';" id="btnMain" name="btnMain">
 									Back to Main<br>(ESC)
 								</button>
 							
@@ -613,7 +613,9 @@ $getdcnts = mysqli_query($con,"SELECT * FROM `discounts_list` where compcode='$c
 								</button>
 
 								<?php
-									$sql = mysqli_query($con,"select * from users_access where userid = '".$_SESSION['employeeid']."' and pageid = 'POS_print'");
+									}
+
+									$sql = mysqli_query($con,"select * from users_access where userid = '".$_SESSION['employeeid']."' and pageid = 'SI_print'");
 
 									if(mysqli_num_rows($sql) == 1){
 									
@@ -625,6 +627,7 @@ $getdcnts = mysqli_query($con,"SELECT * FROM `discounts_list` where compcode='$c
 								<?php		
 									}
 
+									if($poststat == "True"){
 								?>
 							
 								<button type="button" class="btn btn-warning btn-sm" tabindex="6" onClick="enabled();" id="btnEdit" name="btnEdit">
@@ -1043,7 +1046,7 @@ $getdcnts = mysqli_query($con,"SELECT * FROM `discounts_list` where compcode='$c
 				<div class="modal-bodylong">
 					<button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>        
 			
-					<iframe id="myprintframe" name="myprintframe" scrolling="no" style="width:100%; height: 99%; display:block; margin:0px; padding:0px; border:0px"></iframe>
+					<iframe id="myprintframe" name="myprintframe" scrolling="no" style="width:100%; height:11in; display:block; margin:0px; padding:0px; border:0px"></iframe>
 				
 				</div>
 			</div><!-- /.modal-content -->
@@ -2757,7 +2760,9 @@ $getdcnts = mysqli_query($con,"SELECT * FROM `discounts_list` where compcode='$c
 			$("#btnentry").attr("disabled", false);
 		}
 
-			$("#btn-closemod").attr("disabled", false); 
+		$("#btn-closemod").attr("disabled", false); 
+		
+		$(".kv-file-zoom").attr("disabled", false);
 
 	}
 

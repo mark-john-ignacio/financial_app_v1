@@ -2,7 +2,7 @@
 	if(!isset($_SESSION)){
 		session_start();
 	}
-	$_SESSION['pageid'] = "Purch_new.php";
+	$_SESSION['pageid'] = "Purch_new";
 
 	include('../../Connection/connection_string.php');
 	include('../../include/denied.php');
@@ -491,7 +491,7 @@
 										<th width="100px" style="border-bottom:1px solid #999">Qty</th>
 										<th width="100px" style="border-bottom:1px solid #999">Price</th>
 										<th width="100px" style="border-bottom:1px solid #999">Amount</th>
-										<th width="100px" style="border-bottom:1px solid #999">Date Needed</th>
+										<!--<th width="100px" style="border-bottom:1px solid #999">Date Needed</th>-->
 										<th width="100px" style="border-bottom:1px solid #999">Remarks</th>
 										<th style="border-bottom:1px solid #999">&nbsp;</th>
 									</tr>
@@ -519,7 +519,7 @@
 									PR<br>(Insert)
 								</button>
 								
-								<button type="button" class="btn green btn-sm" tabindex="6" onClick="return chkform();">Save<br> (CTRL+S)</button>
+								<button type="button" class="btn green btn-sm" id="btnSave" tabindex="6" onClick="return chkform();">Save<br> (CTRL+S)</button>
 							</div>
 						</div>
 					</div>
@@ -1246,7 +1246,8 @@
 
 		var tditmdel = "<td style=\"padding: 1px\" nowrap> <input class='btn btn-danger btn-xs' type='button' id='del" + lastRow + "' value='delete' data-var='"+lastRow+"'/> </td>";
 
-		$('#MyTable > tbody:last-child').append('<tr>'+tdedt + tditmpartdesc + tditmdesc + tditmcode + vattd + tditmunit + tditmqty + tditmprice + tditmbaseamount + tdneeded  + tditmremarks + tditmdel + '</tr>');
+		//tdneeded
+		$('#MyTable > tbody:last-child').append('<tr>'+tdedt + tditmpartdesc + tditmdesc + tditmcode + vattd + tditmunit + tditmqty + tditmprice + tditmbaseamount + tditmremarks + tditmdel + '</tr>');
 
 
 			$("#del"+lastRow).on('click', function() {
@@ -1285,7 +1286,7 @@
 				
 			});
 
-			$('#dneed'+lastRow).datetimepicker({
+			/*$('#dneed'+lastRow).datetimepicker({
 				format: 'MM/DD/YYYY',
 				useCurrent: false,
 				minDate: moment().format('L'),
@@ -1294,7 +1295,7 @@
 						horizontal: 'right',
 						vertical: 'bottom'
 				}
-			});
+			});*/
 										
 	}
 
@@ -1315,7 +1316,7 @@
 				var ITMprce = document.getElementById('txtnprice' + i);
 				var ITMtramnt = document.getElementById('txtntranamount' + i); 
 				var ITMamnt = document.getElementById('txtnamount' + i); 
-				var ITMneed = document.getElementById('dneed' + i);
+				//var ITMneed = document.getElementById('dneed' + i);
 				var ITMdelx = document.getElementById('del' + i);
 				var ITMremx = document.getElementById('txtitemrem' + i);
 
@@ -1335,7 +1336,7 @@
 				ITMprce.id = "txtnprice" + za;
 				ITMtramnt.id = "txtntranamount" + za;
 				ITMamnt.id = "txtnamount" + za;
-				ITMneed.id = "dneed" + za;
+				//ITMneed.id = "dneed" + za;
 
 				ITMdelx.setAttribute('data-var',''+za+'');
 				ITMdelx.id = "del" + za;
@@ -1517,7 +1518,6 @@
 				$("#txtntranamount"+r).autoNumeric('destroy');
 				$("#txtntranamount"+r).autoNumeric('init',{mDec:2});
 
-
 				namt2 = TotAmt * parseFloat($("#basecurrval").val());
 				$(this).find("input[type='hidden'][name='txtnamount']").val(namt2); 
 
@@ -1536,7 +1536,7 @@
 		var ccode = document.getElementById("txtcustid").value;
 				
 		$.ajax ({
-			url: "../th_checkitmprice.php",
+			url: "../th_checkitmpoprice.php",
 			data: { itm: itmcode, cust: ccode, cunit: itmunit},
 			async: false,
 			success: function( data ) {
@@ -1633,7 +1633,7 @@
 		var trancode = "";
 		var isDone = "True";
 
-
+			$("#btnSave").attr("disabled", true);
 			/*Saving the header
 			var ccode = $("#txtcustid").val();
 			var crem = $("#txtremarks").val();
@@ -1686,7 +1686,7 @@
 					var nprice = $(this).find('input[name="txtnprice"]').val();
 					var ntranamt = $(this).find('input[name="txtntranamount"]').val();
 					var namt = $(this).find('input[type="hidden"][name="txtnamount"]').val();
-					var dneed = $(this).find('input[name="dneed"]').val();
+					//var dneed = $(this).find('input[name="dneed"]').val();
 					var mainunit = $(this).find('input[type="hidden"][name="hdnmainuom"]').val();
 					var nfactor = $(this).find('input[type="hidden"][name="hdnfactor"]').val(); 
 					var citmremarks = $(this).find('input[name="txtitemrem"]').val();
@@ -1707,7 +1707,7 @@
 					
 					$.ajax ({
 						url: "Purch_newsavedet.php",
-						data: { trancode: trancode, crefpr:crefpr, crefprident:crefprident, dneed: dneed, indx: index, citmno: citmno, cuom: cuom, nqty:nqty, nprice: nprice, namt:namt, mainunit:mainunit, nfactor:nfactor, ntranamt:ntranamt, citmremarks:citmremarks, vatcode:vatcode, nrate:nrate, ewtcode:'', ewtrate:0, citmpartno:citmpartno, citmnoOLD:citmnoOLD, citmdesc:citmdesc },
+						data: { trancode: trancode, crefpr:crefpr, crefprident:crefprident, indx: index, citmno: citmno, cuom: cuom, nqty:nqty, nprice: nprice, namt:namt, mainunit:mainunit, nfactor:nfactor, ntranamt:ntranamt, citmremarks:citmremarks, vatcode:vatcode, nrate:nrate, ewtcode:'', ewtrate:0, citmpartno:citmpartno, citmnoOLD:citmnoOLD, citmdesc:citmdesc },
 						async: false,
 						success: function( data ) {
 							if(data.trim()=="False"){
@@ -1728,7 +1728,7 @@
 							$('#AlertModal').modal('hide');
 				
 								$("#txtctranno").val(trancode);
-								//$("#frmedit").submit();
+								$("#frmedit").submit();
 				
 						}, 3000); // milliseconds = 3seconds
 

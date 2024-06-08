@@ -59,7 +59,7 @@
 <head>
 	<style>
 		body{
-			font-family: Verdana, sans-serif;
+			font-family: Arial, sans-serif;
 			font-size: 9pt;
 		}
 		.tdpadx{
@@ -73,11 +73,21 @@
 		.tdright{
 			padding-right: 10px;
 		}
-		
+		#imgcontent {
+        	position: relative;
+		}
+		#imgcontent img {
+			position: absolute;
+			top: 2px;
+			left: 3px;
+		}
 	</style>
 </head>
 <!--"-->
 <body onLoad="window.print()">
+    <div id="imgcontent">
+		<img src="../<?=$logosrc?>" class="ribbon" alt="" width="150px"/>
+	</div>
 
     <table border="0" width="100%" style="border-collapse:collapse">
         <tr>

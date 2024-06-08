@@ -2,7 +2,7 @@
 	if(!isset($_SESSION)){
 		session_start();
 	}
-	$_SESSION['pageid'] = "Receive.php";
+	$_SESSION['pageid'] = "Receive";
 
 	include('../../Connection/connection_string.php');
 	include('../../include/denied.php');
@@ -12,7 +12,7 @@
 	$company = $_SESSION['companyid'];
 
 	$poststat = "True";
-	$sql = mysqli_query($con,"select * from users_access where userid = '$employeeid' and pageid = 'Receive_edit.php'");
+	$sql = mysqli_query($con,"select * from users_access where userid = '$employeeid' and pageid = 'Receive_edit'");
 	if(mysqli_num_rows($sql) == 0){
 		$poststat = "False";
 	}
@@ -398,16 +398,16 @@ if (mysqli_num_rows($sqlhead)!=0) {
 
 					</div>
 
-					<?php
-						if($poststat=="True"){
-					?>
+					
 					<br>
 					<table width="100%" border="0" cellpadding="3">
 						<tr>
 							<td>
 								<input type="hidden" name="hdnrowcnt" id="hdnrowcnt"> 
 					
-					
+								<?php
+									if($poststat=="True"){
+								?>
 								<button type="button" class="btn btn-primary btn-sm" tabindex="6" onClick="window.location.href='RR.php?ix=<?=isset($_REQUEST['hdnsrchval']) ? $_REQUEST['hdnsrchval'] : ""?>';" id="btnMain" name="btnMain">
 									Back to Main<br>(ESC)
 								</button>
@@ -426,6 +426,8 @@ if (mysqli_num_rows($sqlhead)!=0) {
 								</button>
 
 								<?php
+									}
+
 									$sql = mysqli_query($con,"select * from users_access where userid = '".$_SESSION['employeeid']."' and pageid = 'Receive_print'");
 
 									if(mysqli_num_rows($sql) == 1){
@@ -438,6 +440,8 @@ if (mysqli_num_rows($sqlhead)!=0) {
 
 								<?php		
 									}
+
+									if($poststat=="True"){
 								?>
 
 								<button type="button" class="btn btn-warning btn-sm" tabindex="6" onClick="enabled();" id="btnEdit" name="btnEdit">
@@ -451,13 +455,13 @@ if (mysqli_num_rows($sqlhead)!=0) {
 								<!--<input type="hidden" id="txtnBaseGross" name="txtnBaseGross" value="0">
 		 						<input type="hidden" id="txtnGross" name="txtnGross" value="0">
 								-->
-							
+								<?php
+									}
+								?>
 							</td>
 						</tr>
 					</table>
-					<?php
-						}
-					?>
+					
 
     </fieldset>
     
@@ -1077,7 +1081,7 @@ function myFunctionadd(nqty,nqtyOrig,nfactor,cmainunit,xref,nident,detsku){
 	
 	if(xref == ""){							
 		var xz = $("#hdnitmfactors").val();
-		if(itmqtyunit==itmunit){
+		if(itmmainunit==itmunit){
 			isselctd = "selected";
 		}else{
 			isselctd = "";
@@ -1905,6 +1909,8 @@ function disabled(){
 	$("#btnNew").attr("disabled", false);
 	$("#btnPrint").attr("disabled", false);
 	$("#btnEdit").attr("disabled", false);
+
+	$(".kv-file-zoom").attr("disabled", false);
 }
 
 function enabled(){

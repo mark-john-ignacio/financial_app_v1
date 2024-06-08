@@ -128,15 +128,6 @@
 				<tr>
 					<td colspan="2" style="border-top: 1px solid; border-left: 1px solid; border-right: 1px solid;">
 							<table border="0" width="100%">
-								<tr>
-									<td width="150px" style="padding: 10px">
-										<b>DELIVERED TO: </b>									
-									</td>
-									<td style="padding: 10px">
-										<?=$returnTo?>
-									</td>
-									 
-								</tr> 
 
 								<tr>
 									<td width="150px" style="padding: 10px">
@@ -149,24 +140,7 @@
 								</tr>
 							</table>
 					</td>
-				</tr>
-
-				<tr>
-					<td colspan="2" style="border-top: 1px solid; border-left: 1px solid; border-right: 1px solid;">
-							<table border="0" width="100%">
-								<tr>
-									<td style="padding-left: 10px;">
-										<b> SALES TO: </b> <?=$returnTo?>
-									</td>
-									<td align="right" style='padding-right: 10px'>
-										<b> DELIVERY DATE: </b> <?=date_format(date_create($date),"F d, Y");?>
-									</td>
-								</tr>
-							</table>
-					</td>
-					
-					
-				</tr>
+	</tr>
 				
 			</table>
 

@@ -3,7 +3,7 @@
 	if(!isset($_SESSION)){
 		session_start();
 	}
-	$_SESSION['pageid'] = "POS.php";
+	$_SESSION['pageid'] = "SI";
 	include('../../Connection/connection_string.php');
 	include('../../include/denied.php');
 	include('../../include/access2.php');
@@ -13,20 +13,20 @@
 
 	//POST
 	$poststat = "True";
-	$sql = mysqli_query($con,"select * from users_access where userid = '$employeeid' and pageid = 'POS_post'");
+	$sql = mysqli_query($con,"select * from users_access where userid = '$employeeid' and pageid = 'SI_post'");
 	if(mysqli_num_rows($sql) == 0){
 		$poststat = "False";
 	}
 
 	//CANCEL
 	$cancstat = "True";
-	$sql = mysqli_query($con,"select * from users_access where userid = '$employeeid' and pageid = 'POS_cancel'");
+	$sql = mysqli_query($con,"select * from users_access where userid = '$employeeid' and pageid = 'SI_cancel'");
 	if(mysqli_num_rows($sql) == 0){
 		$cancstat = "False";
 	}
 
 	$unpoststat = "True";
-	$sql = mysqli_query($con,"select * from users_access where userid = '$employeeid' and pageid = 'SI_unpost.php'");
+	$sql = mysqli_query($con,"select * from users_access where userid = '$employeeid' and pageid = 'SI_unpost'");
 	if(mysqli_num_rows($sql) == 0){
 		$unpoststat = "False";
 	}
@@ -281,11 +281,11 @@
 				"columns": [
 					{ "data": null,
 							"render": function (data, type, full, row) {
-									var sts = "";
-									if (full[6] == 1 || full[11] == 1) {
-										sts="class='text-danger'";
-									}
-									return "<a "+sts+" href=\"javascript:;\" onclick=\"editfrm('"+full[0]+"')\">"+full[0]+"</a>";
+								var sts = "";
+								if (full[6] == 1 || full[11] == 1) {
+									sts="class='text-danger'";
+								}
+								return "<a "+sts+" href=\"javascript:;\" onclick=\"editfrm('"+full[0]+"')\">"+full[0]+"</a>";
 							}								
 					},
 					{ "data": 1 },

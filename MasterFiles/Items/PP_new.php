@@ -2,7 +2,7 @@
 if(!isset($_SESSION)){
 session_start();
 }
-$_SESSION['pageid'] = "PP_new.php";
+$_SESSION['pageid'] = "PP_New";
 
 include('../../Connection/connection_string.php');
 include('../../include/accessinner.php');

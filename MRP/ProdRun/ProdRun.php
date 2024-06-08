@@ -129,10 +129,10 @@
 		fill_datatable("<?=(isset($_REQUEST['ix'])) ? $_REQUEST['ix'] : "";?>");	
 
 		$("#searchByName").keyup(function(){
-				var searchByName = $('#searchByName').val();
+			var searchByName = $('#searchByName').val();
 
-				$('#example').DataTable().destroy();
-				fill_datatable(searchByName);
+			$('#example').DataTable().destroy();
+			fill_datatable(searchByName);
 
 		});
 
@@ -140,78 +140,6 @@
 		var x = "";
 		var num = "";
 		var msg = "";
-
-
-		$(".btnmodz").on("click", function (){
-
-			if($('#AlertModal').hasClass('in')==true){
-				var idz = $(this).attr('id');
-
-				if(idz=="OK"){
-					var x = $("#typ").val();
-					var num = $("#modzx").val();
-					
-					if(x=="POST"){
-						var msg = "POSTED";
-					}
-					else if(x=="CANCEL"){
-						var msg = "CANCELLED";
-					}
-					
-						$.ajax ({
-							url: "JO_Tran.php",
-							data: { x: num, typ: x },
-							async: false,
-							dataType: "json",
-							beforeSend: function(){
-								$("#AlertMsg").html("&nbsp;&nbsp;<b>Processing " + num + ": </b> Please wait a moment...");
-								$("#alertbtnOK").hide();
-								$("#OK").hide();
-								$("#Cancel").hide();
-								$("#AlertModal").modal('show');
-							},
-							success: function( data ) {
-								console.log(data);
-								$.each(data,function(index,item){
-									
-									itmstat = item.stat;
-									
-									if(itmstat!="False"){
-										$("#msg"+num).html(item.stat);
-										
-											$("#AlertMsg").html("");
-											
-											$("#AlertMsg").html("&nbsp;&nbsp;<b>" + num + ": </b> Successfully "+msg+"...");
-											$("#alertbtnOK").show();
-											$("#OK").hide();
-											$("#Cancel").hide();
-											$("#AlertModal").modal('show');
-					
-									}
-									else{
-										$("#AlertMsg").html("");
-										
-										$("#AlertMsg").html(item.ms);
-										$("#alertbtnOK").show();
-										$("#OK").hide();
-										$("#Cancel").hide();
-										$("#AlertModal").modal('show');
-					
-									}
-								});
-							}
-						});
-					
-				}
-				else if(idz=="Cancel"){
-					
-					$("#AlertMsg").html("");
-					$("#AlertModal").modal('hide');
-					
-				}
-				
-			}
-		});
 
 	});
 

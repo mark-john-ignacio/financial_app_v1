@@ -25,7 +25,7 @@ if(mysqli_num_rows($sql) == 0){
 }
 
 $unpoststat = "True";
-$sql = mysqli_query($con,"select * from users_access where userid = '$employeeid' and pageid = 'SuppInv_unpost.php'");
+$sql = mysqli_query($con,"select * from users_access where userid = '$employeeid' and pageid = 'SuppInv_unpost'");
 if(mysqli_num_rows($sql) == 0){
 	$unpoststat = "False";
 }

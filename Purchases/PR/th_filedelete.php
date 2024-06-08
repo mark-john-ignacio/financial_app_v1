@@ -8,7 +8,7 @@
 	$cid = $_REQUEST['id'];
 	$ccode = $_REQUEST['code'];
 
-	$path = "../../RFP_Files/".$company."_".$ccode."/".$cid;
+	$path = "../../Components/assets/PReq/".$company."_".$ccode."/".$cid;
 
 	if (unlink($path)) {
 

@@ -2,7 +2,7 @@
 	if(!isset($_SESSION)){
 		session_start();
 	}
-	$_SESSION['pageid'] = "Purch.php";
+	$_SESSION['pageid'] = "Purch";
 
 	include('../../Connection/connection_string.php');
 	include('../../include/denied.php');
@@ -12,7 +12,7 @@
 	$company = $_SESSION['companyid'];
 
 	$poststat = "True";
-	$sql = mysqli_query($con,"select * from users_access where userid = '$employeeid' and pageid = 'Purch_edit.php'");
+	$sql = mysqli_query($con,"select * from users_access where userid = '$employeeid' and pageid = 'Purch_edit'");
 	if(mysqli_num_rows($sql) == 0){
 		$poststat = "False";
 	}
@@ -50,7 +50,7 @@
 		}
 	}
 
-	$sqlhead = mysqli_query($con,"select a.cpono, a.ccode, a.cremarks, DATE_FORMAT(a.ddate,'%m/%d/%Y') as ddate, DATE_FORMAT(a.dneeded,'%m/%d/%Y') as dneeded, a.ngross, a.cpreparedby, a.nbasegross, a.ccurrencycode, a.ccurrencydesc, a.nexchangerate, a.lcancelled, a.lapproved, a.lprintposted, a.lvoid, a.ccustacctcode, b.cname, a.ccontact, a.ccontactemail, a.ladvancepay, a.cterms, a.cdelto, a.ddeladd, a.ddelinfo, a.cbillto, a.cewtcode, a.cemailto, a.cemailcc, a.cemailbcc, a.cemailsubject, a.cemailbody, a.cemailsentby, a.demailsent from purchase a left join suppliers b on a.compcode=b.compcode and a.ccode=b.ccode where a.compcode='$company' and a.cpono = '$cpono'");
+	$sqlhead = mysqli_query($con,"select a.cpono, a.ccode, IFNULL(a.cremarks,'') as cremarks, DATE_FORMAT(a.ddate,'%m/%d/%Y') as ddate, DATE_FORMAT(a.dneeded,'%m/%d/%Y') as dneeded, a.ngross, a.cpreparedby, a.nbasegross, a.ccurrencycode, a.ccurrencydesc, a.nexchangerate, a.lcancelled, a.lapproved, a.lprintposted, a.lvoid, a.ccustacctcode, b.cname, a.ccontact, a.ccontactemail, a.ladvancepay, a.cterms, a.cdelto, a.ddeladd, a.ddelinfo, a.cbillto, a.cewtcode, a.cemailto, a.cemailcc, a.cemailbcc, a.cemailsubject, a.cemailbody, a.cemailsentby, a.demailsent from purchase a left join suppliers b on a.compcode=b.compcode and a.ccode=b.ccode where a.compcode='$company' and a.cpono = '$cpono'");
 
 	@$arrname = array();
 	$directory = "../../Components/assets/PO/{$company}_{$cpono}/";
@@ -517,6 +517,8 @@ if (mysqli_num_rows($sqlhead)!=0) {
 							</button>
 
 							<?php
+								}
+
 								$sql = mysqli_query($con,"select * from users_access where userid = '".$_SESSION['employeeid']."' and pageid = 'Purch_print'");
 
 								if(mysqli_num_rows($sql) == 1){
@@ -541,6 +543,8 @@ if (mysqli_num_rows($sqlhead)!=0) {
 							<?php		
 									}
 								}
+
+								if($poststat=="True"){
 							?>
 
 							<button type="button" class="btn btn-warning btn-sm" tabindex="6" onClick="enabled();" id="btnEdit" name="btnEdit">

@@ -2,7 +2,7 @@
 	if(!isset($_SESSION)){
 		session_start();
 	}
-	$_SESSION['pageid'] = "OR_new.php";
+	$_SESSION['pageid'] = "OR_new";
 
 	include('../../Connection/connection_string.php');
 	include('../../include/denied.php');
@@ -439,7 +439,7 @@
   	</fieldset>
 
 	<!--CASH DETAILS DENOMINATIONS -->
-	<div class="modal fade" id="CashModal" role="dialog">
+	<div class="modal fade" id="CashModal" role="dialog" data-keyboard="false" data-backdrop="static">
 			<div class="modal-dialog">
 					<div class="modal-content">
 							<div class="modal-header">
@@ -534,7 +534,7 @@
 	</div><!-- /.modal -->
 	<!-- End Bootstrap modal -->
 
-	<div class="modal fade" id="ChequeModal" role="dialog">
+	<div class="modal fade" id="ChequeModal" role="dialog" data-keyboard="false" data-backdrop="static">
 		<div class="modal-dialog">
 			<div class="modal-content">
 				<div class="modal-header">
@@ -573,7 +573,7 @@
 		</div><!-- /.modal-dialog -->
 	</div><!-- /.modal -->
 
-	<div class="modal fade" id="OthersModal" role="dialog">
+	<div class="modal fade" id="OthersModal" role="dialog" data-keyboard="false" data-backdrop="static">
 		<div class="modal-dialog">
 			<div class="modal-content">
 				<div class="modal-header">
@@ -602,11 +602,10 @@
 	</div>
 
 	<!-- add CM Module -->
-	<div class="modal fade" id="MyAdjustmentModal" role="dialog">
+	<div class="modal fade" id="MyAdjustmentModal" role="dialog"  data-keyboard="false" data-backdrop="static">
 		<div class="modal-dialog modal-lg">
 			<div class="modal-content">
 				<div class="modal-header">
-					<button type="button" class="close"  aria-label="Close"  onclick="chkCloseInfo();"><span aria-hidden="true">&times;</span></button>
 					<h4 class="modal-title" id="invadjheader"> Additional AR Adjustment <button class="btn btn-sm btn-primary" name="btnaddcm" id="btnaddcm" type="button">Add</button></h4>           
 				</div>
 
@@ -632,6 +631,9 @@
 						</tbody>
 					</table>
 
+				</div>
+				<div class="modal-footer">
+					<button type="button" class="btn btn-xs btn-success" onclick="chkCloseInfo();">Procced</button>
 				</div>
 			</div><!-- /.modal-content -->
 		</div><!-- /.modal-dialog -->
@@ -1403,62 +1405,32 @@
 		
 	}
 
-	/*function computeDue(selewt){
+	function computeDue(selewt){
 
-		lastRow = selewt.attributes["id"].value;
-		lastRow = lastRow.replace("txtnEWT","");
-		lastRow = lastRow.replace("[]","");
+		lastRow = selewt
 
-		///	var tbl = document.getElementById('MyTable').getElementsByTagName('tr');
-		//	var lastRow = tbl.length-1;
-		//	if(lastRow!=0){
-		//		var x = 0;
-				
-		//		for (z=1; z<=lastRow; z++){
-		//			var varngrs = $("#txtvatamt"+lastRow).val().replace(/,/g,'');
-		//			var varngrs = $("#txtSIGross"+lastRow).val().replace(/,/g,'');
-					var varngrs = $("#txtSIGross"+lastRow).val().replace(/,/g,'');
-		//		}
+		var varngrs = $("#txtSIGross"+lastRow).val().replace(/,/g,'');
 
-		//	}
+		var varncms = $("#txtncredit"+lastRow).val().replace(/,/g,'');
+		var varcdms = $("#txtndebit"+lastRow).val().replace(/,/g,'');
+		var varnpaymnts = $("#txtnpayments"+lastRow).val().replace(/,/g,''); 
 
-		varnnet =  $("#txtnetvat"+lastRow).val().replace(/,/g,'');
-		ndue = $("#txtDue"+lastRow).val().replace(/,/g,'');
-
-		xcb = 0;
-		var len = selewt.options.length;
-		for (var i = 0; i < len; i++) {
-			opt = selewt.options[i];
-
-			if (opt.selected) {
-				//alert(opt.value+ " : " + opt.dataset.rate + " : " + opt.dataset.base);
-
-				if(opt.dataset.base=="NET"){
-					xcb = xcb + parseFloat(varnnet)*(opt.dataset.rate/100);
-				}else{
-					xcb = xcb + parseFloat(varngrs)*(opt.dataset.rate/100);
-				}
-
-			}
-		}
-
-												
-		$("#txtnEWTAmt"+lastRow).val(xcb);
-		xcbdue = varngrs - xcb;
-												
+		xcbdue = (parseFloat(varngrs) + parseFloat(varcdms)) - (parseFloat(varncms) + parseFloat(varnpaymnts));
+											
 		$("#txtDue"+lastRow).val(xcbdue);
 		$("#txtApplied"+lastRow).val(xcbdue);
 
-		$("#txtnEWTAmt"+lastRow).autoNumeric('destroy');
-		$("#txtnEWTAmt"+lastRow).autoNumeric('init',{mDec:2});
+		//$("#txtnEWTAmt"+lastRow).autoNumeric('destroy');
+		//$("#txtnEWTAmt"+lastRow).autoNumeric('init',{mDec:2});
 
 		$("#txtDue"+lastRow).autoNumeric('destroy');
-		$("#txtDue"+lastRow).autoNumeric('init',{mDec:2});
+		$("#txtDue"+lastRow).autoNumeric('init',{mDec:2, vMin: -9999999.99});
 												
 		$("#txtApplied"+lastRow).autoNumeric('destroy');
-		$("#txtApplied"+lastRow).autoNumeric('init',{mDec:2});
+		$("#txtApplied"+lastRow).autoNumeric('init',{mDec:2, vMin: -9999999.99});
+											
 
-	}*/
+	}
 
 	function ReIndexMyTable(tranno){
 		$("#MyTable > tbody > tr").each(function(index) {   
@@ -1834,7 +1806,7 @@
 			var dsc = $("#txthdnCMtxtbx").val();
 			
 			$("#MyTableCMx > tbody > tr").each(function(index) {	
-				if(index>0){
+				if(index>=0){
 				var x = $(this).find('input[name="txtapamt"]').val().replace(/,/g,'');
 				var y = $(this).find('input[type="hidden"][name="txtcmrr"]').val();
 
@@ -1855,6 +1827,14 @@
 
 		//	recomlines();
 		//	compgross1();
+
+			selewtid = $("#"+dsc).attr("id").replace("txtncredit","");
+			selewtid = selewtid.replace("txtndebit","");
+
+			//selewt = document.getElementById("txtnEWT"+selewtid);
+			computeDue(selewtid);
+			computeGross()
+
 												
 			$('#MyAdjustmentModal').modal('hide');	
 		}

@@ -40,7 +40,7 @@ if ($result->num_rows > 0) {
         $salesData[] = array(
             "item_number" => $row["item_number"],
             "item_description" => $row["item_description"],
-            "total_sales" => $row["total_sales"]
+            "total_sales" => number_format(floatval($row["total_sales"]),2,'.','')
         );
     }
     echo json_encode($salesData);

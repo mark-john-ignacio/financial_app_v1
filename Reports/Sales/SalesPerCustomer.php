@@ -1,24 +1,24 @@
 <?php
-if(!isset($_SESSION)){
-session_start();
-}
-$_SESSION['pageid'] = "SalesPerCust.php";
+	if(!isset($_SESSION)){
+		session_start();
+	}
+	$_SESSION['pageid'] = "SalesPerCust";
 
-include('../../Connection/connection_string.php');
-include('../../include/denied.php');
-include('../../include/access2.php');
-$company = $_SESSION['companyid'];
-				$sql = "select * From company where compcode='$company'";
-				$result=mysqli_query($con,$sql);
-				
-					if (!mysqli_query($con, $sql)) {
-						printf("Errormessage: %s\n", mysqli_error($con));
-					} 
-					
-				while($row = mysqli_fetch_array($result, MYSQLI_ASSOC))
-				{
-					$compname =  $row['compname'];
-				}
+	include('../../Connection/connection_string.php');
+	include('../../include/denied.php');
+	include('../../include/access2.php');
+	$company = $_SESSION['companyid'];
+	$sql = "select * From company where compcode='$company'";
+	$result=mysqli_query($con,$sql);
+	
+	if (!mysqli_query($con, $sql)) {
+		printf("Errormessage: %s\n", mysqli_error($con));
+	} 
+		
+	while($row = mysqli_fetch_array($result, MYSQLI_ASSOC))
+	{
+		$compname =  $row['compname'];
+	}
 ?>
 
 <html>
@@ -73,7 +73,7 @@ if($postedtran!==""){
 	$qryposted = " and b.lapproved=".$postedtran."";
 }
 
-if($trantype=="Trade"){
+//if($trantype=="Trade"){
 	$sql = "select A.dcutdate, A.ctranno as csalesno, A.ccode, A.cname, A.citemno, A.citemdesc, A.cunit, A.nqty, A.nprice, A.ndiscount, A.namount
 	FROM(
 	select b.dcutdate, a.ctranno, b.ccode, c.cname, a.citemno, d.citemdesc, a.cunit, a.nqty, a.nprice, a.ndiscount, a.namount
@@ -82,7 +82,7 @@ if($trantype=="Trade"){
 	left join customers c on b.ccode=c.cempid and b.compcode=c.compcode
 	left join items d on a.citemno=d.cpartno and a.compcode=d.compcode
 	where a.compcode='$company' and b.ccode='$custid' and b.dcutdate between STR_TO_DATE('$date1', '%m/%d/%Y') and STR_TO_DATE('$date2', '%m/%d/%Y') and b.lcancelled=0 and b.lvoid=0 ".$qrytp.$qryposted.") A order by A.dcutdate, A.ctranno";
-}elseif($trantype=="Non-Trade"){
+/*}elseif($trantype=="Non-Trade"){
 	$sql = "select A.dcutdate, A.ctranno as csalesno, A.ccode, A.cname, A.citemno, A.citemdesc, A.cunit, A.nqty, A.ndiscount, A.nprice, A.namount
 	FROM(
 	select b.dcutdate, a.ctranno, b.ccode, c.cname, a.citemno, d.citemdesc, a.cunit, a.nqty, a.nprice, a.ndiscount, a.namount
@@ -110,7 +110,7 @@ if($trantype=="Trade"){
 		left join items d on a.citemno=d.cpartno and a.compcode=d.compcode
 		where a.compcode='$company' and b.ccode='$custid' and b.dcutdate between STR_TO_DATE('$date1', '%m/%d/%Y') and STR_TO_DATE('$date2', '%m/%d/%Y') and b.lcancelled=0 and b.lvoid=0 ".$qrytp.$qryposted."
 	) A order by A.dcutdate, A.ctranno";
-}
+}*/
 
 $result=mysqli_query($con,$sql);
 

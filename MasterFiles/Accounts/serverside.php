@@ -63,7 +63,16 @@
 				$sub_array[] = $rsz['cFinGroup']; //6
 				$sub_array[] = $rsz['lcontra']; //7
 				$sub_array[] = $rsz['nlevel']; //8
-				$sub_array[] = number_format($rsz['nbalance'],4); //9
+				if($rsz['ctype']=="Details"){
+
+					$xdrcrbit = getbal($rsz['cacctid']);
+	
+					$sub_array[] = number_format($xdrcrbit[0]['ndebit'],2); //9
+					$sub_array[] = number_format($xdrcrbit[0]['ncredit'],2); //10
+				}else{
+					$sub_array[] = ""; //9
+					$sub_array[] = ""; //10
+				}
 				$data[] = $sub_array;
 
 				if($rsz['ctype']=="General"){
@@ -86,7 +95,18 @@
 			$sub_array[] = $row['cFinGroup']; //6
 			$sub_array[] = $row['lcontra']; //7
 			$sub_array[] = $row['nlevel']; //8
-			$sub_array[] = number_format($row['nbalance'],4); //9
+
+			if($row['ctype']=="Details"){
+
+				$xdrcrbit = getbal($row['cacctid']);
+
+				$sub_array[] = number_format($xdrcrbit[0]['ndebit'],2); //9
+				$sub_array[] = number_format($xdrcrbit[0]['ncredit'],2); //10
+			}else{
+				$sub_array[] = ""; //9
+				$sub_array[] = ""; //10
+			}
+			
 			$data[] = $sub_array;
 
 			if($row['ctype']=="General"){
@@ -97,10 +117,26 @@
 
 	function count_all_data($connect)
 	{
-	$query = "SELECT * FROM accounts where compcode='".$_SESSION['companyid']."'";
-	$statement = $connect->prepare($query);
-	$statement->execute();
-	return $statement->rowCount();
+		$query = "SELECT * FROM accounts where compcode='".$_SESSION['companyid']."'";
+		$statement = $connect->prepare($query);
+		$statement->execute();
+		return $statement->rowCount();
+	}
+
+	function getbal($id)
+	{
+		global $connect;
+
+		$dxval = array();
+		$query = "SELECT IFNULL(sum(ndebit),0) as ndebit, IFNULL(sum(ncredit),0) as ncredit FROM glactivity where compcode='".$_SESSION['companyid']."' and YEAR(ddate) < '".date("Y")."' and acctno = '".$id."'";
+		$statement = $connect->prepare($query);
+		$statement->execute();
+		$result = $statement->fetchAll();
+		foreach($result as $rsz){
+			$dxval[] = $rsz;
+		}
+
+		return $dxval;
 	}
 
 	$output = array(

@@ -12,7 +12,7 @@
     $new = $_POST['newpassword'];
     $confirm = $_POST['confirmPassword'];
 
-    $sql = "SELECT * FROM `users` WHERE Userid = '$id'";
+    $sql = "SELECT * FROM `users` WHERE Userid = BINARY '$id'";
 
     $result = mysqli_query($con, $sql);
     while($row = mysqli_fetch_array($result, MYSQLI_ASSOC)){;
@@ -22,24 +22,37 @@
 
     if(match_password($new, $confirm)){
         if(password_verify($password, $current)){
-            
-            $hashpassword = better_crypt($new);
-            $date = date('Y-m-d');
-            $sql = "update `users` set `password`='$hashpassword', `modify`='$date', `cstatus` = 'Active' where Userid = '$id'";
-    
-            if(mysqli_query($con, $sql)){
-                $_SESSION['login'] = true;
-                echo json_encode([
-                    'valid' => true,
-                    'msg' => 'Update has been successful!',
-                    'usertype' => $usertype
-                ]);
-            } else {
+
+            if($password==$new){
+
                 echo json_encode([
                     'valid' => false,
-                    'errCode' => 'ERR_MSG',
-                    'errMsg' => $mysql_error($con) 
+                    'errCode' => 'SAME_PASS!',
+                    'errMsg' => 'New Password cannot be same as your current password. Please choose a different password.'
                 ]);
+
+            }else{
+            
+                $hashpassword = better_crypt($new);
+                $date = date('Y-m-d');
+                $sql = "update `users` set `password`='$hashpassword', `modify`='$date', `cstatus` = 'Active' where Userid = '$id'";
+        
+                if(mysqli_query($con, $sql)){
+                    $_SESSION['login'] = true;
+                    $_SESSION['modify_pass'] = 1;
+                    echo json_encode([
+                        'valid' => true,
+                        'msg' => 'Update has been successful!',
+                        'usertype' => $usertype
+                    ]);
+                } else {
+                    echo json_encode([
+                        'valid' => false,
+                        'errCode' => 'ERR_MSG',
+                        'errMsg' => $mysql_error($con) 
+                    ]);
+                }
+
             }
     
            

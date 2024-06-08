@@ -2,7 +2,7 @@
 	if(!isset($_SESSION)){
 		session_start();
 	}
-	$_SESSION['pageid'] = "Deposit.php";
+	$_SESSION['pageid'] = "Deposit";
 
 	include('../../Connection/connection_string.php');
 	include('../../include/denied.php');
@@ -11,9 +11,15 @@
 	$company = $_SESSION['companyid'];
 
 	$poststat = "True";
-	$sql = mysqli_query($con,"select * from users_access where userid = '$employeeid' and pageid = 'Deposit_edit.php'");
+	$sql = mysqli_query($con,"select * from users_access where userid = '$employeeid' and pageid = 'Deposit_edit'");
 	if(mysqli_num_rows($sql) == 0){
 		$poststat = "False";
+	}
+
+	$printstat = "True";
+	$sql = mysqli_query($con,"select * from users_access where userid = '$employeeid' and pageid = 'Deposit_print'");
+	if(mysqli_num_rows($sql) == 0){
+		$printstat = "False";
 	}
 
 	$corno = $_REQUEST['txtctranno'];
@@ -395,13 +401,15 @@
 								<input type="hidden" name="hdnrowcnt" id="hdnrowcnt" value="0">
 						</div>
 
-				<?php
-					if($poststat=="True"){
-				?>
+				
 				<br>
 				<table width="100%" border="0" cellpadding="3">
 					<tr>
 						<td width="50%">
+							<?php
+								if($poststat=="True"){
+							?>
+
 							<button type="button" class="btn btn-primary btn-sm" tabindex="6" onClick="window.location.href='Deposit.php?ix=<?=isset($_REQUEST['hdnsrchval']) ? $_REQUEST['hdnsrchval'] : ""?>';" id="btnMain" name="btnMain">
 								Back to Main<br>(ESC)
 							</button>
@@ -414,10 +422,22 @@
 								Undo Edit<br>(CTRL+Z)
 							</button>
 
+							<?php
+								}
+
+								if($printstat=="True"){
+							?>
+
 							<button type="button" class="btn btn-info btn-sm" tabindex="6" onClick="printchk('<?php echo $corno;?>');" id="btnPrint" name="btnPrint">
 								Print<br>(CTRL+P)
 							</button>
 						
+							<?php
+								}
+
+								if($poststat=="True"){
+							?>
+
 							<button type="button" class="btn btn-warning btn-sm" tabindex="6" onClick="enabled();" id="btnEdit" name="btnEdit">
 								Edit<br>(CTRL+E)    
 							</button>
@@ -425,14 +445,14 @@
 							<button type="submit" class="btn btn-success btn-sm" tabindex="6" id="btnSave" name="btnSave">
 								Save<br>(CTRL+S)    
 							</button>
-
+							<?php
+								}
+							?>
 						<td>
 						<td align="right">&nbsp;</td>
 					</tr>
 				</table>
-				<?php
-					}
-				?>
+				
 
     </fieldset>
 
@@ -1000,6 +1020,8 @@ function disabled(){
 	}
 
 	$("#btn-closemod").attr("disabled", false); 
+
+	$(".kv-file-zoom").attr("disabled", false);
 
 }
 

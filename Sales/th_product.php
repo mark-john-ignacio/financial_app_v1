@@ -17,7 +17,7 @@ require_once "../Connection/connection_string.php";
 		where A.compcode='$company' and A.ctradetype='Trade' and (LOWER(A.citemdesc) LIKE '%".strtolower($_GET['query'])."%' OR LOWER(A.cpartno) LIKE '%".strtolower($_GET['query'])."%' OR LOWER(A.cskucode) LIKE '%".strtolower($_GET['query'])."%' OR LOWER(A.cnotes) LIKE '%".strtolower($_GET['query'])."%') and A.cstatus='ACTIVE' and A.csalestype='".$styp."'";
 	}
 	else{ //B.cunit as qtyunit , (TRIM(TRAILING '.' FROM(CAST(TRIM(TRAILING '0' FROM B.nqty)AS char)))) AS nqty
-		$sql = "select A.cpartno, A.citemdesc, A.cunit, ifnull(B.cunit,'') as qtyunit, ifnull(B.nqty,0) as nqty, A.ctype, A.ctaxcode, C.cacctno, C.cacctid, C.cacctdesc, IFNULL(D.cgroupdesc,'') as cgroupdesc, IFNULL(A.cskucode,'') as cskucode, IFNULL(A.cnotes,'') as cnotes
+		$sql = "select A.cpartno, A.citemdesc, A.cunit, ifnull(B.cunit,A.cunit) as qtyunit, ifnull(B.nqty,0) as nqty, A.ctype, A.ctaxcode, C.cacctno, C.cacctid, C.cacctdesc, IFNULL(D.cgroupdesc,'') as cgroupdesc, IFNULL(A.cskucode,'') as cskucode, IFNULL(A.cnotes,'') as cnotes
 		from items A 
 		left join 
 			(

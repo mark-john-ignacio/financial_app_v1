@@ -2,7 +2,7 @@
 	if(!isset($_SESSION)){
 		session_start();
 	}
-	$_SESSION['pageid'] = "SO.php";
+	$_SESSION['pageid'] = "SO";
 
 	include('../../Connection/connection_string.php');
 	include('../../include/denied.php');
@@ -19,7 +19,7 @@
 	}
 
 	$poststat = "True";
-	$sql = mysqli_query($con,"select * from users_access where userid = '$employeeid' and pageid = 'SO_edit.php'");
+	$sql = mysqli_query($con,"select * from users_access where userid = '$employeeid' and pageid = 'SO_edit'");
 	if(mysqli_num_rows($sql) == 0){
 		$poststat = "False";
 	}
@@ -263,41 +263,41 @@ if (mysqli_num_rows($sqlhead)!=0) {
 										<select class="form-control input-sm" name="selbasecurr" id="selbasecurr">							
 											<?php
 
-																	$nvaluecurrbase = "";	
-																	$nvaluecurrbasedesc = "";	
-																	$result = mysqli_query($con,"SELECT * FROM `parameters` WHERE ccode='DEF_CURRENCY'"); 
-																	
-																		if (mysqli_num_rows($result)!=0) {
-																			$all_course_data = mysqli_fetch_array($result, MYSQLI_ASSOC);
-																			
-																			$nvaluecurrbase = $all_course_data['cvalue']; 
-																				
-																		}
-																		else{
-																			$nvaluecurrbase = "";
-																		}
+												$nvaluecurrbase = "";	
+												$nvaluecurrbasedesc = "";	
+												$result = mysqli_query($con,"SELECT * FROM `parameters` WHERE ccode='DEF_CURRENCY'"); 
 												
-																		/*
-																			$objcurrs = listcurrencies();
-																			$objrows = json_decode($objcurrs, true);
-																				
-																		foreach($objrows as $rows){
-																			if ($nvaluecurrbase==$rows['currencyCode']) {
-																				$nvaluecurrbasedesc = $rows['currencyName'];
-																			}
+												if (mysqli_num_rows($result)!=0) {
+													$all_course_data = mysqli_fetch_array($result, MYSQLI_ASSOC);
+													
+													$nvaluecurrbase = $all_course_data['cvalue']; 
+														
+												}
+												else{
+													$nvaluecurrbase = "";
+												}
+						
+												/*
+													$objcurrs = listcurrencies();
+													$objrows = json_decode($objcurrs, true);
+														
+												foreach($objrows as $rows){
+													if ($nvaluecurrbase==$rows['currencyCode']) {
+														$nvaluecurrbasedesc = $rows['currencyName'];
+													}
 
-																			if($rows['countryCode']!=="Crypto" && $rows['currencyName']!==null){
-																		*/
-																		$sqlhead=mysqli_query($con,"Select symbol as id, CONCAT(symbol,\" - \",country,\" \",unit) as currencyName, rate from currency_rate");
-																			if (mysqli_num_rows($sqlhead)!=0) {
-																				while($rows = mysqli_fetch_array($sqlhead, MYSQLI_ASSOC)){
-															?>
-																		<option value="<?=$rows['id']?>" <?php if ($ccurrcode==$rows['id']) { echo "selected='true'"; } ?> data-val="<?=$rows['rate']?>"><?=$rows['currencyName']?></option>
-																	<?php
+													if($rows['countryCode']!=="Crypto" && $rows['currencyName']!==null){
+												*/
+												$sqlhead=mysqli_query($con,"Select symbol as id, CONCAT(symbol,\" - \",country,\" \",unit) as currencyName, rate from currency_rate");
+												if (mysqli_num_rows($sqlhead)!=0) {
+													while($rows = mysqli_fetch_array($sqlhead, MYSQLI_ASSOC)){
+											?>
+												<option value="<?=$rows['id']?>" <?php if ($ccurrcode==$rows['id']) { echo "selected='true'"; } ?> data-val="<?=$rows['rate']?>"><?=$rows['currencyName']?></option>
+											<?php
 
-																			}
-																		}
-																	?>
+													}
+												}
+											?>
 										</select>
 										<input type='hidden' id="basecurrvalmain" name="basecurrvalmain" value="<?php echo $nvaluecurrbase; ?>"> 	
 										<input type='hidden' id="hidcurrvaldesc" name="hidcurrvaldesc" value="<?php echo $ccurrdesc; ?>"> 
@@ -534,7 +534,7 @@ if (mysqli_num_rows($sqlhead)!=0) {
 							<?php
 								if($poststat == "True"){
 							?>
-							<button type="button" class="btn btn-primary btn-sm" tabindex="6" onClick="window.location.href='SO.php?ix=<?=isset($_REQUEST['hdnsrchval']) ? $_REQUEST['hdnsrchval'] : ""?>';" id="btnMain" name="btnMain">Back to Main<br>(ESC)</button>
+							<button type="button" class="btn btn-primary btn-sm" tabindex="6" onClick="window.location.href='SO.php?ix=<?=isset($_REQUEST['hdnsrchval']) ? $_REQUEST['hdnsrchval'] : ""?>&st=<?=isset($_REQUEST['hdnsrchsta']) ? $_REQUEST['hdnsrchsta'] : ""?>';" id="btnMain" name="btnMain">Back to Main<br>(ESC)</button>
 
 							<button type="button" class="btn btn-default btn-sm" tabindex="6" onClick="window.location.href='SO_new.php';" id="btnNew" name="btnNew">New<br>(F1)</button>
 
@@ -544,6 +544,8 @@ if (mysqli_num_rows($sqlhead)!=0) {
 							</button>
 
 							<?php
+								}
+
 								$sql = mysqli_query($con,"select * from users_access where userid = '".$_SESSION['employeeid']."' and pageid = 'SO_print'");
 
 								if(mysqli_num_rows($sql) == 1){
@@ -556,6 +558,7 @@ if (mysqli_num_rows($sqlhead)!=0) {
 							<?php		
 								}
 
+								if($poststat == "True"){
 							?>
 							
 							<button type="button" class="btn btn-warning btn-sm" tabindex="6" onClick="enabled();" id="btnEdit" name="btnEdit">Edit<br>(CTRL+E)    </button>
@@ -771,7 +774,7 @@ else{
             <div class="modal-bodylong">
 				<button type="button" class="close" data-dismiss="modal" aria-label="Close" id="printclose"><span aria-hidden="true">&times;</span></button>        
         
-               <iframe id="myprintframe" name="myprintframe" scrolling="no" style="width:100%; height:8.5in; display:block; margin:0px; padding:0px; border:0px"></iframe>
+               <iframe id="myprintframe" name="myprintframe" scrolling="no" style="width:100%; height:11in; display:block; margin:0px; padding:0px; border:0px"></iframe>
     
             	
 			</div>
@@ -2678,7 +2681,7 @@ else{
 		$("#btnEdit").attr("disabled", false);
 		$("#printclose").attr("disabled", false);
 		
-
+		$(".kv-file-zoom").attr("disabled", false);
 	}
 
 	function enabled(){

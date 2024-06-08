@@ -2,7 +2,7 @@
 	if(!isset($_SESSION)){
 		session_start();
 	}
-	$_SESSION['pageid'] = "InvTrans.php";
+	$_SESSION['pageid'] = "InvTrans";
 
 	include('../../Connection/connection_string.php');
 	include('../../include/denied.php');
@@ -15,7 +15,7 @@
 
 
 	$poststat = "True";
-	$sql = mysqli_query($con,"select * from users_access where userid = '$EmpID' and pageid = 'InvTrans_edit.php'");
+	$sql = mysqli_query($con,"select * from users_access where userid = '$EmpID' and pageid = 'InvTrans_edit'");
 	if(mysqli_num_rows($sql) == 0){
 		$poststat = "False";
 	}
@@ -201,13 +201,13 @@
 							$seltypx = "";
 							$selrprint = "";
 							if($seltype=="request"){
-								$seltypx = "Request";
-								$selrprint = $prntnme['INVTRANS_ISSUANCE'];
-							}elseif($seltype=="transfer"){
-								$seltypx = "Transfer";
+								$seltypx = "Material Request Slip";
 								$selrprint = $prntnme['INVTRANS_ISSUANCE'];
 							}elseif($seltype=="fg_transfer"){
-								$seltypx = "FG Transfer";
+								$seltypx = "Stock In Slip";
+								$selrprint = $prntnme['INVTRANS_ISSUANCE'];
+							}elseif($seltype=="Item Return Slip"){
+								$seltypx = "Item Return Slip";
 								$selrprint = $prntnme['INVTRANS_ISSUANCE'];
 							}
 						?>	

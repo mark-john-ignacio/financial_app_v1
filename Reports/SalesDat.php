@@ -2,7 +2,7 @@
     if(!isset($_SESSION)){
         session_start();
     }
-    $_SESSION['pageid'] = "SalesDat.php";
+    $_SESSION['pageid'] = "SalesDat";
     
     include("../Connection/connection_string.php");
     include('../include/denied.php');
@@ -12,9 +12,9 @@
     $sql = "select * From company where compcode='$company'";
     $result=mysqli_query($con,$sql);
     
-        if (!mysqli_query($con, $sql)) {
-            printf("Errormessage: %s\n", mysqli_error($con));
-        } 
+    if (!mysqli_query($con, $sql)) {
+        printf("Errormessage: %s\n", mysqli_error($con));
+    } 
         
     while($row = mysqli_fetch_array($result, MYSQLI_ASSOC))
     {

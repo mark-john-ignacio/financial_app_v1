@@ -1,63 +1,71 @@
 <?php
-if(!isset($_SESSION)){
-session_start();
-}
-$_SESSION['pageid'] = "PM_edit.php";
+	if(!isset($_SESSION)){
+		session_start();
+	}
+	$_SESSION['pageid'] = "PM";
 
-include('../../Connection/connection_string.php');
-include('../../include/accessinner.php');
+	include('../../Connection/connection_string.php');
+	include('../../include/accessinner.php');
 
-				$company = $_SESSION['companyid'];
-				$cbatchno = $_REQUEST['txtctranno'];
-				
-				$sql = "SELECT deffectdate, cversion, cremarks, ctranno, lapproved, lcancelled FROM `items_pm` WHERE compcode='$company' and cbatchno='$cbatchno'";
-				$sqlhead=mysqli_query($con,$sql);
-				
-					if (!mysqli_query($con, $sql)) {
-						printf("Errormessage: %s\n", mysqli_error($con));
-					} 
-					
-				if (mysqli_num_rows($sqlhead)!=0) {
-					$dataver = array();
-					$dataverid = array();
-					$cnt = 0;
-					$str = "";
-					
-					while($row = mysqli_fetch_array($sqlhead, MYSQLI_ASSOC)){
-						$dEffect = $row['deffectdate'];
-						$cremarks = $row['cremarks'];
-						$lPosted = $row['lapproved'];
-						$lCancelled = $row['lcancelled'];
-						
-						$dataver[] = $row['cversion'];
-						$dataverid[] = $row['ctranno'];
-						$cnt = $cnt + 1;
-						
-						if($cnt > 1){
-							$str = $str.";";
-						}
-						
-						$str = $str.$row['cversion'];
-					}
-				}
-				
-				//echo $dEffect."<br>";
-				
-				//echo date_format(date_create($dEffect), "m/d/Y");
+	$company = $_SESSION['companyid'];
 
-function getprice($ver,$itmno,$unitz){
-	global $company;
-	global $con;
+	$poststat = "True";
+	$sql = mysqli_query($con,"select * from users_access where userid = '$employeeid' and pageid = 'PM_Edit'");
+	if(mysqli_num_rows($sql) == 0){
+		$poststat = "False";
+	}
+
+
+	$cbatchno = $_REQUEST['txtctranno'];
 	
-		$resultqry = mysqli_query ($con, "SELECT nprice from `items_pm_t` where compcode='$company' and ctranno='$ver' and citemno='$itmno' and cunit='$unitz'"); 
+	$sql = "SELECT deffectdate, cversion, cremarks, ctranno, lapproved, lcancelled FROM `items_pm` WHERE compcode='$company' and cbatchno='$cbatchno'";
+	$sqlhead=mysqli_query($con,$sql);
 	
-	if(mysqli_num_rows($resultqry)!=0){
-		$rowqry = mysqli_fetch_assoc($resultqry);
+	if (!mysqli_query($con, $sql)) {
+		printf("Errormessage: %s\n", mysqli_error($con));
+	} 
 		
-		return $rowqry['nprice'];
+	if (mysqli_num_rows($sqlhead)!=0) {
+		$dataver = array();
+		$dataverid = array();
+		$cnt = 0;
+		$str = "";
+		
+		while($row = mysqli_fetch_array($sqlhead, MYSQLI_ASSOC)){
+			$dEffect = $row['deffectdate'];
+			$cremarks = $row['cremarks'];
+			$lPosted = $row['lapproved'];
+			$lCancelled = $row['lcancelled'];
+			
+			$dataver[] = $row['cversion'];
+			$dataverid[] = $row['ctranno'];
+			$cnt = $cnt + 1;
+			
+			if($cnt > 1){
+				$str = $str.";";
+			}
+			
+			$str = $str.$row['cversion'];
+		}
 	}
 	
-}
+	//echo $dEffect."<br>";
+	
+	//echo date_format(date_create($dEffect), "m/d/Y");
+
+	function getprice($ver,$itmno,$unitz){
+		global $company;
+		global $con;
+		
+			$resultqry = mysqli_query ($con, "SELECT nprice from `items_pm_t` where compcode='$company' and ctranno='$ver' and citemno='$itmno' and cunit='$unitz'"); 
+		
+		if(mysqli_num_rows($resultqry)!=0){
+			$rowqry = mysqli_fetch_assoc($resultqry);
+			
+			return $rowqry['nprice'];
+		}
+		
+	}
 ?>
 <!DOCTYPE html>
 <html>
@@ -343,27 +351,33 @@ function getprice($ver,$itmno,$unitz){
             
          </div>
 <br>
-<table width="100%" border="0" cellpadding="3">
-  <tr>
-    <td>
+	<?php
+		if($poststat=="True"){
+	?>
+		<table width="100%" border="0" cellpadding="3">
+		<tr>
+			<td>
 
-		<button type="button" class="btn btn-primary btn-sm" onClick="window.location.href='PM.php';" id="btnMain" name="btnMain">Back to Main<br>(ESC)</button>
+				<button type="button" class="btn btn-primary btn-sm" onClick="window.location.href='PM.php';" id="btnMain" name="btnMain">Back to Main<br>(ESC)</button>
 
-    	<button type="button" class="btn btn-default btn-sm" id="btnNew" name="btnNew">New<br>(F1)</button>
- 
-     <button type="button" class="btn btn-danger btn-sm" onClick='document.getElementById("frmedit").submit();' id="btnUndo" name="btnUndo">
-Undo Edit<br>(CTRL+Z)
-    </button>
-   
-        <button type="button" class="btn btn-warning btn-sm" onClick="enabled();" id="btnEdit" name="btnEdit"> Edit<br>(CTRL+E) </button>
+				<button type="button" class="btn btn-default btn-sm" id="btnNew" name="btnNew">New<br>(F1)</button>
+		
+				<button type="button" class="btn btn-danger btn-sm" onClick='document.getElementById("frmedit").submit();' id="btnUndo" name="btnUndo">
+					Undo Edit<br>(CTRL+Z)
+				</button>
+		
+				<button type="button" class="btn btn-warning btn-sm" onClick="enabled();" id="btnEdit" name="btnEdit"> Edit<br>(CTRL+E) </button>
 
-    	<button type="button" class="btn btn-success btn-sm" name="btnSave" id="btnSave" onClick="return chkform();">Save<br> (CTRL+S)</button>
-    
- 
-    </td>
-    
-    </tr>
-</table>
+				<button type="button" class="btn btn-success btn-sm" name="btnSave" id="btnSave" onClick="return chkform();">Save<br> (CTRL+S)</button>
+			
+		
+			</td>
+			
+			</tr>
+		</table>
+	<?php
+	}
+	?>
 
         </fieldset>
 </form>

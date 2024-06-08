@@ -33,7 +33,7 @@ if($_FILES["file"]["name"]!="")
 				echo "<br>File Type: " . $_FILES["file"]["type"];
 				echo "<br>File Size: " . ($_FILES["file"]["size"] / 1024) . " kB";
 			
-				header('Location: upload_check.php?id='.$newtargetPath.'&xcitm='.$_REQUEST['xcitemno']);
+				header('Location: upload_check.php?id='.$newtargetPath.'&xcitm='.$_REQUEST['xcitemno'].'&xcvers='.$_REQUEST['selver']);
 		}
 	}
 	else

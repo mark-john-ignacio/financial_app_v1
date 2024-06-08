@@ -123,7 +123,7 @@
                 </div>
 
 			</div>
-			<div class="modal-body">
+			<div class="modal-body" style="height: 50vh">
 				<form action="index.php" method="post">
 					<div class="form-group">
 						<center><font size="+3">
@@ -153,7 +153,7 @@
 <script>
 $(function(){
 	$("#btnLogout").on("click", function() {
-		window.top.location.href = "logout.php"; 
+		window.top.location.href = "index.php"; 
 	});
 });
 </script>

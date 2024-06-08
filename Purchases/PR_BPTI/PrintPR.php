@@ -14,9 +14,9 @@ include('../../include/denied.php');
 
 		while($rowcomp = mysqli_fetch_array($sqlcomp, MYSQLI_ASSOC))
 		{
-			$logosrc = $rowcomp['clogoname'];
 			$logoaddrs = $rowcomp['compadd'];
 			$logonamz = $rowcomp['compname'];
+			$companylogx = $rowcomp['clogoname'];
 		}
 
 	}
@@ -68,29 +68,39 @@ if (mysqli_num_rows($sqlhead)!=0) {
 		.tdright{
 			padding-right: 10px;
 		}
-		
+		#imgcontent {
+        	position: relative;
+		}
+		#imgcontent img {
+			position: absolute;
+			top: 2px;
+			left: 3px;
+		}
 	</style>
 </head>
 
 <body onLoad="window.print()">
+	<div id="imgcontent">
+		<img src="../<?=$companylogx?>" class="ribbon" alt="" width="150px"/>
+	</div>
 
 	<table border="0" width="100%" cellpadding="1px"  id="tblMain"  style="border-collapse: collapse;">
 		<tr>
-			<td style="vertical-align: top; padding-top: 10px">
+			<td style="vertical-align: top;">
 
 				<table border="0" width="100%" style="border-collapse:collapse">
 					<tr>
-						<td colspan="3" align="center" style="padding-bottom: 20px">
-								<font style="font-size: 24px;">PURCHASE REQUISITION SLIP </font>
+						<td colspan="3" align="center" height="50px">
+							<font style="font-size: 24px;">PURCHASE REQUISITION SLIP </font>
 						</td>
 					</tr>
 
 					<tr>
-						<td style="padding-bottom: 10px">
+						<td style="padding-bottom: 10px; padding-top: 10px">
 							<font style="font-size: 14px;"><b>Department:</b> <?=$SecDesc?></font>
 						</td>
 
-						<td align="right" style="padding-bottom: 10px">
+						<td align="right" style="padding-bottom: 10px; padding-top: 10px">
 							<font style="font-size: 14px;"><b>Date prepared:</b> <?=date("F d, Y")?></font>
 						</td>
 

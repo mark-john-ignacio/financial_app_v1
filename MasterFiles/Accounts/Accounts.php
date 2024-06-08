@@ -1,13 +1,12 @@
 <?php
-if(!isset($_SESSION)){
-session_start();
-}
-$_SESSION['pageid'] = "Accounts.php";
+	if(!isset($_SESSION)){
+		session_start();
+	}
+	$_SESSION['pageid'] = "Accounts";
 
-include('../../Connection/connection_string.php');
-include('../../include/denied.php');
-include('../../include/access2.php');
-
+	include('../../Connection/connection_string.php');
+	include('../../include/denied.php');
+	include('../../include/access2.php');
 
 	$company = $_SESSION['companyid'];
 	$result = mysqli_query ($con, "select cacctno,cacctid,cacctdesc,mainacct,ccategory,nlevel,ctype from accounts WHERE compcode = '".$company."'"); 
@@ -24,7 +23,7 @@ include('../../include/access2.php');
 		$cats[$r['mainacct']][] = [ 'id' => $r['cacctid'], 'name' => $r['cacctdesc'], 'typ' => $r['ccategory'] ];
 	}
 
-
+	$date = strtotime("-1 year", time());
 ?>
 <!DOCTYPE html>
 <html>
@@ -66,7 +65,7 @@ include('../../include/access2.php');
 
 						<a href="Accounts_xls.php" class="btn btn-success btn-sm"><i class="fa fa-file-excel-o"></i> &nbsp; Export To Excel</a>
 
-						<button type="button" class="btn btn-warning btn-sm" id="btnedt" name="btnedt"><i class="fa fa-pencil" aria-hidden="true"></i> &nbsp; Beg Balance</button>
+						<!--<button type="button" class="btn btn-warning btn-sm" id="btnedt" name="btnedt"><i class="fa fa-pencil" aria-hidden="true"></i> &nbsp; Beg Balance</button>-->
 					</div>
 
 					<div class="col-xs-1 nopadwtop" style="height:30px !important;">
@@ -98,7 +97,8 @@ include('../../include/access2.php');
 						<th>Description</th>
 						<th>Category</th>
 						<th>Type</th>
-						<th>Beg Balance Bro</th>
+						<th>Balance as of <?=date('Y', $date)?> (Dr)</th>
+						<th>Balance as of <?=date('Y', $date)?> (Cr)</th>
 					</tr>
 				</thead>
 			</table>
@@ -407,7 +407,7 @@ mysqli_close($con);
 		// Adding new account
 		$("#btnadd").on("click", function() {
 
-			var x = chkAccess('Accounts_New.php');
+			var x = chkAccess('Accounts_New');
 		 
 		 	if(x.trim()=="True"){
 
@@ -426,7 +426,7 @@ mysqli_close($con);
 		});
 
 		$("#btnedt").on("click", function() { 
-			var x = chkAccess('Accounts_Edit.php');
+			var x = chkAccess('Accounts_Edit');
 		 
 			if(x.trim()=="True"){
 
@@ -633,11 +633,13 @@ mysqli_close($con);
 				},
 				{ "data": 4 },
 				{ "data": 3 },
-				{ "data": 9 }		
+				{ "data": 9 },
+				{ "data": 10 }				
       ],
 			"columnDefs": [
 				{ "targets": 3, "className": "text-center" } ,
-				{ "targets": 4, "className": "text-right" } 
+				{ "targets": 4, "className": "text-right" },
+				{ "targets": 5, "className": "text-right" }  
 			],
 		} );
 			

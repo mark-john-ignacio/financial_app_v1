@@ -2,7 +2,7 @@
 	if(!isset($_SESSION)){
 		session_start();
 	}
-	$_SESSION['pageid'] = "DR.php";
+	$_SESSION['pageid'] = "DR";
 
 	include('../../Connection/connection_string.php');
 	include('../../include/denied.php');
@@ -12,7 +12,7 @@
 	$company = $_SESSION['companyid'];
 
 	$poststat = "True";
-	$sql = mysqli_query($con,"select * from users_access where userid = '$employeeid' and pageid = 'DR_edit.php'");
+	$sql = mysqli_query($con,"select * from users_access where userid = '$employeeid' and pageid = 'DR_edit'");
 	if(mysqli_num_rows($sql) == 0){
 		$poststat = "False";
 	}
@@ -110,6 +110,7 @@ if (mysqli_num_rows($sqlhead)!=0) {
 		$CustCode = $row['ccode'];
 		$CustName = $row['cname'];
 		$Remarks = $row['cremarks'];
+		$RemarksLow = $row['clowremarks'];
 		$Date = $row['dcutdate'];
 		$Gross = $row['ngross'];
 		$cDRPrintNo = $row['cdrprintno'];
@@ -219,7 +220,7 @@ if (mysqli_num_rows($sqlhead)!=0) {
 									</td>
 								</tr>
 								<tr>
-									<th width="100">&nbsp;Remarks:</th>
+									<th width="100">&nbsp;Right Remarks:</th>
 									<td style="padding:2px" rowspan="3">
 										<div class="col-xs-11 nopadding">
 											<textarea class="form-control input-sm" id="txtremarks" name="txtremarks" rows="4"><?php echo $Remarks; ?></textarea>
@@ -254,6 +255,26 @@ if (mysqli_num_rows($sqlhead)!=0) {
 									</td>
 								</tr>
 								<tr>
+									<tH width="100">&nbsp;Lower Remarks:</tH>
+									<td style="padding:2px" rowspan="3">
+										<div class="col-xs-11 nopadding">
+											<textarea class="form-control input-sm" id="txtlowerremarks" name="txtlowerremarks" rows="4"><?=$RemarksLow?></textarea>
+										</div>
+									</td>
+									<tH>&nbsp;</tH>
+									<td style="padding:2px;">&nbsp;</td>
+								</tr>
+								<tr>
+									<td>&nbsp;</td>
+									<td>&nbsp;</td>
+									<td>&nbsp;</td>
+								</tr>
+								<tr>
+									<td>&nbsp;</td>
+									<td>&nbsp;</td>
+									<td>&nbsp;</td>
+								</tr>
+								<tr>
 									<td>&nbsp;</td>
 									<td>
 										<div class="col-xs-4 nopadwleft">
@@ -284,6 +305,7 @@ if (mysqli_num_rows($sqlhead)!=0) {
 									</td>
 									<td>&nbsp;</td>
 									<td>&nbsp;</td>
+								</tr>
 							</table>
 							
 						</div>
@@ -416,22 +438,24 @@ if (mysqli_num_rows($sqlhead)!=0) {
 										<input type="hidden" name="hdnunit" id="hdnunit">
 										<input type="hidden" id="txtprodid" name="txtprodid">
 										<input type="hidden" id="txtprodnme" name="txtprodnme">
+										<input type="hidden" id="txtpartname" name="txtpartname">
 										
-										<table id="MyTable" class="MyTable table table-condensed" width="100%">
+										<table id="MyTable" class="MyTable table-sm table-condensed">
 											<thead>
 												<tr>
-													<th style="border-bottom:1px solid #999">&nbsp;</th>
-													<th style="border-bottom:1px solid #999">APC Item No.</th>
-													<th style="border-bottom:1px solid #999">PO No.</th>
-													<th style="border-bottom:1px solid #999">Code</th>
-													<th style="border-bottom:1px solid #999">Description</th>
-													<th style="border-bottom:1px solid #999" id='tblAvailable'>Available</th>
-													<th style="border-bottom:1px solid #999">UOM</th>
-													<th style="border-bottom:1px solid #999">Factor</th>
-													<th style="border-bottom:1px solid #999">Qty</th>
+													<th width="50px" style="border-bottom:1px solid #999">&nbsp;</th>
+													<th width="150px" style="border-bottom:1px solid #999">APC Item No.</th>
+													<th width="150px" style="border-bottom:1px solid #999">PO No.</th>
+													<th width="100px" style="border-bottom:1px solid #999">Item Code</th>
+													<th width="200px" style="border-bottom:1px solid #999">Part No.</th>
+													<th width="250px" style="border-bottom:1px solid #999">Part Name</th>
+													<th width="100px" style="border-bottom:1px solid #999" id='tblAvailable'>Available</th>
+													<th width="100px" style="border-bottom:1px solid #999">UOM</th>
+													<th width="100px" style="border-bottom:1px solid #999">Factor</th>
+													<th width="100px" style="border-bottom:1px solid #999">Qty</th>
 													<!--<th style="border-bottom:1px solid #999">Price</th>
 													<th style="border-bottom:1px solid #999">Amount</th>-->
-													<th style="border-bottom:1px solid #999">&nbsp;</th>
+													<th width="50px" style="border-bottom:1px solid #999">&nbsp;</th>
 												</tr>
 											</thead>            
 											<tbody class="tbody">
@@ -468,17 +492,17 @@ if (mysqli_num_rows($sqlhead)!=0) {
 
 					</div>
 
-
-					<?php
-						if($poststat == "True"){
-					?>
 						<br>
 						<table width="100%" border="0" cellpadding="3">
 							<tr>
 								<td>
 									<input type="hidden" name="hdnrowcnt" id="hdnrowcnt"> 
 			
-									<button type="button" class="btn btn-primary btn-sm" tabindex="6" onClick="window.location.href='DR.php?ix=<?=isset($_REQUEST['hdnsrchval']) ? $_REQUEST['hdnsrchval'] : ""?>';" id="btnMain" name="btnMain">
+									<?php
+										if($poststat == "True"){
+									?>
+
+									<button type="button" class="btn btn-primary btn-sm" tabindex="6" onClick="window.location.href='DR.php?ix=<?=isset($_REQUEST['hdnsrchval']) ? $_REQUEST['hdnsrchval'] : ""?>&st=<?=isset($_REQUEST['hdnsrchsta']) ? $_REQUEST['hdnsrchsta'] : ""?>';" id="btnMain" name="btnMain">
 										Back to Main<br>(ESC)
 									</button>   
 									<button type="button" class="btn btn-default btn-sm" tabindex="6" onClick="window.location.href='DR_new.php';" id="btnNew" name="btnNew">
@@ -492,6 +516,8 @@ if (mysqli_num_rows($sqlhead)!=0) {
 									</button>
 
 									<?php
+										}
+
 										$sql = mysqli_query($con,"select * from users_access where userid = '".$_SESSION['employeeid']."' and pageid = 'DR_print'");
 
 										if(mysqli_num_rows($sql) == 1){
@@ -510,6 +536,8 @@ if (mysqli_num_rows($sqlhead)!=0) {
 
 									<?php		
 										}
+
+										if($poststat == "True"){
 									?>
 											
 									<button type="button" class="btn btn-warning btn-sm" tabindex="6" onClick="enabled();" id="btnEdit" name="btnEdit">
@@ -520,6 +548,10 @@ if (mysqli_num_rows($sqlhead)!=0) {
 										Save<br>(CTRL+S)
 									</button>
 					
+									<?php
+										}
+									?>
+
 								</td>
 								<td align="right">
 									<!--<b>TOTAL AMOUNT : <input type="text" id="txtnGross" name="txtnGross" readonly value="<?php //echo $Gross; ?>" style="text-align:right; border:none; background-color:#FFF; font-size:20px; font-weight:bold; color:#F00;" size="10"></b>-->
@@ -529,9 +561,7 @@ if (mysqli_num_rows($sqlhead)!=0) {
 						</table>
 
 						<br><br><br><br><br><br><br>
-					<?php
-						}
-					?>
+					
 
 			</div>
 		</div>
@@ -760,7 +790,7 @@ else{
             <div class="modal-bodylong">
 				<button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>        
         
-              	 <iframe id="myprintframe" name="myprintframe" scrolling="no" style="width:100%; height:98%; display:block; margin:0px; padding:0px; border:0px"></iframe>
+              	 <iframe id="myprintframe" name="myprintframe" scrolling="no" style="width:100%; height:11in; display:block; margin:0px; padding:0px; border:0px"></iframe>
     
             	
 			</div>
@@ -1431,6 +1461,7 @@ $(function(){
 					   $.each(data,function(index,item){
 
 						$('#txtprodnme').val(item.desc); 
+						$('#txtpartname').val(item.cpartname);
 						$('#txtprodid').val(item.id); 
 						$("#hdnunit").val(item.cunit); 
 						$("#hdnqty").val(item.nqty);
@@ -1702,6 +1733,7 @@ function myFunctionadd(qty,nqtyorig,pricex,curramt,amtx,factr,cref,crefident,itm
 	//alert("hello");
 	var itmcode = $("#txtprodid").val();
 	var itmdesc = $("#txtprodnme").val();
+	var itmpartnme = $('#txtpartname').val();
 	var itmqtyunit = $("#hdnqtyunit").val();
 	var itmqty = $("#hdnqty").val();
 	var itmunit = $("#hdnunit").val();
@@ -1776,7 +1808,11 @@ function myFunctionadd(qty,nqtyorig,pricex,curramt,amtx,factr,cref,crefident,itm
 	var tditmpono = "<td width=\"130\" nowrap> <input type='text' value='"+itmpono+"' class='form-control input-xs' name='txtapono' id='txtapono"+lastRow+"'> </td>"; 
 
 	var tditmcode = "<td width=\"120\"> <input type='hidden' value='"+itmcode+"' name=\"txtitemcode\" id=\"txtitemcode" + lastRow + "\">"+itmcode+" <input type='hidden' value='"+cref+"' name=\"txtcreference\" id=\"txtcreference" + lastRow + "\"><input type='hidden' value='"+crefident+"' name=\"txtcrefident\" id=\"txtcrefident" + lastRow + "\"></td>";
-	var tditmdesc = "<td style=\"white-space: nowrap; text-overflow:ellipsis; overflow: hidden; max-width:1px;\">"+itmdesc+"</td>";
+
+	var tditmdesc = "<td width=\"180\" nowrap> <input type='text' value='"+itmdesc+"' class='form-control input-xs' name='txtitmpartnodsc' id='txtitmpartnodsc"+lastRow+"'> </td>";
+
+	var tditmpartnme = "<td width=\"180\" nowrap> <input type='text' value='"+itmpartnme+"' class='form-control input-xs' name='txtitmpartname' id='txtitmpartname"+lastRow+"'> </td>";
+
 	var tditmavail = avail;
 	var tditmunit = "<td width=\"100\" nowrap> <select class='xseluom form-control input-xs' name=\"seluom\" id=\"seluom"+lastRow+"\">"+uomoptions+"</select> </td>";
 
@@ -1793,76 +1829,78 @@ function myFunctionadd(qty,nqtyorig,pricex,curramt,amtx,factr,cref,crefident,itm
 
 	// / &nbsp; <input class='btn btn-primary btn-xs' type='button' id='row_" + lastRow + "_info' value='+' onclick = \"viewhidden('"+itmcode+"','"+itmdesc+"');\"/> 
 
-	$('#MyTable > tbody:last-child').append('<tr>'+insbtn+ tdapcitmno + tditmpono + tditmcode + tditmdesc + tditmavail + tditmunit + tditmfactor + tditmqty + tditmdel + '</tr>');
+	$('#MyTable > tbody:last-child').append('<tr>'+insbtn+ tdapcitmno + tditmpono + tditmcode + tditmdesc + tditmpartnme + tditmavail + tditmunit + tditmfactor + tditmqty + tditmdel + '</tr>');
 
-									$("#del"+lastRow).on('click', function() {
-										$(this).closest('tr').remove();
-										Reindex();
-									});
+		$("#del"+lastRow).on('click', function() {
+			$(this).closest('tr').remove();
+			Reindex();
+		});
 
-									$("#ins"+lastRow).on('click', function() {
-										 var xcsd = $(this).closest("tr").find("input[name=txtnqty]").val();
-										 InsertDetSerial(itmcode, itmdesc, itmunit, crefident, xcsd, factz, itmqtyunit, cref)
-									});
+		$("#ins"+lastRow).on('click', function() {
+				var xcsd = $(this).closest("tr").find("input[name=txtnqty]").val();
+				InsertDetSerial(itmcode, itmdesc, itmunit, crefident, xcsd, factz, itmqtyunit, cref)
+		});
 
 
-									$("input.numeric").numeric();
-									$("input.numeric").on("click", function () {
-									   $(this).select();
-									});
-									
-									$("input.numeric").on("keyup", function () {
-									   ComputeAmt($(this).attr('id'));
-									   ComputeGross();
-									});
-									
-									$("#seluom"+lastRow).on('change', function() {
+		$("input.numeric").numeric();
+		$("input.numeric").on("click", function () {
+			$(this).select();
+		});
+		
+		$("input.numeric").on("keyup", function () {
+			ComputeAmt($(this).attr('id'));
+			ComputeGross();
+		});
+		
+		$("#seluom"+lastRow).on('change', function() {
 
-										var xyz = chkprice(itmcode,$(this).val(),itmccode,xtoday);
-										var mainuomdata = $(this).data("main");
-										var fact = $(this).find(':selected').data('factor');
+			var xyz = chkprice(itmcode,$(this).val(),itmccode,xtoday);
+			var mainuomdata = $(this).data("main");
+			var fact = $(this).find(':selected').data('factor');
 
-										if(fact!=0){
-											$('#hdnfactor'+lastRow).val(fact);
-										}
+			if(fact!=0){
+				$('#hdnfactor'+lastRow).val(fact);
+			}
 
-										if(mainuomdata!==$(this).val()){
-											$('#hdnfactor'+lastRow).attr("readonly", false);
-										}else{
-											$('#hdnfactor'+lastRow).attr("readonly", true);
-										}
+			if(mainuomdata!==$(this).val()){
+				$('#hdnfactor'+lastRow).attr("readonly", false);
+			}else{
+				$('#hdnfactor'+lastRow).attr("readonly", true);
+			}
 
-										$('#txtnprice'+lastRow).val(xyz.trim());
-										//alert($(this).attr('id'));
-										ComputeAmt($(this).attr('id'));
-										ComputeGross();
+			$('#txtnprice'+lastRow).val(xyz.trim());
+			//alert($(this).attr('id'));
+			ComputeAmt($(this).attr('id'));
+			ComputeGross();
 
-									});
-									
-									ComputeGross();
+		});
+		
+		ComputeGross();
 									
 									
 }
 
 function Reindex(){
-			$("#MyTable > tbody > tr").each(function(index) {	
-				tx = index + 1;
-	
-				$(this).find('input[name="ins"]').attr("id","ins"+tx);
-				$(this).find('input[name="txtitemcode"]').attr("id","txtitemcode"+tx);
-				$(this).find('input[type="hidden"][name="txtcreference"]').attr("id","txtcreference"+tx);
-				$(this).find('input[type="hidden"][name="txtcrefident"]').attr("id","txtcrefident"+tx);
-				$(this).find('select[name="seluom"]').attr("id","seluom"+tx);
-				$(this).find('input[name="hdnfactor"]').attr("id","hdnfactor"+tx); 
-				$(this).find('input[name="txtnqty"]').attr("id","txtnqty"+tx);
-				$(this).find('input[type="hidden"][name="hdnmainuom"]').attr("id","hdnmainuom"+tx);
-				$(this).find('input[type="hidden"][name="hdnqtyorig"]').attr("id","hdnqtyorig"+tx);
-				$(this).find('input[type="hidden"][name="txtnprice"]').attr("id","txtnprice"+tx);
-				$(this).find('input[type="hidden"][name="txtnamount"]').attr("id","txtnamount"+tx);
-				$(this).find('input[type="hidden"][name="txtntranamount"]').attr("id","txtntranamount"+tx);
-				$(this).find('input[name="del"]').attr("id","del"+tx);
+	$("#MyTable > tbody > tr").each(function(index) {	
+		tx = index + 1;
 
-			});
+		$(this).find('input[name="ins"]').attr("id","ins"+tx);
+		$(this).find('input[type="hidden"][name="txtitemcode"]').attr("id","txtitemcode"+tx);
+		$(this).find('input[name="txtitmpartnodsc"]').attr("id","txtitmpartnodsc"+tx);
+		$(this).find('input[name="txtitmpartname"]').attr("id","txtitmpartname"+tx);
+		$(this).find('input[type="hidden"][name="txtcreference"]').attr("id","txtcreference"+tx);
+		$(this).find('input[type="hidden"][name="txtcrefident"]').attr("id","txtcrefident"+tx);
+		$(this).find('select[name="seluom"]').attr("id","seluom"+tx);
+		$(this).find('input[name="hdnfactor"]').attr("id","hdnfactor"+tx); 
+		$(this).find('input[name="txtnqty"]').attr("id","txtnqty"+tx);
+		$(this).find('input[type="hidden"][name="hdnmainuom"]').attr("id","hdnmainuom"+tx);
+		$(this).find('input[type="hidden"][name="hdnqtyorig"]').attr("id","hdnqtyorig"+tx);
+		$(this).find('input[type="hidden"][name="txtnprice"]').attr("id","txtnprice"+tx);
+		$(this).find('input[type="hidden"][name="txtnamount"]').attr("id","txtnamount"+tx);
+		$(this).find('input[type="hidden"][name="txtntranamount"]').attr("id","txtntranamount"+tx);
+		$(this).find('input[name="del"]').attr("id","del"+tx);
+
+	});
 }
 
 function InsertDetSerial(itmcode, itmname, itmunit, itemrrident, itemqty, itmfctr, itemcunit, itmxref){
@@ -2343,6 +2381,7 @@ function InsertSI(){
                        $.each(data,function(index,item){
 						
 							$('#txtprodnme').val(item.desc); 
+							$('#txtpartname').val(item.cpartname);
 							$('#txtprodid').val(item.id); 
 							$("#hdnunit").val(item.cunit); 
 							$("#hdnqty").val(item.nqty);
@@ -2386,6 +2425,7 @@ function disabled(){
 	$("#btnPrint").attr("disabled", false);
 	$("#btnEdit").attr("disabled", false);
 
+	$(".kv-file-zoom").attr("disabled", false);
 }
 
 function enabled(){
@@ -2459,12 +2499,15 @@ function loaddetails(){
 			$.each(data,function(index,item){
 
 				$('#txtprodnme').val(item.desc); 
+				$('#txtpartname').val(item.cpartname);
 				$('#txtprodid').val(item.id); 
 				$("#hdnunit").val(item.cunit); 
 				$("#hdnqty").val(item.nqty);
 				$("#hdnqtyunit").val(item.cqtyunit);
 
-				addItemName(item.totqty,item.nqtyorig,item.nprice,item.nbaseamount,item.namount,item.nfactor,item.xref,item.xrefident,item.xcskucode,item.xcpono)
+				//myFunctionadd(qty,nqtyorig,pricex,curramt,amtx,factr,cref,crefident,itmsku,itmpono);
+				myFunctionadd(item.totqty,item.nqtyorig,item.nprice,item.nbaseamount,item.namount,item.nfactor,item.xref,item.xrefident,item.xcskucode,item.xcpono);
+				//addItemName(item.totqty,item.nqtyorig,item.nprice,item.nbaseamount,item.namount,item.nfactor,item.xref,item.xrefident,item.xcskucode,item.xcpono)
 			});
 
 		}
@@ -2608,6 +2651,7 @@ function chkform(){
 		var trancode = $("#txtcsalesno").val();
 		var ccode = $("#txtcustid").val();
 		var crem = $("#txtremarks").val();
+		var cremlow = $("#txtlowerremarks").val();
 		var ddate = $("#date_delivery").val();
 		var ngross = $("#txtnGross").val();
 		var cdrprintno = $("#cdrprintno").val();
@@ -2624,6 +2668,7 @@ function chkform(){
 			{	key: 'id', input: $("#txtcsalesno").val()	},
 			{	key: 'ccode', input: $("#txtcustid").val()	},
 			{	key: 'crem', input: $("#txtremarks").val()	},
+			{	key: 'cremlow', input: $("#txtlowerremarks").val()	},
 			{	key: 'ddate', input: $("#date_delivery").val()	},
 			{	key: 'ngross', input: $("#txtnGross").val()	},
 			{	key: 'cdrprintno', input: $("#cdrprintno").val()	},
@@ -2697,6 +2742,8 @@ function chkform(){
 				var crefno = $(this).find('input[type="hidden"][name="txtcreference"]').val();
 				var crefnoident = $(this).find('input[type="hidden"][name="txtcrefident"]').val();
 				var citmno = $(this).find('input[type="hidden"][name="txtitemcode"]').val();
+				var citmpartnodsc = $(this).find('input[name="txtitmpartnodsc"]').val();
+				var citmpartnme = $(this).find('input[name="txtitmpartname"]').val();
 				var cuom = $(this).find('select[name="seluom"]').val();
 				var nqty = $(this).find('input[name="txtnqty"]').val();
 				var nprice = $(this).find('input[type="hidden"][name="txtnprice"]').val();
@@ -2713,7 +2760,7 @@ function chkform(){
 
 				$.ajax ({
 					url: "DR_newsavedet.php",
-					data: { trancode: trancode, crefno: crefno, crefnoident:crefnoident, indx:index, citmno: citmno, cuom: cuom, nqty:nqty, nprice: nprice, namt:namt, mainunit:mainunit, nfactor:nfactor, norigqty:norigqty, ntransamt:ntransamt, nitemsysno:nitemsysno, nitemposno:nitemposno },
+					data: { trancode: trancode, crefno: crefno, crefnoident:crefnoident, indx:index, citmno: citmno, cuom: cuom, nqty:nqty, nprice: nprice, namt:namt, mainunit:mainunit, nfactor:nfactor, norigqty:norigqty, ntransamt:ntransamt, nitemsysno:nitemsysno, nitemposno:nitemposno, citmpartnme:citmpartnme, citmpartnodsc: citmpartnodsc },
 					async: false,
 					success: function( data ) {
 						if(data.trim()=="False"){
