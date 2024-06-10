@@ -30,8 +30,10 @@ $company = $_SESSION['companyid'];
 		$unpoststat = "False";
 	}
 
+	//"Select * from quote_trans_approvals where compcode='$company' and lapproved=0 and lreject=0 Group BY ctranno HAVING nlevel = MIN(nlevel) Order By ctranno, nlevel"
+
 	$chkapprovals = array();
-	$sqlappx = mysqli_query($con,"Select * from quote_trans_approvals where compcode='$company' and lapproved=0 and lreject=0 Group BY ctranno HAVING nlevel = MIN(nlevel) Order By ctranno, nlevel");
+	$sqlappx = mysqli_query($con,"Select A.* FROM quote_trans_approvals A left join (Select ctranno, MIN(nlevel) as nlevel from quote_trans_approvals where compcode='$company' and lapproved=0 and lreject=0 Group By ctranno Order By ctranno, nlevel) B on A.ctranno=B.ctranno where A.compcode='$company' and A.lapproved=0 and A.lreject=0 and A.nlevel=B.nlevel");
 	if (mysqli_num_rows($sqlappx)!=0) {
 		while($rows = mysqli_fetch_array($sqlappx, MYSQLI_ASSOC)){
 			@$chkapprovals[] = $rows; 
