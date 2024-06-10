@@ -31,8 +31,10 @@ $company = $_SESSION['companyid'];
 		$pospbill = "False";
 	}
 
+	//"Select * from paybill_trans_approvals where compcode='$company' and lapproved=0 and lreject=0 Group BY cpayno HAVING nlevel = MIN(nlevel) Order By cpayno, nlevel"
+
 	$chkapprovals = array();
-	$sqlappx = mysqli_query($con,"Select * from paybill_trans_approvals where compcode='$company' and lapproved=0 and lreject=0 Group BY cpayno HAVING nlevel = MIN(nlevel) Order By cpayno, nlevel");
+	$sqlappx = mysqli_query($con,"Select A.* FROM paybill_trans_approvals A left join (Select cpayno, MIN(nlevel) as nlevel from paybill_trans_approvals where compcode='$company' and lapproved=0 and lreject=0 Group By cpayno Order By cpayno, nlevel) B on A.cpayno=B.cpayno where A.compcode='$company' and A.lapproved=0 and A.lreject=0 and A.nlevel=B.nlevel");
 	if (mysqli_num_rows($sqlappx)!=0) {
 		while($rows = mysqli_fetch_array($sqlappx, MYSQLI_ASSOC)){
 			@$chkapprovals[] = $rows; 

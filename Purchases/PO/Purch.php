@@ -31,8 +31,9 @@
 		$unpostat = "False";
 	}
 
+	//"Select * from purchase_trans_approvals where compcode='$company' and lapproved=0 and lreject=0 Group BY cpono HAVING nlevel = MIN(nlevel) Order By cpono, nlevel"
 	$chkapprovals = array();
-	$sqlappx = mysqli_query($con,"Select * from purchase_trans_approvals where compcode='$company' and lapproved=0 and lreject=0 Group BY cpono HAVING nlevel = MIN(nlevel) Order By cpono, nlevel");
+	$sqlappx = mysqli_query($con,"Select A.* FROM purchase_trans_approvals A left join (Select cpono, MIN(nlevel) as nlevel from purchase_trans_approvals where compcode='$company' and lapproved=0 and lreject=0 Group By cpono Order By cpono, nlevel) B on A.cpono=B.cpono where A.compcode='$company' and A.lapproved=0 and A.lreject=0 and A.nlevel=B.nlevel");
 	if (mysqli_num_rows($sqlappx)!=0) {
 		while($rows = mysqli_fetch_array($sqlappx, MYSQLI_ASSOC)){
 			@$chkapprovals[] = $rows; 

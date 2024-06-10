@@ -261,9 +261,62 @@ if(mysqli_num_rows($sql) != 0){
 
 													</td>
 												</tr>
+												  
 												<tr>
-													<td colspan="5" align="center" style="height: 50px; vertical-align: bottom;"> <button class="btn btn-sm btn-success" name="btncompsave" id="btncompsave"><i class="fa fa-save"></i>&nbsp; &nbsp;Save Company Details</button> </td>
-												</tr>                     
+													<td>&nbsp;</td>
+													<td>&nbsp;</td>
+													<td>&nbsp;</td>
+												</tr>
+
+
+												<tr>
+													<td>&nbsp;</td>
+													<td >
+														<b>BIR Authorized Signatory</b>
+													</td>
+													<td style="padding:2px" colspan="2">
+
+														<div class="col-xs-5 nopadwright">
+														<input type="text" name="ptucode" id="ptucode" class="form-control input-sm" placeholder="Signatory Name..." maxlength="100">
+														</div>
+														<div class="col-xs-5 nopadding">
+															<input type="text" name="ptudate" id="ptudate" class="form-control input-sm" placeholder="Signatory Role" maxlength="">
+														</div>
+
+													</td>
+												</tr>
+
+												<tr>
+													<td>&nbsp;</td>
+													<td>&nbsp;</td>
+													<td style="padding:2px" colspan="2">
+
+														<div class="col-xs-5 nopadwright">
+														<input type="text" name="ptucode" id="ptucode" class="form-control input-sm" placeholder="Signatory TIN..." maxlength="100">
+														</div>
+
+													</td>
+												</tr>
+
+												<tr>
+													<td>&nbsp;</td>
+													<td>&nbsp;</td>
+													<td style="padding:2px" colspan="2">
+
+														<div class="col-xs-5 nopadwright">
+														<input type="text" name="ptucode" id="ptucode" class="form-control input-sm" placeholder="Signatory TIN..." maxlength="100">
+														</div>
+
+													</td>
+												</tr>
+
+												<tr>
+													<td colspan="4" align="center" style="height: 50px; vertical-align: bottom;"> <button class="btn btn-sm btn-success" name="btncompsave" id="btncompsave"><i class="fa fa-save"></i>&nbsp; &nbsp;Save Company Details</button> </td>
+												</tr> 
+											</table>
+
+											<table width="100%" border="0" cellpadding="0">
+												
 											</table>
 										</div>
 									</div> 

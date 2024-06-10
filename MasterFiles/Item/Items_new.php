@@ -321,7 +321,7 @@
                             </div>
                             
                             <div class="col-xs-1 nopadwtop">
-                                <input type="text" class="numeric form-control input-sm" id="txtcmarkUp" name="txtcmarkUp" required value="<?php echo $nvalue;?>" autocomplete="off"> 
+                                <input type="text" class="numeric form-control input-sm" id="txtcmarkUp" name="txtcmarkUp" value="<?php echo $nvalue;?>" required autocomplete="off"> 
                             </div>
                             <div class="col-xs-1 nopadwtop">
                                 <div style=" padding: 5px 10px;">
@@ -336,7 +336,7 @@
                             </div>
                             
                             <div class="col-xs-1 nopadwtop">
-                                <input type="text" class="numeric form-control input-sm" id="txtcmarkUp" name="txtcmarkUp" required value="<?php echo $nvalue;?>" autocomplete="off"> 
+                                <input type="text" class="numeric form-control input-sm" id="txtcmarkUp" name="txtcmarkUp" value="<?php echo $nvalue;?>" autocomplete="off"> 
                             </div>
                         </div>
 
@@ -1070,12 +1070,21 @@
 						var xid = $(this).val();
 
 						if(xid=="PM"){
+
+                            $("#txtcmarkUp").attr("required",false);
+
 							$("#divItmMarkUp").hide();
-                            $("#divItmMarkUpFix").hide();
+                            $("#divItmMarkUpFix").hide();                          
 						}else if(xid=="MU"){
+
+                            $("#txtcmarkUp").attr("required",true);
+
 							$("#divItmMarkUp").show();
                             $("#divItmMarkUpFix").hide();						
 						}else if(xid=="MUFIX"){
+
+                            $("#txtcmarkUp").attr("required",true);
+
 							$("#divItmMarkUpFix").show();	
                             $("#divItmMarkUp").hide();						
 						}
