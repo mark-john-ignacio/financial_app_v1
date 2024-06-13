@@ -48,11 +48,10 @@ require_once "../../Connection/connection_string.php";
 
 		}
 		
-	//echo $sql;
+	echo $sql;
 	
 	$result = mysqli_query ($con, $sql); 
 	while($row = mysqli_fetch_array($result, MYSQLI_ASSOC)){
-	print_r($row);
 	//if($row['nqty']>=1){
 			
 		$nqty1 = $row['totqty'];
