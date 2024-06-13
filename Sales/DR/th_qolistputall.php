@@ -68,7 +68,7 @@
 		if($xremain>0){
 			$json['id'] = $row['cpartno'];
 			$json['desc'] = $row['citemdesc'];
-			$json['nqty'] = $row['nqty'];
+			$json['nqty'] = $availinvtory;
 			$json['totqty'] = $nqty1 - $nqty2;
 			$json['cqtyunit'] = $row['cmainunit'];
 			$json['cunit'] = $row['cunit'];
