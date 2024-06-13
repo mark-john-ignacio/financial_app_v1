@@ -52,25 +52,25 @@ require_once "../../Connection/connection_string.php";
 	
 	$result = mysqli_query ($con, $sql); 
 	while($row = mysqli_fetch_array($result, MYSQLI_ASSOC)){
-	
+	print_r($row);
 	//if($row['nqty']>=1){
 			
 		$nqty1 = $row['totqty'];
 		$nqty2 = $row['totqty2']; 
 		
-		 $json['id'] = $row['cpartno'];
-	   	$json['desc'] = $row['citemdesc'];
-		 $json['nqty'] = $row['nqty'];
-		 $json['totqty'] = $nqty1 - $nqty2;
-		 $json['cqtyunit'] = $row['qtyunit'];
-		 $json['cunit'] = $row['cunit'];
-		 $json['nfactor'] = $row['nfactor'];
-		 $json['nprice'] = $row['nprice'];
-		 $json['nbaseamount'] = $row['nbaseamount'];
-		 $json['namount'] = $row['namount'];
-		 $json['xref'] = $row['ctranno'];
-		 $json['xrefident'] = $row['nident'];
-		 $json2[] = $json;
+		$json['id'] = $row['cpartno'];
+		$json['desc'] = $row['citemdesc'];
+		$json['nqty'] = $row['nqty'];
+		$json['totqty'] = $nqty1 - $nqty2;
+		$json['cqtyunit'] = $row['qtyunit'];
+		$json['cunit'] = $row['cunit'];
+		$json['nfactor'] = $row['nfactor'];
+		$json['nprice'] = $row['nprice'];
+		$json['nbaseamount'] = $row['nbaseamount'];
+		$json['namount'] = $row['namount'];
+		$json['xref'] = $row['ctranno'];
+		$json['xrefident'] = $row['nident'];
+		$json2[] = $json;
 
 //	}
 	
