@@ -1899,7 +1899,7 @@ function InsertSI(){
 	   			var id = $(this).val();
 				//alert("th_qolistput.php?id=" + tranno + "&itm=" + id + "&itmbal=" + xChkBal);
 	   			$.ajax({
-					url : "th_qolistput.php?id=" + tranno + "&itm=" + id + "&itmbal=" + xChkBal,
+					url : "th_qolistput.php?id=" + tranno + "&itm=" + id + "&itmbal=" + xChkBal + "&ddate=" + $("#date_delivery").val(),
 					type: "GET",
 					dataType: "JSON",
 					success: function(data)
