@@ -6,7 +6,7 @@ require_once "../../Connection/connection_string.php";
 
 		$company = $_SESSION['companyid'];
 
-		$avail = $_REQUEST['itm'];
+		$avail = $_REQUEST['itmbal'];
 		//$date1 = date("Y-m-d");
 		$date=date_create($_REQUEST['date']);
 		$date1 = date_format($date,"Y-m-d");
@@ -47,8 +47,6 @@ require_once "../../Connection/connection_string.php";
 			WHERE a.compcode='$company' and a.ctranno = '".$_REQUEST['id']."' and a.nident = '".$_REQUEST['itm']."'";
 
 		}
-		
-	echo $sql;
 	
 	$result = mysqli_query ($con, $sql); 
 	while($row = mysqli_fetch_array($result, MYSQLI_ASSOC)){
