@@ -8,7 +8,7 @@ require_once "../../Connection/connection_string.php";
 
 		$avail = $_REQUEST['itmbal'];
 		//$date1 = date("Y-m-d");
-		$date=date_create($_REQUEST['date']);
+		$date=date_create($_REQUEST['ddate']);
 		$date1 = date_format($date,"Y-m-d");
 
 		if($avail==1){

@@ -8,7 +8,7 @@
 
 	$avail = $_REQUEST['itmbal'];
 	//$date1 = date("Y-m-d");
-	$date=date_create($_REQUEST['date']);
+	$date=date_create($_REQUEST['ddate']);
 	$date1 = date_format($date,"Y-m-d");
 
 	//get all so
