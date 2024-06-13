@@ -135,7 +135,7 @@
 		<?php
 			} 
 		?>
-		<td>PROD - Production Outputs</td> 
+		<td>PROD - Production Output</td> 
 		<td>IT - Inventory Transfer</td> 
 		<?php		
 			if($whse_req==$whseFG){
