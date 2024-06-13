@@ -16,8 +16,6 @@ require_once "../../include/denied.php";
 require_once "../../include/access.php";
 
 
-
-
 //POST RECORD
 $tranno = $_REQUEST['x'];
 
@@ -67,8 +65,8 @@ if($_REQUEST['typ']=="POST"){
 			$nqty = $itmupdate['nqty'];
 			$nactual = $itmupdate['nqtyactual'];
 			$nadj = $itmupdate['nadj'];
-			$lastdate = date("Y-m-t", strtotime($itmupdate['dadjdate']));
-			$lastdatetime = date("Y-m-t", strtotime($itmupdate['dadjdate']))." 23:59:59";
+			$lastdate = date("Y-m-d", strtotime($itmupdate['dadjdate']));
+			$lastdatetime = date("Y-m-d", strtotime($itmupdate['dadjdate']))." 23:59:59";
 			
 			if($nadj!==0){
 				//pag mayadjustment insert sa stock ledger table
