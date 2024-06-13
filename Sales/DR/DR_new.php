@@ -1171,7 +1171,7 @@ $(function(){
 			//add details
 			//alert("th_qolistputall.php?id=" + $(this).val() + "&itmbal=" + xChkBal);
 				$.ajax({
-					url : "th_qolistputall.php?id=" + $(this).val() + "&itmbal=" + xChkBal,
+					url : "th_qolistputall.php?id=" + $(this).val() + "&itmbal=" + xChkBal + "&ddate=" + $("#date_delivery").val(),
 					type: "GET",
 					dataType: "JSON",
 					async: false,
