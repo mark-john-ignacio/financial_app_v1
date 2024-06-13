@@ -327,7 +327,7 @@
 				?>
 			</td> 
 			<td align="center" style="text-align: center; border-right:1px solid">
-					<b><?=$totIn-$totOut?></b>
+					<b><?=(intval($totIn-$totOut)!==0) ? number_format($totIn-$totOut) : ""?></b>
 			</td>
 			<td align="center" style="text-align: center; border-right:1px solid">
 				<b>
