@@ -145,7 +145,11 @@ if (mysqli_num_rows($sqlhead)!=0) {
         }
 
       ?>
-
+      <tr>
+        <td align="center">&nbsp;</td>
+        <td align="center">&nbsp;</td>
+        <td colspan="5"><?=$Remarks?></td>
+      </tr>
     </table>
   </td>
   </tr>
