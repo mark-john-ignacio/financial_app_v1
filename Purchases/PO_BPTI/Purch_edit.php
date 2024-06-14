@@ -1522,7 +1522,7 @@ else{
 			crefPRIdent = dcrefident;
 
 			if(nqty=="" && nprice=="" && namount=="" && nfactor=="" && cmainunit==""){
-				var itmprice = chkprice(itmcode,itmunit);
+				var itmprice = chkprice(itmdesc,itmunit);
 				var itmamnt = itmprice;
 				var itmbaseamnt = itmprice;
 				var itmfactor = 1;
@@ -1548,7 +1548,7 @@ else{
 					}
 			}
 		}else{
-			var itmprice = chkprice(itmcode,itmunit);
+			var itmprice = chkprice(itmdesc,itmunit);
 			var itmamnt = parseFloat(itmnqty)*parseFloat(itmprice);
 			var itmbaseamnt = parseFloat($("#basecurrval").val())*parseFloat(itmamnt);  
 		}
@@ -1690,7 +1690,7 @@ else{
 			
 			$("#seluom"+lastRow).on('change', function() {
 
-				var xyz = chkprice(itmcode,$(this).val());
+				var xyz = chkprice(itmdesc,$(this).val());
 				
 				$('#txtnprice'+lastRow).val(xyz.trim());
 				

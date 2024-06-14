@@ -1148,7 +1148,7 @@
 
 		var dneeded= document.getElementById("date_needed").value;
 
-		var itmprice = chkprice(itmcode,itmunit);
+		var itmprice = chkprice(itmdesc,itmunit);
 		var itmamt = parseFloat(itmnqty)*parseFloat(itmprice);
 		var itmbaseamt = parseFloat($("#basecurrval").val())*parseFloat(itmamt); 
 
@@ -1273,7 +1273,7 @@
 			
 			$("#seluom"+lastRow).on('change', function() {
 
-				var xyz = chkprice(itmcode,$(this).val());
+				var xyz = chkprice(itmdesc,$(this).val());
 				
 				$('#txtnprice'+lastRow).val(xyz.trim());
 				
