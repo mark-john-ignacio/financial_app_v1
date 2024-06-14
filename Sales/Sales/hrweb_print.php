@@ -372,6 +372,15 @@ if (mysqli_num_rows($sqlhead)!=0) {
         }
 
       ?>
+
+      <div class="Row">
+        <div class="Column" style="width: 1in">&nbsp;</div>
+        <div class="Column" style="width: 0.7in">&nbsp;</div>
+        <div class="Column" style="width: 3.15in;"><?=$Remarks;?></div>
+        <div class="Column" style="width: 1.1in; text-align: right">&nbsp;</div>
+        <div class="Column" style="width: 1in; text-align: right">&nbsp;</div>
+      </div>
+
     </div>
 
     <div class="TotSales"><?=$xcTotA?></div>
