@@ -111,7 +111,7 @@
 		$arrcompz = array();
 		$cntzcompany = 0;
 		
-		$result=mysqli_query($con,"select compcode, compname, clogoname, lallownontrade, lmrpmodules, IFNULL(csubcode,'') as csubcode From company");		
+		$result=mysqli_query($con,"select compcode, compname, clogoname From company");		
 
 		while($row = mysqli_fetch_array($result, MYSQLI_ASSOC))
 		{
@@ -120,9 +120,6 @@
 			if($row['compcode'] == $company){
 				$compname =  $row['compname'];
 				$logoname =  str_replace("../","",$row['clogoname']);
-				$lallowNT =  $row['lallownontrade'];
-				$lallowMRP = $row['lmrpmodules'];
-				$durlSUB = $row['csubcode'];
 			}
 		}    
 	?>
