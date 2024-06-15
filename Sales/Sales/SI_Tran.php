@@ -5,11 +5,11 @@ session_start();
 require_once "../../Connection/connection_string.php";
 
 if($_REQUEST['typ']=="POST"){
-	$_SESSION['pageid'] = "POS_post";
+	$_SESSION['pageid'] = "SI_post";
 }
 
 if($_REQUEST['typ']=="CANCEL"){
-	$_SESSION['pageid'] = "POS_cancel";
+	$_SESSION['pageid'] = "SI_cancel";
 }
 
 require_once "../../include/denied.php";
