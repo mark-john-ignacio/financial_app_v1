@@ -162,9 +162,24 @@ function getSetAcct($id){
 		global $compcode;
 		global $xcomp;	
 		global $xsicpaytype;	
+
+		$nicomeaccount = "";
+		$result = mysqli_query($con,"SELECT * FROM `parameters` WHERE compcode='$company' and ccode='INCOME_ACCOUNT'"); 								
+		if (mysqli_num_rows($result)!=0) {
+			$all_course_data = mysqli_fetch_array($result, MYSQLI_ASSOC);						 
+			$nicomeaccount = $all_course_data['cvalue']; 							
+		}
+
+		if($nicomeaccount=="customer"){
+
+			$qrySI = "INSERT INTO `glactivity`(`compcode`, `cmodule`, `ctranno`, `ddate`, `acctno`, `ctitle`, `ndebit`, `ncredit`, `lposted`, `dpostdate`) Select '$company','SI','$tran',A.dcutdate,B.cacctid,B.cacctdesc,A.ngross,0,0,NOW() From sales A left join accounts B on A.compcode=B.compcode and A.cacctcode=B.cacctno where A.compcode='$company' and A.ctranno='$tran'";
 		
-			//get Customer Entry
-		if($cSIsalescodetype=="multiple"){
+		}elseif($nicomeaccount=="si"){
+
+			$qrySI = "INSERT INTO `glactivity`(`compcode`, `cmodule`, `ctranno`, `ddate`, `acctno`, `ctitle`, `ndebit`, `ncredit`, `lposted`, `dpostdate`) Select '$company','SI','$tran',A.dcutdate,B.cacctno,C.cacctdesc,A.ngross,0,0,NOW() From sales A left join accounts_default B on A.compcode=B.compcode and A.cpaytype=B.cdescription left join accounts C on A.compcode=C.compcode and B.cacctno=C.cacctid where A.compcode='$company' and A.ctranno='$tran'";
+			
+		}elseif($nicomeaccount=="item"){
+
 			$qrySI = "INSERT INTO `glactivity`(`compcode`, `cmodule`, `ctranno`, `ddate`, `acctno`, `ctitle`, `ndebit`, `ncredit`, `lposted`, `dpostdate`) Select '$company','SI','$tran',A.dcutdate,B.cacctno,D.cacctdesc,C.ngross,0,0,NOW()
 					From sales A
 					left join customers_accts B on A.compcode=B.compcode and A.ccode=B.ccode
@@ -177,9 +192,6 @@ function getSetAcct($id){
 					) C on B.citemtype=C.ctype
 					left join accounts D on B.compcode=D.compcode and B.cacctno=D.cacctno 
 					where A.compcode='$company' and A.ctranno='$tran'";
-		}else{
-
-			$qrySI = "INSERT INTO `glactivity`(`compcode`, `cmodule`, `ctranno`, `ddate`, `acctno`, `ctitle`, `ndebit`, `ncredit`, `lposted`, `dpostdate`) Select '$company','SI','$tran',A.dcutdate,B.cacctid,B.cacctdesc,A.ngross,0,0,NOW() From sales A left join accounts B on A.compcode=B.compcode and A.cacctcode=B.cacctno where A.compcode='$company' and A.ctranno='$tran'";
 
 		}
 		
