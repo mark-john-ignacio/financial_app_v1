@@ -263,7 +263,7 @@
 		
 		if($ccate!==$row['ccategory']){
 
-			echo "<tr><td colspan='2' style='border-bottom-style: double; border-top: 2px solid #000;'><b>TOTAL ".$ccate."</b></td><td align='right' style='border-bottom-style: double; border-top: 2px solid #000;'><b>".number_format($arrlvlamt[0],2)."</b></td></tr>";
+			echo "<tr><td colspan='2' style='border-bottom-style: double; border-top: 2px solid #000;'><b>TOTAL1 ".$ccate."</b></td><td align='right' style='border-bottom-style: double; border-top: 2px solid #000;'><b>".number_format($arrlvlamt[0],2)."</b></td></tr>";
 
 			if($ccate=="REVENUE"){
 				$profitRevn = floatval($arrlvlamt[0]);
@@ -353,7 +353,6 @@
 		$BPEXPzc0 = floatval($arrlvlamt[0]);
 	}
 
-	echo "HEREm: ". floatval($profitRevn) ." - " .floatval($profitCost);
 	if(floatval($BPEXPzc0)==0){
 		$xctot = floatval($profitRevn) - floatval($profitCost);
 		$donetwo = ($xctot<0) ? "(".number_format(abs($xctot),2).")" : number_format(($xctot),2);
