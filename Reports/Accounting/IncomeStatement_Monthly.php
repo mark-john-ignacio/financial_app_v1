@@ -468,6 +468,17 @@
 
 		echo "</tr>";
 
+
+		if(floatval($BPEXPzc0[$rxzm])==0){
+			echo "<tr><td colspan='2' style='padding-top:10px'><b>GROSS PROFIT</b></td>";
+			
+			foreach($hdr_months as $rxzm){
+
+			}
+
+			echo "</tr>";
+		}
+
 ?>
 
 <tr><td colspan='3' style='padding-top: 10px'>&nbsp;</td></tr>
