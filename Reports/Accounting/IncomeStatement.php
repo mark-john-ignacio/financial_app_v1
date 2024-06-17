@@ -353,6 +353,7 @@
 		$BPEXPzc0 = floatval($arrlvlamt[0]);
 	}
 
+	echo "HEREm: ". floatval($profitRevn) ." - " .floatval($profitCost);
 	if(floatval($BPEXPzc0)==0){
 		$xctot = floatval($profitRevn) - floatval($profitCost);
 		$donetwo = ($xctot<0) ? "(".number_format(abs($xctot),2).")" : number_format(($xctot),2);
