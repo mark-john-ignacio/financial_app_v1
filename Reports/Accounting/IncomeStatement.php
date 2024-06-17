@@ -354,7 +354,7 @@
 	}
 
 	if(floatval($BPEXPzc0)==0){
-		$BPROFITzc0 = floatval($profitRevn) - floatval($profitCost);
+		$xctot = floatval($profitRevn) - floatval($profitCost);
 	}else{
 		$xctot = $BPROFITzc0-$BPEXPzc0;
 	}
