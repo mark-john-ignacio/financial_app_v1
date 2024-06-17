@@ -339,6 +339,14 @@
 		
 		if(floatval($BPEXPzc0)==0){
 			$xctot = floatval($profitRevn) - floatval($profitCost);
+			$donetwo = ($BPROFITzc0<0) ? "(".number_format(abs($BPROFITzc0),2).")" : number_format(($BPROFITzc0),2);
+			$cnt++;
+			$spreadsheet->setActiveSheetIndex(0)
+				->setCellValue('A'.$cnt, "GROSS PROFIT")
+				->setCellValue('C'.$cnt, $donetwo);
+			$spreadsheet->getActiveSheet()->mergeCells("A".$cnt.":B".$cnt);
+			$spreadsheet->setActiveSheetIndex(0)->getStyle('C'.$cnt)->getNumberFormat()->setFormatCode("_(* #,##0.00_);_(* \(#,##0.00\);_(* \"-\"??_);_(@_)");	
+			$spreadsheet->getActiveSheet()->getStyle("A".$cnt.":C".$cnt)->getFont()->setBold(true);
 		}else{
 			$xctot = $BPROFITzc0-$BPEXPzc0;
 		}

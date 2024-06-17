@@ -454,6 +454,10 @@
 		
 			if(floatval($BPEXPzc0[$rxzm])==0){
 				$xctot[$rxzm] = floatval($profitRevn[$rxzm]) - floatval($profitCost[$rxzm]);
+				$donetwo = ($xctot[$rxzm]<0) ? "(".number_format(abs($xctot[$rxzm]),2).")" : number_format(($xctot[$rxzm]),2);
+
+				echo "<td align='right' style='border-bottom: 1px solid #000; padding-top:10px; padding-right: 20px; padding-left: 20px;'><b>".$donetwo."</b></td>";
+
 			}else{
 				$xctot[$rxzm] = $BPROFITzc0[$rxzm]-$BPEXPzc0[$rxzm];
 			}
