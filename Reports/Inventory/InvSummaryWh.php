@@ -88,7 +88,7 @@
 	$sql = "select a.citemno, sum(a.nqty) as nqty
 	From invcount_t a left join invcount b on a.compcode=b.compcode and a.ctranno=b.ctranno 
 	left join items c on a.compcode=c.compcode and a.citemno=c.cpartno 
-	where a.compcode='$company' and b.section_nid='".$whse_req."' and b.ctype='ending' and c.linventoriable=0 and b.dcutdate between STR_TO_DATE('$dtfrom', '%m/%d/%Y') and STR_TO_DATE('$dtto', '%m/%d/%Y') group by a.citemno";
+	where a.compcode='$company' and b.section_nid='".$whse_req."' and b.ctype='ending' and c.linventoriable=0 and b.dcutdate between STR_TO_DATE('$dtfrom', '%m/%d/%Y') and STR_TO_DATE('$dtto', '%m/%d/%Y') and b.lapproved=1 group by a.citemno";
 
 	$invending= mysqli_query($con,$sql);
 	$rowEnd = $invending->fetch_all(MYSQLI_ASSOC);
