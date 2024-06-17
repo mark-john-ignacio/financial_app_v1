@@ -170,7 +170,7 @@ function getcostfromin($getcitmno, $getnqty){
 		}
 		else{
 			echo "True";			
-			mysqli_query($con,"INSERT INTO `tblinvin`(`compcode`, `ctranno`, `citemno_nident`, `citemno`, `cunit`, `clotsno`,`cpacklist`,`nlocation`, `nqty`, `cmainunit`, `nfactor`, `ntotqty`, `ncost`, `ddate`) Select '$company', '$tran', A.nident, A.citemno, A.cunit, A.clotsno, A.cpacklist, A.nlocation, A.nqty, A.cmainunit, A.nfactor, A.nqty*A.nfactor, B.ncost, NOW() From receive_t_serials A left join receive_t B on A.compcode=B.compcode and A.ctranno=B.ctranno and A.citemno=B.citemno and  A.nrefidentity=B.nident where A.ctranno='$tran'");	
+			mysqli_query($con,"INSERT INTO `tblinvin`(`compcode`, `ctranno`, `citemno_nident`, `citemno`, `cunit`, `clotsno`,`cpacklist`,`nlocation`, `nqty`, `cmainunit`, `nfactor`, `ntotqty`, `ncost`, `ddate`) Select '$company', '$tran', A.nident, A.citemno, A.cunit, A.clotsno, A.cpacklist, A.nlocation, A.nqty, A.cmainunit, A.nfactor, A.nqty*A.nfactor, B.ncost, NOW() From receive_t_serials A left join receive_t B on A.compcode=B.compcode and A.ctranno=B.ctranno and A.citemno=B.citemno and A.nrefidentity=B.nident where A.ctranno='$tran'");	
 		}
 	} 
 

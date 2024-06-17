@@ -353,7 +353,12 @@
 		$BPEXPzc0 = floatval($arrlvlamt[0]);
 	}
 
-	$xctot = $BPROFITzc0-$BPEXPzc0;
+	if(floatval($BPEXPzc0)==0){
+		$BPROFITzc0 = floatval($profitRevn) - floatval($profitCost);
+	}else{
+		$xctot = $BPROFITzc0-$BPEXPzc0;
+	}
+	
 	$xctotax = 0;
 	$xctotaxaftr = 0;
 ?>
