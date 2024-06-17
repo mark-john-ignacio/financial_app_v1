@@ -440,11 +440,24 @@
 
 			echo "<td align='right' style='border-bottom: 2px solid #000; border-top: 1px solid #000; ; padding-right: 20px; padding-left: 20px;'><b>".$donetwo."</b></td>";
 
+			if($ccate=="REVENUE"){
+				$profitRevn[$rxzm] = floatval($arrlvlamt[0][$rxzm]);
+			}
+		
+			if($ccate=="COST OF SALES"){				
+				 $profitCost[$rxzm]= floatval($arrlvlamt[0][$rxzm]);
+			}
+
 			if($ccate=="EXPENSES"){
 				$BPEXPzc0[$rxzm] = floatval($arrlvlamt[0][$rxzm]);
 			}
 		
-			$xctot[$rxzm] = $BPROFITzc0[$rxzm]-$BPEXPzc0[$rxzm];
+			if(floatval($BPEXPzc0[$rxzm])==0){
+				$xctot[$rxzm] = floatval($profitRevn[$rxzm]) - floatval($profitCost[$rxzm]);
+			}else{
+				$xctot[$rxzm] = $BPROFITzc0[$rxzm]-$BPEXPzc0[$rxzm];
+			}
+
 			$xctotax[$rxzm] = 0;
 			$xctotaxaftr[$rxzm] = 0;
 		}

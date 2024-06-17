@@ -324,6 +324,14 @@
 		$spreadsheet->setActiveSheetIndex(0)->getStyle('C'.$cnt)->getNumberFormat()->setFormatCode("_(* #,##0.00_);_(* \(#,##0.00\);_(* \"-\"??_);_(@_)");	
 		$spreadsheet->getActiveSheet()->getStyle("A".$cnt.":C".$cnt)->getFont()->setBold(true);
 	
+		if($ccate=="REVENUE"){
+			$profitRevn = floatval($arrlvlamt[0]);
+		}
+	
+		if($ccate=="COST OF SALES"){				
+			 $profitCost= floatval($arrlvlamt[0]);
+		}
+		
 		if($ccate=="EXPENSES"){
 			$BPEXPzc0 = floatval($arrlvlamt[0]);
 		}

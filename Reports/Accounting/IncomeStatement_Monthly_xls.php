@@ -434,11 +434,24 @@
 			$spreadsheet->getActiveSheet()->setCellValueByColumnAndRow($cols, $rows, $arrlvlamt[0][$rxzm]);					
 			$spreadsheet->setActiveSheetIndex(0)->getStyle($lastCellAddress)->getNumberFormat()->setFormatCode("_(* #,##0.00_);_(* \(#,##0.00\);_(* \"-\"??_);_(@_)");
 					
+			if($ccate=="REVENUE"){
+				$profitRevn[$rxzm] = floatval($arrlvlamt[0][$rxzm]);
+			}
+		
+			if($ccate=="COST OF SALES"){				
+				 $profitCost[$rxzm]= floatval($arrlvlamt[0][$rxzm]);
+			}
+
 			if($ccate=="EXPENSES"){
 				$BPEXPzc0[$rxzm] = floatval($arrlvlamt[0][$rxzm]);
 			}
 		
-			$xctot[$rxzm] = $BPROFITzc0[$rxzm]-$BPEXPzc0[$rxzm];
+			if(floatval($BPEXPzc0[$rxzm])==0){
+				$xctot[$rxzm] = floatval($profitRevn[$rxzm]) - floatval($profitCost[$rxzm]);
+			}else{
+				$xctot[$rxzm] = $BPROFITzc0[$rxzm]-$BPEXPzc0[$rxzm];
+			}
+			
 			$xctotax[$rxzm] = 0;
 			$xctotaxaftr[$rxzm] = 0;
 		}
