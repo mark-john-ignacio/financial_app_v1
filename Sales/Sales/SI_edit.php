@@ -1882,15 +1882,15 @@ function myFunctionadd(qty,pricex,ndisc,curramt,amtx,factr,cref,nrefident,citmcl
 
 			var tdgltitle = "<td nowrap><input type='text' value='"+itmacctnm+"' class='cacctdesc form-control input-xs' name=\"txtacctname\" id='txtacctname"+lastRow+"'></td>";
 
-			var tditmdel = "<td nowrap> <input class='btn btn-danger btn-xs btn-block' type='button' id='del"+ itmcode +"' value='delete' data-var='"+lastRow+"'/></td>";
+			var tditmdel = "<td nowrap> <input class='btn btn-danger btn-xs' type='button' id='del"+ lastRow +"' value='delete' data-var='"+lastRow+"'/></td>";
 		}else{
 			var tdglaccount = "";
 			var tdgltitle = "";
-			var tditmdel = "<td nowrap> <input type='hidden' value='' name=\"txtacctcode\" id='txtacctcode"+lastRow+"'> <input type='hidden' value='"+itmacctno+"' name=\"txtacctno\" id='txtacctno"+lastRow+"'>  <input type='hidden' value='' name=\"txtacctname\" id='txtacctname"+lastRow+"'> <input class='btn btn-danger btn-xs btn-block' type='button' id='del"+ itmcode +"' value='delete' data-var='"+lastRow+"'/></td>";
+			var tditmdel = "<td nowrap> <input type='hidden' value='"+itmacctid+"' name=\"txtacctcode\" id='txtacctcode"+lastRow+"'> <input type='hidden' value='"+itmacctno+"' name=\"txtacctno\" id='txtacctno"+lastRow+"'>  <input type='hidden' value='"+itmacctnm+"' name=\"txtacctname\" id='txtacctname"+lastRow+"'> <input class='btn btn-danger btn-xs' type='button' id='del"+ lastRow +"' value='delete' data-var='"+lastRow+"'/></td>";
 
 		}
 	
-	var tditmdel = "<td width=\"90\" nowrap> <input class='btn btn-danger btn-xs' type='button' id='del"+ lastRow +"' value='delete' data-var='"+lastRow+"'/> &nbsp; </td>"; // <input class='btn btn-primary btn-xs' type='button' id='row_" + lastRow + "_info' value='+' onclick = \"viewhidden('"+itmcode+"','"+itmdesc+"');\"/> tditmewts
+	//var tditmdel = "<td width=\"90\" nowrap>  &nbsp; </td>"; // <input class='btn btn-primary btn-xs' type='button' id='row_" + lastRow + "_info' value='+' onclick = \"viewhidden('"+itmcode+"','"+itmdesc+"');\"/> tditmewts
 
 	$('#MyTable > tbody:last-child').append('<tr>'+tditmcode + tditmdesc + tditmvats + tditmunit + tditmqty + tditmprice + tditmdisc + tditmbaseamount + tditmamount + tdglaccount + tdgltitle + tditmdel + '</tr>');
 
