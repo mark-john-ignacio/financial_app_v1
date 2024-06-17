@@ -355,6 +355,9 @@
 
 	if(floatval($BPEXPzc0)==0){
 		$xctot = floatval($profitRevn) - floatval($profitCost);
+		$donetwo = ($xctot<0) ? "(".number_format(abs($xctot),2).")" : number_format(($xctot),2);
+		echo "<tr><td colspan='2' style='padding-top:10px'><b>GROSS PROFIT</b></td><td align='right' style='border-bottom: 1px solid #000; padding-top:10px'><b>".$donetwo."</b></td></tr>";
+
 	}else{
 		$xctot = $BPROFITzc0-$BPEXPzc0;
 	}
