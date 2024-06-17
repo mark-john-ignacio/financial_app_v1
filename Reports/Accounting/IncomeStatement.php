@@ -263,7 +263,7 @@
 		
 		if($ccate!==$row['ccategory']){
 
-			echo "<tr><td colspan='2' style='border-bottom-style: double; border-top: 2px solid #000;'><b>TOTAL1 ".$ccate."</b></td><td align='right' style='border-bottom-style: double; border-top: 2px solid #000;'><b>".number_format($arrlvlamt[0],2)."</b></td></tr>";
+			echo "<tr><td colspan='2' style='border-bottom-style: double; border-top: 2px solid #000;'><b>TOTAL ".$ccate."</b></td><td align='right' style='border-bottom-style: double; border-top: 2px solid #000;'><b>".number_format($arrlvlamt[0],2)."</b></td></tr>";
 
 			if($ccate=="REVENUE"){
 				$profitRevn = floatval($arrlvlamt[0]);
@@ -274,7 +274,6 @@
 			}
 
 			$arrlvlamt[0] = 0;
-
 
 			if($row['ccategory']=="EXPENSES"){
 				$BPROFITzc0 = floatval($profitRevn) - floatval($profitCost);
@@ -347,7 +346,7 @@
 	}
 
 	$donetwo = ($arrlvlamt[0]<0) ? "(".number_format(abs($arrlvlamt[0]),2).")" : number_format(($arrlvlamt[0]),2);
-	echo "<tr><td colspan='2' style='border-bottom: 2px solid #000; border-top: 1px solid #000;'><b>TOTAL ".$ccate."</b></td><td align='right' style='border-bottom: 2px solid #000; border-top: 1px solid #000;'><b>".$donetwo."</b></td></tr>";
+	echo "<tr><td colspan='2' style='border-bottom: 2px solid #000; border-top: 1px solid #000;'><b>TOTAL2 ".$ccate."</b></td><td align='right' style='border-bottom: 2px solid #000; border-top: 1px solid #000;'><b>".$donetwo."</b></td></tr>";
 
 	if($ccate=="EXPENSES"){
 		$BPEXPzc0 = floatval($arrlvlamt[0]);
