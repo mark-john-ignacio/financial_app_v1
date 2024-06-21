@@ -167,9 +167,9 @@
 				</div>
 				<div class="col-xs-2 nopadding">
 					<select class="form-control input-sm" name="selcntyp" id="selcntyp">			
-						<option value="request">Request</option>		
-						<option value="fg_transfer">FG Transfer</option>		
-						<option value="transfer">Issuance</option>				
+						<option value="request">MRS - Material Requisition Slip</option>		
+						<option value="fg_transfer">SIS - Stock In Slip</option>		
+						<option value="transfer">IRS - Item Return Slip</option>				
 					</select>
 				</div>
 			</div>

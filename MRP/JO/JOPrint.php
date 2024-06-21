@@ -263,13 +263,14 @@ include('../../include/denied.php');
 
 		<?php
 		//}
-		
+			$xcnt = 0;
 			foreach($arrmrpjo_ptmain as $bv){
+				$xcnt++;
 		?>
 
 			<tr> 
 				<td><?=$bv['cmachinedesc']?> </td> 
-				<td style="padding-left:10px"><?=$bv['mrp_process_desc']?> </td>
+				<td style="padding-left:10px; max-width: 200px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;"><?=$bv['mrp_process_desc']?> </td>
 				<td><?=$bv['ddatestart']?></td>
 				<td><?=$bv['ddateend']?></td>
 				<td style="text-align: center"><?=(intval($bv['nactualoutput'])>0) ? number_format($bv['nactualoutput']) : ""?></td>
@@ -282,6 +283,13 @@ include('../../include/denied.php');
 		<?php
 				$totrej = $totrej + floatval($bv['nrejectqty']);
 				$totscrp = $totscrp + floatval($bv['nscrapqty']);
+			}
+
+
+			if($xcnt<25){
+				for($x = $xcnt; $x<=25; $x++){
+					echo "<tr> <td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td></tr>";
+				}
 			}
 		?>
 
@@ -300,6 +308,7 @@ include('../../include/denied.php');
 </table>
 <br>
 <table border="1" width="100%" style="border-collapse: collapse;">
+	<tfoot>
 	<tr>
 		<td width="30%" valign="top" height="50px"> <b> REMARKS: </b></td> 
 		<td valign="top" height="50px"> 
@@ -322,6 +331,7 @@ include('../../include/denied.php');
 			</table>
 		</td> 
 	</tr>
+	</tfoot>
 </table>
 <!-- END MAIN JO PRINT --> 
 
@@ -446,13 +456,18 @@ include('../../include/denied.php');
 		</tr>
 
 			<?php
+				$xcnt = 0;
+				$totrej = 0;
+				$totscrp = 0;
+
 				foreach($arrmrpjo_pt as $bv){
 					if($rsc['ctranno']==$bv['ctranno']){
+						$xcnt++;
 			?>
 
 				<tr> 
 					<td><?=$bv['cmachinedesc']?> </td> 
-					<td style="padding-left:10px"><?=$bv['mrp_process_desc']?> </td>
+					<td style="padding-left:10px; max-width: 200px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;"><?=$bv['mrp_process_desc']?> </td>
 					<td><?=$bv['ddatestart']?></td>
 					<td><?=$bv['ddateend']?></td>
 					<td style="text-align: center"><?=(intval($bv['nactualoutput'])>0) ? number_format($bv['nactualoutput']) : ""?></td>
@@ -464,9 +479,30 @@ include('../../include/denied.php');
 				</tr>
 
 			<?php
+						$totrej = $totrej + floatval($bv['nrejectqty']);
+						$totscrp = $totscrp + floatval($bv['nscrapqty']);
+					}
+				}
+
+				if($xcnt<25){
+					for($x = $xcnt; $x<=25; $x++){
+						echo "<tr> <td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td></tr>";
 					}
 				}
 			?>
+
+			<tr> 
+				<td>&nbsp;</td>
+				<td>&nbsp;</td>
+				<td>&nbsp;</td>
+				<td>&nbsp;</td>
+				<td>&nbsp;</td>
+				<td align="right"><b> Total: </b></td>
+				<td style="text-align: center"><?=(intval($totrej)>0) ? number_format($totrej) : ""?></td>
+				<td style="text-align: center"><?=(intval($totscrp)>0) ? number_format($totscrp) : ""?></td>
+				<td>&nbsp;</td>
+				<td>&nbsp;</td>				
+			</tr>
 		
 	</table>
 

@@ -2,7 +2,7 @@
 	if(!isset($_SESSION)){
 		session_start();
 	}
-	$_SESSION['pageid'] = "InvTrans_new";
+	$_SESSION['pageid'] = "InvCnt_new";
 
 	include('../../Connection/connection_string.php');
 	include('../../include/denied.php');
@@ -14,34 +14,27 @@
 	$_SESSION['myxtoken'] = gen_token();
 
 	$arrseclist = array();
-	$arrallsec = array();
-	$sqlempsec = mysqli_query($con,"select A.nid, A.cdesc, ifnull(B.UserID,'') as UserID From locations A left join users_sections B on A.nid = B.section_nid and B.UserID = '$EmpID' Where A.compcode='$company' and A.cstatus='ACTIVE' Order By A.cdesc");
+	$sqlempsec = mysqli_query($con,"select A.section_nid as nid, B.cdesc from users_sections A left join locations B on A.section_nid=B.nid where A.UserID='$EmpID' and B.cstatus='ACTIVE' Order By B.cdesc");
 	$arrseclist[] = 0;
 	$rowdetloc = $sqlempsec->fetch_all(MYSQLI_ASSOC);
 	foreach($rowdetloc as $row0){
-		if($row0['UserID']==$EmpID){
-			$arrsecrow[] = array('nid' => $row0['nid'], 'cdesc' => $row0['cdesc']);
-			$arrseclist[] = $row0['nid'];
-		}
-		
-		$arrallsec[] = array('nid' => $row0['nid'], 'cdesc' => $row0['cdesc']);
-				
+		$arrseclist[] = $row0['nid'];
 	}
 
 	$arrtemplates= array();
-	$sqltemplate = mysqli_query($con,"select A.section_nid as nid, A.citemno, B.citemdesc, B.cunit, A.sortnum, A.template_id from invtransfer_template A left join items B on A.compcode=B.compcode and A.citemno=B.cpartno where A.compcode='$company' and A.section_nid in (".implode(",",$arrseclist).") Order By A.section_nid, A.sortnum");
+	$sqltemplate = mysqli_query($con,"select A.section_nid as nid, A.citemno, B.citemdesc, B.cunit, A.sortnum, A.template_id from invcount_template A left join items B on A.compcode=B.compcode and A.citemno=B.cpartno where A.compcode='$company' and A.section_nid in (".implode(",",$arrseclist).") Order By A.section_nid, A.sortnum");
 	$rowTemplate = $sqltemplate->fetch_all(MYSQLI_ASSOC);
 	foreach($rowTemplate as $row0){
 		$arrtemplates[] = array('itemid' => $row0['citemno'], 'itemdesc' => $row0['citemdesc'], 'itemunit' => $row0['cunit'], 'itemsort' => $row0['sortnum'], 'secid' => $row0['nid'], 'template_id' => $row0['template_id']);
 	}
 
+
 	$arrtempsname[] = array();
-	$sqltempname = mysqli_query($con,"select * from invtransfer_template_names where compcode='$company'");
+	$sqltempname = mysqli_query($con,"select * from invcount_template_names where compcode='$company'");
 	$rowdettempname= $sqltempname->fetch_all(MYSQLI_ASSOC);
 	foreach($rowdettempname as $row0){
 		$arrtempsname[] = $row0;
 	}
-
 ?>
 
 <!DOCTYPE html>
@@ -76,23 +69,23 @@
 	<input type="hidden" id="hdntemplist" value='<?=json_encode($arrtemplates)?>'>
 	<input type="hidden" id="hdntempsname" value='<?=json_encode($arrtempsname)?>'>
 
-	<form id="frmCount" name="frmCount" method="post" action="InvTrans_NewSave.php">
+	<form id="frmCount" name="frmCount" method="post" action="<?="https://".$_SERVER['SERVER_NAME']?>/Inventory/Count/InvCnt_NewSave.php">
 
 		<input type="hidden" name="hdnmyxfin" value="<?= $_SESSION['myxtoken'] ?? '' ?>">
 
 		<fieldset>
-			<legend>New Inventory Transfer</legend>
+			<legend>New Inventory Count</legend>
 
 			<div class="col-xs-12 nopadding">
-				<div class="col-xs-2 nopadwtop" id="secfrom">
-					<b>Requesting Section: </b>
+				<div class="col-xs-2 nopadding">
+					<b>Section: </b>
 				</div>
 				<div class="col-xs-3 nopadding">
 					
 					<select class="form-control input-sm" name="selwhfrom" id="selwhfrom">
 					<?php
 						$issel = 0;
-							foreach($arrsecrow as $localocs){
+							foreach($rowdetloc as $localocs){
 								$issel++;
 						?>
 							<option value="<?php echo $localocs['nid'];?>" <?=($issel==1) ? "selected" : ""?>><?php echo $localocs['cdesc'];?></option>										
@@ -106,8 +99,8 @@
 						&nbsp;
 				</div>
 					
-				<div class="col-xs-2 nopadwtop">
-					<b>Inventory Template: </b>
+				<div class="col-xs-2 nopadding">
+					<b>Template: </b>
 				</div>
 				
 				<div class="col-xs-2 nopadding">
@@ -119,70 +112,45 @@
 			</div>
 	
 			<div class="col-xs-12 nopadwtop">
-				<div class="col-xs-2 nopadwtop" id="secto">
-					<b>Issuing Section: </b>
+				<div class="col-xs-2 nopadding">
+					<b>Counting Type: </b>
 				</div>
 				<div class="col-xs-3 nopadding">
-					
-					<select class="form-control input-sm" name="selwhto" id="selwhto">
-					<?php
-						$issel = 0;
-							foreach($arrallsec as $localocs){
-								$issel++;
-						?>
-							<option value="<?php echo $localocs['nid'];?>" <?=($issel==1) ? "selected" : ""?>><?php echo $localocs['cdesc'];?></option>										
-						<?php	
-							}						
-						?>
+					<select class="form-control input-sm" name="selcntyp" id="selcntyp">			
+						<option value="ending">Inventory Ending</option>		
+						<option value="output">Production Output</option>						
 					</select>
 				</div>
 
 				<div class="col-xs-1 nopadding">
 						&nbsp;
 				</div>
-
-				<div class="col-xs-2 nopadwtop">
+					
+				<div class="col-xs-2 nopadding">
 					<b>Inventory Date: </b>
 				</div>
 				
 				<div class="col-xs-2 nopadding">
 					<input type="text" class="datepick form-control input-sm" name="txtdtrandate" id="txtdtrandate">
 				</div>
+
 			</div>
 
 			<div class="col-xs-12 nopadwtop">
-				<div class="col-xs-2 nopadwtop">
+				<div class="col-xs-2 nopadding">
 					<b>Remarks: </b>
 				</div>
-				<div class="col-xs-3 nopadding">					
-					<textarea class="form-control input-sm" name="txtccrems" id="txtccrems" value="" placeholder="Enter Remarks..."> </textarea>
-				</div>
-
-				<div class="col-xs-1 nopadding">
-						&nbsp;
-				</div>
-
-				<div class="col-xs-2 nopadwtop">
-					<b>Transfer Type: </b>
-				</div>
-				<div class="col-xs-2 nopadding">
-					<select class="form-control input-sm" name="selcntyp" id="selcntyp">			
-						<option value="request">Request</option>		
-						<option value="fg_transfer">FG Transfer</option>		
-						<option value="transfer">Issuance</option>				
-					</select>
+				<div class="col-xs-8 nopadding">
+					<input type="text" class="form-control input-sm" name="txtccrems" id="txtccrems" value="" placeholder="Enter Remarks...">
 				</div>
 			</div>
-
 	
 		</fieldset>	
 
-		<div class="row nopadding">
-			<div class="col-xs-12 nopadwtop2x">			
-				<input type="text" class="form-control input-md" name="txtscan" id="txtscan" value="" placeholder="Search Item Name...">
+		<div class="col-xs-12 nopadwtop2x">			
+			<input type="text" class="form-control input-lg" name="txtscan" id="txtscan" value="" placeholder="Search Item Name...">
 
-				<input type="hidden" name="rowcnt" id="rowcnt" value="">
-			</div>
+			<input type="hidden" name="rowcnt" id="rowcnt" value="">
 		</div>
 
 		<div class="alt2" dir="ltr" style="
@@ -192,24 +160,23 @@
 						width: 100%;
 						height: 250px;
 						text-align: left;
-						overflow: auto; margin-top: 2px !important">
-
+						overflow: auto">
+                       
                 <table name='MyTbl' id='MyTbl' class="table table-scroll table-striped table-condensed">
                   <thead>
                     <tr>
-						<th width="50">&nbsp;</th>
-						<th width="150">Item Code</th>
-						<th>Item Description</th>
-						<th width="70">Unit</th>
-						<th width="100" class="text-center">Qty</th>
-						<th width="250" class="text-center">Remarks</th>
-						<th width="50">&nbsp;</th>
+											<th width="50">&nbsp;</th>
+                      <th width="150">Item Code</th>
+                      <th>Item Description</th>
+                      <th width="70">Unit</th>
+                      <th width="100" class="text-center">Qty</th>
+                      <th width="50">&nbsp;</th>
                     </tr>
                   </thead>
                   <tbody>
                   </tbody>
 				 				</table>
-			</div>
+		</div>
 
 		<br>
 		<table width="100%" border="0" cellpadding="3">
@@ -218,12 +185,6 @@
 				<button type="button" class="btn btn-primary btn-sm" tabindex="6" onClick="window.location.href='Inv.php';" id="btnMain" name="btnMain">
 					Back to Main<br>(ESC)
 				</button>
-
-				<!--
-				<button type="button" class="btn btn-info btn-sm" tabindex="6" onClick="loadItms();" id="btnMain" name="btnMain">
-					Load Template<br>(Insert)
-				</button>
-				-->
 
 				<button type="button" class="btn btn-success btn-sm" tabindex="6" onClick="return chkform();" id="btnSave" name="btnSave">SAVE<br> (CTRL+S)</button></td>
 
@@ -260,7 +221,6 @@
 	$("#txtscan").focus();
 
 	$(document).keydown(function(e) {	 
-
 	  if(e.keyCode == 83 && e.ctrlKey){//CTRL S
 			if($("#btnSave").is(":disabled")==false){
 				e.preventDefault();
@@ -277,83 +237,75 @@
 	});
 
 
-	$(function(){	
+$(function(){	
+
+		$('body').on('keydown', 'input.numeric', function(e) {
+			if (e.which == 13) {
+				var self = $(this), form = self.parents('form:eq(0)'), focusable, next;
+				focusable = form.find('input').filter(':visible');
+				next = focusable.eq(focusable.index(this)+1);
+
+				if (next.length) {
+					next.focus();
+				}
+
+				e.preventDefault();
+				return false;
+			}
+		});
+
+		$(".datepick").datetimepicker({
+      format: 'MM/DD/YYYY',
+			useCurrent: false,
+			//minDate: moment(),
+			defaultDate: moment(),
+		});
+
+		//loadItms();
+
+		$("#selwhfrom").on("change", function(){
+		//	$("#MyTbl tbody").empty();
+			//loadItms();
 
 			loadtepnames();
+		});
 
-			$('body').on('keydown', 'input.numeric', function(e) {
-				if (e.which == 13) {
-					var self = $(this), form = self.parents('form:eq(0)'), focusable, next;
-					focusable = form.find('input').filter(':visible');
-					next = focusable.eq(focusable.index(this)+1);
-
-					if (next.length) {
-						next.focus();
-					}
-
-					e.preventDefault();
-					return false;
-				}
-			});
-
-			$(".datepick").datetimepicker({
-				format: 'MM/DD/YYYY',
-				useCurrent: false,
-				//minDate: moment(),
-				defaultDate: moment(),
-			});
-
-			$("#selwhfrom").on("change", function(){
-				//$("#MyTbl tbody").empty();
-				//loadItms();
-
-				loadtepnames();
-			});
-			
-			$("#seltempname").on("change", function(){
-				$("#MyTbl tbody").empty();
+		$("#seltempname").on("change", function(){
+			$("#MyTbl tbody").empty();
+			if($(this).val()!==""){
 				loadItms();
-			});
+			}			
+		});
+	
+		$('#txtscan').typeahead({
+			autoSelect: true,
+			source: function(request, response) {
+				$.ajax({
+					url: "th_product_whse.php",
+					dataType: "json",
+					data: { query: $("#txtscan").val(), styp: "Goods", cwhse: $("#selwhfrom").val() },
+					success: function (data) {
+						response(data);
+					}
+				});
+			},
+			displayText: function (item) {
+				return '<div style="border-top:1px solid gray; width: 900px"><span >'+item.id+": "+item.desc+'</span</div>';
+			},
+			highlighter: Object,
+			afterSelect: function(item) { 	
 
-			$("#selcntyp").on("change", function(){
-				if($(this).val()=="request"){
-					$("#secfrom").html("<b>Requesting Section</b>");
-					$("#secto").html("<b>Issuing Section</b>");
-				}else{
-					$("#secfrom").html("<b>Issuing Section</b>");
-					$("#secto").html("<b>Receiving Section</b>");
-				}
-			});
+				var rowCount = $('#MyTbl tr').length;
+
+				InsTotable(item.id,item.desc,item.cunit,rowCount);
+					
+				$('#txtscan').val("").change();
+																		
+			}
 		
-			$('#txtscan').typeahead({
-				autoSelect: true,
-				source: function(request, response) {
-					$.ajax({
-						url: "th_product_whse.php",
-						dataType: "json",
-						data: { query: $("#txtscan").val(), styp: "Goods", cwhse: $("#selwhfrom").val() },
-						success: function (data) {
-							response(data);
-						}
-					});
-				},
-				displayText: function (item) {
-					return '<div style="border-top:1px solid gray; width: 900px"><span >'+item.id+": "+item.desc+'</span</div>';
-				},
-				highlighter: Object,
-				afterSelect: function(item) { 	
+		});
 
-					var rowCount = $('#MyTbl tr').length;
-
-					InsTotable(item.id,item.desc,item.cunit,rowCount);
-						
-					$('#txtscan').val("").change();
-																			
-				}
-			
-			}); 
-
-	});
+});
 
 	function loadtepnames(){
 		$("#MyTbl tbody").empty();
@@ -375,7 +327,7 @@
 			}
 		});
 
-		//loadItms();
+		loadItms();
 	
 	}
 
@@ -417,8 +369,7 @@
 				$("<td>").html("<input type='hidden' value='"+itmdesc+"' name=\"txtitmdesc\" id=\"txtitmdesc"+sornum+"\">"+itmdesc),
 				$("<td>").html("<input type='hidden' value='"+itmunit+"' name=\"txtcunit\" id=\"txtcunit"+sornum+"\">"+itmunit),
 				$("<td>").html("<input type='text' class=\"numeric form-control input-xs text-center\" name=\"txtnqty\" id=\"txtnqty"+sornum+"\" value=\"0\">"),
-				$("<td>").html("<input type='text' class=\"form-control input-xs text-center\" name=\"txtcrems\" id=\"txtcrems"+sornum+"\" value=\"\">"),
-				$("<td align=\"center\">").html("<button type=\"button\" class=\"btn btn-danger btn-xs\" id=\"btnDel\" id=\"btnDel"+sornum+"\"><i class=\"fa fa-times\"></i></button>")
+				$("<td align=\"center\">").html("<button class=\"btn btn-danger btn-xs\" id=\"btnDel\" id=\"btnDel"+sornum+"\"><i class=\"fa fa-times\"></i></button>")
 			).appendTo("#MyTbl tbody");
 
 			$("#btnDel"+sornum).on('click', function() {
@@ -442,8 +393,7 @@
 				$(this).find('input:hidden[name="txtitmcode"]').attr('id','txtitmcode'+$newval);
 				$(this).find('input:hidden[name="txtitmdesc"]').attr('id','txtitmdesc'+$newval);
 				$(this).find('input:hidden[name="txtcunit"]').attr('id','txtcunit'+$newval); 
-				$(this).find('input[name="txtnqty"]').attr('id','txtnqty'+$newval);  
-				$(this).find('input[name="txtcrems"]').attr('id','txtcrems'+$newval); 
+				$(this).find('input[name="txtnqty"]').attr('id','txtnqty'+$newval); 
 			});
 	}
 
@@ -461,17 +411,8 @@
 				}
 			});
 
-			var whstat = "True";
-			if($("#selwhfrom").val()==$("#selwhto").val()){
-				whstat = "False";
-			}
-
 			if(qty=="False"){
 				$("#AlertMsg").html("Blank quantity is not allowed!");
-				$("#alertbtnOK").show();
-				$("#AlertModal").modal('show');
-			}else if(whstat=="False"){
-				$("#AlertMsg").html("Same From and To Section is not allowed!");
 				$("#alertbtnOK").show();
 				$("#AlertModal").modal('show');
 			}else{
@@ -482,8 +423,7 @@
 					$(this).find('input:hidden[name="txtitmcode"]').attr('name','txtitmcode'+$newval);
 					$(this).find('input:hidden[name="txtitmdesc"]').attr('name','txtitmdesc'+$newval);
 					$(this).find('input:hidden[name="txtcunit"]').attr('name','txtcunit'+$newval);
-					$(this).find('input[name="txtnqty"]').attr('name','txtnqty'+$newval);  
-					$(this).find('input[name="txtcrems"]').attr('name','txtcrems'+$newval);
+					$(this).find('input[name="txtnqty"]').attr('name','txtnqty'+$newval); 
 				});
 
 				$("#rowcnt").val(lastRow1);
