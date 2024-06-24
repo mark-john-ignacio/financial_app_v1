@@ -187,7 +187,7 @@
 	$mpdf->SetHTMLFooter($setfooter);
 
 	if(count($arrmrpjo_pt)>0){
-		//$mpdf->AddPage();
+		$mpdf->AddPage();
 	}
 
 	$html = '<table border="1" width="100%" cellpadding="3px"  id="tblMain" style="border-collapse: collapse;">
