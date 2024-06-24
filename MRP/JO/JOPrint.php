@@ -187,7 +187,7 @@
 	$mpdf->SetHTMLFooter($setfooter);
 
 	if(count($arrmrpjo_pt)>0){
-		$mpdf->AddPage();
+		//$mpdf->AddPage();
 	}
 
 	$html = '<table border="1" width="100%" cellpadding="3px"  id="tblMain" style="border-collapse: collapse;">
@@ -230,6 +230,9 @@
 			$totscrp = $totscrp + floatval($bv['nscrapqty']);
 		}
 
+		if($xcnt==0){
+			$html = $html . '<tr> <td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td></tr>';
+		}
 
 		if($xcnt<26){
 			for($x = $xcnt; $x<=26; $x++){
@@ -413,7 +416,10 @@
 			}
 		}
 
-
+		if($xcnt==0){
+			$html = $html . '<tr> <td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td></tr>';
+		}
+		
 		if($xcnt<26){
 			for($x = $xcnt; $x<=26; $x++){
 				$html = $html . '<tr> <td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td></tr>';
