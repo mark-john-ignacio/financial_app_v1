@@ -83,8 +83,9 @@
   <?php
   	$qtyremain = 0;
 	foreach($arrIN as $row){
+		$qtyremain = floatval($row['nqty']);
+		
 		foreach($arrOut as $rout){
-			$qtyremain = floatval($row['nqty']);
 			if($row['nidentity']==$rout['tblinvin_nidentity']){
 				$qtyremain = floatval($row['nqty']) - floatval($rout['nqty']);
 			}
