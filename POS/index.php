@@ -2,13 +2,13 @@
     if(!isset($_SESSION)){
         session_start();
     }
-    $_SESSION['pageid'] = "POS_View.php";
+    //$_SESSION['pageid'] = "POS_View.php";
     $company = $_SESSION['companyid'];
     $employee_cashier_name = $_SESSION['employeeid'];
 
     include('../Connection/connection_string.php');
-    include('../include/denied.php');
-    include('../include/access2.php');
+    //include('../include/denied.php');
+    //include('../include/access2.php');
 
     $category = [];
     $items = [];
