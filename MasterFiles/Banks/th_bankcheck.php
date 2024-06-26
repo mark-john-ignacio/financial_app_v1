@@ -2,7 +2,7 @@
 if(!isset($_SESSION)){
 session_start();
 }
-require_once "../Connection/connection_string.php";
+require_once "../../Connection/connection_string.php";
 
 
 	$company = $_SESSION['companyid'];
