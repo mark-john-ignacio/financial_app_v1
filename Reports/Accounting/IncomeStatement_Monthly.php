@@ -39,13 +39,13 @@
 
 	//glactivity
 		$arrallwithbal = array();
-		$sql = "Select MONTH(ddate) as dmonth, A.acctno, B.cacctdesc, sum(A.ndebit) as ndebit, sum(A.ncredit) as ncredit
-				From glactivity A left join accounts B on A.compcode=B.compcode and A.acctno=B.cacctid
-				where A.compcode='$company' and YEAR(A.ddate) = '$dteyr' and IFNULL(B.cacctdesc,'') <> ''
-				and B.cFinGroup = 'Income Statement'
-				Group By MONTH(ddate), A.acctno, B.cacctdesc
-				Having sum(A.ndebit)<>0 or sum(A.ncredit)<>0
-				Order By A.acctno, MONTH(ddate)";
+            $sql = "Select MONTH(ddate) as dmonth, A.acctno, B.cacctdesc, sum(A.ndebit) as ndebit, sum(A.ncredit) as ncredit
+                    From glactivity A left join accounts B on A.compcode=B.compcode and A.acctno=B.cacctid
+                    where A.compcode='$company' and YEAR(A.ddate) = '$dteyr' and IFNULL(B.cacctdesc,'') <> ''
+                    and B.cFinGroup = 'Income Statement'
+                    Group By MONTH(ddate), A.acctno, B.cacctdesc
+                    Having sum(A.ndebit)<>0 or sum(A.ncredit)<>0
+                    Order By A.acctno, MONTH(ddate)";
 
 		$result=mysqli_query($con,$sql);
 

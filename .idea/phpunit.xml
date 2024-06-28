@@ -4,10 +4,10 @@
     <option name="directories">
       <list>
         <option value="$PROJECT_DIR$/vendor2/markbaker/complex/tests" />
+        <option value="$PROJECT_DIR$/vendor2/phpoffice/phpspreadsheet/tests" />
+        <option value="$PROJECT_DIR$/vendor2/maennchen/zipstream-php/test" />
         <option value="$PROJECT_DIR$/vendor2/myclabs/php-enum/tests" />
         <option value="$PROJECT_DIR$/vendor2/markbaker/matrix/unitTests/classes/src" />
-        <option value="$PROJECT_DIR$/vendor2/maennchen/zipstream-php/test" />
-        <option value="$PROJECT_DIR$/vendor2/phpoffice/phpspreadsheet/tests" />
       </list>
     </option>
   </component>
