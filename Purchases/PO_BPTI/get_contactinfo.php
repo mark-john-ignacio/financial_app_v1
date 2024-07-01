@@ -16,7 +16,7 @@ require_once "../../Connection/connection_string.php";
 	 $cfaxno = $row['cfaxno'];
 	 
 		
-	 echo $cname.":".$cdesig.":".$cdept.":".$cemail;
+	 echo $cname.":".$cdesig.":".$cdept.":".$cemail.":".$cphone.":".$cmobile.":".$cfaxno;
  }elseif (mysqli_num_rows($result)>1) {
  	 echo "Multi";
  }
