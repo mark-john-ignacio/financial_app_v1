@@ -11,6 +11,8 @@ require_once "../../Connection/connection_string.php";
 	 $cdesig = $row['cdesignation']; 
 	 $cdept = $row['cdept'];
 	 $cemail = $row['cemail'];
+	 $cphone = $row['cphone'];
+	 $cmobile = $row['cmobile'];
 	 
 		
 	 echo $cname.":".$cdesig.":".$cdept.":".$cemail;

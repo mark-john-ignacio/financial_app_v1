@@ -2369,21 +2369,23 @@ else{
 	function getcontact(cid){
 
 		$.ajax({
-					url:'../get_contactinfo.php',
-					data: 'c_id='+ cid,                 
-					success: function(value){
-						if(value!=""){
-							if(value.trim()=="Multi"){
-								$("#btnSearchCont").click();
-							}else{
-									var data = value.split(":");
-									
-									$('#txtcontactname').val(data[0]);
-									//$('#txtcontactdesig').val(data[1]);
+			url:'get_contactinfo.php',
+			data: 'c_id='+ cid,                 
+			success: function(value){
+				if(value!=""){
+					if(value.trim()=="Multi"){
+						$("#btnSearchCont").click();
+					}else{
+						var data = value.split(":");
+						
+						$('#txtcontactname').val(data[0]);
+						//$('#txtcontactdesig').val(data[1]);
 						//$('#txtcontactdept').val(data[2]);
 						$("#contact_email").val(data[3]);
-							}
-						}
+						$("#contact_mobile").val(data[5]);
+						$("#contact_fax").val(data[4]);
+					}
+				}
 			}
 		});
 

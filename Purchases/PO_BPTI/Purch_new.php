@@ -218,7 +218,7 @@
 										</div>
 									</div>
 								</td>
-								<tH width="150" style="padding:2px">Terms: </tH>
+								<tH width="150" style="padding:2px">Terms: </tH> 
 								<td style="padding:2px">				
 										<select id="selterms" name="selterms" class="form-control input-sm selectpicker">  
 											<?php
@@ -1801,7 +1801,7 @@
 	function getcontact(cid){
 
 	$.ajax({
-		url:'../get_contactinfo.php',
+		url:'get_contactinfo.php',
 		data: 'c_id='+ cid,                 
 		success: function(value){
 			if(value!=""){
@@ -1812,8 +1812,10 @@
 						
 					$('#txtcontactname').val(data[0]);
 					//$('#txtcontactdesig').val(data[1]);
-					//$('#txtcontactdept').val(data[2]);
+					//$('#txtcontactdept').val(data[2]);  
 					$("#contact_email").val(data[3]);
+					$("#contact_mobile").val(data[5]);
+					$("#contact_fax").val(data[4]);
 				}
 			}
 		}
@@ -1823,87 +1825,97 @@
 
 	function openinv(){
 
-		$('#MyInvTbl').DataTable().destroy();
+		if($("#txtcust").val()=="" || $("#txtcustid").val()==""){
 
-		//clear table body if may laman
-		$('#MyInvTbl tbody').empty(); 
-		$('#MyInvDetList tbody').empty();
-				
-		//get salesno na selected na
-		var y;
-		var salesnos = "";
-		var xstat =  "YES";
+			$("#AlertMsg").html("Please pick a supplier!");
+			$("#alertbtnOK").show();
+			$("#AlertModal").modal('show');
 
-		$.ajax({ //		data: 'x='+x,
-			url: 'th_prlist.php',
-			dataType: 'json',
-			method: 'post',
-			success: function (data) {
+		}else{
 
-				$("#allbox").prop('checked', false);
-								
-				console.log(data);
-				$.each(data,function(index,item){
+			$('#MyInvTbl').DataTable().destroy();
+
+			//clear table body if may laman
+			$('#MyInvTbl tbody').empty(); 
+			$('#MyInvDetList tbody').empty();
+					
+			//get salesno na selected na
+			var y;
+			var salesnos = "";
+			var xstat =  "YES";
+
+			$.ajax({ //		data: 'x='+x,
+				url: 'th_prlist.php',
+				dataType: 'json',
+				method: 'post',
+				success: function (data) {
+
+					$("#allbox").prop('checked', false);
+									
+					console.log(data);
+					$.each(data,function(index,item){
+											
+						if(item.cpono=="NONE"){
+							$("#AlertMsg").html("No Purchase Request Available");
+							$("#alertbtnOK").show();
+							$("#AlertModal").modal('show');
+
+							xstat = "NO";
 										
-					if(item.cpono=="NONE"){
-						$("#AlertMsg").html("No Purchase Request Available");
-						$("#alertbtnOK").show();
-						$("#AlertModal").modal('show');
+							$("#txtcustid").attr("readonly", false);
+							$("#txtcust").attr("readonly", false);
 
-						xstat = "NO";
-									
-						$("#txtcustid").attr("readonly", false);
-						$("#txtcust").attr("readonly", false);
+						}
+						else{
+							$("<tr>").append(
+								$("<td id='td"+item.cprno+"'>").text(item.cprno),
+								$("<td>").text(item.cdesc)
+							).appendTo("#MyInvTbl tbody");
+										
+										
+							$("#td"+item.cprno).on("click", function(){
+								opengetdet($(this).text());
+							});
+										
+							$("#td"+item.cprno).on("mouseover", function(){
+								$(this).css('cursor','pointer');
+							});
+						}
 
+					});
+							
+					if(xstat=="YES"){
+						$('#mySIRef').modal('show');
 					}
-					else{
-						$("<tr>").append(
-							$("<td id='td"+item.cprno+"'>").text(item.cprno),
-							$("<td>").text(item.cdesc)
-						).appendTo("#MyInvTbl tbody");
-									
-									
-						$("#td"+item.cprno).on("click", function(){
-							opengetdet($(this).text());
-						});
-									
-						$("#td"+item.cprno).on("mouseover", function(){
-							$(this).css('cursor','pointer');
-						});
-					}
 
-				});
-						
-				if(xstat=="YES"){
-					$('#mySIRef').modal('show');
+					$('#MyInvTbl').DataTable({
+						"bPaginate": false,
+						"bLengthChange": false,
+						"bFilter": true,
+						"bInfo": false,
+						"bAutoWidth": false,
+						"dom": '<"pull-left"f><"pull-right"l>tip',
+						language: {
+							search: "",
+							searchPlaceholder: "Search PR/Section "
+						}
+					});
+
+					$('#MyInvTbl_filter input').addClass('form-control input-sm');
+					$('#MyInvTbl_filter input').css(
+						{'width':'100%','display':'inline-block'}
+					);
+
+				},
+				error: function (req, status, err) {
+					console.log('Something went wrong', status, err);
+					$("#AlertMsg").html("Something went wrong<br>Status: "+status +"<br>Error: "+err);
+					$("#alertbtnOK").show();
+					$("#AlertModal").modal('show');
 				}
+			});
 
-				$('#MyInvTbl').DataTable({
-					"bPaginate": false,
-					"bLengthChange": false,
-					"bFilter": true,
-					"bInfo": false,
-					"bAutoWidth": false,
-					"dom": '<"pull-left"f><"pull-right"l>tip',
-					language: {
-						search: "",
-						searchPlaceholder: "Search PR/Section "
-					}
-				});
-
-				$('#MyInvTbl_filter input').addClass('form-control input-sm');
-				$('#MyInvTbl_filter input').css(
-					{'width':'100%','display':'inline-block'}
-				);
-
-			},
-			error: function (req, status, err) {
-				console.log('Something went wrong', status, err);
-				$("#AlertMsg").html("Something went wrong<br>Status: "+status +"<br>Error: "+err);
-				$("#alertbtnOK").show();
-				$("#AlertModal").modal('show');
-			}
-		});
+		}
 
 	}
 
