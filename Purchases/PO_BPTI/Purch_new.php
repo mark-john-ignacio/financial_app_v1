@@ -1814,8 +1814,8 @@
 					//$('#txtcontactdesig').val(data[1]);
 					//$('#txtcontactdept').val(data[2]);  
 					$("#contact_email").val(data[3]);
-					$("#contact_mobile").val(data[5]);
-					$("#contact_fax").val(data[4]);
+					$("#contact_mobile").val(data[4]);
+					$("#contact_fax").val(data[6]);
 				}
 			}
 		}
