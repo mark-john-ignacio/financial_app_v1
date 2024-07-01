@@ -2393,67 +2393,77 @@ else{
 
 	function openinv(){
 
-		//clear table body if may laman
-		$('#MyInvTbl tbody').empty(); 
-		$('#MyInvDetList tbody').empty();
-				
-		//get salesno na selected na
-		var y;
-		var salesnos = "";
-		var xstat =  "YES";
+		if($("#txtcust").val()=="" || $("#txtcustid").val()==""){
 
-		$.ajax({ //		data: 'x='+x,
-			url: 'th_prlist.php',
-			dataType: 'json',
-			method: 'post',
-			success: function (data) {
+			$("#AlertMsg").html("Please pick a supplier!");
+			$("#alertbtnOK").show();
+			$("#AlertModal").modal('show');
 
-				$("#allbox").prop('checked', false);
-							
-				console.log(data);
-				$.each(data,function(index,item){
+		}else{
+
+			//clear table body if may laman
+			$('#MyInvTbl tbody').empty(); 
+			$('#MyInvDetList tbody').empty();
+					
+			//get salesno na selected na
+			var y;
+			var salesnos = "";
+			var xstat =  "YES";
+
+			$.ajax({ //		data: 'x='+x,
+				url: 'th_prlist.php',
+				dataType: 'json',
+				method: 'post',
+				success: function (data) {
+
+					$("#allbox").prop('checked', false);
 								
-					if(item.cpono=="NONE"){
-						$("#AlertMsg").html("No Purchase Request Available");
-						$("#alertbtnOK").show();
-						$("#AlertModal").modal('show');
-
-						xstat = "NO";
+					console.log(data);
+					$.each(data,function(index,item){
 									
-						$("#txtcustid").attr("readonly", false);
-						$("#txtcust").attr("readonly", false);
+						if(item.cpono=="NONE"){
+							$("#AlertMsg").html("No Purchase Request Available");
+							$("#alertbtnOK").show();
+							$("#AlertModal").modal('show');
 
+							xstat = "NO";
+										
+							$("#txtcustid").attr("readonly", false);
+							$("#txtcust").attr("readonly", false);
+
+						}
+						else{
+							$("<tr>").append(
+								$("<td id='td"+item.cprno+"'>").text(item.cprno),
+								$("<td>").text(item.cdesc)
+							).appendTo("#MyInvTbl tbody");
+										
+										
+							$("#td"+item.cprno).on("click", function(){
+								opengetdet($(this).text());
+							});
+										
+							$("#td"+item.cprno).on("mouseover", function(){
+								$(this).css('cursor','pointer');
+							});
+						}
+
+					});
+								
+					if(xstat=="YES"){
+						$('#mySIRef').modal('show');
 					}
-					else{
-						$("<tr>").append(
-							$("<td id='td"+item.cprno+"'>").text(item.cprno),
-							$("<td>").text(item.cdesc)
-						).appendTo("#MyInvTbl tbody");
-									
-									
-						$("#td"+item.cprno).on("click", function(){
-							opengetdet($(this).text());
-						});
-									
-						$("#td"+item.cprno).on("mouseover", function(){
-							$(this).css('cursor','pointer');
-						});
-					}
+				},
+				error: function (req, status, err) {
 
-				});
-							
-				if(xstat=="YES"){
-					$('#mySIRef').modal('show');
+					console.log('Something went wrong', status, err);
+					$("#AlertMsg").html("Something went wrong<br>Status: "+status +"<br>Error: "+err);
+					$("#alertbtnOK").show();
+					$("#AlertModal").modal('show');
 				}
-			},
-			error: function (req, status, err) {
+			});
 
-				console.log('Something went wrong', status, err);
-				$("#AlertMsg").html("Something went wrong<br>Status: "+status +"<br>Error: "+err);
-				$("#alertbtnOK").show();
-				$("#AlertModal").modal('show');
-			}
-		});
+		}
 
 	}
 
