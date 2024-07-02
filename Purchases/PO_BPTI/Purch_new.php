@@ -1290,6 +1290,8 @@
 				
 			});
 
+			ComputeGross();
+
 			/*$('#dneed'+lastRow).datetimepicker({
 				format: 'MM/DD/YYYY',
 				useCurrent: false,
