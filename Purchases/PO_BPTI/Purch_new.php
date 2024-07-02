@@ -475,6 +475,7 @@
 							<table id="MyTable" class="MyTable table-sm table-bordered" border="1">
 								<thead>
 									<tr>
+										<th style="border-bottom:1px solid #999" width="50px">&nbsp;</th>
 										<?php
 											if($xAllowITMCH==1){
 										?>	
@@ -1149,10 +1150,10 @@
 		var dneeded= document.getElementById("date_needed").value;
 
 		var itmprice = chkprice(itmdesc,itmunit);
-		var itmamt = parseFloat(itmnqty)*parseFloat(itmprice);
-		var itmbaseamt = parseFloat($("#basecurrval").val())*parseFloat(itmamt); 
+		var itmamt = parseFloat($("#basecurrval").val())*parseFloat(itmamt); 
+		var itmbaseamt = parseFloat(itmnqty)*parseFloat(itmprice);
 
-		var uomoptions = "";
+		var uomoptions = ""; 
 		
 		$.ajax ({
 			url: "../th_loaduomperitm.php",
@@ -1179,6 +1180,9 @@
 			
 		var tbl = document.getElementById('MyTable').getElementsByTagName('tr');
 		var lastRow = tbl.length;
+
+
+		var tdxnum = "<td align=\"center\"><input type=\"text\" class=\"form-control input-xs\" id=\"txtnum"+lastRow+"\" value=\""+lastRow+"\" readonly></td>";
 
 		var tdedt = "";
 		<?php
@@ -1247,7 +1251,7 @@
 		var tditmdel = "<td style=\"padding: 1px\" nowrap> <input class='btn btn-danger btn-xs' type='button' id='del" + lastRow + "' value='delete' data-var='"+lastRow+"'/> </td>";
 
 		//tdneeded
-		$('#MyTable > tbody:last-child').append('<tr>'+tdedt + tditmpartdesc + tditmdesc + tditmcode + vattd + tditmunit + tditmqty + tditmprice + tditmbaseamount + tditmremarks + tditmdel + '</tr>');
+		$('#MyTable > tbody:last-child').append('<tr>'+tdxnum+tdedt + tditmpartdesc + tditmdesc + tditmcode + vattd + tditmunit + tditmqty + tditmprice + tditmbaseamount + tditmremarks + tditmdel + '</tr>');
 
 
 			$("#del"+lastRow).on('click', function() {
@@ -1304,10 +1308,12 @@
 		if(rowCount>1){
 			for (var i = xy+1; i <= rowCount; i++) {
 
+				
+				var ITMtxtnum = document.getElementById('txtnum' + i);
 				var ITMedt = document.getElementById('txtedtitm' + i);
 				var ITMCode = document.getElementById('txtitemcode' + i);
 				var ITMDesc = document.getElementById('txtitemdesc' + i);
-				var ITMewt = document.getElementById('selitmewtyp' + i);
+				//var ITMewt = document.getElementById('selitmewtyp' + i);
 				var ITMvats = document.getElementById('selitmvatyp' + i);
 				var ITMuom = document.getElementById('seluom' + i);
 				var ITMqty = document.getElementById('txtnqty' + i);
@@ -1327,7 +1333,7 @@
 
 				ITMCode.id = "txtitemcode" + za;
 				ITMDesc.id = "txtitemdesc" + za;
-				ITMewt.id = "selitmewtyp" + za;
+				//ITMewt.id = "selitmewtyp" + za;
 				ITMvats.id = "selitmvatyp" + za;
 				ITMuom.id = "seluom" + za;
 				ITMqty.id = "txtnqty" + za;
@@ -1342,6 +1348,9 @@
 				ITMdelx.id = "del" + za;
 	
 				ITMremx.id = "txtitemrem" + za;
+
+				ITMtxtnum.id = "txtnum" + za;
+				ITMtxtnum.value = za;
 			}
 		}
 	}
