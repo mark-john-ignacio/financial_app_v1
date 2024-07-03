@@ -17,7 +17,15 @@ class PinController extends BaseController
         $this->encrypter = service('encrypter');
     }
 
+    public function changePin(){
+        if (!session()->get('pin_verified')) {
+            return redirect()->to('/');
+        }
+        return view('change_pin');
+    }
+
     public function setPin(){
+        session()->remove('pin_verified');
         $new_pin = $this->request->getPost('new_pin');
         // Hash the pin
         $hashed_pin = password_hash($new_pin, PASSWORD_DEFAULT);
@@ -34,5 +42,10 @@ class PinController extends BaseController
         } else {
             return redirect()->back()->with('error', 'Incorrect Pin');
         }
+    }
+
+    public function logout(){
+        session()->remove('pin_verified');
+        return redirect()->to('/');
     }
 }

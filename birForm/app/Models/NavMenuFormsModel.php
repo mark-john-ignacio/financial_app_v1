@@ -4,15 +4,21 @@ namespace App\Models;
 
 use CodeIgniter\Model;
 
-class PinModel extends Model
+class NavMenuFormsModel extends Model
 {
-    protected $table            = 'bir_pin';
+    protected $table            = 'nav_menu_forms';
     protected $primaryKey       = 'id';
     protected $useAutoIncrement = true;
-    protected $returnType       = 'array';
+    protected $returnType       = 'object';
     protected $useSoftDeletes   = false;
     protected $protectFields    = true;
-    protected $allowedFields    = ['id', 'pin'];
+    protected $allowedFields    = [
+        'id',
+        'form_code',
+        'form_name',
+        'filter',
+        'cstatus',
+    ];
 
     protected bool $allowEmptyInserts = false;
     protected bool $updateOnlyChanged = true;
@@ -21,7 +27,7 @@ class PinModel extends Model
     protected array $castHandlers = [];
 
     // Dates
-    protected $useTimestamps = true;
+    protected $useTimestamps = false;
     protected $dateFormat    = 'datetime';
     protected $createdField  = 'created_at';
     protected $updatedField  = 'updated_at';
@@ -43,16 +49,4 @@ class PinModel extends Model
     protected $afterFind      = [];
     protected $beforeDelete   = [];
     protected $afterDelete    = [];
-
-
-    public function setPin($pin){
-        $this->save([
-            'id' => 1,
-            'pin' => $pin
-        ]);
-    }
-    public function getHashedPin(){
-        $pin = $this->first();
-        return $pin['pin'];
-    }
 }

@@ -3,24 +3,37 @@
 
 <?= $this->section("content")?>
 
-    <h1>Enter Pin to Access</h1>
-    <?= form_open("/verify_pin") ?>
-        <label for="pin">Pin Code:</label>
-        <input type="password" id="pin" name="pin">
-        <button type="submit">Verify</button>
-    </form>
+<div class="container">
+    <div class="row justify-content-center align-items-center vh-100">
+        <div class="col-md-4">
+            <div class="card">
+                <div class="card-body">
+                    <div class="text-center">
+                        <p class="h3 card-title">Enter Pin to Access</p>
+                        <?php if (session()->has("message")): ?>
+                            <div class="alert alert-success" role="alert">
+                                <?= session("message") ?>
+                            </div>
+                        <?php endif; ?>
 
-    <?= form_open("/set_pin") ?>
-        <label for="new_pin">New Pin:</label>
-        <input type="password" id="new_pin" name="new_pin">
-        <button type="submit">Set Pin</button>
-    </form>
+                        <?php if (session()->has("error")): ?>
+                            <div class="alert alert-danger" role="alert">
+                                <?= session("error") ?>
+                            </div>
+                        <?php endif; ?>
+                        <?= form_open("/verify_pin", ['class' => '']) ?>
+                            <div class="mb-3">
+                                <label for="pin" class="form-label">Pin Code:</label>
+                                <input type="password" id="pin" name="pin" class="form-control">
+                            </div>
+                            <button type="submit" class="btn btn-primary">Verify</button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
 
-
-<?php if (session()->has("error")): ?>
-
-<p><?= session("error") ?></p>
-
-<?php endif; ?>
 
 <?= $this->endSection()?>

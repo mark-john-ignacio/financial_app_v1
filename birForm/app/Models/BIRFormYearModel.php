@@ -4,15 +4,18 @@ namespace App\Models;
 
 use CodeIgniter\Model;
 
-class FormModel extends Model
+class BIRFormYearModel extends Model
 {
-    protected $table            = 'forms';
+    protected $table            = 'bir_form_year_registration';
     protected $primaryKey       = 'id';
     protected $useAutoIncrement = true;
-    protected $returnType       = 'array';
+    protected $returnType       = 'object';
     protected $useSoftDeletes   = false;
     protected $protectFields    = true;
-    protected $allowedFields    = ['pin'];
+    protected $allowedFields    = [
+        'year_id',
+        'form_id',
+    ];
 
     protected bool $allowEmptyInserts = false;
     protected bool $updateOnlyChanged = true;
@@ -44,8 +47,8 @@ class FormModel extends Model
     protected $beforeDelete   = [];
     protected $afterDelete    = [];
 
-    public function getForms()
+    public function getRegisteredFormsForYear($yearId)
     {
-        return $this->findAll();
+        return $this->where('year_id', $yearId)->findAll();
     }
 }
