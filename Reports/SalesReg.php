@@ -38,29 +38,7 @@
         </td>
         <td width="100" style="padding-left:10px"><b>Report Type: </b></td>
         <td style="padding:2px">
-        <?php
-          $x = check_nt($_SESSION['companyid']);
-          if($x==1){
-        ?>
-        <div class="col-xs-12 nopadding">
-          <div class="col-xs-5 nopadding">
-            <select id="seltype" name="seltype" class="form-control input-sm" onChange="setact(this.value);">
-              <option value="Accounting/SalesLedger">Ledger</option>
-              <option value="Accounting/SalesRecap">Recap</option>
-              <option value="Accounting/SalesRecapCust">Recap Per Customer</option>
-            </select>
-          </div>
-          <div class="col-xs-3 nopadwleft">
-            <select id="selNTy" name="selNTy" class="form-control input-sm">
-              <option value="">All</option>
-              <option value="Trade">Trade</option>
-              <option value="Non-Trade">Non-Trade</option>
-            </select>
-          </div>
-        </div>
-        <?php
-          }else{
-        ?>
+
           <div class="col-xs-8 nopadding">
             <select id="seltype" name="seltype" class="form-control input-sm" onChange="setact(this.value);">
               <option value="Accounting/SalesLedger">Ledger</option>
@@ -68,9 +46,6 @@
               <option value="Accounting/SalesRecapCust">Recap Per Customer</option>
             </select>
           </div>
-        <?php 
-          }
-        ?>
           
         </td>
       </tr>
