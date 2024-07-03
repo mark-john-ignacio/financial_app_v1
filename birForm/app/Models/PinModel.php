@@ -12,7 +12,7 @@ class PinModel extends Model
     protected $returnType       = 'array';
     protected $useSoftDeletes   = false;
     protected $protectFields    = true;
-    protected $allowedFields    = ['pin'];
+    protected $allowedFields    = ['id', 'pin'];
 
     protected bool $allowEmptyInserts = false;
     protected bool $updateOnlyChanged = true;
@@ -44,17 +44,14 @@ class PinModel extends Model
     protected $beforeDelete   = [];
     protected $afterDelete    = [];
 
-    public function verifyPin($pin)
-    {
-        $encypter = service('encrypter');
-        $query = $this->find(1);
-        $decrypted_pin = $encypter->decrypt($query['pin']);
-        if ($decrypted_pin === $pin) {
-            return true;
-        }
-        return false;
-    }
+
     public function setPin($pin){
-        $this->insert(['pin' => $pin]);
+        $this->save([
+            'pin' => $pin
+        ]);
+    }
+    public function getHashedPin(){
+        $pin = $this->first();
+        return $pin['pin'];
     }
 }

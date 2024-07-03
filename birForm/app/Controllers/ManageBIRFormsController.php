@@ -6,7 +6,7 @@ use CodeIgniter\HTTP\ResponseInterface;
 use App\Models\PinModel; // Assume this model handles pin verification and form data retrieval
 use App\Models\FormModel; // Handles form-year associations and queries
 
-class BirFormsManagement extends BaseController
+class ManageBIRFormsController extends BaseController
 {
     protected $pinModel;
     protected $formModel;
@@ -19,7 +19,9 @@ class BirFormsManagement extends BaseController
 
     public function index()
     {
-        // Display pin verification page
-        return view('pin_verification');
+        if (!session()->get('pin_verified')) {
+            return redirect()->to('/');
+        }
+        return view('manage_bir_forms/index');
     }
 }

@@ -17,7 +17,7 @@ class CreateBirPinTable extends Migration
             ],
             'pin' => [
                 'type' => 'varchar',
-                'constraint' => 4,
+                'constraint' => 255,
             ],
             'created_at' => [
                 'type' => 'DATETIME',

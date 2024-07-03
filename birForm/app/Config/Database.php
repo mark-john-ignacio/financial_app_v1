@@ -191,20 +191,20 @@ class Database extends Config
     {
         parent::__construct();
 
-        // Load connection details from external file
-        require '../../Connection/connection_string.php'; // Adjust the path as necessary
+        // // Load connection details from external file
+        // require '../../Connection/connection_string.php'; // Adjust the path as necessary
 
-        // Extracted details with corrected typo
-        $hostname = $hostname;
-        $dbname = $dbanme; // Corrected typo here
-        $username = $usn;
-        $password = $pwd;
+        // // Extracted details with corrected typo
+        // $hostname = $hostname;
+        // $dbname = $dbanme; // Corrected typo here
+        // $username = $usn;
+        // $password = $pwd;
 
-        // Set the database connection details
-        $this->default['hostname'] = $hostname;
-        $this->default['database'] = $dbname;
-        $this->default['username'] = $username;
-        $this->default['password'] = $password;
+        // // Set the database connection details
+        // $this->default['hostname'] = $hostname;
+        // $this->default['database'] = $dbname;
+        // $this->default['username'] = $username;
+        // $this->default['password'] = $password;
 
         // Ensure that we always set the database group to 'tests' if
         // we are currently running an automated test suite, so that

@@ -19,15 +19,18 @@ class PinController extends BaseController
 
     public function setPin(){
         $new_pin = $this->request->getPost('new_pin');
-        $encrypted_pin = $this->encrypter->encrypt($new_pin);
-        $this->pinModel->setPin($encrypted_pin);
+        // Hash the pin
+        $hashed_pin = password_hash($new_pin, PASSWORD_DEFAULT);
+        $this->pinModel->setPin($hashed_pin);
         return redirect()->to('/');
-        
     }
     public function verifyPin(){
         $pin = $this->request->getPost('pin');
-        if ($this->pinModel->verifyPin($pin)) {
-            return redirect()->to('/birFormsManagement/formYearAssociation');
+        // Retrieve the hashed pin from the database
+        $hashed_pin = $this->pinModel->getHashedPin(); // Assume this method retrieves the hashed pin
+        if (password_verify($pin, $hashed_pin)) {
+            session()->set('pin_verified', true);            
+            return redirect()->to('/manage-bir');
         } else {
             return redirect()->back()->with('error', 'Incorrect Pin');
         }
