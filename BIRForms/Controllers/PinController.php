@@ -3,7 +3,7 @@ class PinController {
     private $correctPin = '1234'; // Ideally, this should be stored securely or fetched from a database
 
     public function __construct() {
-        session_start();
+        //session_start();
     }
 
     public function verifyPin($pin) {

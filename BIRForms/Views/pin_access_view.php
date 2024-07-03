@@ -1,12 +1,12 @@
 <?php
-require 'PinController.php';
+require 'Controllers/PinController.php';
 $controller = new PinController();
 
 // Handle pin submission
 if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['pin'])) {
     $isAuthenticated = $controller->verifyPin($_POST['pin']);
     if ($isAuthenticated) {
-        header('Location: manage_bir_forms.php');
+        include 'Views/manage_bir_forms.php';
         exit;
     } else {
         $authFailed = true;
