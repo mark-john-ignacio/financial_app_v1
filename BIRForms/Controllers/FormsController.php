@@ -10,9 +10,9 @@ class FormsController {
 
     public function manageForms() {
         if (!$this->model->isAuthenticated()) {
-            include 'Views/pin_access_view.php';
+            return 'Views/pin_access_view.php';
             exit;
         }
-        include 'Views/manage_bir_forms.php';
+        return 'Views/manage_bir_forms.php';
     }
 }

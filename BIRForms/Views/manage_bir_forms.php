@@ -1,15 +1,14 @@
 <?php
 require 'Controllers/PinController.php';
-$controller = new PinController();
 
-session_start(); // Ensure a session is started before destroying it
+$controller = new PinController();
 
 // Check if the logout parameter is set
 if (isset($_GET['logout'])) {
     // Destroy the session
     session_destroy();
-    // Properly redirect to pin_access_view.php or any other intended page
-    header('Location: Views/pin_access_view.php');
+    // Redirect to pin_access_view.php
+    header('Location: pin_access_view.php');
     exit;
 }
 ?>
