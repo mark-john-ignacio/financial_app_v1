@@ -55,6 +55,8 @@ if (mysqli_num_rows($sqlhead)!=0) {
 
 		$Gross = $row['ngross'];
 
+    $TotVatInc = $row['ngrossbefore'];
+
     $TotVatable = $row['nnet'];
     $TotZero = $row['nzerorated'];
     $TotVEx = $row['nexempt'];
@@ -213,7 +215,7 @@ if (mysqli_num_rows($sqlhead)!=0) {
           <td rowspan="7" valign="top" align="right" style="width: 4in; padding-top: 13px !important">
 
             <table width="100%" border="0" cellpadding="1px">
-              <tr><td style="padding-right: 0.3in; padding-top: 3px !important" align="right"> &nbsp;<b><?=(floatval($TotVatable) !=0) ? number_format($TotVatable,2) : " "?> </b></td></tr>
+              <tr><td style="padding-right: 0.3in; padding-top: 3px !important" align="right"> &nbsp;<b><?=(floatval($TotVatInc) !=0) ? number_format($TotVatable,2) : " "?> </b></td></tr>
               <tr><td style="padding-right: 0.3in; padding-top: 3px !important" align="right"> &nbsp;<b><?=(floatval($TotVEx) !=0) ? number_format($TotVEx,2) : " "?> </b> </td></tr>
               <tr><td style="padding-right: 0.3in; padding-top: 3px !important" align="right"> &nbsp;<b><?=(floatval($TotZero) !=0) ? number_format($TotZero,2) : " "?> </b> </td></tr>
               <tr><td style="padding-right: 0.3in; padding-top: 3px !important" align="right"> &nbsp;<b><?=(floatval($TotVat) !=0) ? number_format($TotVat,2) : " "?></b> </td></tr>
