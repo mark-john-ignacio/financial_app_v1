@@ -56,6 +56,7 @@ if (mysqli_num_rows($sqlhead)!=0) {
 		$Gross = $row['ngross'];
 
     $TotVatInc = $row['ngrossbefore'];
+    $TotVatEWT = $row['newt'];
 
     $TotVatable = $row['nnet'];
     $TotZero = $row['nzerorated'];
@@ -232,7 +233,7 @@ if (mysqli_num_rows($sqlhead)!=0) {
         </tr>
         <tr>
 
-          <td  valign="bottom" align="right" style="padding-right: 0.3in"><b><?//=number_format($Gross,2)?>&nbsp;</b></td>
+          <td  valign="bottom" align="right" style="padding-right: 0.3in"><b><?=(floatval($TotVatEWT)!=0) ? number_format($TotVatEWT,2) : " "?></b>&nbsp;</b></td>
         </tr>
         <tr>
 
