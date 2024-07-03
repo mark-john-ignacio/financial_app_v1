@@ -74,7 +74,7 @@ if (mysqli_num_rows($sqlhead)!=0) {
 <head>
 </head>
 
-<body style="position:fixed; padding-top:0.60in" onLoad="window.print()">
+<body style="position:fixed; padding-top:0.65in" onLoad="window.print()">
 
 <table width="100%" border="0" cellpadding="1" style="border-collapse:collapse;" id="tblMain">
   <tr>
