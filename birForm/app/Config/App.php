@@ -23,10 +23,12 @@ class App extends BaseConfig
     {
         $protocol = isset($_SERVER["HTTPS"]) ? 'https' : 'http';
         $folder_path = explode('/', $_SERVER['REQUEST_URI']);
-        // Assuming you want to use the first part of the path; adjust the index as needed
-        $first_part_of_path = $folder_path[1] ?? ''; // Using null coalescing operator to avoid undefined index error
-        $baseURL = $protocol . "://" . ($_SERVER['HTTP_HOST']) . "/" . $first_part_of_path;
-        $this->baseURL = $baseURL;
+        // Using null coalescing operator to avoid undefined index errors
+        $first_part_of_path = $folder_path[1] ?? '';
+        $second_part_of_path = $folder_path[2] ?? ''; // Get the second part of the path
+        // Concatenate the protocol, host, first part, and second part of the path
+        $baseURL = $protocol . "://" . $_SERVER['HTTP_HOST'] . "/" . $first_part_of_path . "/" . $second_part_of_path;
+        $this->baseURL = rtrim($baseURL, '/') . '/'; // Ensure there's a trailing slash
     }
 
 
