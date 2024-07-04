@@ -151,6 +151,7 @@
 	<form name="frmedit" id="frmedit" method="post" action="Purch_edit.php">
 		<input type="hidden" name="txtctranno" id="txtctranno" />
 		<input type="hidden" name="hdnsrchval" id="hdnsrchval" />
+		<input type="hidden" name="hdnsrchsta" id="hdnsrchsta" />
 		<input type="hidden" name="hdnsrchtyp" id="hdnsrchtyp" />
 		<input type="hidden" name="hdnsrchdte" id="hdnsrchdte" />
 		<input type="hidden" name="hdnsrchdtef" id="hdnsrchdtef" />
