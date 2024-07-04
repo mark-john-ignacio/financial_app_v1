@@ -23,12 +23,21 @@ class App extends BaseConfig
     {
         $protocol = isset($_SERVER["HTTPS"]) ? 'https' : 'http';
         $folder_path = explode('/', $_SERVER['REQUEST_URI']);
-        // Using null coalescing operator to avoid undefined index errors
         $first_part_of_path = $folder_path[1] ?? '';
-        $second_part_of_path = $folder_path[2] ?? ''; // Get the second part of the path
-        // Concatenate the protocol, host, first part, and second part of the path
+        $second_part_of_path = $folder_path[2] ?? '';
         $baseURL = $protocol . "://" . $_SERVER['HTTP_HOST'] . "/" . $first_part_of_path . "/" . $second_part_of_path;
-        $this->baseURL = rtrim($baseURL, '/') . '/'; // Ensure there's a trailing slash
+        $this->baseURL = rtrim($baseURL, '/') . '/';
+
+        // Ensure 'public/' is at the end of $baseURL
+        if (!preg_match("/public\/?$/", $this->baseURL)) {
+            $this->baseURL .= 'public/';
+        }
+
+        // Ensure 'birForm/' precedes 'public/' (case-insensitive search)
+        if (!preg_match("/birForm\/public\/?$/i", $this->baseURL)) {
+            // If 'public/' is found but not preceded by 'birForm/', insert 'birForm/' before 'public/'
+            $this->baseURL = preg_replace("/(public\/?)$/i", "birForm/$1", $this->baseURL);
+        }
     }
 
 
