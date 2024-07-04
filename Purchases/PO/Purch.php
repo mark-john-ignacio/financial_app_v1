@@ -46,6 +46,7 @@
 <head>
 	<meta charset="utf-8">
 	<meta name="viewport" content="initial-scale=1.0, maximum-scale=2.0">
+	<META NAME="robots" CONTENT="noindex,nofollow">
 
 	<link href="../../global/plugins/font-awesome/css/font-awesome.min.css" rel="stylesheet" type="text/css"/>
 	<link href="../../global/plugins/simple-line-icons/simple-line-icons.min.css" rel="stylesheet" type="text/css"/>
@@ -109,9 +110,9 @@
 				</div>
 				<div class="col-xs-2 text-right nopadwleft">
 					<select  class="form-control" name="seldtfl" id="seldtfl">
-						<option value="A.ddate" <?=(isset($_REQUEST['sdtf'])) ? (($_REQUEST['sdtf']=="a.ddate") ? "selected" : "" ) : "";?>>Encoding Date </option>
-						<option value="A.dcutdate" <?=(isset($_REQUEST['sdtf'])) ? (($_REQUEST['sdtf']=="a.dtrandate") ? "selected" : "" ) : "";?>>PO Date </option>
-						<option value="A.dneeded" <?=(isset($_REQUEST['sdtf'])) ? (($_REQUEST['sdtf']=="a.dcutdate") ? "selected" : "" ) : "";?>>Date Needed </option>
+						<option value="A.ddate" <?=(isset($_REQUEST['sdtf'])) ? (($_REQUEST['sdtf']=="A.ddate") ? "selected" : "" ) : "";?>>Encoding Date </option>
+						<option value="A.dcutdate" <?=(isset($_REQUEST['sdtf'])) ? (($_REQUEST['sdtf']=="A.dcutdate") ? "selected" : "" ) : "";?>>PO Date </option>
+						<option value="A.dneeded" <?=(isset($_REQUEST['sdtf'])) ? (($_REQUEST['sdtf']=="A.dneeded") ? "selected" : "" ) : "";?>>Date Needed </option>
 					</select>
 				</div>
 				<div class="col-xs-3 nopadwleft">
@@ -287,7 +288,6 @@
 			$("#selstats, #selstypes, #seldtfl").change(function(){
 				filter_check();
 			});
-
 				
 			$('body').tooltip({
 				selector: '.canceltool',
@@ -417,39 +417,61 @@
 			var num = "";
 			var msg = "";
 
-			if(idz=="OK"){
-				var x = $("#typ").val();
-				var num = $("#modzx").val();
-				
-				if(x=="POST"){
-					var msg = "POSTED";
-				}
-				else if(x=="CANCEL" || x=="CANCEL1"){
-					var msg = "CANCELLED";
-				}
-				else if(x=="SEND"){
-					var msg = "SENT";
-				}
+			var x = $("#typ").val();
+			var num = $("#modzx").val();
 
-					$.ajax ({
-						url: "Purch_Tran.php",
-						data: { x: num, typ: x },
-						dataType: "json",
-						beforeSend: function() {
-							$("#AlertMsg").html("&nbsp;&nbsp;<b>Processing " + num + ": </b> Please wait a moment...");
-							$("#alertbtnOK").css("display", "none");
+			if(idz=="OK" && (x=="POST" || x=="SEND")){
+
+				$.ajax ({
+					url: "Purch_Tran.php",
+					data: { x: num, typ: x, canmsg: "" },
+					dataType: "json",
+					beforeSend: function() {
+						$("#AlertMsg").html("&nbsp;&nbsp;<b>Processing " + num + ": </b> Please wait a moment...");
+						$("#alertbtnOK").css("display", "none");
+						$("#OK").css("display", "none");
+						$("#Cancel").css("display", "none");
+					},
+					success: function( data ) {
+						console.log(data);
+						setmsg(data,num);
+					}
+				});
+				
+
+			}else if(idz=="OK" && (x=="CANCEL" || x=="CANCEL1")){
+
+				bootbox.prompt({
+					title: 'Enter reason for cancellation.',
+					inputType: 'text',
+					centerVertical: true,
+					callback: function (result) {
+						if(result!="" && result!=null){
+							$.ajax ({
+								url: "Purch_Tran.php",
+								data: { x: num, typ: x, canmsg: result },
+								dataType: "json",
+								beforeSend: function() {
+									$("#AlertMsg").html("&nbsp;&nbsp;<b>Processing " + num + ": </b> Please wait a moment...");
+									$("#alertbtnOK").css("display", "none");
+									$("#OK").css("display", "none");
+									$("#Cancel").css("display", "none");
+								},
+								success: function( data ) {
+									console.log(data);
+									setmsg(data,num);
+								}
+							});
+						}else{
+							$("#AlertMsg").html("Reason for cancellation is required!");
+							$("#alertbtnOK").css("display", "inline");
 							$("#OK").css("display", "none");
 							$("#Cancel").css("display", "none");
-						},
-						success: function( data ) {
-							console.log(data);
-							setmsg(data,num);
-						}
-					});
-				
+						}						
+					}
+				});
 
-			}
-			else if(idz=="Cancel"){
+			}else if(idz=="Cancel"){
 				
 				$("#AlertMsg").html("");
 				$("#AlertModal").modal('hide');
@@ -459,19 +481,10 @@
 		}
 
 		function setmsg(data,num){
-			$.each(data,function(key,value){
-
-				//	alert( key + ": " + value );
-					
-				//	itmstat = value.stat;
-
-				//	alert(value.ms);
-					
-				
+			$.each(data,function(key,value){				
 				if(value.stat!="False"){
 					$("#msg"+num).html(value.stat);
-					
-						
+										
 					$("#AlertMsg").html("");
 						
 						$("#AlertMsg").html("&nbsp;&nbsp;<b>" + num + ": </b> Successfully "+value.stat+"...");
@@ -561,13 +574,13 @@
 									}else{
 										if (full[4] == 1) {		
 											if(full[8] == 1){
-												return '<b>Voided</b>';
+												return '<a href="#" class="canceltool" data-id="'+full[0]+'" data-stat="VOID" style="color: red !important"><b>Voided</b></a>';
 											}else{
 												return 'Posted';
 											}			
 																					
 										}else if (full[5] == 1) { //12 sent 13 void 4 apprve 5 cancel
-											return '<b>Cancelled</b>';
+											return '<a href="#" class="canceltool" data-id="'+full[0]+'" data-stat="CANCELLED" style="color: red !important"><b>Cancelled</b></a>';
 										}else{
 											var chkrejstat = "Pending";
 											var xcz = '<?=json_encode(@$chkapprovals)?>';
@@ -649,8 +662,13 @@
 						"className": "dt-body-nowrap"
 					},
 					{
-						"targets": [5,6],
+						"targets": [5],
 						"className": "text-center dt-body-nowrap"
+					},
+					{
+						"targets": [6],
+						"className": "text-center dt-body-nowrap",
+						"orderable": false
 					}
 				],
 				"createdRow": function( row, data, dataIndex ) {

@@ -1,14 +1,13 @@
 <?php
-if(!isset($_SESSION)){
-	session_start();
-}
-$_SESSION['pageid'] = "Quote_unpost";
-include('../../Connection/connection_string.php');
-include('../../include/denied.php');
-include('../../include/access2.php');
+	if(!isset($_SESSION)){
+		session_start();
+	}
+	$_SESSION['pageid'] = "Quote_unpost";
+	include('../../Connection/connection_string.php');
+	include('../../include/denied.php');
+	include('../../include/access2.php');
 
-$company = $_SESSION['companyid'];
-
+	$company = $_SESSION['companyid'];
 ?>
 
 <!DOCTYPE html>
@@ -17,11 +16,11 @@ $company = $_SESSION['companyid'];
 	<meta charset="utf-8">
 	<meta name="viewport" content="initial-scale=1.0, maximum-scale=2.0">
 
-<link href="../../global/plugins/font-awesome/css/font-awesome.min.css" rel="stylesheet" type="text/css"/> 
-<link rel="stylesheet" type="text/css" href="../../Bootstrap/css/bootstrap.css">  
-<link rel="stylesheet" type="text/css" href="../../Bootstrap/css/alert-modal.css">  
-<script src="../../Bootstrap/js/jquery-3.2.1.min.js"></script>
-<script src="../../Bootstrap/js/bootstrap.js"></script>
+	<link href="../../global/plugins/font-awesome/css/font-awesome.min.css" rel="stylesheet" type="text/css"/> 
+	<link rel="stylesheet" type="text/css" href="../../Bootstrap/css/bootstrap.css">  
+	<link rel="stylesheet" type="text/css" href="../../Bootstrap/css/alert-modal.css">  
+	<script src="../../Bootstrap/js/jquery-3.2.1.min.js"></script>
+	<script src="../../Bootstrap/js/bootstrap.js"></script>
 </head>
 
 <body style="padding:5px">

@@ -266,8 +266,8 @@ if($_REQUEST['typ']=="CANCEL"){
 				$msgz = "<b>SUCCESS: </b>Your transaction is successfully cancelled!";
 				$status = "Cancelled";
 
-				mysqli_query($con,"INSERT INTO logfile(`ctranno`, `cuser`, `ddate`, `cevent`, `module`, `cmachine`, `cremarks`) 
-				values('$tranno','$preparedby',NOW(),'CANCELLED','PURCHASE ORDER','$compname','Cancel Record')");
+				mysqli_query($con,"INSERT INTO logfile(`ctranno`, `cuser`, `ddate`, `cevent`, `module`, `cmachine`, `cremarks`, `cancel_rem`) 
+				values('$tranno','$preparedby',NOW(),'CANCELLED','PURCHASE ORDER','$compname','Cancel Record','".$_REQUEST['canmsg']."')");
 
 			}
 
@@ -287,8 +287,8 @@ if($_REQUEST['typ']=="CANCEL1"){
 	$msgz = "<b>SUCCESS: </b>Your transaction is successfully cancelled!";
 	$status = "Cancelled";
 
-	mysqli_query($con,"INSERT INTO logfile(`ctranno`, `cuser`, `ddate`, `cevent`, `module`, `cmachine`, `cremarks`) 
-	values('$tranno','$preparedby',NOW(),'CANCELLED','PURCHASE ORDER','$compname','Cancel Record')");
+	mysqli_query($con,"INSERT INTO logfile(`ctranno`, `cuser`, `ddate`, `cevent`, `module`, `cmachine`, `cremarks`, `cancel_rem`) 
+	values('$tranno','$preparedby',NOW(),'CANCELLED','PURCHASE ORDER','$compname','Cancel Record','".$_REQUEST['canmsg']."')");
 
 }
 

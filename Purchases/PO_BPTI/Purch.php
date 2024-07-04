@@ -327,8 +327,8 @@ $company = $_SESSION['companyid'];
 		
 			}else if(idz=="Cancel"){
 			
-			$("#AlertMsg").html("");
-			$("#AlertModal").modal('hide');
+				$("#AlertMsg").html("");
+				$("#AlertModal").modal('hide');
 				
 			}
 
@@ -337,19 +337,14 @@ $company = $_SESSION['companyid'];
 		function setmsg(data,num){
 			$.each(data,function(key,value){							
 				if(value.stat!="False"){
-					$("#msg"+num).html(value.stat);
-					
-						
+					$("#msg"+num).html(value.stat);											
 					$("#AlertMsg").html("");
 						
-						$("#AlertMsg").html("&nbsp;&nbsp;<b>" + num + ": </b> Successfully "+value.stat+"...");
-						$("#alertbtnOK").show();
-						$("#OK").hide();
-						$("#Cancel").hide();
-						$("#AlertModal").modal('show');
-
-					
-
+					$("#AlertMsg").html("&nbsp;&nbsp;<b>" + num + ": </b> Successfully "+value.stat+"...");
+					$("#alertbtnOK").show();
+					$("#OK").hide();
+					$("#Cancel").hide();
+					$("#AlertModal").modal('show');
 				}
 				else{
 					//	alert(item.ms);

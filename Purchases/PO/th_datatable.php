@@ -9,14 +9,14 @@
 	$employeeid = $_SESSION['employeeid'];
 
 	$chkapprovals = array();
-	$sqlappx = mysqli_query($con,"Select A.* FROM quote_trans_approvals A left join (Select ctranno, MIN(nlevel) as nlevel from quote_trans_approvals where compcode='$company' and lapproved=0 and lreject=0 Group By ctranno Order By ctranno, nlevel) B on A.ctranno=B.ctranno where A.compcode='$company' and A.lapproved=0 and A.lreject=0 and A.nlevel=B.nlevel");
+	$sqlappx = mysqli_query($con,"Select A.* FROM purchase_trans_approvals A left join (Select cpono, MIN(nlevel) as nlevel from purchase_trans_approvals where compcode='$company' and lapproved=0 and lreject=0 Group By cpono Order By cpono, nlevel) B on A.cpono=B.cpono where A.compcode='$company' and A.lapproved=0 and A.lreject=0 and A.nlevel=B.nlevel");
 	if (mysqli_num_rows($sqlappx)!=0) {
 		while($rows = mysqli_fetch_array($sqlappx, MYSQLI_ASSOC)){
 			@$chkapprovals[] = $rows; 
 		}
 	}
 
-	$column = array('a.cpono', 'd.cref', 'CONCAT(a.ccode,"-",b.cname)', 'a.ngross', 'a.dcutdate', 'CASE WHEN a.lapproved=1 THEN CASE WHEN a.lvoid=1 THEN "Voided" ELSE "Posted" END WHEN a.lcancelled=1 THEN "Cancelled" ELSE CASE WHEN a.lsent=0 THEN "For Sending" ELSE "For Approval" END END','');
+	$column = array('a.ddate', 'd.cref', 'CONCAT(a.ccode,"-",b.cname)', 'a.ngross', 'a.dcutdate', 'CASE WHEN a.lapproved=1 THEN CASE WHEN a.lvoid=1 THEN "Voided" ELSE "Posted" END WHEN a.lcancelled=1 THEN "Cancelled" ELSE CASE WHEN a.lsent=0 THEN "For Sending" ELSE "For Approval" END END','');
 
 	$query = "select a.*,b.cname, IFNULL(d.cref,'') as cref from purchase a left join suppliers b on a.compcode=b.compcode and a.ccode=b.ccode LEFT JOIN (Select x.cpono, GROUP_CONCAT(DISTINCT x.creference) as cref from purchase_t x where x.compcode='".$_SESSION['companyid']."' group by x.cpono) d on a.cpono=d.cpono where a.compcode='".$_SESSION['companyid']."' ";
 
@@ -107,7 +107,32 @@
 		$sub_array[] = $row['lsent'];
 		$sub_array[] = $row['lvoid'];
 		$sub_array[] = number_format($row['ngross'],2);
-		$data[] = $sub_array;
+
+		$xcstat = "False";
+		foreach($chkapprovals as $rocx){
+			if($rocx['cpono']==$row['cpono'] && $rocx['userid']==$employeeid){
+				$xcstat = "True";
+			}
+		}
+
+		$sub_array[] = $xcstat;
+
+		if(isset($_POST['searchBystat']) && $_POST['searchBystat'] != '')
+
+			if($_POST['searchBystat']=="pending"){
+				if($xcstat == "False"){
+					$data[] = $sub_array;
+				}				
+			}elseif($_POST['searchBystat']=="approve"){
+				if($xcstat == "True"){
+					$data[] = $sub_array;
+				}
+			}else{
+				$data[] = $sub_array;
+			}
+		else{
+			$data[] = $sub_array;
+		}
 	}
 
 	function count_all_data($connect)
