@@ -84,7 +84,9 @@ phpunit
 #-------------------------
 # Composer
 #-------------------------
-vendor/
+vendor/fakerphp
+vendor/phpunit
+vendor/mikey179
 
 #-------------------------
 # IDE / Development Files

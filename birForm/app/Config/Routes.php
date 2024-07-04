@@ -14,5 +14,4 @@ $routes->post('/set-pin', 'PinController::setPin');
 
 $routes->get('/bir-year-form/associations', 'BIRYearFormController::associations');
 
-service('auth')->routes($routes);
 $routes->resource('bir-year-form', ['controller' => 'BIRYearFormController']);
