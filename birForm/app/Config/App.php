@@ -4,6 +4,7 @@ namespace Config;
 
 use CodeIgniter\Config\BaseConfig;
 
+
 class App extends BaseConfig
 {
     /**
@@ -17,6 +18,13 @@ class App extends BaseConfig
      * E.g., http://example.com/
      */
     public string $baseURL = '';
+
+    public function __construct()
+    {
+        require_once '../../Connection/connection_string.php';
+        $this->baseURL = $protocol."://".(($_SERVER['HTTP_HOST']=="localhost") ? $_SERVER['HTTP_HOST']."/st_myxfinancials": $_SERVER['HTTP_HOST'])."/BIRForm/public"; // Assuming $AttachUrlBase is defined before this constructor is called
+    }
+
 
     /**
      * Allowed Hostnames in the Site URL other than the hostname in the baseURL.
