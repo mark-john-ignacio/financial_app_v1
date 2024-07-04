@@ -35,6 +35,8 @@ class CreateNavMenuForms extends Migration
 
         $this->forge->addKey('id', true);
         $this->forge->createTable('nav_menu_forms');
+        $seeder = \Config\Database::seeder();
+        $seeder->call('App\Database\Seeds\NavMenuFormsSeeder');
     }
 
     public function down()

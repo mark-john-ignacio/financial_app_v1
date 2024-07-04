@@ -4,21 +4,15 @@ namespace App\Models;
 
 use CodeIgniter\Model;
 
-class NavMenuFormsModel extends Model
+class BIRYearModel extends Model
 {
-    protected $table            = 'nav_menu_forms';
+    protected $table            = 'bir_year';
     protected $primaryKey       = 'id';
     protected $useAutoIncrement = true;
     protected $returnType       = 'object';
     protected $useSoftDeletes   = false;
     protected $protectFields    = true;
-    protected $allowedFields    = [
-        'id',
-        'form_code',
-        'form_name',
-        'filter',
-        'cstatus',
-    ];
+    protected $allowedFields    = ['year'];
 
     protected bool $allowEmptyInserts = false;
     protected bool $updateOnlyChanged = true;

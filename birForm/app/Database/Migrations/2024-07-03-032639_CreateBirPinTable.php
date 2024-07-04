@@ -30,6 +30,8 @@ class CreateBirPinTable extends Migration
         ]);
         $this->forge->addKey('id', true);
         $this->forge->createTable('bir_pin');
+        $seeder = \Config\Database::seeder();
+        $seeder->call('App\Database\Seeds\BirPinSeeder');
     }
 
     public function down()

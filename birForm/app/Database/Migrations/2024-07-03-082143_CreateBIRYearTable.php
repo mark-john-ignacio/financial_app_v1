@@ -22,6 +22,8 @@ class CreateBIRYearTable extends Migration
         ]);
         $this->forge->addPrimaryKey('id');
         $this->forge->createTable('bir_year');
+        $seeder = \Config\Database::seeder();
+        $seeder->call('App\Database\Seeds\BIRYearSeeder');
     }
 
     public function down()

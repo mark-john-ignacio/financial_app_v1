@@ -3,9 +3,9 @@
 namespace App\Database\Seeds;
 
 use CodeIgniter\Database\Seeder;
-use App\Models\BIRFormYearModel;
+use App\Models\BIRYearFormModel;
 
-class BIRFormYearSeeder extends Seeder
+class BIRYearFormSeeder extends Seeder
 {
     public function run()
     {
@@ -92,7 +92,7 @@ class BIRFormYearSeeder extends Seeder
             ],
 
         ];
-        $model = new BIRFormYearModel();
+        $model = new BIRYearFormModel();
         $model -> insertBatch($data);
 
     }

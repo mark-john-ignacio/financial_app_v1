@@ -4,7 +4,7 @@ namespace App\Database\Migrations;
 
 use CodeIgniter\Database\Migration;
 
-class CreateBIRFormYearRegistration extends Migration
+class CreateBIRYearFormRegistration extends Migration
 {
     public function up()
     {
@@ -26,11 +26,14 @@ class CreateBIRFormYearRegistration extends Migration
         ]);
 
         $this->forge->addKey('id', true);
-        $this->forge->createTable('bir_form_year_registration');
+        $this->forge->createTable('bir_year_form_registration');
+        $seeder = \Config\Database::seeder();
+        $seeder->call('App\Database\Seeds\BIRYearFormSeeder');
+
     }
 
     public function down()
     {
-        $this->forge->dropTable('bir_form_year_registration');
+        $this->forge->dropTable('bir_year_form_registration');
     }
 }

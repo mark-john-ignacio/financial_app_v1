@@ -10,9 +10,9 @@ class BIRPinSeeder extends Seeder
     public function run()
     {
         $data = [
-            'pin' => '$2y$10$JqyEPWqVjLn0dngavKiwW.KQCbakTNMLqJDVuztw1y4CA5EOYJEJ6'
+            'pin' => '$2y$10$lQWLwfhcs7T6..Dj6s1wmOegjJziOPleuzd7Mny8AavHsu/hBgXRm'
         ];
-        //456789
+        //secret
         $model = new PinModel();
         $model->insert($data);
 

@@ -3,7 +3,7 @@
 namespace App\Database\Seeds;
 
 use CodeIgniter\Database\Seeder;
-use App\Models\NavMenuFormsModel;
+use App\Models\BIRFormsModel;
 
 class NavMenuFormsSeeder extends Seeder
 {
@@ -66,7 +66,7 @@ class NavMenuFormsSeeder extends Seeder
                 'cstatus' => 'Active',
             ]
         ];
-        $model = new NavMenuFormsModel();
+        $model = new BIRFormsModel();
         $model -> insertBatch($data);
 
     }

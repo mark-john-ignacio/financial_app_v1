@@ -4,9 +4,9 @@ namespace App\Models;
 
 use CodeIgniter\Model;
 
-class BIRFormYearModel extends Model
+class BIRYearFormModel extends Model
 {
-    protected $table            = 'bir_form_year_registration';
+    protected $table            = 'bir_year_form_registration';
     protected $primaryKey       = 'id';
     protected $useAutoIncrement = true;
     protected $returnType       = 'object';
@@ -47,8 +47,20 @@ class BIRFormYearModel extends Model
     protected $beforeDelete   = [];
     protected $afterDelete    = [];
 
-    public function getRegisteredFormsForYear($yearId)
+    public function getAssociations()
     {
-        return $this->where('year_id', $yearId)->findAll();
+        $thisTable = $this->table; 
+    
+        return $this->select('by.id, by.year, GROUP_CONCAT(nmf.form_code ORDER BY nmf.form_code SEPARATOR ", ") AS forms', false)
+                    ->join('bir_year by', 'by.id = ' . $thisTable . '.year_id', 'inner')
+                    ->join('nav_menu_forms nmf', 'nmf.id = ' . $thisTable . '.form_id', 'inner')
+                    ->groupBy('by.id')
+                    ->findAll();
+    }
+
+    public function getFormsByYear($year_id){
+        return $this->select('form_id')
+                    ->where('year_id', $year_id)
+                    ->findAll();
     }
 }

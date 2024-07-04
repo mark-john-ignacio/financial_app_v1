@@ -1,0 +1,39 @@
+<?= $this->extend("layouts/default")?>
+<?= $this->section("title")?>Manage BIR<?= $this->endSection() ?>
+
+<?= $this->section("content")?>
+<div class="container mt-5">
+    <h1>Edit Associations for Year: <?= $year ?></h1>
+    <form id="associationForm">
+        <div class="mb-3">
+            <label for="formSelect" class="form-label">Select Forms</label>
+            <div id="formSelect">
+                <?php foreach ($forms as $form): ?>
+                    <div class="form-check">
+                        <input class="form-check-input" type="checkbox" value="<?= $form['form_id'] ?>" id="form-<?= $form['form_id'] ?>" name="forms[]" <?= in_array($form['form_id'], $associatedForms) ? 'checked' : '' ?>>
+                        <label class="form-check-label" for="form-<?= $form['form_id'] ?>">
+                            <?= $form['form_name'] ?>
+                        </label>
+                    </div>
+                <?php endforeach; ?>
+            </div>
+        </div>
+        <button type="submit" class="btn btn-primary">Save Changes</button>
+    </form>
+</div>
+
+<script>
+$(document).ready(function() {
+    $('#associationForm').on('submit', function(e) {
+        e.preventDefault();
+        const formData = $(this).serialize();
+        $.post('<?= site_url('manage-bir-forms/update-association/' . $year_id) ?>', formData, function(response) {
+            alert('Associations updated successfully!');
+            window.location.href = '<?= site_url('manage-bir-forms') ?>';
+        }).fail(function() {
+            alert('Failed to update associations.');
+        });
+    });
+});
+</script>
+<?= $this->endSection()?>
