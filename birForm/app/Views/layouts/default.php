@@ -27,10 +27,10 @@
             <ul class="navbar-nav me-auto mb-2 mb-lg-0">
         <?php if (session()->get('pin_verified')): ?>
             <li class="nav-item">
-                <a href="change-pin" class="nav-link">Change Pin</a>
+                <a href="<?= site_url("change-pin")?>" class="nav-link">Change Pin</a>
             </li>
             <li class="nav-item">
-                <a href="logout" class="nav-link">Logout</a>
+                <a href="<?= site_url("logout-pin")?>" class="nav-link">Logout</a>
             </li>
         <?php endif; ?>
             </ul>

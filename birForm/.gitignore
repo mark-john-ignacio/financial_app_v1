@@ -85,7 +85,6 @@ phpunit
 # Composer
 #-------------------------
 vendor/fakerphp
-vendor/phpunit
 vendor/mikey179
 
 #-------------------------
