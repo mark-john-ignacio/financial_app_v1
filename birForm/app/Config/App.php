@@ -25,7 +25,7 @@ class App extends BaseConfig
         $folder_path = explode('/', $_SERVER['REQUEST_URI']);
         // Assuming you want to use the first part of the path; adjust the index as needed
         $first_part_of_path = $folder_path[1] ?? ''; // Using null coalescing operator to avoid undefined index error
-        $baseURL = $protocol . "://" . (($_SERVER['HTTP_HOST'] == "localhost") ? $_SERVER['HTTP_HOST'] . "/st_myxfinancials" : $_SERVER['HTTP_HOST']) . "/" . $first_part_of_path . "/BIRForm/public";
+        $baseURL = $protocol . "://" . ($_SERVER['HTTP_HOST']) . "/" . $first_part_of_path . "/BIRForm/public";
         $this->baseURL = $baseURL;
     }
 
