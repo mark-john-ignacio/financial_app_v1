@@ -2452,6 +2452,10 @@ Forms
   width: 240px !important;
 }
 
+.input-slarge {
+  width: 260px !important;
+}
+
 .input-large {
   width: 320px !important;
 }
