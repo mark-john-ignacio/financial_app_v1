@@ -5,34 +5,60 @@
 
 	include('../../Connection/connection_string.php');
 
-	$column = array('a.cpono', 'd.cref', 'CONCAT(a.ccode,"-",b.cname)', 'a.ngross', 'a.ddate', 'CASE WHEN a.lapproved=1 THEN CASE WHEN a.lvoid=1 THEN "Voided" ELSE "Posted" END WHEN a.lcancelled=1 THEN "Cancelled" ELSE CASE WHEN a.lsent=0 THEN "For Sending" ELSE "For Approval" END END','');
+	$company = $_SESSION['companyid'];
+	$employeeid = $_SESSION['employeeid'];
+
+	$chkapprovals = array();
+	$sqlappx = mysqli_query($con,"Select A.* FROM quote_trans_approvals A left join (Select ctranno, MIN(nlevel) as nlevel from quote_trans_approvals where compcode='$company' and lapproved=0 and lreject=0 Group By ctranno Order By ctranno, nlevel) B on A.ctranno=B.ctranno where A.compcode='$company' and A.lapproved=0 and A.lreject=0 and A.nlevel=B.nlevel");
+	if (mysqli_num_rows($sqlappx)!=0) {
+		while($rows = mysqli_fetch_array($sqlappx, MYSQLI_ASSOC)){
+			@$chkapprovals[] = $rows; 
+		}
+	}
+
+	$column = array('a.cpono', 'd.cref', 'CONCAT(a.ccode,"-",b.cname)', 'a.ngross', 'a.dcutdate', 'CASE WHEN a.lapproved=1 THEN CASE WHEN a.lvoid=1 THEN "Voided" ELSE "Posted" END WHEN a.lcancelled=1 THEN "Cancelled" ELSE CASE WHEN a.lsent=0 THEN "For Sending" ELSE "For Approval" END END','');
 
 	$query = "select a.*,b.cname, IFNULL(d.cref,'') as cref from purchase a left join suppliers b on a.compcode=b.compcode and a.ccode=b.ccode LEFT JOIN (Select x.cpono, GROUP_CONCAT(DISTINCT x.creference) as cref from purchase_t x where x.compcode='".$_SESSION['companyid']."' group by x.cpono) d on a.cpono=d.cpono where a.compcode='".$_SESSION['companyid']."' ";
 
+	$filters = "";
+
 	if(isset($_POST['searchByName']) && $_POST['searchByName'] != '')
 	{
-		$query .= "and (LOWER(a.cpono) like LOWER('%".$_POST['searchByName']."%') OR LOWER(b.cname) like LOWER('%".$_POST['searchByName']."%') OR LOWER(d.cref) like LOWER('%".$_POST['searchByName']."%'))";
+		$filters .= "and (LOWER(a.cpono) like LOWER('%".$_POST['searchByName']."%') OR LOWER(b.cname) like LOWER('%".$_POST['searchByName']."%') OR LOWER(d.cref) like LOWER('%".$_POST['searchByName']."%'))";
 	}
 
 	if(isset($_POST['searchBystat']) && $_POST['searchBystat'] != '')
 	{
 		if($_POST['searchBystat']=="post"){
-			$query .= " and (a.lapproved=1 and a.lvoid=0)";
+			$filters .= " and (a.lapproved=1 and a.lvoid=0)";
 		}
 
 		if($_POST['searchBystat']=="void"){
-			$query .= " and a.lvoid=1";
+			$filters .= " and a.lvoid=1";
 		}
 
 		if($_POST['searchBystat']=="cancel"){
-			$query .= " and a.lcancelled=1";
+			$filters .= " and a.lcancelled=1";
 		}
 
-		if($_POST['searchBystat']=="pending"){
-			$query .= " and (a.lapproved=0 and a.lcancelled=0)";
+		if($_POST['searchBystat']=="pending" || $_POST['searchBystat']=="approve"){
+			$filters .= " and (a.lapproved=0 and a.lcancelled=0)";
 		}
 				
 	}
+
+	if(isset($_POST['searchByselstypes']) && $_POST['searchByselstypes'] != '')
+	{
+		$filters .= " and A.ladvancepay=".$_POST['searchByselstypes']."";		
+	}
+
+	if(isset($_POST['searchBydtfr']) && $_POST['searchBydtfr'] != '' && isset($_POST['searchBydtto']) && $_POST['searchBydtto'] != '')
+	{
+		$filters .= " and DATE(".$_POST['searchBydtfil'].") >= '".$_POST['searchBydtfr']."' AND DATE(".$_POST['searchBydtfil'].") <=  '".$_POST['searchBydtto']."'";
+	}
+
+
+	$query .= $filters;
 
 
 	if(isset($_POST['order']))

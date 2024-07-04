@@ -20,6 +20,7 @@ function chkgrp($valz) {
 	$company = $_SESSION['companyid'];
 
 	$cCustID = $_REQUEST['txtcustid'];
+	$dPODate = $_REQUEST['date_delivery'];
 	$dDelDate = $_REQUEST['date_needed'];
 	$cRemarks = chkgrp($_REQUEST['txtremarks']); 
 	$cContact = chkgrp($_REQUEST['txtcontactname']); 
@@ -76,7 +77,7 @@ function chkgrp($valz) {
 	
 	//UPDATE HEADER
 
-	if (!mysqli_query($con,"Update purchase set `ccode` ='$cCustID', `cremarks`=$cRemarks, `ccontact`=$cContact, `ccontactemail`=$cContactEmail, `dneeded`=STR_TO_DATE('$dDelDate', '%m/%d/%Y'), `nnet`= '$nnetvat', `nvat` = '$nvat', `nexempt` = '$nexempt', `newt` = '$nLessEWT', `cewtcode` = '$cewtcode', `ngrossbefore` = '$nGrossBefore',`ngross`='$nGross', `ccustacctcode`='$AccntCode', `nbasegross`='$BaseGross', `ccurrencycode`='$CurrCode', `ccurrencydesc`='$CurrDesc', `nexchangerate`='$CurrRate', `ladvancepay` = $PayType, `cterms` = $PayTerms, `cdelto` = $delto, `ddeladd` = $deladd, `ddelinfo` = $delnotes, `cbillto` = $billto Where compcode='$company' and cpono='$cSINo'")){
+	if (!mysqli_query($con,"Update purchase set `ccode` ='$cCustID', `cremarks`=$cRemarks, `ccontact`=$cContact, `ccontactemail`=$cContactEmail, `dcutdate` = STR_TO_DATE('$dPODate', '%m/%d/%Y'), `dneeded`=STR_TO_DATE('$dDelDate', '%m/%d/%Y'), `nnet`= '$nnetvat', `nvat` = '$nvat', `nexempt` = '$nexempt', `newt` = '$nLessEWT', `cewtcode` = '$cewtcode', `ngrossbefore` = '$nGrossBefore',`ngross`='$nGross', `ccustacctcode`='$AccntCode', `nbasegross`='$BaseGross', `ccurrencycode`='$CurrCode', `ccurrencydesc`='$CurrDesc', `nexchangerate`='$CurrRate', `ladvancepay` = $PayType, `cterms` = $PayTerms, `cdelto` = $delto, `ddeladd` = $deladd, `ddelinfo` = $delnotes, `cbillto` = $billto Where compcode='$company' and cpono='$cSINo'")){
 		echo "False";
 	}
 	else{

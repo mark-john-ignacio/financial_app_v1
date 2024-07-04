@@ -117,9 +117,9 @@ $company = $_SESSION['companyid'];
 				</div>
 				<div class="col-xs-2 text-right nopadwleft">
 					<select  class="form-control" name="seldtfl" id="seldtfl">
-						<option value="a.ddate">Encoding Date </option>
-						<option value="a.dtrandate">Bill/Quote Date </option>
-						<option value="a.dcutdate">Due/Effect Date </option>
+						<option value="a.ddate" <?=(isset($_REQUEST['sdtf'])) ? (($_REQUEST['sdtf']=="a.ddate") ? "selected" : "" ) : "";?>>Encoding Date </option>
+						<option value="a.dtrandate" <?=(isset($_REQUEST['sdtf'])) ? (($_REQUEST['sdtf']=="a.dtrandate") ? "selected" : "" ) : "";?>>Bill/Quote Date </option>
+						<option value="a.dcutdate" <?=(isset($_REQUEST['sdtf'])) ? (($_REQUEST['sdtf']=="a.dcutdate") ? "selected" : "" ) : "";?>>Due/Effect Date </option>
 					</select>
 				</div>
 				<div class="col-xs-3 nopadwleft">
@@ -140,102 +140,105 @@ $company = $_SESSION['companyid'];
 		</div>
 
     	<hr>
-			<table id="MyTable" class="display" cellspacing="0" width="100%">
-				<thead>
-					<tr>
-						<th>Quote No</th>
-						<th>Type</th>
-						<th style="min-width: 400px">Customer</th>
-						<th>Bill/Quote Date</th>
-						<th>Due/Effect Date</th>
-            			<th class="text-center">Status</th>
-						<th class="text-center">Actions</th>
-					</tr>
-				</thead>			
-			</table>
+		<table id="MyTable" class="display" cellspacing="0" width="100%">
+			<thead>
+				<tr>
+					<th>Quote No</th>
+					<th>Type</th>
+					<th style="min-width: 400px">Customer</th>
+					<th>Bill/Quote Date</th>
+					<th>Due/Effect Date</th>
+					<th class="text-center">Status</th>
+					<th class="text-center">Actions</th>
+				</tr>
+			</thead>			
+		</table>
 
-		</section>
 	</div>		
     
-<form name="frmedit" id="frmedit" method="post" action="Quote_edit.php">
-	<input type="hidden" name="txtctranno" id="txtctranno" />
-	<input type="hidden" name="hdnsrchval" id="hdnsrchval" />
-	<input type="hidden" name="hdnsrchsta" id="hdnsrchsta" />
-</form>		
+	<form name="frmedit" id="frmedit" method="post" action="Quote_edit.php">
+		<input type="hidden" name="txtctranno" id="txtctranno" />
+		<input type="hidden" name="hdnsrchval" id="hdnsrchval" />
+		<input type="hidden" name="hdnsrchsta" id="hdnsrchsta" />
+		<input type="hidden" name="hdnsrchtyp" id="hdnsrchtyp" />
+		<input type="hidden" name="hdnsrchdte" id="hdnsrchdte" />
+		<input type="hidden" name="hdnsrchdtef" id="hdnsrchdtef" />
+		<input type="hidden" name="hdnsrchdtet" id="hdnsrchdtet" />
+	</form>		
 
-<form name="frmrecurr" id="frmrecurr" method="post" action="Quote_recurr.php">
-	<input type="hidden" name="dtargetbill" id="dtargetbill" />
-</form>	
+	<form name="frmrecurr" id="frmrecurr" method="post" action="Quote_recurr.php">
+		<input type="hidden" name="dtargetbill" id="dtargetbill" />
+	</form>	
 
-<!-- 1) Alert Modal -->
-<div class="modal fade" id="AlertModal" tabindex="-1" role="dialog" data-keyboard="false" data-backdrop="static" aria-hidden="true">
-    <div class="vertical-alignment-helper">
-        <div class="modal-dialog vertical-align-top">
-            <div class="modal-content">
-               <div class="alert-modal-danger">
-                  <p id="AlertMsg"></p>
-                <p>
-                    <center>
-                        <button type="button" class="btnmodz btn btn-primary btn-sm" id="OK" onclick="trans_send('OK')">Ok</button>
-                        <button type="button" class="btnmodz btn btn-danger btn-sm" id="Cancel" onclick="trans_send('Cancel')">Cancel</button>
-                        
-                        
-                        <button type="button" class="btn btn-primary btn-sm" data-dismiss="modal" id="alertbtnOK">Ok</button>
-                        
-                        <input type="hidden" id="typ" name="typ" value = "">
-                        <input type="hidden" id="modzx" name="modzx" value = ""> 
-						<input type="hidden" id="modqotyp" name="modqotyp" value = "">
-                    </center>
-                </p>
-               </div> 
-            </div>
-        </div>
-    </div>
-</div>
-
-<!-- 1) Alert Modal -->
-<div class="modal fade" id="AlertFilterMod" tabindex="-1" role="dialog" data-keyboard="false" data-backdrop="static" aria-hidden="true">
-    <div class="vertical-alignment-helper">
-        <div class="modal-dialog vertical-align-top">
-            <div class="modal-content">
-               <div class="alert-modal-danger">
-                  <p id="AlertMsgFil"></p>
-                <p>
-                    <center>
-                        <button type="button" class="btn btn-primary btn-sm" id="OKFil" onclick="trans_filtr('OK')">Ok</button>
-                        <button type="button" class="btn btn-danger btn-sm" id="CancelFil" onclick="trans_filtr('Cancel')">Cancel</button>
-                        
-                        
-                        <button type="button" class="btn btn-primary btn-sm" data-dismiss="modal" id="alertbtnFilOK">Ok</button>
-                        
-                        <input type="hidden" id="dtrfromx" value = ""> 
-                        <input type="hidden" id="dtrtox" value = ""> 
-
-                    </center>
-                </p>
-               </div> 
-            </div>
-        </div>
-    </div>
-</div>
-
-<!-- 1) TRACKER Modal -->
-<div class="modal fade" id="TrackMod" tabindex="-1" role="dialog" data-keyboard="false" data-backdrop="static" aria-hidden="true">
-	<div class="modal-dialog modal-lg">
-    <div class="modal-content">
-
-      <div class="modal-header">
-        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-        <h3 class="modal-title" id="InvListHdr">Quote Approval Status</h3>
-      </div>
-            
-      <div class="modal-body pre-scrollable" id="divtracker" style="height: 45vh">
-				
+	<!-- 1) Alert Modal -->
+	<div class="modal fade" id="AlertModal" tabindex="-1" role="dialog" data-keyboard="false" data-backdrop="static" aria-hidden="true">
+		<div class="vertical-alignment-helper">
+			<div class="modal-dialog vertical-align-top">
+				<div class="modal-content">
+				<div class="alert-modal-danger">
+					<p id="AlertMsg"></p>
+					<p>
+						<center>
+							<button type="button" class="btnmodz btn btn-primary btn-sm" id="OK" onclick="trans_send('OK')">Ok</button>
+							<button type="button" class="btnmodz btn btn-danger btn-sm" id="Cancel" onclick="trans_send('Cancel')">Cancel</button>
+							
+							
+							<button type="button" class="btn btn-primary btn-sm" data-dismiss="modal" id="alertbtnOK">Ok</button>
+							
+							<input type="hidden" id="typ" name="typ" value = "">
+							<input type="hidden" id="modzx" name="modzx" value = ""> 
+							<input type="hidden" id="modqotyp" name="modqotyp" value = "">
+						</center>
+					</p>
+				</div> 
+				</div>
 			</div>
-
 		</div>
 	</div>
-</div>
+
+	<!-- 1) Alert Modal For Filter -->
+	<div class="modal fade" id="AlertFilterMod" tabindex="-1" role="dialog" data-keyboard="false" data-backdrop="static" aria-hidden="true">
+		<div class="vertical-alignment-helper">
+			<div class="modal-dialog vertical-align-top">
+				<div class="modal-content">
+				<div class="alert-modal-danger">
+					<p id="AlertMsgFil"></p>
+					<p>
+						<center>
+							<button type="button" class="btn btn-primary btn-sm" id="OKFil" onclick="trans_filtr('OK')">Ok</button>
+							<button type="button" class="btn btn-danger btn-sm" id="CancelFil" onclick="trans_filtr('Cancel')">Cancel</button>
+							
+							
+							<button type="button" class="btn btn-primary btn-sm" data-dismiss="modal" id="alertbtnFilOK">Ok</button>
+							
+							<input type="hidden" id="dtrfromx" value = ""> 
+							<input type="hidden" id="dtrtox" value = ""> 
+
+						</center>
+					</p>
+				</div> 
+				</div>
+			</div>
+		</div>
+	</div>
+
+	<!-- 1) TRACKER Modal -->
+	<div class="modal fade" id="TrackMod" tabindex="-1" role="dialog" data-keyboard="false" data-backdrop="static" aria-hidden="true">
+		<div class="modal-dialog modal-lg">
+		<div class="modal-content">
+
+		<div class="modal-header">
+			<button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+			<h3 class="modal-title" id="InvListHdr">Quote Approval Status</h3>
+		</div>
+				
+		<div class="modal-body pre-scrollable" id="divtracker" style="height: 45vh">
+					
+				</div>
+
+			</div>
+		</div>
+	</div>
 
 </body>
 </html>
@@ -259,8 +262,8 @@ $company = $_SESSION['companyid'];
 			"autoApply": true,
 			"opens": 'left',
 			"format": 'MM/DD/YYYY',
-			"startDate": moment().subtract(7,'d'),
-			"endDate": moment()
+			"startDate": moment($('#dtefilterfrom').val()).format('MM/DD/YYYY'),
+			"endDate": moment($('#dtefilterto').val()).format('MM/DD/YYYY')
 		});  
 
 		$('#dtefilter').on('apply.daterangepicker', function(ev, picker) {
@@ -387,10 +390,15 @@ $company = $_SESSION['companyid'];
 		}
 		$("#AlertFilterMod").modal("hide");
 	}
+
 	function editfrm(x){
 		$('#txtctranno').val(x);
 		$('#hdnsrchval').val($('#searchByName').val()); 
 		$('#hdnsrchsta').val($('#selstats').val());
+		$('#hdnsrchtyp').val($('#selstypes').val());
+		$('#hdnsrchdte').val($('#seldtfl').val());
+		$('#hdnsrchdtef').val($('#dtefilterfrom').val());
+		$('#hdnsrchdtet').val($('#dtefilterto').val());
 		document.getElementById("frmedit").submit();
 	}
 
@@ -400,13 +408,13 @@ $company = $_SESSION['companyid'];
 		$("#modzx").val(num);
 		$("#modqotyp").val(qotyp);
 
-			$("#AlertMsg").html("");
-								
-			$("#AlertMsg").html("Are you sure you want to "+x+" Quote No.: "+num);
-			$("#alertbtnOK").hide();
-			$("#OK").show();
-			$("#Cancel").show();
-			$("#AlertModal").modal('show');
+		$("#AlertMsg").html("");
+							
+		$("#AlertMsg").html("Are you sure you want to "+x+" Quote No.: "+num);
+		$("#alertbtnOK").hide();
+		$("#OK").show();
+		$("#Cancel").show();
+		$("#AlertModal").modal('show');
 
 	}
 
@@ -591,6 +599,7 @@ $company = $_SESSION['companyid'];
 							return "For Sending";
 						}else{
 							if(full[5]==0 && full[6]==0){
+
 								var chkrejstat = "Pending";
 								var xcz = '<?=json_encode(@$chkapprovals)?>';
 								if(xcz!=""){
@@ -653,19 +662,28 @@ $company = $_SESSION['companyid'];
 
 								if(full[5]==0 && full[6] == 0 && full[9] == 1){
 
-									var chkrejstat = "disabled";
+									var chkrejstat1 = "disabled";
+									var chkrejstat2 = "disabled";
 									var xcz = '<?=json_encode(@$chkapprovals)?>';
 									if(xcz!=""){
 										$.each( JSON.parse(xcz), function( key, val ) {
-											//console.log(val.userid + "==" + '<?=$employeeid?>');
 											if(val.ctranno==full[0] && val.userid=='<?=$employeeid?>'){
-												chkrejstat = "";
+												chkrejstat1 = "";
+												chkrejstat2 = "";
 											}
 											
 										});
 									}
 
-									mgsx = mgsx + "<button type=\"button\" onClick=\"trans('POST','"+full[0]+"','"+full[10]+"')\" class=\"btn btn-icon-only white\" "+chkrejstat+"><i class=\"fa fa-thumbs-up\" style=\"font-size:20px;color:Green ;\" title=\"Approve transaction\"></i></button> <button type=\"button\" onClick=\"trans('REJECT','"+full[0]+"','"+full[10]+"')\" class=\"btn btn-icon-only white\" "+chkrejstat+"><i class=\"fa fa-thumbs-down\" style=\"font-size:20px;color:Red ;\" title=\"Cancel transaction\"></i></button>";
+									if(chkrejstat1==""){
+										chkrejstat1 = "<?=($poststat!="True") ? " disabled" : ""?>";
+									}
+
+									if(chkrejstat2==""){
+										chkrejstat2 = "<?=($cancstat!="True") ? " disabled" : ""?>";
+									}
+
+									mgsx = mgsx + "<button type=\"button\" onClick=\"trans('POST','"+full[0]+"','"+full[10]+"')\" class=\"btn btn-icon-only white\" "+chkrejstat1+"><i class=\"fa fa-thumbs-up\" style=\"font-size:20px;color:Green ;\" title=\"Approve transaction\"></i></button> <button type=\"button\" onClick=\"trans('REJECT','"+full[0]+"','"+full[10]+"')\" class=\"btn btn-icon-only white\" "+chkrejstat2+"><i class=\"fa fa-thumbs-down\" style=\"font-size:20px;color:Red ;\" title=\"Cancel transaction\"></i></button>";
 
 								}
 							}
