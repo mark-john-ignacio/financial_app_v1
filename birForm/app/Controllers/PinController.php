@@ -19,7 +19,7 @@ class PinController extends BaseController
 
     public function changePin(){
         if (!session()->get('pin_verified')) {
-            return redirect()->to('/');
+            return redirect()->to(site_url("/"));
         }
         return view('change_pin');
     }
@@ -30,7 +30,7 @@ class PinController extends BaseController
         // Hash the pin
         $hashed_pin = password_hash($new_pin, PASSWORD_DEFAULT);
         $this->pinModel->setPin($hashed_pin);
-        return redirect()->to('/');
+        return redirect()->to(site_url("/"))->with('message', 'Pin has been changed');
     }
     public function verifyPin(){
         $pin = $this->request->getPost('pin');
@@ -38,7 +38,7 @@ class PinController extends BaseController
         $hashed_pin = $this->pinModel->getHashedPin(); // Assume this method retrieves the hashed pin
         if (password_verify($pin, $hashed_pin)) {
             session()->set('pin_verified', true);            
-            return redirect()->to('/manage-bir');
+            return redirect()->to(site_url("bir-year-form"));
         } else {
             return redirect()->back()->with('error', 'Incorrect Pin');
         }

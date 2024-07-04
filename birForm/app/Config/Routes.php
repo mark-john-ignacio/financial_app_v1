@@ -6,11 +6,13 @@ use CodeIgniter\Router\RouteCollection;
  * @var RouteCollection $routes
  */
 $routes->get('/', 'Home::index');
-$routes->get('/logout', 'PinController::logout');
-$routes->post('/verify_pin', 'PinController::verifyPin');
-$routes->get('/change-pin', 'PinController::changePin');
-$routes->post('/set_pin', 'PinController::setPin');
-$routes->get('/manage-bir', 'BIRYearFormController::index');
-$routes->get('/manage-bir-forms/associations', 'BIRYearFormController::associations');
+$routes->get('/logout-pin', 'PinController::logout');
 
+$routes->post('/verify-pin', 'PinController::verifyPin');
+$routes->get('/change-pin', 'PinController::changePin');
+$routes->post('/set-pin', 'PinController::setPin');
+
+$routes->get('/bir-year-form/associations', 'BIRYearFormController::associations');
+
+service('auth')->routes($routes);
 $routes->resource('bir-year-form', ['controller' => 'BIRYearFormController']);

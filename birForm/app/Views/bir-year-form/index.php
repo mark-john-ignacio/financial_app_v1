@@ -22,7 +22,7 @@
 $(document).ready(function() {
     $('#associationsTable').DataTable({
         ajax: {
-            url: '<?= site_url('manage-bir-forms/associations') ?>',
+            url: '<?= site_url('bir-year-form/associations') ?>',
             dataSrc: '',
             error: function (xhr, error, thrown) {
                 console.error("Error occurred during AJAX request:", error, thrown);

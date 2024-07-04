@@ -21,7 +21,7 @@
                                 <?= session("error") ?>
                             </div>
                         <?php endif; ?>
-                        <?= form_open("/verify_pin", ['class' => '']) ?>
+                        <?= form_open(site_url("verify-pin"), ['class' => '']) ?>
                             <div class="mb-3">
                                 <label for="pin" class="form-label">Pin Code:</label>
                                 <input type="password" id="pin" name="pin" class="form-control">

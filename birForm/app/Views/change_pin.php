@@ -3,7 +3,7 @@
 
 <?= $this->section("content")?>
 
-<?= form_open("/set_pin") ?>
+<?= form_open(site_url("/set-pin")) ?>
 <div class="container">
     <div class="row justify-content-center align-items-center vh-100">
         <div class="col-md-4">
