@@ -46,10 +46,11 @@ class PinModel extends Model
 
 
     public function setPin($pin){
-        $this->save([
+        $result = $this->save([
             'id' => 1,
             'pin' => $pin
         ]);
+        return $result;
     }
     public function getHashedPin(){
         $pin = $this->first();

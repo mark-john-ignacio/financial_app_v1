@@ -43,4 +43,17 @@ class BIRYearModel extends Model
     protected $afterFind      = [];
     protected $beforeDelete   = [];
     protected $afterDelete    = [];
+
+
+    public function getYearsWithoutEntries()
+    {
+        // Assuming 'years' is the table name in yearModel and 'year_id' is the foreign key in birYearFormModel
+        // Adjust the table and column names according to your actual database schema
+        $query = $this->select('bir_year.id, bir_year.year')
+            ->join('bir_year_form_registration byfr', 'byfr.year_id = bir_year.id', 'left')
+            ->where('byfr.year_id IS NULL')
+            ->orderBy('bir_year.year', 'ASC');
+
+        return $query->get()->getResult();
+    }
 }

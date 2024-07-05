@@ -4,13 +4,20 @@
 <?= $this->section("content")?>
 <div class="container mt-5">
     <h1>Edit Associations for Year: <?= $year ?></h1>
-    <form id="associationForm">
+    <?= form_open('bir-year-form/' . $year_id . '/update', ['id' => 'associationForm']) ?>
+        <input type="hidden" name="_method" value="PATCH">
+        <div class="mb-3">
+            
+        <button type="button" id="selectAll" class="btn btn-primary">Select All</button>
+        </div>
         <table id="formsTable" class="display" style="width:100%">
             <thead>
                 <tr>
                     <th>Select</th>
+                    <th>Form Code</th>
                     <th>Form Name</th>
-                    <th>Form Code</th> <!-- Assuming you have a form_code property -->
+                    <th>Form Filter</th>
+
                 </tr>
             </thead>
             <tbody>
@@ -25,29 +32,27 @@
                         <td>
                             <label for="form-<?= $form->id ?>"><?= $form->form_name ?></label>
                         </td>
+                        <td>
+                            <?= $form->filter ?> <!-- Displaying the form filter -->
+                        </td>   
                     </tr>
                 <?php endforeach; ?>
             </tbody>
         </table>
+        <button type="button" class="btn btn-secondary" onclick="window.history.back();">Back</button>
         <button type="submit" class="btn btn-primary">Save Changes</button>
     </form>
 </div>
 
 <script>
-$('#formsTable').DataTable({});
-
-$(document).ready(function() {
-
-    $('#associationForm').on('submit', function(e) {
-        e.preventDefault();
-        const formData = $(this).serialize();
-        $.post('<?= site_url('bir-year-form/' . $year_id . 'update') ?>', formData, function(response) {
-            alert('Associations updated successfully!');
-            window.location.href = '<?= site_url('manage-bir-forms') ?>';
-        }).fail(function() {
-            alert('Failed to update associations.');
-        });
-    });
+$('#formsTable').DataTable({
+    "order": [[ 1, "asc" ]],
 });
+
+$('#selectAll').on('click', function(){
+    $('input[type="checkbox"]').prop('checked', !$(this).hasClass('active'));
+    $(this).toggleClass('active');
+});
+
 </script>
 <?= $this->endSection()?>

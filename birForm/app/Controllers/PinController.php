@@ -25,8 +25,15 @@ class PinController extends BaseController
     }
 
     public function setPin(){
-        session()->remove('pin_verified');
+        
         $new_pin = $this->request->getPost('new_pin');
+        $old_pin = $this->request->getPost('old_pin');
+        // Retrieve the hashed pin from the database
+        $hashed_pin = $this->pinModel->getHashedPin(); 
+        if (!password_verify($old_pin, $hashed_pin)) {
+            return redirect()->back()->with('error', 'Incorrect Old Pin');
+        }
+        session()->remove('pin_verified');
         // Hash the pin
         $hashed_pin = password_hash($new_pin, PASSWORD_DEFAULT);
         $this->pinModel->setPin($hashed_pin);

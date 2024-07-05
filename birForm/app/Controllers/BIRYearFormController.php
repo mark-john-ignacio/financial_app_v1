@@ -26,15 +26,31 @@ class BIRYearFormController extends BaseController
         if (!session()->get('pin_verified')) {
             return redirect()->to('/');
         }
+        $data['availableYears'] = $this->yearModel->getYearsWithoutEntries();
         // $associations = $this->birYearFormModel->getAssociations();
         // dd($associations);
-        return view('bir-year-form/index');
+        return view('bir-year-form/index', $data);
     }
 
     public function associations()
     {
         $associations = $this->birYearFormModel->getAssociations();
         return $this->response->setJSON($associations);
+    }
+
+    public function new(){
+        $yearId = $this->request->getPost("year_id");
+        $year = $this->yearModel->find($yearId);
+        $forms = $this->formModel->findAll();
+        $associatedForms = $this->birYearFormModel->getFormsByYear($yearId);
+        $data = [
+            'year_id' => $yearId,
+            'year' => $year->year,
+            'forms' => $forms,
+            'associatedForms' => array_column($associatedForms, 'form_id')
+        ];
+        return view('bir-year-form/edit', $data);
+
     }
 
     public function edit($yearId){
@@ -52,7 +68,8 @@ class BIRYearFormController extends BaseController
 
     public function update($yearId){
         $form_ids = $this->request->getPost('forms');
-        $this->birYearFormModel->delete(['year_id' => $yearId]);
+        $this->birYearFormModel->where(['year_id' => $yearId]);
+        $this->birYearFormModel->delete();
 
         if(!empty($form_ids)){
             $data = [];
@@ -64,7 +81,6 @@ class BIRYearFormController extends BaseController
             }
             $this->birYearFormModel->insertBatch($data);
         }
-
         return redirect()->to('/bir-year-form');
 
     }
