@@ -39,7 +39,7 @@
                 <?php endforeach; ?>
             </tbody>
         </table>
-        <button type="button" class="btn btn-secondary" onclick="window.history.back();">Back</button>
+        <button type="close" class="btn btn-secondary">Back</button>
         <button type="submit" class="btn btn-primary">Save Changes</button>
     </form>
 </div>

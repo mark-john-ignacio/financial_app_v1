@@ -7,18 +7,20 @@
     <div class="mb-3">
     <a href="#" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#addNewModal">Add New</a>
     </div>
-    <table id="associationsTable" class="display">
-        <thead>
-            <tr>
-                <th>Year</th>
-                <th>Forms</th>
-                <th>Action</th>
-            </tr>
-        </thead>
-        <tbody>
-            <!-- Data will be populated by DataTables -->
-        </tbody>
-    </table>
+    <div class="table-responsive">
+        <table id="associationsTable" class="display" style="width:100%">
+            <thead>
+                <tr>
+                    <th>Year</th>
+                    <th>Forms</th>
+                    <th>Action</th>
+                </tr>
+            </thead>
+            <tbody>
+                <!-- Data will be populated by DataTables -->
+            </tbody>
+        </table>
+    </div>
 </div>
 
 <!-- Bootstrap Modal -->
