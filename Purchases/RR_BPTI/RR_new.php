@@ -1302,7 +1302,7 @@ $company = $_SESSION['companyid'];
 					salesnos = salesnos + ",";
 				}
 							
-				salesnos = salesnos +  $(this).find('input[type="hidden"][name="txtitemcode"]').val();
+				salesnos = salesnos +  $(this).find('input[type="hidden"][name="txtnrefident"]').val();
 			}
 			
 		});

@@ -8,7 +8,7 @@ require_once "../../Connection/connection_string.php";
 	$date1 = date("Y-m-d");
 
 	if($_REQUEST['y']!=""){
-		$qry = "and a.citemno not in ('". str_replace(",","','",$_REQUEST['y']) . "')";
+		$qry = "and a.nident not in ('". str_replace(",","','",$_REQUEST['y']) . "')";
 	}
 	else{
 		$qry = "";
