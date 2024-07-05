@@ -89,6 +89,8 @@
 	<link rel="stylesheet" type="text/css" href="../../Bootstrap/css/bootstrap-datetimepicker.css">
 	<link rel="stylesheet" type="text/css" href="../../Bootstrap/select2/css/select2.css?h=<?php echo time();?>">
 
+	<link rel="stylesheet" type="text/css" href="../../Bootstrap/DataTable/DataTable.css">
+
 	<link href="../../global/css/components.css?t=<?php echo time();?>" id="style_components" rel="stylesheet" type="text/css"/>
 
 	<script src="../../Bootstrap/js/jquery-3.2.1.min.js"></script>
@@ -103,6 +105,8 @@
 	<script src="../../Bootstrap/js/moment.js"></script>
 	<script src="../../Bootstrap/js/bootstrap-datetimepicker.min.js"></script>
 	<script src="../../Bootstrap/select2/js/select2.full.min.js"></script>
+
+	<script type="text/javascript" language="javascript" src="../../Bootstrap/DataTable/jquery.dataTables.min.js"></script>
 	<!--
 	--
 	-- FileType Bootstrap Scripts and Link
@@ -471,11 +475,19 @@ if (mysqli_num_rows($sqlhead)!=0) {
 
 	<!-- FULL PO LIST REFERENCES-->
 	<div class="modal fade" id="mySIRef" role="dialog" data-keyboard="false" data-backdrop="static">
-		<div class="modal-dialog modal-lg">
+		<div class="modal-dialog modal-full">
 			<div class="modal-content">
 				<div class="modal-header">
-					<button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-					<h3 class="modal-title" id="InvListHdr">PO List</h3>
+					<div class="col-xs-12 nopadding">
+						<div class="col-xs-8">							
+							<h4 class="modal-title" id="InvListHdr">PO List</h4>
+						</div>
+						<div class="col-xs-4">
+							
+							<input type="text" class="form-control input-xs" id="txtSrchByDesc" name="txtSrchByDesc" placeholder="Search All PO by Item Description..." autocomplete="off" />
+												
+						</div>
+					</div>
 				</div>
 				
 				<div class="modal-body" style="height:40vh">
@@ -483,7 +495,7 @@ if (mysqli_num_rows($sqlhead)!=0) {
 					<div class="col-xs-12 nopadding">
 
 						<div class="form-group">
-							<div class="col-xs-3 nopadding pre-scrollable" style="height:37vh">
+							<div class="col-xs-4 nopadding pre-scrollable" style="height:37vh">
 								<table name='MyInvTbl' id='MyInvTbl' class="table table-small table-highlight small">
 									<thead>
 										<tr>
@@ -496,7 +508,7 @@ if (mysqli_num_rows($sqlhead)!=0) {
 								</table>
 							</div>
 
-							<div class="col-xs-9 nopadwleft pre-scrollable" style="height:37vh">
+							<div class="col-xs-8 nopadwleft pre-scrollable" style="height:37vh">
 								<table name='MyInvDetList' id='MyInvDetList' class="table table-small small">
 									<thead>
 										<tr>
@@ -976,7 +988,7 @@ else{
 
 				$.ajax({
 					url: 'th_qolist_items.php',
-					data: 'x='+$('#txtcustid').val()+'&itm='+item.id,
+					data: 'x='+$('#txtcustid').val()+'&itm='+item.cname,
 					dataType: 'json',
 					method: 'post',
 					success: function (data) {
@@ -1477,6 +1489,24 @@ else{
 					}
 
 					});
+
+					$('#MyInvTbl').DataTable({
+						"bPaginate": false,
+						"bLengthChange": false,
+						"bFilter": true,
+						"bInfo": false,
+						"bAutoWidth": false,
+						"dom": '<"pull-left"f><"pull-right"l>tip',
+						language: {
+							search: "",
+							searchPlaceholder: "Search SO "
+						}
+					});
+
+					$('.dataTables_filter input').addClass('form-control input-sm');
+					$('.dataTables_filter input').css(
+						{'width':'150%','display':'inline-block'}
+					);
 					
 
 					if(xstat=="YES"){
@@ -1509,64 +1539,83 @@ else{
 			
 		$('#loadimg').show();
 		
-				var salesnos = "";
-				var cnt = 0;
+		var salesnos = "";
+		var cnt = 0;
+		
+		$("#MyTable > tbody > tr").each(function() {
+			myxref = $(this).find('input[type="hidden"][name="txtcreference"]').val();
+			
+			if(myxref == drno){
+				cnt = cnt + 1;
 				
-				$("#MyTable > tbody > tr").each(function() {
-					myxref = $(this).find('input[type="hidden"][name="txtcreference"]').val();
-					
-					if(myxref == drno){
-						cnt = cnt + 1;
+			if(cnt>1){
+				salesnos = salesnos + ",";
+			}
 						
-					if(cnt>1){
-						salesnos = salesnos + ",";
+				salesnos = salesnos +  $(this).find('input[type="hidden"][name="txtnrefident"]').val();
+			}
+			
+		});
+
+		//alert('th_sinumdet.php?x='+drno+"&y="+salesnos);
+		$.ajax({
+			url: 'th_qolistdet.php',
+			data: 'x='+drno+"&y="+salesnos,
+			dataType: 'json',
+			method: 'post',
+			success: function (data) {
+
+				$("#allbox").prop('checked', false); 					   
+				
+				console.log(data);
+				$.each(data,function(index,item){
+					if(item.citemno==""){
+						alert("NO more items to add!")
 					}
-								
-						salesnos = salesnos +  $(this).find('input[type="hidden"][name="txtitemcode"]').val();
+					else{
+			
+						$("<tr>").append(
+							$("<td>").html("<input type='checkbox' value='"+item.nident+"' name='chkSales[]' data-id=\""+drno+"\">"),
+							$("<td>").text(item.citemno),
+							$("<td>").text(item.cdesc),
+							$("<td>").text(item.cunit),
+							$("<td>").text(item.nqty),
+						//	$("<td>").text(item.nprice),
+						//	$("<td>").text(item.nbaseamount),
+						//	$("<td>").text(item.ccurrencycode)
+						).appendTo("#MyInvDetList tbody");
 					}
-					
 				});
 
-						//alert('th_sinumdet.php?x='+drno+"&y="+salesnos);
-						$.ajax({
-				url: 'th_qolistdet.php',
-							data: 'x='+drno+"&y="+salesnos,
-				dataType: 'json',
-				method: 'post',
-				success: function (data) {
+				$('#MyInvDetList').DataTable({
+					"bPaginate": false,
+					"bLengthChange": false,
+					"bFilter": true,
+					"bInfo": false,
+					"bAutoWidth": false,
+					"dom": '<"pull-left"f><"pull-right"l>tip',
+					language: {
+						search: "",
+						searchPlaceholder: "Search Item "
+					}
+				});
 
-							$("#allbox").prop('checked', false); 					   
-				console.log(data);
-								$.each(data,function(index,item){
-									if(item.citemno==""){
-										alert("NO more items to add!")
-									}
-									else{
-							
-											$("<tr>").append(
-												$("<td>").html("<input type='checkbox' value='"+item.nident+"' name='chkSales[]' data-id=\""+drno+"\">"),
-												$("<td>").text(item.citemno),
-												$("<td>").text(item.cdesc),
-												$("<td>").text(item.cunit),
-												$("<td>").text(item.nqty),
-											//	$("<td>").text(item.nprice),
-											//	$("<td>").text(item.nbaseamount),
-											//	$("<td>").text(item.ccurrencycode)
-											).appendTo("#MyInvDetList tbody");
-									}
-								});
-				},
-							complete: function(){
-								$('#loadimg').hide();
-							},
-				error: function (req, status, err) {
-								//alert('Something went wrong\nStatus: '+status +"\nError: "+err);
-								console.log('Something went wrong', status, err);
-								$("#AlertMsg").html("Something went wrong<br>Status: "+status +"<br>Error: "+err);
-								$("#alertbtnOK").show();
-								$("#AlertModal").modal('show');
-				}
-			});
+				$('.dataTables_filter input').addClass('form-control input-sm');
+				$('.dataTables_filter input').css(
+					{'width':'150%','display':'inline-block'}
+				);
+			},
+			complete: function(){
+				$('#loadimg').hide();
+			},
+			error: function (req, status, err) {
+				//alert('Something went wrong\nStatus: '+status +"\nError: "+err);
+				console.log('Something went wrong', status, err);
+				$("#AlertMsg").html("Something went wrong<br>Status: "+status +"<br>Error: "+err);
+				$("#alertbtnOK").show();
+				$("#AlertModal").modal('show');
+			}
+		});
 
 	}
 

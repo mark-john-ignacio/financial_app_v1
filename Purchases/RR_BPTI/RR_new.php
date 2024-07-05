@@ -755,7 +755,7 @@ $company = $_SESSION['companyid'];
 
 				$.ajax({
 					url: 'th_qolist_items.php',
-					data: 'x='+$('#txtcustid').val()+'&itm='+item.id,
+					data: 'x='+$('#txtcustid').val()+'&itm='+item.cname,
 					dataType: 'json',
 					method: 'post',
 					success: function (data) {
