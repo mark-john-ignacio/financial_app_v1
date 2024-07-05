@@ -1,2 +1,2 @@
 RewriteEngine On
-RewriteRule ^system_management/(.*) birforms/public/$1 [L,NC]
+RewriteRule ^system_management/(.*) birform/public/$1 [L,NC]
