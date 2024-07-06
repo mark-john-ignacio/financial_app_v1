@@ -3,7 +3,7 @@
 namespace App\Database\Seeds;
 
 use CodeIgniter\Database\Seeder;
-use App\Models\BIRYearModel;
+use App\Models\BIRForms\BIRYearModel;
 
 class BIRYearSeeder extends Seeder
 {

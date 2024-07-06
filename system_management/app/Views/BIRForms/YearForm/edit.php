@@ -4,7 +4,7 @@
 <?= $this->section("content")?>
 <div class="container mt-5">
     <h1>Edit Associations for Year: <?= $year ?></h1>
-    <?= form_open('bir-year-form/' . $year_id . '/update', ['id' => 'associationForm']) ?>
+    <?= form_open(site_url('/bir-forms/year-form/') . $year_id . '/update', ['id' => 'associationForm']) ?>
         <input type="hidden" name="_method" value="PATCH">
         <div class="mb-3">
             

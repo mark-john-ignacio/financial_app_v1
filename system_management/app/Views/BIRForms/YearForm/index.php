@@ -26,7 +26,7 @@
 <!-- Bootstrap Modal -->
 <div class="modal fade" id="addNewModal" tabindex="-1" aria-labelledby="addNewModalLabel" aria-hidden="true">
     <div class="modal-dialog">
-        <?= form_open('bir-year-form/new', ['id' => 'addNewForm']) ?>
+        <?= form_open(site_url('bir-forms/year-form/new'), ['id' => 'addNewForm']) ?>
         <div class="modal-content">
             <div class="modal-header">
                 <h5 class="modal-title" id="addNewModalLabel">Select a Year</h5>
@@ -53,7 +53,7 @@
 $(document).ready(function() {
     $('#associationsTable').DataTable({
         ajax: {
-            url: '<?= site_url('bir-year-form/associations') ?>',
+            url: '<?= site_url('bir-forms/year-form/associations') ?>',
             dataSrc: '',
             error: function (xhr, error, thrown) {
                 console.error("Error occurred during AJAX request:", error, thrown);
@@ -65,7 +65,7 @@ $(document).ready(function() {
             { data: 'year' },
             { data: 'forms'},
             { data: null, render: function(data, type, row) {
-                return `<a href="bir-year-form/${row.id}/edit" class="btn btn-primary">Edit</a>`;
+                return `<a href="<?= site_url("bir-forms/year-form/")?>${row.id}/edit" class="btn btn-primary">Edit</a>`;
             }}
         ],
         columnDefs: [{ orderable: false, targets: [1, 2] }],

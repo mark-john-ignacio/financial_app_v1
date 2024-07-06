@@ -1,12 +1,11 @@
 <?php
-namespace App\Controllers;
+namespace App\Controllers\BIRForms;
 
 use App\Controllers\BaseController;
-use CodeIgniter\HTTP\ResponseInterface;
-use App\Models\PinModel;
-use App\Models\BIRFormsModel; 
-use App\Models\BIRYearFormModel;
-use App\Models\BIRYearModel;
+use App\Models\BIRForms\BIRFormModel;
+use App\Models\BIRForms\BIRYearFormModel;
+use App\Models\BIRForms\BIRYearModel;
+
 class BIRYearFormController extends BaseController
 {
     protected $formModel;
@@ -15,9 +14,10 @@ class BIRYearFormController extends BaseController
 
     public function __construct()
     {
-        $this->formModel = new BIRFormsModel();
+        $this->formModel = new BIRFormModel();
         $this->yearModel = new BIRYearModel();
         $this->birYearFormModel = new BIRYearFormModel();
+        $this->view = 'BIRForms/YearForm/';
 
     }
 
@@ -29,7 +29,7 @@ class BIRYearFormController extends BaseController
         $data['availableYears'] = $this->yearModel->getYearsWithoutEntries();
         // $associations = $this->birYearFormModel->getAssociations();
         // dd($associations);
-        return view('bir-year-form/index', $data);
+        return view($this->view.'index', $data);
     }
 
     public function associations()
@@ -49,7 +49,7 @@ class BIRYearFormController extends BaseController
             'forms' => $forms,
             'associatedForms' => array_column($associatedForms, 'form_id')
         ];
-        return view('bir-year-form/edit', $data);
+        return view($this->view.'edit', $data);
 
     }
 
@@ -63,7 +63,7 @@ class BIRYearFormController extends BaseController
             'forms' => $forms,
             'associatedForms' => array_column($associatedForms, 'form_id')
         ];
-        return view('bir-year-form/edit', $data);
+        return view($this->view.'edit', $data);
     }
 
     public function update($yearId){
@@ -81,7 +81,7 @@ class BIRYearFormController extends BaseController
             }
             $this->birYearFormModel->insertBatch($data);
         }
-        return redirect()->to('/bir-year-form');
+        return redirect()->to('/bir-forms/year-form');
 
     }
 }

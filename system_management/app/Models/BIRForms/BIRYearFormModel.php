@@ -1,23 +1,20 @@
 <?php
 
-namespace App\Models;
+namespace App\Models\BIRForms;
 
 use CodeIgniter\Model;
 
-class BIRFormsModel extends Model
+class BIRYearFormModel extends Model
 {
-    protected $table            = 'nav_menu_forms';
+    protected $table            = 'bir_year_form_registration';
     protected $primaryKey       = 'id';
     protected $useAutoIncrement = true;
     protected $returnType       = 'object';
     protected $useSoftDeletes   = false;
     protected $protectFields    = true;
     protected $allowedFields    = [
-        'id',
-        'form_code',
-        'form_name',
-        'filter',
-        'cstatus',
+        'year_id',
+        'form_id',
     ];
 
     protected bool $allowEmptyInserts = false;
@@ -49,4 +46,21 @@ class BIRFormsModel extends Model
     protected $afterFind      = [];
     protected $beforeDelete   = [];
     protected $afterDelete    = [];
+
+    public function getAssociations()
+    {
+        $thisTable = $this->table; 
+    
+        return $this->select('by.id, by.year, GROUP_CONCAT(nmf.form_code ORDER BY nmf.form_code SEPARATOR ", ") AS forms', false)
+                    ->join('bir_year by', 'by.id = ' . $thisTable . '.year_id', 'inner')
+                    ->join('nav_menu_forms nmf', 'nmf.id = ' . $thisTable . '.form_id', 'inner')
+                    ->groupBy('by.id')
+                    ->findAll();
+    }
+
+    public function getFormsByYear($year_id){
+        return $this->select('form_id')
+                    ->where('year_id', $year_id)
+                    ->findAll();
+    }
 }

@@ -45,7 +45,7 @@ class PinController extends BaseController
         $hashed_pin = $this->pinModel->getHashedPin(); // Assume this method retrieves the hashed pin
         if (password_verify($pin, $hashed_pin)) {
             session()->set('pin_verified', true);            
-            return redirect()->to(site_url("bir-year-form"));
+            return redirect()->to(site_url("bir-forms/year-form"));
         } else {
             return redirect()->back()->with('error', 'Incorrect Pin');
         }
