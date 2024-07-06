@@ -26,10 +26,10 @@ class App extends BaseConfig
         $folder_path = explode('/', $_SERVER['REQUEST_URI']);
         $first_part_of_path = $folder_path[1] ?? '';
         $baseURL = $protocol . "://" . $_SERVER['HTTP_HOST'];
+        $baseURL .= "/" . $first_part_of_path;
     
         // Check if the environment is development or running on localhost (with or without a custom port)
-        if (getenv('CI_ENVIRONMENT') === 'development' || $isLocalhost) {
-            $baseURL .= "/" . $first_part_of_path;
+        if (getenv('CI_ENVIRONMENT') === 'development' || $isLocalhost) { 
             $second_part_of_path = $folder_path[2] ?? '';
             // Append second_part_of_path only in development or if running on localhost
             $baseURL .= "/" . $second_part_of_path;
