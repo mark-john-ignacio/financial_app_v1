@@ -44,6 +44,8 @@
 <?= "Site URL: " . site_url();?>
 <br>
 <?= "Current URI: " . $_SERVER['REQUEST_URI']?>
+<br>
+<?= "HTTP Host: " . $_SERVER['HTTP_HOST']?>
 <?= $this->renderSection("content") ?>
 
 
