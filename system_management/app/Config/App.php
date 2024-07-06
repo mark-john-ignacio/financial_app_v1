@@ -22,16 +22,15 @@ class App extends BaseConfig
     public function __construct()
     {
         $protocol = isset($_SERVER["HTTPS"]) ? 'https' : 'http';
-        $baseURL = $protocol . "://" . $_SERVER['HTTP_HOST'];
+        $folder_path = explode('/', $_SERVER['REQUEST_URI']);
+        $first_part_of_path = $folder_path[1] ?? '';
+        $baseURL = $protocol . "://" . $_SERVER['HTTP_HOST'] . "/" . $first_part_of_path;
     
         // Check if the environment is development
         if (getenv('CI_ENVIRONMENT') === 'development') {
-            $folder_path = explode('/', $_SERVER['REQUEST_URI']);
-            $first_part_of_path = $folder_path[1] ?? '';
             $second_part_of_path = $folder_path[2] ?? '';
-            
-            // Append first_part_of_path and second_part_of_path only in development
-            $baseURL .= "/" . $first_part_of_path . "/" . $second_part_of_path . "/";
+            // Append second_part_of_path only in development
+            $baseURL .= "/" . $second_part_of_path . "/";
     
             // Ensure 'public/' is at the end of $baseURL
             if (!preg_match("/public\/?$/", $baseURL)) {
