@@ -2,7 +2,7 @@
 <?= $this->section("title")?>Pin Verify<?= $this->endSection() ?>
 
 <?= $this->section("content")?>
-
+<?= site_url();?>
 <div class="container">
     <div class="row justify-content-center align-items-center vh-100">
         <div class="col-md-4">
