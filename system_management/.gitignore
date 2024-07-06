@@ -2,8 +2,6 @@
 # Operating Specific Junk Files
 #-------------------------
 
-#Production specific settings
-app/Config/App.php
 
 # OS X
 .DS_Store
