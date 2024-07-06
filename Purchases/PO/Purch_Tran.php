@@ -14,6 +14,7 @@
 
 	require_once "../../include/denied.php";
 	require_once "../../include/access.php";
+	require_once "../../Model/helper.php";
 	require_once "../../include/sendEmail.php";
 
 	//POST RECORD
@@ -174,14 +175,15 @@ if($_REQUEST['typ']=="POST"){
 							foreach($rowPOresult as $rs){
 								if(in_array(trim($rs['userid']),@$nextapprovers)){
 
-										$output='<p>Dear '.$rs['Fname'].',</p>';
-										$output.='<p>This email is to notify that the PO# '.$tranno.' is waiting for your approval.</p>'; 
-										$output.='<p>Thanks,</p>';
-										$output.='<p>Myx Financials,</p>';
+									$output='<p>Dear '.$rs['Fname'].',</p>';
+									$output.='<p>This email is to notify that the PO# '.$tranno.' is waiting for your approval.</p>'; 
+									$output.='<p>Thanks,</p>';
+									$output.='<p>Myx Financials,</p>';
 
-										$subject = $logonamz." - Purchase Order";
+									$subject = $logonamz." - Purchase Order";
+									$getcreds = getEmailCred();
 
-										sendEmail($rs['cemailadd'],$output,$subject,$logonamz);
+									sendEmail($rs['cemailadd'],$output,$subject,$logonamz,$getcreds);
 								}
 							}
 						}
@@ -402,7 +404,15 @@ if($_REQUEST['typ']=="SEND"){
 				if (mysqli_num_rows($resemailapps)!=0) {
 					while($row = mysqli_fetch_array($resemailapps, MYSQLI_ASSOC)){
 
-						sendEmail($row['cemailadd'], $row['Fname'], $tranno, $logonamz);
+						$output='<p>Dear '.$row['Fname'].',</p>';
+						$output.='<p>This email is to notify that the PO# '.$tranno.' is waiting for your approval.</p>'; 
+						$output.='<p>Thanks,</p>';
+						$output.='<p>Myx Financials,</p>';
+
+						$subject = $logonamz." - Purchase Order";
+						$getcreds = getEmailCred();
+
+						sendEmail($row['cemailadd'],$output,$subject,$logonamz,$getcreds);
 
 					}
 				}
