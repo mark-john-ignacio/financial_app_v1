@@ -2,7 +2,13 @@
 <?= $this->section("title")?>Pin Verify<?= $this->endSection() ?>
 
 <?= $this->section("content")?>
-<?= site_url();?>
+<?= "Environment: ". getenv("CI_ENVIRONMENT")?>
+<br>
+<?= "Base URL: " . base_url();?>
+<br>
+<?= "Site URL: " . site_url();?>
+<br>
+<?= "Current URI: " . $_SERVER['REQUEST_URI']?>
 <div class="container">
     <div class="row justify-content-center align-items-center vh-100">
         <div class="col-md-4">

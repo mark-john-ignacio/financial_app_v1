@@ -27,15 +27,19 @@ class App extends BaseConfig
         $second_part_of_path = $folder_path[2] ?? '';
         $baseURL = $protocol . "://" . $_SERVER['HTTP_HOST'] . "/" . $first_part_of_path . "/" . $second_part_of_path;
         $this->baseURL = rtrim($baseURL, '/') . '/';
-
-        // Ensure 'public/' is at the end of $baseURL
-        if (!preg_match("/public\/?$/", $this->baseURL)) {
-            $this->baseURL .= 'public/';
+    
+        // Check if the environment is development
+        if (getenv('CI_ENVIRONMENT') === 'development') {
+            // Ensure 'public/' is at the end of $baseURL
+            if (!preg_match("/public\/?$/", $this->baseURL)) {
+                $this->baseURL .= 'public/';
+            }
         }
-
+    
         // Ensure 'system_management/' precedes 'public/' (case-insensitive search)
         if (!preg_match("/system_management\/public\/?$/i", $this->baseURL)) {
             // If 'public/' is found but not preceded by 'system_management/', insert 'system_management/' before 'public/'
+            // This operation is done regardless of the environment
             $this->baseURL = preg_replace("/(public\/?)$/i", "system_management/$1", $this->baseURL);
         }
     }
