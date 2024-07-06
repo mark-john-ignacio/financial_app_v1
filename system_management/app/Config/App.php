@@ -33,10 +33,10 @@ class App extends BaseConfig
             $this->baseURL .= 'public/';
         }
 
-        // Ensure 'birForm/' precedes 'public/' (case-insensitive search)
-        if (!preg_match("/birForm\/public\/?$/i", $this->baseURL)) {
-            // If 'public/' is found but not preceded by 'birForm/', insert 'birForm/' before 'public/'
-            $this->baseURL = preg_replace("/(public\/?)$/i", "birForm/$1", $this->baseURL);
+        // Ensure 'system_management/' precedes 'public/' (case-insensitive search)
+        if (!preg_match("/system_management\/public\/?$/i", $this->baseURL)) {
+            // If 'public/' is found but not preceded by 'system_management/', insert 'system_management/' before 'public/'
+            $this->baseURL = preg_replace("/(public\/?)$/i", "system_management/$1", $this->baseURL);
         }
     }
 
