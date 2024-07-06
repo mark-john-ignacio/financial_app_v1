@@ -37,7 +37,13 @@
         </div>
     </div>
 </nav>
-
+<?= "Environment: ". getenv("CI_ENVIRONMENT")?>
+<br>
+<?= "Base URL: " . base_url();?>
+<br>
+<?= "Site URL: " . site_url();?>
+<br>
+<?= "Current URI: " . $_SERVER['REQUEST_URI']?>
 <?= $this->renderSection("content") ?>
 
 
