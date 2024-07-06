@@ -19,13 +19,19 @@
 <body>
 <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
     <div class="container-fluid">
-        <a class="navbar-brand" href="<?= site_url("bir-year-form")?>">BIR Forms</a>
+        <a class="navbar-brand" href="#">HiddenSysMgt</a>
         <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
             <span class="navbar-toggler-icon"></span>
         </button>
         <div class="collapse navbar-collapse" id="navbarSupportedContent">
             <ul class="navbar-nav me-auto mb-2 mb-lg-0">
         <?php if (session()->get('pin_verified')): ?>
+            <li class="nav-item">
+                <a href="<?= site_url("bir-forms/year-form")?>" class="nav-link">BIR Forms</a>
+            </li>
+            <li class="nav-item">
+                <a href="<?= site_url("users-license")?>" class="nav-link">Users License</a>
+            </li>
             <li class="nav-item">
                 <a href="<?= site_url("change-pin")?>" class="nav-link">Change Pin</a>
             </li>
@@ -37,17 +43,10 @@
         </div>
     </div>
 </nav>
-<?= "Environment: ". getenv("CI_ENVIRONMENT")?>
-<br>
-<?= "Base URL: " . base_url();?>
-<br>
-<?= "Site URL: " . site_url();?>
-<br>
-<?= "Current URI: " . $_SERVER['REQUEST_URI']?>
-<br>
-<?= "HTTP Host: " . $_SERVER['HTTP_HOST']?>
 <?= $this->renderSection("content") ?>
 
 
 </body>
 </html>
+
+<?= $this->renderSection("scripts") ?>

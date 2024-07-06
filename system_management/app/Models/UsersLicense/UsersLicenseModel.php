@@ -6,13 +6,13 @@ use CodeIgniter\Model;
 
 class UsersLicenseModel extends Model
 {
-    protected $table            = 'userslicenses';
+    protected $table            = 'users_license';
     protected $primaryKey       = 'id';
     protected $useAutoIncrement = true;
-    protected $returnType       = 'object';
+    protected $returnType       = 'App\Entities\UsersLicense\UsersLicenseEntity';
     protected $useSoftDeletes   = false;
     protected $protectFields    = true;
-    protected $allowedFields    = [];
+    protected $allowedFields    = ["value"];
 
     protected bool $allowEmptyInserts = false;
     protected bool $updateOnlyChanged = true;
@@ -43,4 +43,16 @@ class UsersLicenseModel extends Model
     protected $afterFind      = [];
     protected $beforeDelete   = [];
     protected $afterDelete    = [];
+
+    public function getLicensesWithCompany(){
+        $this->select('users_license.id, users_license.value, users_license.compcode, company.compname as company_name');
+        $this->join('company', 'company.compcode = users_license.compcode');
+        return $this->findAll();
+    }
+
+    public function getLicense($id){
+        $this->select('users_license.id, users_license.value, users_license.compcode, company.compname as company_name');
+        $this->join('company', 'company.compcode = users_license.compcode');
+        return $this->find($id);
+    }
 }

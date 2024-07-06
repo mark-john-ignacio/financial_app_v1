@@ -22,4 +22,9 @@ $routes->group('', ['filter' => 'pin_verified'], function ($routes) {
         $routes->resource('year-form', ['controller' => $con_path]);
         $routes->post('year-form/new', $con_path . '::new');
     });
+
+    $routes->group('', function ($routes) {
+        $con_path = 'UsersLicense\\UsersLicenseController';
+        $routes->resource('users-license', ['controller' => $con_path]);
+    });
 });
