@@ -8,7 +8,7 @@
         <input type="hidden" name="_method" value="PATCH">
         <input type="hidden" name="id" value="<?= $license->id ?>">
 
-        <div class="mb-3">
+        <div class="mb-3 col-4">
             <label for="licenseNumber" class="form-label">License Number</label>
             <input type="text" class="form-control" id="licenseNumber" name="license_number" value="<?= $license->number ?>">
         </div>
