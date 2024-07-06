@@ -24,17 +24,21 @@ class App extends BaseConfig
         $protocol = isset($_SERVER["HTTPS"]) ? 'https' : 'http';
         $folder_path = explode('/', $_SERVER['REQUEST_URI']);
         $first_part_of_path = $folder_path[1] ?? '';
-        $second_part_of_path = $folder_path[2] ?? '';
-        $baseURL = $protocol . "://" . $_SERVER['HTTP_HOST'] . "/" . $first_part_of_path . "/" . $second_part_of_path;
-        $this->baseURL = rtrim($baseURL, '/') . '/';
+        $baseURL = $protocol . "://" . $_SERVER['HTTP_HOST'] . "/" . $first_part_of_path;
     
         // Check if the environment is development
         if (getenv('CI_ENVIRONMENT') === 'development') {
+            $second_part_of_path = $folder_path[2] ?? '';
+            // Append second_part_of_path only in development
+            $baseURL .= "/" . $second_part_of_path;
+    
             // Ensure 'public/' is at the end of $baseURL
-            if (!preg_match("/public\/?$/", $this->baseURL)) {
-                $this->baseURL .= 'public/';
+            if (!preg_match("/public\/?$/", $baseURL)) {
+                $baseURL .= 'public/';
             }
         }
+    
+        $this->baseURL = rtrim($baseURL, '/') . '/';
     
         // Ensure 'system_management/' precedes 'public/' (case-insensitive search)
         if (!preg_match("/system_management\/public\/?$/i", $this->baseURL)) {
