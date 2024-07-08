@@ -27,4 +27,11 @@ $routes->group('', ['filter' => 'pin_verified'], function ($routes) {
         $con_path = 'UsersLicense\\UsersLicenseController';
         $routes->resource('users-license', ['controller' => $con_path]);
     });
+
+    $routes->group('nav-menus', function ($routes) {
+        $con_path = 'NavMenus\\NavMenuController';
+        $routes->resource('', ['controller' => $con_path]);
+        $routes->get('get-menus', $con_path . '::getMenus');
+        $routes->post('toggle-status', $con_path . '::toggleStatus');
+    });
 });

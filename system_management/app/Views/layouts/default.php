@@ -12,7 +12,7 @@
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     <script src="https://cdn.datatables.net/2.0.8/js/dataTables.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
-
+    <script src="https://kit.fontawesome.com/5c8cc36827.js" crossorigin="anonymous"></script>
     
 
 </head>
@@ -31,6 +31,9 @@
             </li>
             <li class="nav-item">
                 <a href="<?= site_url("users-license")?>" class="nav-link">Users License</a>
+            </li>
+            <li class="nav-item">
+                <a href="<?= site_url("nav-menus")?>" class="nav-link">Nav Menus</a>
             </li>
             <li class="nav-item">
                 <a href="<?= site_url("change-pin")?>" class="nav-link">Change Pin</a>
