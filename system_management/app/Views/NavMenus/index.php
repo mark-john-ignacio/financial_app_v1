@@ -11,6 +11,7 @@
                 <th>Menu Name</th>
                 <th>Menu URL</th>
                 <th>Status</th>
+                <th>Toggle</th>
             </tr>
         </thead>
         <tbody>
@@ -42,6 +43,15 @@
                 { data: 'title' },
                 { data: 'url' },
                 { data: 'status'},
+                { data: null, render: function(data, type, row) {
+                    if (data.status === 'ACTIVE') {
+                        var actionHTML = `<div style='display: flex; justify-content: center; align-items: center;'><a href='#'><i class='fa-solid fa-toggle-on fa-lg m-2' id='refreshButton'></i></a></div>`;
+                        return actionHTML;
+                    } else if (data.status === 'INACTIVE') {
+                        var actionHTML = `<div style='display: flex; justify-content: center; align-items: center;'><a href='#'><i class='fa-solid fa-toggle-off fa-lg m-2' id='refreshButton'></i></a></div>`;
+                        return actionHTML;
+                    }
+                }}
             ],
             createdRow: function(row, data, dataIndex) {
                 // Get the 'cstatus' cell
@@ -55,7 +65,8 @@
             },
             initComplete: function () {
                 createStatusFilter(table, tableId, 'statusFilter');
-            }
+            },
+            columnDefs: [{ orderable: false, targets: [3, 4] }]
         });
 
         toggleStatusAndRedraw(table, '<?= site_url('nav-menus/toggle-status') ?>');
@@ -84,12 +95,12 @@
     function formatStatusCell(row, data, statusColumnIndex, activeColor, inactiveColor) {
         var statusCell = $(row).find('td').eq(statusColumnIndex);
         var statusHTML;
-        var actionHTML = `<a href='#'><i class='fa fa-refresh m-2' id='refreshButton'></i></a>`; 
+         
 
         if (data.status === 'ACTIVE') {
-            statusHTML = `<span style="background-color: ${activeColor}; color: #FFFFFF; padding: 5px 10px; border-radius: 5px;">${data.status}</span>` + actionHTML;
+            statusHTML = `<span style="background-color: ${activeColor}; color: #FFFFFF; padding: 5px 10px; border-radius: 5px;">${data.status}</span>`;
         } else if (data.status === 'INACTIVE') {
-            statusHTML = `<span style="background-color: ${inactiveColor}; color: #FFFFFF; padding: 5px 10px; border-radius: 5px;">${data.status}</span>` + actionHTML;
+            statusHTML = `<span style="background-color: ${inactiveColor}; color: #FFFFFF; padding: 5px 10px; border-radius: 5px;">${data.status}</span>`;
         }
         statusCell.html(statusHTML);
     }

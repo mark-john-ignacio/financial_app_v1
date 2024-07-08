@@ -35,14 +35,18 @@
             <li class="nav-item">
                 <a href="<?= site_url("nav-menus")?>" class="nav-link">Nav Menus</a>
             </li>
-            <li class="nav-item">
-                <a href="<?= site_url("change-pin")?>" class="nav-link">Change Pin</a>
-            </li>
-            <li class="nav-item">
-                <a href="<?= site_url("logout-pin")?>" class="nav-link">Logout</a>
-            </li>
-        <?php endif; ?>
             </ul>
+            <div class="d-flex">
+                <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+                    <li class="nav-item">
+                        <a href="<?= site_url("change-pin")?>" class="nav-link">Change Pin</a>
+                    </li>
+                    <li class="nav-item">
+                        <a href="<?= site_url("logout-pin")?>" class="nav-link">Logout</a>
+                    </li>
+                </ul>
+            </div>
+        <?php endif; ?>
         </div>
     </div>
 </nav>
