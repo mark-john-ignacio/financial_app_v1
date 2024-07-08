@@ -32,7 +32,6 @@
             <?php endforeach; ?>
         </tbody>
     </table>
-    <a href="<?= site_url('/users-license/create') ?>" class="btn btn-primary">Add License</a>
 <?= $this->endSection() ?>
 
 <?= $this->section('scripts') ?>

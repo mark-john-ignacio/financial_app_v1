@@ -11,7 +11,6 @@
                 <th>Menu Name</th>
                 <th>Menu URL</th>
                 <th>Status</th>
-                <th>Actions</th>
             </tr>
         </thead>
         <tbody>
@@ -43,12 +42,6 @@
                 { data: 'title' },
                 { data: 'url' },
                 { data: 'status'},
-                {
-                    data: null,
-                    render: function(data, type, row) {
-                        return `<a href="<?= site_url('/nav-menus/') ?>${row.id}/edit" class="btn btn-primary">Edit</a>`;
-                    }
-                }
             ],
             createdRow: function(row, data, dataIndex) {
                 // Get the 'cstatus' cell
@@ -107,10 +100,7 @@
 
             var rowId = $(this).closest('tr').data('id');
             var row = $(this).closest('tr');
-            console.log("id: " + rowId);
-            console.log("current data-status" + row.data('status'));
             var newStatus = $(this).closest('tr').data('status') === 'ACTIVE' ? 'INACTIVE' : 'ACTIVE';
-            console.log("new status" + newStatus);
             $.ajax({
                 url: ajaxUrl,
                 type: 'POST',
@@ -121,7 +111,6 @@
                 success: function(response) {
                     // Redraw the datatable
                     row.data('status', newStatus);
-                    console.log("new data-status after draw:" + row.data('status'));
                     table.ajax.reload(null, false);
 
                 },
