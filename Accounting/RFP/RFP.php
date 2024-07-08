@@ -95,11 +95,12 @@
 				</div>
 				<div class="col-xs-2 text-right nopadwleft">
 					<select  class="form-control" name="selstats" id="selstats">
-						<option value=""> All Transactions</option>
-						<option value="post"> Posted </option>
-						<option value="cancel"> Cancelled </option>
-						<option value="void"> Voided </option>
-						<option value="pending"> Pending </option>
+						<option value=""> All Status</option>
+						<option value="post" <?=(isset($_REQUEST['st'])) ? (($_REQUEST['st']=="post") ? "selected" : "" ) : "";?>> Posted </option>
+						<option value="cancel" <?=(isset($_REQUEST['st'])) ? (($_REQUEST['st']=="cancel") ? "selected" : "" ) : "";?>> Cancelled </option>
+						<option value="void" <?=(isset($_REQUEST['st'])) ? (($_REQUEST['st']=="void") ? "selected" : "" ) : "";?>> Voided </option>
+						<option value="pending" <?=(isset($_REQUEST['st'])) ? (($_REQUEST['st']=="pending") ? "selected" : "" ) : "";?>> Pending </option>
+						<option value="approve" <?=(isset($_REQUEST['st'])) ? (($_REQUEST['st']=="approve") ? "selected" : "" ) : "";?>> For Approval </option>
 					</select>
 				</div>
 				<div class="col-xs-2 text-right nopadwleft">
