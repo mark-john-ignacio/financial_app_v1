@@ -794,7 +794,12 @@ else{
 								<td>Account Credit</td>  
 							</tr>		
 							<?php
-								$getewtcd = mysqli_query($con,"SELECT * FROM glactivity where compcode='$company' and ctranno='$ccvno'"); 
+
+								if($lPosted==1 && $lVoid==0){
+									$getewtcd = mysqli_query($con,"SELECT * FROM glactivity where compcode='$company' and ctranno='$ccvno'"); 
+								}else{
+									$getewtcd = mysqli_query($con,"SELECT cacctno as acctno, ctitle, ndebit, ncredit FROM paybill_acct where compcode='$company' and ctranno='$ccvno'");
+								}
 								if (mysqli_num_rows($getewtcd)!=0) {
 									while($row = mysqli_fetch_array($getewtcd, MYSQLI_ASSOC)){
 							?>					
@@ -1987,9 +1992,9 @@ else{
 		$("#btnPrint").attr("disabled", false);
 		$("#btnEdit").attr("disabled", false);
 
-		if(document.getElementById("hdnposted").value==1 && document.getElementById("hdnvoid").value==0){
+		//if(document.getElementById("hdnposted").value==1 && document.getElementById("hdnvoid").value==0){
 			$("#btnentry").attr("disabled", false);
-		}
+		//}
 
 		$("#btn-closemod").attr("disabled", false); 
 
