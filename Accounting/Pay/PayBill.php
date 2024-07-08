@@ -106,8 +106,9 @@ $company = $_SESSION['companyid'];
 				</div>
 				<div class="col-xs-2 text-right nopadwleft">
 					<select  class="form-control" name="seldtfl" id="seldtfl">
-						<option value="a.ddate" <?=(isset($_REQUEST['sdtf'])) ? (($_REQUEST['sdtf']=="A.ddate") ? "selected" : "" ) : "";?>>Encoding Date </option>
-						<option value="a.dtransdate" <?=(isset($_REQUEST['sdtf'])) ? (($_REQUEST['sdtf']=="A.dneeded") ? "selected" : "" ) : "";?>>RFP Date </option>
+						<option value="a.dtrandate" <?=(isset($_REQUEST['sdtf'])) ? (($_REQUEST['sdtf']=="A.dtrandate") ? "selected" : "" ) : "";?>>Encoding Date </option>
+						<option value="a.ddate" <?=(isset($_REQUEST['sdtf'])) ? (($_REQUEST['sdtf']=="A.ddate") ? "selected" : "" ) : "";?>>Payment Date </option>
+						<option value="a.dcheckdate" <?=(isset($_REQUEST['sdtf'])) ? (($_REQUEST['sdtf']=="A.dcheckdate") ? "selected" : "" ) : "";?>>Check/Transfer Date </option>
 					</select>
 				</div>
 				<div class="col-xs-3 nopadwleft">
