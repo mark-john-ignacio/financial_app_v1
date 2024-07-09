@@ -51,10 +51,6 @@
     </div>
 </nav>
 
-<?= "Base URL: " . base_url() ?>
-    <?= "Site URL: " . site_url() ?>
-    <?= "Current URL: " . current_url() ?>
-
 <?= $this->renderSection("content") ?>
 
 

@@ -2,7 +2,6 @@
 <?= $this->section("title")?>Pin Verify<?= $this->endSection() ?>
 
 <?= $this->section("content")?>
-
 <div class="container">
     <div class="row justify-content-center align-items-center vh-100">
         <div class="col-md-4">
