@@ -18,7 +18,6 @@
 
         </tbody>
     </table>
-    <a href="<?= site_url('/nav-menus/create') ?>" class="btn btn-primary">Add Menu</a>
 </div>
 <?= $this->endSection() ?>
 

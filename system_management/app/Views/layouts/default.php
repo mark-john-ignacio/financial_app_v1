@@ -7,11 +7,11 @@
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
     <title><?= $this->renderSection("title") ?></title>
     <!-- <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/water.css@2/out/water.css"> -->
-    <link rel="stylesheet" href="https://cdn.datatables.net/2.0.8/css/dataTables.dataTables.css" />
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
-    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <link rel="stylesheet" href="<?= base_url("assets/css/dataTables.dataTables.css")?>" />
+    <link href="<?= base_url("assets/css/bootstrap.min.css")?>" rel="stylesheet">
+    <script src="<?= base_url("assets/js/jquery-3.7.1.min.js")?>"></script>
     <script src="https://cdn.datatables.net/2.0.8/js/dataTables.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="<?= base_url("assets/js/bootstrap.bundle.min.js")?>"></script>
     <script src="https://kit.fontawesome.com/5c8cc36827.js" crossorigin="anonymous"></script>
 
 
