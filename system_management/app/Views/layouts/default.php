@@ -10,7 +10,7 @@
     <link rel="stylesheet" href="<?= base_url("assets/css/dataTables.dataTables.css")?>" />
     <link href="<?= base_url("assets/css/bootstrap.min.css")?>" rel="stylesheet">
     <script src="<?= base_url("assets/js/jquery-3.7.1.min.js")?>"></script>
-    <script src="https://cdn.datatables.net/2.0.8/js/dataTables.js"></script>
+    <script src="<?= base_url("assets/js/dataTables.js")?>"></script>
     <script src="<?= base_url("assets/js/bootstrap.bundle.min.js")?>"></script>
     <script src="<?= base_url("assets/js/fontawesome.js")?>"></script>
 
