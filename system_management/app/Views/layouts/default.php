@@ -7,12 +7,12 @@
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
     <title><?= $this->renderSection("title") ?></title>
     <!-- <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/water.css@2/out/water.css"> -->
-    <link rel="stylesheet" href="<?= base_url("public/assets/css/dataTables.dataTables.css")?>" />
-    <link href="<?= base_url("public/assets/css/bootstrap.min.css")?>" rel="stylesheet">
-    <script src="<?= base_url("public/assets/js/jquery-3.7.1.min.js")?>"></script>
-    <script src="<?= base_url("public/assets/js/dataTables.js")?>"></script>
-    <script src="<?= base_url("public/assets/js/bootstrap.bundle.min.js")?>"></script>
-    <script src="<?= base_url("public/assets/js/fontawesome.js")?>"></script>
+    <link rel="stylesheet" href="<?= base_url("assets/css/dataTables.dataTables.css")?>" />
+    <link href="<?= base_url("assets/css/bootstrap.min.css")?>" rel="stylesheet">
+    <script src="<?= base_url("assets/js/jquery-3.7.1.min.js")?>"></script>
+    <script src="<?= base_url("assets/js/dataTables.js")?>"></script>
+    <script src="<?= base_url("assets/js/bootstrap.bundle.min.js")?>"></script>
+    <script src="<?= base_url("assets/js/fontawesome.js")?>"></script>
 
 
 </head>
@@ -50,6 +50,11 @@
         </div>
     </div>
 </nav>
+
+<?= "Base URL: " . base_url() ?>
+    <?= "Site URL: " . site_url() ?>
+    <?= "Current URL: " . current_url() ?>
+
 <?= $this->renderSection("content") ?>
 
 

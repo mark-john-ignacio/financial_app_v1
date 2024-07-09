@@ -7,10 +7,11 @@ function getBaseURL() {
     $first_part_of_path = $folder_path[1] ?? '';
     $baseURL = $protocol . "://" . $_SERVER['HTTP_HOST'];
     $baseURL .= "/" . $first_part_of_path;
+    $second_part_of_path = $folder_path[2] ?? '';
+    $baseURL .= "/" . $second_part_of_path;
 
     if (getenv('CI_ENVIRONMENT') === 'development' || $isLocalhost) { 
-        $second_part_of_path = $folder_path[2] ?? '';
-        $baseURL .= "/" . $second_part_of_path;
+
 
         if (!preg_match("/public\/?$/", $baseURL)) {
             $baseURL .= '/public';
