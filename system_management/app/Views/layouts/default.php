@@ -12,7 +12,7 @@
     <script src="<?= base_url("assets/js/jquery-3.7.1.min.js")?>"></script>
     <script src="https://cdn.datatables.net/2.0.8/js/dataTables.js"></script>
     <script src="<?= base_url("assets/js/bootstrap.bundle.min.js")?>"></script>
-    <script src="https://kit.fontawesome.com/5c8cc36827.js" crossorigin="anonymous"></script>
+    <script src="<?= base_url("assets/js/fontawesome.js")?>"></script>
 
 
 </head>
