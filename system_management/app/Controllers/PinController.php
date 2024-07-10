@@ -5,15 +5,18 @@ namespace App\Controllers;
 use App\Controllers\BaseController;
 use CodeIgniter\HTTP\ResponseInterface;
 use App\Models\PinModel; 
+use App\Models\CompanySwitcher\CompanyModel;
 
 class PinController extends BaseController
 {
     protected $pinModel;
+    protected $companyModel;
     protected $encrypter;
 
     public function __construct()
     {
         $this->pinModel = new PinModel();
+        $this->companyModel = new CompanyModel();
         $this->encrypter = service('encrypter');
     }
 
@@ -44,7 +47,9 @@ class PinController extends BaseController
         // Retrieve the hashed pin from the database
         $hashed_pin = $this->pinModel->getHashedPin(); // Assume this method retrieves the hashed pin
         if (password_verify($pin, $hashed_pin)) {
-            session()->set('pin_verified', true);            
+            session()->set('pin_verified', true); 
+            $companies = $this->companyModel->findAll();
+            session()->set('companies', $companies);
             return redirect()->to(site_url("bir-forms/year-form"));
         } else {
             return redirect()->back()->with('error', 'Incorrect Pin');
@@ -53,6 +58,7 @@ class PinController extends BaseController
 
     public function logout(){
         session()->remove('pin_verified');
+        session()->remove('companies');
         return redirect()->to('/');
     }
 }

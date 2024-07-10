@@ -38,6 +38,7 @@
             </ul>
             <div class="d-flex">
                 <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+                    <?= $this->include("CompanySwitcher/index") ?>
                     <li class="nav-item">
                         <a href="<?= site_url("change-pin")?>" class="nav-link">Change Pin</a>
                     </li>
