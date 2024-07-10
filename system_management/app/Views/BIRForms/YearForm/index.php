@@ -3,7 +3,7 @@
 
 <?= $this->section("content")?>
 <div class="container mt-5">
-    <h1>Manage BIR Form-Year Registration</h1>
+    <h1>Manage BIR Year-Form Registration</h1>
     <div class="mb-3">
     <a href="#" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#addNewModal">Add New</a>
     </div>
