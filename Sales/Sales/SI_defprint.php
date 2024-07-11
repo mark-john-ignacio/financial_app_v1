@@ -128,7 +128,7 @@ function PrintRed(x, version){
 </script>
 </head>
 
-<body>
+<body onload="window.print();">
 <br><br>
 <span style="border-top:1px dashed;"><?php //echo $_SESSION['employeefull'];?></span>
 <table width="100%" border="0" cellpadding="3" style="border-collapse:collapse;" id="tblMain">
