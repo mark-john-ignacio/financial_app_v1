@@ -34,4 +34,9 @@ $routes->group('', ['filter' => 'pin_verified'], function ($routes) {
         $routes->get('get-menus', $con_path . '::getMenus');
         $routes->post('toggle-status', $con_path . '::toggleStatus');
     });
+
+    $routes->group('company-switcher', function ($routes) {
+        $con_path = 'CompanySwitcher\\CompanySwitcherController';
+        $routes->get('switch-company/(:segment)', $con_path . '::switchCompany/$1');
+    });
 });

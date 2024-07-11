@@ -9,12 +9,15 @@ use App\Models\CompanySwitcher\CompanyModel;
 class CompanySwitcherController extends BaseController
 {
     protected $companyModel;
-    public function getAllCompanies()
+    public function __construct()
     {
-        $companies = $this->companyModel->findAll();
-        $data = [
-            'companies' => $companies,
-        ];
-        return view('CompanySwitcher/index', $data);
+        $this->companyModel = new CompanyModel();
+    }
+
+    public function switchCompany($company_code)
+    {
+        $company = $this->companyModel->where('compcode', $company_code)->first();
+        session()->set('current_company', $company);
+        return redirect()->back()->with('message', 'Company has been switched');
     }
 }

@@ -50,6 +50,8 @@ class PinController extends BaseController
             session()->set('pin_verified', true); 
             $companies = $this->companyModel->findAll();
             session()->set('companies', $companies);
+            $current_company = $this->companyModel->first();
+            session()->set('current_company', $current_company);
             return redirect()->to(site_url("bir-forms/year-form"));
         } else {
             return redirect()->back()->with('error', 'Incorrect Pin');
