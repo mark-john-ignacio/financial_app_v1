@@ -208,7 +208,9 @@ function PrintRed(x, version){
         <td align="right"><?=number_format($rowbody['namount'],2);?></td>
         
       </tr>
-      
+    <?php
+     }
+    ?>    
       <tr>
         <td colspan="5" style="border-top:1px dashed;"><?php //echo $cvatcode.":".(float)$totvatxmpt." : ".$printVEGross;?></td>
       </tr>
@@ -261,7 +263,7 @@ function PrintRed(x, version){
         </tr>
 <?php
 
-    }}
+    }
 ?>
     </table></td>
   </tr>
