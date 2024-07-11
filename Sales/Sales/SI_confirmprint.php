@@ -284,6 +284,14 @@ function PrintRed(x, version){
         <td height="60" valign="top" style="border:1px solid; border-style:dashed;"><font size="2"><b>Released by:</b></font><br></td>
         <td width="50%" height="60" valign="top" style="border:1px solid; border-style:dashed;"><font size="2"><b>Received by:</b></font><br></td>
       </tr>
+      <tr>
+        <td style="border:1px solid; border-style:dashed;" align="center">
+          Signature Over Printed Name         
+        </td>
+        <td style="border:1px solid; border-style:dashed;" align="center">
+          Signature Over Printed Name
+        </td>
+      </tr>
     </table>
 
     </td>
