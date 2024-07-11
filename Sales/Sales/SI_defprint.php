@@ -281,32 +281,5 @@ function PrintRed(x, version){
     </td>
   </tr>
 </table>
-
-<div align="center" id="menu" class="noPrint">
-  <div style="float:left;">&nbsp;&nbsp;<strong><font size="-1">Sales Invoice</font></strong></div>
-  <div style="float:right;">
-
-        <?php     
-        $strqry = "";
-        $valsub = "";
-
-        if($lPosted==0 && $autopost==1){
-          $strqry = "Print('".$csalesno."','".$CustCode."','".$nLimit."')";
-          $valsub = "PRINT AND POST INVOICE";
-        }
-        else{
-          $strqry = "PrintRed('$csalesno', '$version')";
-          $valsub = "PRINT INVOICE";
-        }
-
-        //echo $lPosted."==0 && ".$autopost."==1";
-        ?>
-
-      <input type="button" value="<?=$valsub;?>" onClick="<?=$strqry;?>;" class="noPrint"/>
-
-
-  </div>
-</div>
-
 </body>
 </html>
