@@ -256,7 +256,7 @@ function PrintRed(x, version){
         ?>
         <tr>
           <td style="border-top:1px dashed;" align="right" valign="bottom"><b>Vat Amt</b></td>
-          <td style="border-top:1px dashed;" valign="bottom"><div style="text-align:right; width:50%">&nbsp;</div></td>
+          <td style="border-top:1px dashed;" valign="bottom"><div style="text-align:right; width:50%"><b><?=($TotVat!=="") ? number_format($TotVat,2) : "";?></b></div></td>
           <td colspan="2" style="border-top:1px dashed;" valign="bottom" align="right"><b>Amt. Due</b></td>
           <td style="border-top:1px dashed;"  valign="bottom" align="right"><b><?=($xdue1!=="") ? number_format($xdue1,2) : "";?></b></td>
         </tr>
