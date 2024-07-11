@@ -2,9 +2,9 @@
 
 namespace App\Models\BIRForms;
 
-use CodeIgniter\Model;
+use App\Models\BaseModel;
 
-class BIRYearFormModel extends Model
+class BIRYearFormModel extends BaseModel
 {
     protected $table            = 'bir_year_form_registration';
     protected $primaryKey       = 'id';
@@ -15,6 +15,7 @@ class BIRYearFormModel extends Model
     protected $allowedFields    = [
         'year_id',
         'form_id',
+        'compcode'
     ];
 
     protected bool $allowEmptyInserts = false;
@@ -36,16 +37,7 @@ class BIRYearFormModel extends Model
     protected $skipValidation       = false;
     protected $cleanValidationRules = true;
 
-    // Callbacks
-    protected $allowCallbacks = true;
-    protected $beforeInsert   = [];
-    protected $afterInsert    = [];
-    protected $beforeUpdate   = [];
-    protected $afterUpdate    = [];
-    protected $beforeFind     = [];
-    protected $afterFind      = [];
-    protected $beforeDelete   = [];
-    protected $afterDelete    = [];
+
 
     public function getAssociations()
     {
@@ -63,4 +55,5 @@ class BIRYearFormModel extends Model
                     ->where('year_id', $year_id)
                     ->findAll();
     }
+
 }

@@ -47,12 +47,16 @@ class BIRYearModel extends Model
 
     public function getYearsWithoutEntries()
     {
-        // Assuming 'years' is the table name in yearModel and 'year_id' is the foreign key in birYearFormModel
-        // Adjust the table and column names according to your actual database schema
-        $query = $this->select('bir_year.id, bir_year.year')
-            ->join('bir_year_form_registration byfr', 'byfr.year_id = bir_year.id', 'left')
-            ->where('byfr.year_id IS NULL')
-            ->orderBy('bir_year.year', 'ASC');
+        $currentCompanyCode = session()->get('current_company')->company_code;
+
+        $query = $this->db->table('bir_year')
+                          ->select('bir_year.id, bir_year.year')
+                          ->whereNotIn('bir_year.id', function($builder) use ($currentCompanyCode) {
+                              return $builder->select('year_id')
+                                             ->from('bir_year_form_registration')
+                                             ->where('compcode', $currentCompanyCode);
+                          })
+                          ->orderBy('bir_year.year', 'ASC');
 
         return $query->get()->getResult();
     }

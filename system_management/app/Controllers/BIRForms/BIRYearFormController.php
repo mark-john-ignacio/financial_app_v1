@@ -76,7 +76,8 @@ class BIRYearFormController extends BaseController
             foreach($form_ids as $form_id){
                 $data[] = [
                     'year_id' => $yearId,
-                    'form_id' => $form_id
+                    'form_id' => $form_id,
+                    'compcode' => session()->get('current_company')->company_code
                 ];
             }
             $this->birYearFormModel->insertBatch($data);
