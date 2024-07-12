@@ -20,7 +20,7 @@ class App extends BaseConfig
     public string $baseURL = '';
     public function __construct()
     {
-        helper('url'); // Load the helper, if not already autoloaded
+        helper('url');
         $this->baseURL = getBaseURL();
     }
 
