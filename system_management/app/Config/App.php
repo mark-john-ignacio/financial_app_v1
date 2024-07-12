@@ -18,11 +18,11 @@ class App extends BaseConfig
      * E.g., http://example.com/
      */
     public string $baseURL = '';
-    public function __construct()
-    {
-        helper('url');
-        $this->baseURL = getBaseURL();
-    }
+    // public function __construct()
+    // {
+    //     helper('url');
+    //     $this->baseURL = getBaseURL();
+    // }
 
     /**
      * Allowed Hostnames in the Site URL other than the hostname in the baseURL.
