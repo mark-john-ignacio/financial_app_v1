@@ -4250,8 +4250,9 @@ if(mysqli_num_rows($sql) != 0){
 	var isCheck = 0;
 	$(document).ready(function(e) {
 
-		$(".mask_tin").inputmask("mask", {
-            "mask": "999-999-999-9999"
+		$(".mask_tin").inputmask({
+            "mask": "999-999-999-9999",
+			"removeMaskOnSubmit" : false
         });
 
 		//loadcompany();
@@ -4857,8 +4858,14 @@ if(mysqli_num_rows($sql) != 0){
 			
 		});	
 		
+		  
+		// $("#subCompany").on("click", function (){			
+		//	$("#hdn_sig_tin").val($("#bir_sig_tin").val());
+		// });
+
 		$("#frmCompany").submit(function(e) {
 			e.preventDefault();
+
 			var formData = new FormData(this);
 
 			$.ajax ({
