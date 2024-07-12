@@ -150,9 +150,7 @@ function PrintRed(x, version){
     <td width="100">Page:</td>
     <td width="150">&nbsp;</td>
   </tr>
-  <tr>
-    <td colspan="3">&nbsp;</td>
-  </tr>
+
   <tr>
     <td colspan="3">
     
@@ -164,9 +162,7 @@ function PrintRed(x, version){
     </table>
     </td>
   </tr>
-  <tr>
-    <td colspan="3">&nbsp;</td>
-  </tr>
+
   <tr>
     <td colspan="3">
     
