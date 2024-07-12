@@ -17,3 +17,5 @@ imgsman/*
 MRP/bom_uploads/*
 Components/*
 admin/pages/media/*
+system_management/vendor/fakerphp/*
+system_management/vendor/mikey179/*
