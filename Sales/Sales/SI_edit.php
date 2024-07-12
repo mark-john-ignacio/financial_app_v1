@@ -2596,7 +2596,7 @@ function openinv(typ){
 									if(index==0){
 										$("#selbasecurr").val(item.ccurrencycode).change();
 										$("#hidcurrvaldesc").val(item.ccurrencydesc);
-										convertCurrency(item.ccurrencycode);
+										//convertCurrency(item.ccurrencycode);
 									}
 
 
@@ -3132,7 +3132,7 @@ function chkform(){
 }
 
 
-function convertCurrency(fromCurrency) {
+/*function convertCurrency(fromCurrency) {
   
 	toCurrency = $("#basecurrvalmain").val(); //statgetrate
 	$.ajax ({
@@ -3154,7 +3154,7 @@ function convertCurrency(fromCurrency) {
 		}
 	});
 
-}
+}*/
 
 
 function recomputeCurr(){
