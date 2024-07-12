@@ -2599,8 +2599,8 @@ function openinv(typ){
 										//convertCurrency(item.ccurrencycode);
 									}
 
-
-									addItemName(item.totqty,item.nprice,item.nbaseamount,item.namount,item.nfactor,item.xref,item.crefident,item.citmcls,item.ctaxcode)
+									//qty,price,ndisc,curramt,amt,factr,cref,nrefident,citmcls,cvat
+									addItemName(item.totqty,item.nprice,0,item.nbaseamount,item.namount,item.nfactor,item.xref,item.crefident,item.citmcls,item.ctaxcode)
 													
 							});
 							
