@@ -5,7 +5,7 @@
 <div class="container mt-5">
     <h1>Manage Forms</h1>
     <div class="mb-3">
-    <a href="#" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#addNewModal">Add New</a>
+    <a href="<?= site_url('bir-forms/form/new') ?>" class="btn btn-primary">Add New</a>
     </div>
     <div class="table-responsive">
         <table id="formsTable" class="display" style="width:100%">

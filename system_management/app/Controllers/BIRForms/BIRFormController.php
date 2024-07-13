@@ -29,8 +29,13 @@ class BIRFormController extends BaseController
 
     public function new()
     {
+        return view($this->view.'new');
+    }
+
+    public function create()
+    {
         $data = $this->request->getPost();
-        $this->formModel->insert($data);
+        $this->formModel->save($data);
         return redirect()->to(site_url('bir-forms/form'));
     }
 

@@ -12,8 +12,12 @@ class UsersLicenseEntity extends Entity
     ];
     protected $dates   = ['created_at', 'updated_at', 'deleted_at'];
     protected $casts   = [];
-    private $key = "uPBIMitDgOHyg6tgdLcsDHRJuWJriwO8";
+    
     private $cipher = "AES-128-CBC";
+
+    public function setKey($key) {
+        $this->key = $key;
+    }
 
     public function encryptNumber($plaintext) {
         $ivlen = openssl_cipher_iv_length($this->cipher);
