@@ -19,12 +19,10 @@ class UsersLicenseController extends BaseController
         $licensesWithCompany = $this->usersLicenseModel->getLicensesWithCompany();
         foreach ($licensesWithCompany as $license) {
             $license->setKey($license->cipher_key);
-            $license->number = $license->getDecryptedNumber();
         }
         $data = [
             'usersLicense' => $licensesWithCompany
         ];
-        // dd($data);
 
         return view($this->view . 'index', $data);
     }
@@ -32,7 +30,6 @@ class UsersLicenseController extends BaseController
     public function edit($id){
         $license = $this->usersLicenseModel->getLicense($id);
         $license->setKey($license->cipher_key);
-        $license->number = $license->getDecryptedNumber();
         $data = [
             'license' => $license
         ];
