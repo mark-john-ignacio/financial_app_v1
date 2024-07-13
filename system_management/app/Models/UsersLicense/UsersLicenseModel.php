@@ -45,13 +45,13 @@ class UsersLicenseModel extends Model
     protected $afterDelete    = [];
 
     public function getLicensesWithCompany(){
-        $this->select('users_license.id, users_license.value, users_license.compcode, company.compname as company_name');
+        $this->select('users_license.id, users_license.value, users_license.compcode, company.compname as company_name, company.code as cipher_key');
         $this->join('company', 'company.compcode = users_license.compcode');
         return $this->findAll();
     }
 
     public function getLicense($id){
-        $this->select('users_license.id, users_license.value, users_license.compcode, company.compname as company_name');
+        $this->select('users_license.id, users_license.value, users_license.compcode, company.compname as company_name, company.code as cipher_key');
         $this->join('company', 'company.compcode = users_license.compcode');
         return $this->find($id);
     }
