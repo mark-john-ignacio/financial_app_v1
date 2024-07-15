@@ -12,7 +12,13 @@ class SalesOrderModel extends Model
     protected $returnType       = 'object';
     protected $useSoftDeletes   = false;
     protected $protectFields    = true;
-    protected $allowedFields    = [];
+    protected $allowedFields    = [
+        "compcode",
+        "ctranno",
+        "ccode",
+        "ddate",
+        "ngross"
+    ];
 
     protected bool $allowEmptyInserts = false;
     protected bool $updateOnlyChanged = true;
