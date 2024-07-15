@@ -18,7 +18,7 @@ class OrderController extends BaseController
     public function receiveOrder(){
         $jsonData = $this->request->getJSON(true);
         $data = [
-            'compcode' => session()->get('current_company'),
+            'compcode' => "001",
             'ctranno' => $jsonData['order_id'],
             'ccode' => $jsonData['customer_name'],
             'ddate' => $jsonData['order_date'],
@@ -26,9 +26,9 @@ class OrderController extends BaseController
         ];
 
         if($this->salesOrderModel->insert($data)){
-            return $this->respondCreated('Order received successfully');
+            return $this->response->setJSON(['message' => 'Order received']);
         }else{ 
-            return $this->fail('Failed to receive order');
+            return $this->response->setJSON(['message' => 'Order failed']);
         }
     }
 }
