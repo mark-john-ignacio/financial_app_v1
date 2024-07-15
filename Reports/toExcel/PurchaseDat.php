@@ -224,15 +224,15 @@ $spreadsheet->getProperties()->setCreator('Myx Financials')
                 ->setCellValue("B$index", TinValidation($row['ctin']))
                 ->setCellValue("C$index", $row['cname'])
                 ->setCellValue("E$index", $fullAddress)
-                ->setCellValue("F$index", $rowgros)
-                ->setCellValue("G$index", $xcexmpt,2)
-                ->setCellValue("H$index", $xczerotot,2)
-                ->setCellValue("I$index", $xcnet,2)
-                ->setCellValue("J$index", $xservc,2)
-                ->setCellValue("K$index", $xsgoods,2)
-                ->setCellValue("L$index", $xsgoodsother,2)
-                ->setCellValue("M$index", $xcvat,2)
-                ->setCellValue("N$index", (floatval($xcnet) + floatval($xcvat)),2);
+                ->setCellValue("F$index",  round((float)$rowgros,2))
+                ->setCellValue("G$index",  round((float)$xcexmpt,2))
+                ->setCellValue("H$index",  round((float)$xczerotot,2))
+                ->setCellValue("I$index",  round((float)$xcnet,2))
+                ->setCellValue("J$index",  round((float)$xservc,2))
+                ->setCellValue("K$index",  round((float)$xsgoods,2))
+                ->setCellValue("L$index",  round((float)$xsgoodsother,2))
+                ->setCellValue("M$index",  round((float)$xcvat,2))
+                ->setCellValue("N$index",  round((float)(floatval($xcnet) + floatval($xcvat)),2));
 
                 // $TOTAL_GROSS += floatval($computation['gross']); 
                 // $TOTAL_EXEMPT += floatval($computation['exempt']); 
