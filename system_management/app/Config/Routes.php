@@ -10,6 +10,8 @@ $routes->get('/', 'Home::index');
 
 $routes->post('/verify-pin', 'PinController::verifyPin');
 
+$routes->post('receive-order', 'WooCommerceOrderSync\OrderController::receiveOrder');
+
 $routes->group('', ['filter' => 'pin_verified'], function ($routes) {
 
     $routes->get('/change-pin', 'PinController::changePin');
