@@ -8,7 +8,7 @@
     <a href="#" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#addNewModal">Add New</a>
     </div>
     <div class="table-responsive">
-        <table id="associationsTable" class="display" style="width:100%">
+        <table id="associationsTable" class="display responsive" style="width:100%">
             <thead>
                 <tr>
                     <th>Year</th>

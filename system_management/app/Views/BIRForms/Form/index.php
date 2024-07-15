@@ -15,7 +15,6 @@
                     <th>Form Name</th>
                     <th>Form Filter</th>
                     <th>Status</th>
-                    <th>Image</th>
                     <th>Action</th>
                 </tr>
             </thead>
@@ -43,13 +42,12 @@ $(document).ready(function() {
             { data: 'form_name' },
             { data: 'filter' },
             { data: 'cstatus' },
-            { data: null },
             {
                 data: null,
                 render: function(data, type, row) {
                     return `
-                        <a href="<?= site_url('bir-forms/form/edit') ?>/${row.id}" class="btn btn-warning">Edit</a>
-                        <a href="<?= site_url('bir-forms/form/delete') ?>/${row.id}" class="btn btn-danger">Delete</a>
+                        <a href="<?= site_url('bir-forms/form/edit') ?>/${row.id}" class="btn btn-sm btn-warning">Edit</a>
+                        <a href="<?= site_url('bir-forms/form/delete') ?>/${row.id}" class="btn btn-sm btn-danger">Delete</a>
                     `;
                 }
             }

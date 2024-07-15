@@ -4,34 +4,36 @@
 <?= $this->section('content') ?>
 <div class="container mt-5">
     <h1>Users License</h1>
-    <table id="usersLicenseTable" class="display" style="width:100%">
-        <thead>
-            <tr>
-                <th>License ID</th>
-                <th>License Company</th>
-                <th>License Number</th>
-                <th>Actions</th>
-            </tr>
-        </thead>
-        <tbody>
-            <?php foreach ($usersLicense as $license): ?>
+    <div class="table-responsive">
+        <table id="usersLicenseTable" class="display responsive" style="width:100%">
+            <thead>
                 <tr>
-                    <td>
-                        <?= $license->id ?>
-                    </td>
-                    <td>
-                        <?= $license->company_name ?>
-                    </td>
-                    <td>
-                        <?= $license->number ?>
-                    </td>
-                    <td>
-                        <a href="<?= site_url('/users-license/') . $license->id . '/edit' ?>" class="btn btn-primary">Edit</a>
-                    </td>
+                    <th>License ID</th>
+                    <th>License Company</th>
+                    <th>License Number</th>
+                    <th>Actions</th>
                 </tr>
-            <?php endforeach; ?>
-        </tbody>
-    </table>
+            </thead>
+            <tbody>
+                <?php foreach ($usersLicense as $license): ?>
+                    <tr>
+                        <td>
+                            <?= $license->id ?>
+                        </td>
+                        <td>
+                            <?= $license->company_name ?>
+                        </td>
+                        <td>
+                            <?= $license->number ?>
+                        </td>
+                        <td>
+                            <a href="<?= site_url('/users-license/') . $license->id . '/edit' ?>" class="btn btn-primary">Edit</a>
+                        </td>
+                    </tr>
+                <?php endforeach; ?>
+            </tbody>
+        </table>
+    </div>
 <?= $this->endSection() ?>
 
 <?= $this->section('scripts') ?>

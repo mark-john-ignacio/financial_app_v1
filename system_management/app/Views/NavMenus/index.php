@@ -4,20 +4,22 @@
 <?= $this->section('content') ?>
 <div class="container mt-5">
     <h1>Nav Menus</h1>
-    <table id="navMenusTable" class="display" style="width:100%">
-        <thead>
-            <tr>
-                <th>Menu ID</th>
-                <th>Menu Name</th>
-                <th>Menu URL</th>
-                <th>Status</th>
-                <th>Toggle</th>
-            </tr>
-        </thead>
-        <tbody>
+    <div class="table-responsive">
+        <table id="navMenusTable" class="display responsive" style="width:100%">
+            <thead>
+                <tr>
+                    <th>Menu ID</th>
+                    <th>Menu Name</th>
+                    <th>Menu URL</th>
+                    <th>Status</th>
+                    <th>Toggle</th>
+                </tr>
+            </thead>
+            <tbody>
 
-        </tbody>
-    </table>
+            </tbody>
+        </table>
+    </div>
 </div>
 <?= $this->endSection() ?>
 
