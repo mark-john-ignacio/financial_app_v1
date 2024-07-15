@@ -19,10 +19,10 @@ class OrderController extends BaseController
         $jsonData = $this->request->getJSON(true);
         $data = [
             'compcode' => "001",
-            'ctranno' => $jsonData['order_id'],
-            'ccode' => $jsonData['customer_name'],
-            'ddate' => $jsonData['order_date'],
-            'ngross' => $jsonData['amount']
+            'ctranno' => $jsonData['id'],
+            'ccode' => $jsonData['billing']['first_name'] . ' ' . $jsonData['billing']['last_name'],
+            'ddate' => $jsonData['date_created'],
+            'ngross' => $jsonData['total']
         ];
 
         if($this->salesOrderModel->insert($data)){
