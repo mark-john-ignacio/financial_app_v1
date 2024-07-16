@@ -16,7 +16,22 @@ class OrderController extends BaseController
         $this->salesOrderModel = new SalesOrderModel();
     }
     public function receiveOrder(){
+        //check if being registered as a webhook in WooCommerce
+
+
         $jsonData = $this->request->getJSON(true);
+
+        $webhookSecret = "thisIsASecretKeyDontTellAnyoneAboutThisThanks";
+
+        $webhookSignature = $this->request->getHeaderLine('x-wc-webhook-signature');
+
+        $computedSignature = base64_encode(hash_hmac('sha256', json_encode($jsonData), $webhookSecret, true));
+
+        if (!hash_equals($webhookSignature, $computedSignature)) {
+            return $this->response->setJSON(['message' => 'Invalid signature']);
+        }
+        
+
         $data = [
             'compcode' => "001",
             'ctranno' => $jsonData['id'],
