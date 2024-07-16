@@ -4,9 +4,9 @@ namespace App\Models\WooCommerceOrderSync;
 
 use CodeIgniter\Model;
 
-class SalesOrderModel extends Model
+class CustomersModel extends Model
 {
-    protected $table            = 'so';
+    protected $table            = 'customers';
     protected $primaryKey       = 'id';
     protected $useAutoIncrement = true;
     protected $returnType       = 'object';
@@ -14,13 +14,8 @@ class SalesOrderModel extends Model
     protected $protectFields    = true;
     protected $allowedFields    = [
         "compcode",
-        "ctranno",
-        "ccode",
-        "ddate",
-        "ngross",
-        "dcutdate",
-        "dpodate",
-        "cpono",
+        "cempid",
+        "cname"
     ];
 
     protected bool $allowEmptyInserts = false;
