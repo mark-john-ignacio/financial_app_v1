@@ -21,7 +21,7 @@ class OrderController extends BaseController
 
         $jsonData = $this->request->getJSON(true);
 
-        $webhookSecret = "thisIsASecretKeyDontTellAnyoneAboutThisThanks";
+        $webhookSecret = getenv('WEBHOOK_SECRET');
 
         $webhookSignature = $this->request->getHeaderLine('x-wc-webhook-signature');
 
