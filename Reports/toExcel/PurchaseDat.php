@@ -218,7 +218,7 @@ $spreadsheet->getProperties()->setCreator('Myx Financials')
 
 
                 $index++;
-                $spreadsheet->getActiveSheet()->getStyle("F$index:K$index")->getNumberFormat()->setFormatCode('###,###,###,##0.00');
+                $spreadsheet->getActiveSheet()->getStyle("F$index:N$index")->getNumberFormat()->setFormatCode('###,###,###,##0.00');
                 $spreadsheet->setActiveSheetIndex(0)
                 ->setCellValue("A$index", $row['dapvdate'])
                 ->setCellValue("B$index", TinValidation($row['ctin']))
