@@ -246,16 +246,16 @@
 		
 	</tr>
 
-	<tr>
-		<td colspan="9" align="right"><b>Total: </b></td>
-		<td nowrap style="text-align: right"><?=number_format($totbills,2)?>
-	</tr>
 <?php 
 			}
 		}
 	}
 ?>
 
+	<tr>
+		<td colspan="9" align="right"><b>Total: </b></td>
+		<td nowrap style="text-align: right"><?=number_format($totbills,2)?>
+	</tr>
 </table>
 
 
