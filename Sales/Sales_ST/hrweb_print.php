@@ -185,7 +185,7 @@ if (mysqli_num_rows($sqlhead)!=0) {
 
     .TotSales{
       position: absolute;
-      top: 778px;
+      top: 728px;
       left: 650px;
       width: 1in;
       height:  10px;  
@@ -198,7 +198,7 @@ if (mysqli_num_rows($sqlhead)!=0) {
 
     .LessVat{
       position: absolute;
-      top: 789px;
+      top: 739px;
       left: 650px;
       width: 1in;
       height:  10px;  
@@ -211,7 +211,7 @@ if (mysqli_num_rows($sqlhead)!=0) {
 
     .AmtNetVat{
       position: absolute;
-      top: 810px;
+      top: 760px;
       left: 650px;
       width: 1in;
       height:  10px;  
@@ -224,7 +224,7 @@ if (mysqli_num_rows($sqlhead)!=0) {
 
     .LessDisc{
       position: absolute;
-      top: 810px;
+      top: 760px;
       left: 650px;
       width: 1in;
       height:  10px;  
@@ -237,7 +237,7 @@ if (mysqli_num_rows($sqlhead)!=0) {
 
     .AmtDue{
       position: absolute;
-      top: 851px;
+      top: 801px;
       left: 650px;
       width: 1in;
       height:  10px;  
@@ -250,7 +250,7 @@ if (mysqli_num_rows($sqlhead)!=0) {
 
     .AdddVat{
       position: absolute;
-      top: 861px;
+      top: 811px;
       left: 650px;
       width: 1in;
       height:  10px;  
@@ -263,7 +263,7 @@ if (mysqli_num_rows($sqlhead)!=0) {
 
     .TotAmtDue{
       position: absolute;
-      top: 882px;
+      top: 832px;
       left: 650px;
       width: 1in;
       height:  10px;  
@@ -276,7 +276,7 @@ if (mysqli_num_rows($sqlhead)!=0) {
 
     .LVatSales{
       position: absolute;
-      top: 810px;
+      top: 760px;
       left: 325px;
       width: 1in;
       height:  10px;  
@@ -289,7 +289,7 @@ if (mysqli_num_rows($sqlhead)!=0) {
 
     .LVatExempt{
       position: absolute;
-      top: 827px;
+      top: 777px;
       left: 325px;
       width: 1in;
       height:  10px;  
@@ -302,7 +302,7 @@ if (mysqli_num_rows($sqlhead)!=0) {
 
     .LZeroRated{
       position: absolute;
-      top: 837px;
+      top: 787px;
       left: 325px;
       width: 1in;
       height:  10px;  
@@ -315,7 +315,7 @@ if (mysqli_num_rows($sqlhead)!=0) {
 
     .LVatAmt{
       position: absolute;
-      top: 856px;
+      top: 806px;
       left: 325px;
       width: 1in;
       height:  10px;  
