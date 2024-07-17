@@ -188,6 +188,19 @@
 <script src="admin/layout/scripts/layout.js" type="text/javascript"></script>
 <script src="admin/pages/scripts/login-soft.js?x=<?=time()?>" type="text/javascript"></script>
 <!-- END PAGE LEVEL SCRIPTS -->
+
+<script type="text/javascript">
+var Tawk_API=Tawk_API||{}, Tawk_LoadStart=new Date();
+(function(){
+var s1=document.createElement("script"),s0=document.getElementsByTagName("script")[0];
+s1.async=true;
+s1.src='https://embed.tawk.to/667be0259d7f358570d379ba/1i19u74uo';
+s1.charset='UTF-8';
+s1.setAttribute('crossorigin','*');
+s0.parentNode.insertBefore(s1,s0);
+})();
+</script>
+
 <script>
 jQuery(document).ready(function() {     
   	Metronic.init(); // init metronic core components
