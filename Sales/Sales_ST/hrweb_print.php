@@ -98,7 +98,7 @@ if (mysqli_num_rows($sqlhead)!=0) {
 
     .delTo{
       position: absolute;
-      top: 125px;
+      top: 120px;
       left: 140px;
       width: 400px;
       height:  15px;  
@@ -110,7 +110,7 @@ if (mysqli_num_rows($sqlhead)!=0) {
 
     .tin{
       position: absolute;
-      top: 145px;
+      top: 140px;
       left: 140px;
       width: 400px;
       height:  15px;  
@@ -122,7 +122,7 @@ if (mysqli_num_rows($sqlhead)!=0) {
 
     .address{
       position: absolute;
-      top: 160px;
+      top: 155px;
       left: 140px;
       width: 400px;
       height:  15px;  
@@ -134,7 +134,7 @@ if (mysqli_num_rows($sqlhead)!=0) {
 
     .date{
       position: absolute;
-      top: 125px;
+      top: 120px;
       left: 600px;
       width: 135px;
       height:  15px;  
@@ -146,7 +146,7 @@ if (mysqli_num_rows($sqlhead)!=0) {
 
     .terms{
       position: absolute;
-      top: 145px;
+      top: 140px;
       left: 600px;
       width: 145px;
       height:  15px;  
@@ -160,7 +160,7 @@ if (mysqli_num_rows($sqlhead)!=0) {
 
     .RowCont{
       position: absolute;
-      top: 325px !important;
+      top: 328px !important;
       display: table;
       left: 85px; /*Optional*/
       table-layout: fixed; /*Optional*/
@@ -185,7 +185,7 @@ if (mysqli_num_rows($sqlhead)!=0) {
 
     .TotSales{
       position: absolute;
-      top: 668px;
+      top: 678px;
       left: 650px;
       width: 1in;
       height:  10px;  
@@ -198,7 +198,7 @@ if (mysqli_num_rows($sqlhead)!=0) {
 
     .LessVat{
       position: absolute;
-      top: 679px;
+      top: 689px;
       left: 650px;
       width: 1in;
       height:  10px;  
@@ -211,7 +211,7 @@ if (mysqli_num_rows($sqlhead)!=0) {
 
     .AmtNetVat{
       position: absolute;
-      top: 700px;
+      top: 710px;
       left: 650px;
       width: 1in;
       height:  10px;  
@@ -224,7 +224,7 @@ if (mysqli_num_rows($sqlhead)!=0) {
 
     .LessDisc{
       position: absolute;
-      top: 720px;
+      top: 710px;
       left: 650px;
       width: 1in;
       height:  10px;  
@@ -237,7 +237,7 @@ if (mysqli_num_rows($sqlhead)!=0) {
 
     .AmtDue{
       position: absolute;
-      top: 741px;
+      top: 751px;
       left: 650px;
       width: 1in;
       height:  10px;  
@@ -250,7 +250,7 @@ if (mysqli_num_rows($sqlhead)!=0) {
 
     .AdddVat{
       position: absolute;
-      top: 751px;
+      top: 761px;
       left: 650px;
       width: 1in;
       height:  10px;  
@@ -263,7 +263,7 @@ if (mysqli_num_rows($sqlhead)!=0) {
 
     .TotAmtDue{
       position: absolute;
-      top: 772px;
+      top: 782px;
       left: 650px;
       width: 1in;
       height:  10px;  
@@ -276,7 +276,7 @@ if (mysqli_num_rows($sqlhead)!=0) {
 
     .LVatSales{
       position: absolute;
-      top: 700px;
+      top: 710px;
       left: 325px;
       width: 1in;
       height:  10px;  
@@ -289,7 +289,7 @@ if (mysqli_num_rows($sqlhead)!=0) {
 
     .LVatExempt{
       position: absolute;
-      top: 717px;
+      top: 727px;
       left: 325px;
       width: 1in;
       height:  10px;  
@@ -302,7 +302,7 @@ if (mysqli_num_rows($sqlhead)!=0) {
 
     .LZeroRated{
       position: absolute;
-      top: 727px;
+      top: 737px;
       left: 325px;
       width: 1in;
       height:  10px;  
@@ -315,7 +315,7 @@ if (mysqli_num_rows($sqlhead)!=0) {
 
     .LVatAmt{
       position: absolute;
-      top: 746px;
+      top: 756px;
       left: 325px;
       width: 1in;
       height:  10px;  
