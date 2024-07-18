@@ -16,22 +16,32 @@ class UsersLicenseController extends BaseController
     }
     public function index()
     {
+        $licensesWithCompany = $this->usersLicenseModel->getLicensesWithCompany();
+        foreach ($licensesWithCompany as $license) {
+            $license->setKey($license->cipher_key);
+        }
         $data = [
-            'usersLicense' => $this->usersLicenseModel->getLicensesWithCompany()
+            'usersLicense' => $licensesWithCompany
         ];
 
         return view($this->view . 'index', $data);
     }
 
     public function edit($id){
+        $license = $this->usersLicenseModel->getLicense($id);
+        $license->setKey($license->cipher_key);
         $data = [
-            'license' => $this->usersLicenseModel->getLicense($id)
+            'license' => $license
         ];
+    
         return view($this->view . 'edit', $data);
     }
 
     public function update($id){
-        $license = $this->usersLicenseModel->find($id);
+        $license = $this->usersLicenseModel->getLicense($id);
+
+        $license->setKey($license->cipher_key);
+        
         $license->value = $license->encryptNumber($this->request->getPost('license_number'));
         $this->usersLicenseModel->save($license);
         return redirect()->to(site_url('users-license'));

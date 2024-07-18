@@ -4,15 +4,15 @@ namespace App\Models\UsersLicense;
 
 use CodeIgniter\Model;
 
-class UsersLicenseModel extends Model
+class CompanyModel extends Model
 {
-    protected $table            = 'users_license';
-    protected $primaryKey       = 'id';
+    protected $table            = 'company';
+    protected $primaryKey       = 'compcode';
     protected $useAutoIncrement = true;
-    protected $returnType       = 'App\Entities\UsersLicense\UsersLicenseEntity';
+    protected $returnType       = 'object';
     protected $useSoftDeletes   = false;
     protected $protectFields    = true;
-    protected $allowedFields    = ["value"];
+    protected $allowedFields    = [];
 
     protected bool $allowEmptyInserts = false;
     protected bool $updateOnlyChanged = true;
@@ -43,16 +43,4 @@ class UsersLicenseModel extends Model
     protected $afterFind      = [];
     protected $beforeDelete   = [];
     protected $afterDelete    = [];
-
-    public function getLicensesWithCompany(){
-        $this->select('users_license.id, users_license.value, users_license.compcode, company.compname as company_name, company.code as cipher_key');
-        $this->join('company', 'company.compcode = users_license.compcode');
-        return $this->findAll();
-    }
-
-    public function getLicense($id){
-        $this->select('users_license.id, users_license.value, users_license.compcode, company.compname as company_name, company.code as cipher_key');
-        $this->join('company', 'company.compcode = users_license.compcode');
-        return $this->find($id);
-    }
 }
