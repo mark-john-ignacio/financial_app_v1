@@ -18,7 +18,7 @@
 		'margin_footer' => 9,
 		'orientation' => 'P',
 		'setAutoBottomMargin' => 'stretch',
-		'setAutoTopMargin' => 'stretch',
+		'setAutoTopMargin' => 'stretch'
 	]);
 
 	include('../../Connection/connection_string.php');
@@ -92,6 +92,10 @@
 
 			<td align="center"> 
 				<h1>JOB ORDER</h1>
+			</td>
+
+			<td align="left" width="250px"> 
+				&nbsp;
 			</td>
 		</tr>
 	</table>';
@@ -192,15 +196,15 @@
 
 	$html = '<table border="1" width="100%" cellpadding="3px"  id="tblMain" style="border-collapse: collapse;">
 		<tr>
-			<th> Machine </th> 
+			<th width="60px"> Machine </th> 
 			<th> Process</th>
-			<th> Date Started</th>
-			<th> Date Ended</th>
-			<th> Actual Output</th>
+			<th style="text-align: center;" width="60px"> Date Started</th>
+			<th style="text-align: center;" width="60px"> Date Ended</th>
+			<th style="text-align: center;" width="60px"> Actual Output</th>
 			<th> Operator</th>
-			<th> Reject Qty</th>
-			<th> Scrap Qty</th>
-			<th> QC</th>
+			<th style="text-align: center" width="60px"> Reject Qty</th>
+			<th style="text-align: center" width="60px"> Scrap Qty</th>
+			<th style="text-align: center" width="60px"> QC </th>
 			<th> Remarks</th>
 		</tr>';
 
@@ -222,7 +226,7 @@
 				<td>'.$bv['operator_name'].'</td>
 				<td style="text-align: center">'.((intval($bv['nrejectqty'])>0) ? number_format($bv['nrejectqty']) : "").'</td>
 				<td style="text-align: center">'.((intval($bv['nscrapqty'])>0) ? number_format($bv['nscrapqty']) : "").'</td>
-				<td>'.$bv['qc_name'].'</td>
+				<td style="text-align: center">'.$bv['qc_name'].'</td>
 				<td>'.$bv['cremarks'].'</td>				
 			</tr>';
 	
@@ -234,8 +238,8 @@
 			$html = $html . '<tr> <td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td></tr>';
 		}
 
-		if($xcnt<26){
-			for($x = $xcnt; $x<=26; $x++){
+		if($xcnt<25){
+			for($x = $xcnt; $x<=25; $x++){
 				$html = $html . '<tr> <td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td></tr>';
 			}
 		}
@@ -375,15 +379,15 @@
 
 		$html = '<table border="1" width="100%" cellpadding="3px" style="border-collapse: collapse;">
 		<tr>
-			<th> Machine </th> 
+			<th width="60px"> Machine </th> 
 			<th> Process</th>
-			<th> Date Started</th>
-			<th> Date Ended</th>
-			<th> Actual Output</th>
+			<th style="text-align: center;" width="60px"> Date Started</th>
+			<th style="text-align: center;" width="60px"> Date Ended</th>
+			<th style="text-align: center;" width="60px"> Actual Output</th>
 			<th> Operator</th>
-			<th> Reject Qty</th>
-			<th> Scrap Qty</th>
-			<th> QC</th>
+			<th style="text-align: center" width="60px"> Reject Qty</th>
+			<th style="text-align: center" width="60px"> Scrap Qty</th>
+			<th style="text-align: center" width="60px"> QC </th>
 			<th> Remarks</th>
 		</tr>';
 
@@ -420,8 +424,8 @@
 			$html = $html . '<tr> <td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td></tr>';
 		}
 		
-		if($xcnt<26){
-			for($x = $xcnt; $x<=26; $x++){
+		if($xcnt<25){
+			for($x = $xcnt; $x<=25; $x++){
 				$html = $html . '<tr> <td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td></tr>';
 			}
 		}
