@@ -384,12 +384,13 @@
         LEFT JOIN taxcode b on a.compcode=b.compcode AND a.ctaxcode=b.ctaxcode
         LEFT JOIN sales c on a.compcode=c.compcode AND a.csalesno=c.ctranno
         WHERE a.compcode = '$company' AND a.csalesno = '$transaction'";*/
-        $sql = "SELECT ((a.napplied+a.ncm)-a.ndm) as namount, c.ngross, c.nnet, c.nexempt, c.nzerorated, c.nvat, c.ngrossbefore, a.ncm, a.ndm
+        $sql = "SELECT sum((a.napplied+a.ncm)-a.ndm) as namount, c.ngross, c.nnet, c.nexempt, c.nzerorated, c.nvat, c.ngrossbefore, sum(a.ncm) as ncm, sum(a.ndm) as ndm
         FROM receipt_sales_t a
         LEFT JOIN taxcode b on a.compcode=b.compcode AND a.ctaxcode=b.ctaxcode
         LEFT JOIN sales c on a.compcode=c.compcode AND a.csalesno=c.ctranno
         LEFT JOIN receipt d on a.compcode=d.compcode AND a.ctranno=d.ctranno
-        WHERE a.compcode = '$company' AND a.csalesno = '$transaction' AND d.lapproved=1 and d.lvoid=0";
+        WHERE a.compcode = '$company' AND a.csalesno = '$transaction' AND d.lapproved=1 and d.lvoid=0
+        Group By c.ngross, c.nnet, c.nexempt, c.nzerorated, c.nvat, c.ngrossbefore";
 
         $query = mysqli_query($con, $sql);
         while($row = $query -> fetch_assoc()){
