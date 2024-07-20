@@ -17,10 +17,25 @@ class SalesOrderModel extends Model
         "ctranno",
         "ccode",
         "ddate",
-        "ngross",
         "dcutdate",
         "dpodate",
+        "csalestype",
         "cpono",
+        "ngross",
+        "nbasegross",
+        "ccurrencycode",
+        "ccurrencydesc",
+        "nexchangerate",
+        "cremarks",
+        "cpreparedby",
+        "csalesman",
+        "cdelcode",
+        "cdeladdno",
+        "cdeladdcity",
+        "cdeladdstate",
+        "cdeladdcountry",
+        "cdeladdzip",
+        
     ];
 
     protected bool $allowEmptyInserts = false;
