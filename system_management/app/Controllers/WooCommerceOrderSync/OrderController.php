@@ -37,16 +37,34 @@ class OrderController extends BaseController
         // }
         
         // Insert the order data into the database
+        $customerCode = $this->getCustomerCode($jsonData);
         $data = [
             'compcode' => $this->company_code,
             'ctranno' => $this->salesOrderModel->generateSONumber($this->company_code),
-            'ccode' => $this->getCustomerCode($jsonData),
+            'ccode' => $customerCode,
             'ddate' => $jsonData['date_created'],
             'dcutdate' => $jsonData['date_created'],
             'dpodate' => $jsonData['date_created'],
             'csalestype' => 'Goods',
             'cpono' => $jsonData['id'],
             'ngross' => $jsonData['total'],
+            'nbasegross' => $jsonData['total'],
+            'ccurrencycode' => $jsonData['currency'],
+            'ccurrencydesc' => $jsonData['currency'],
+            'nexchangerate' => 1,
+            'cremarks' => $jsonData['customer_note'],
+            'cpreparedby' => 'WooCommerce',
+            'csalesman' => 'WooCommerce',
+            'cdelcode' => $customerCode,
+            'cdeladdno' => $jsonData['shipping']['address_1'],
+            'cdeladdcity' => $jsonData['shipping']['city'],
+            'cdeladdstate' => $jsonData['shipping']['state'],
+            'cdeladdcountry' => $jsonData['shipping']['country'],
+            'cdeladdzip' => $jsonData['shipping']['postcode'],
+            
+
+
+
 
 
         ];
