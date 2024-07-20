@@ -39,7 +39,7 @@ class OrderController extends BaseController
         // Insert the order data into the database
         $data = [
             'compcode' => $this->company_code,
-            'ctranno' => $this->generateSONumber(),
+            'ctranno' => $this->salesOrderModel->generateSONumber($this->company_code),
             'ccode' => $this->getCustomerCode($jsonData['billing']['first_name'] . ' ' . $jsonData['billing']['last_name']),
             'ddate' => $jsonData['date_created'],
             'ngross' => $jsonData['total'],
@@ -52,28 +52,6 @@ class OrderController extends BaseController
             return $this->response->setJSON(['message' => 'Order received']);
         }else{ 
             return $this->response->setJSON(['message' => 'Order failed']);
-        }
-    }
-
-    private function generateSONumber() {
-        $current_month = date('m');
-        $current_day = date('d');
-        $current_year = date('y');
-        $batch_number = "SO" . $current_month . $current_day . $current_year;
-        $batchNumbersCount = $this->salesOrderModel->where('compcode', $this->company_code)->like('ctranno', $batch_number, 'after')->countAllResults();
-    
-        if ($batchNumbersCount == 0){
-            return $batch_number . "_1";
-        } else {
-            $batchNumbers = $this->salesOrderModel->where('compcode', $this->company_code)->like('ctranno', $batch_number, 'after')->findAll();
-            $highestCounter = 0;
-            foreach ($batchNumbers as $batchNumber) {
-                $counter = (int)explode('_', $batchNumber->ctranno)[1];
-                if ($counter > $highestCounter) {
-                    $highestCounter = $counter;
-                }
-            }
-            return $batch_number . "_" . ($highestCounter + 1);
         }
     }
 
