@@ -40,12 +40,15 @@ class OrderController extends BaseController
         $data = [
             'compcode' => $this->company_code,
             'ctranno' => $this->salesOrderModel->generateSONumber($this->company_code),
-            'ccode' => $this->getCustomerCode($jsonData['billing']['first_name'] . ' ' . $jsonData['billing']['last_name']),
+            'ccode' => $this->getCustomerCode($jsonData),
             'ddate' => $jsonData['date_created'],
-            'ngross' => $jsonData['total'],
             'dcutdate' => $jsonData['date_created'],
             'dpodate' => $jsonData['date_created'],
+            'csalestype' => 'Goods',
             'cpono' => $jsonData['id'],
+            'ngross' => $jsonData['total'],
+
+
         ];
 
         if($this->salesOrderModel->insert($data)){
@@ -55,8 +58,8 @@ class OrderController extends BaseController
         }
     }
 
-    private function getCustomerCode($customer_name){
-        $customerName = strtoupper($customer_name);
+    private function getCustomerCode($jsonData){
+        $customerName = strtoupper($jsonData['billing']['first_name'] . ' ' . $jsonData['billing']['last_name']);
         $customer = $this->customersModel->where('compcode', $this->company_code)->where('cname', $customerName)->first();
         if ($customer){
             return $customer->cempid;
@@ -65,6 +68,12 @@ class OrderController extends BaseController
                 'compcode' => $this->company_code,
                 'cempid' => $this->generateCustomerCode(),
                 'cname' => $customerName,
+                'ctradename' => $jsonData['billing']['company'],
+                'chouseno' => $jsonData['billing']['address_1'],
+                'ccity' => $jsonData['billing']['city'],
+                'cstate' => $jsonData['billing']['state'],
+                'ccountry' => $jsonData['billing']['country'],
+                'czip' => $jsonData['billing']['postcode'],
             ];
             $this->customersModel->insert($data);
             return $data['cempid'];

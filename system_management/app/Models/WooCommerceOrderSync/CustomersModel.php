@@ -15,7 +15,14 @@ class CustomersModel extends Model
     protected $allowedFields    = [
         "compcode",
         "cempid",
-        "cname"
+        "cname",
+        "ctradename",
+        "chouseno",
+        "ccity",
+        "cstate",
+        "ccountry",
+        "czip",
+
     ];
 
     protected bool $allowEmptyInserts = false;
