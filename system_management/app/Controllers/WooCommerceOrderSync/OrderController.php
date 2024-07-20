@@ -56,12 +56,12 @@ class OrderController extends BaseController
             'cpreparedby' => 'WooCommerce',
             'csalesman' => 'WooCommerce',
             'cdelcode' => $customerCode,
-            'cdeladdno' => $jsonData['shipping']['address_1'],
+            'cdeladdno' => $jsonData['shipping']['address_1'] . ' ' . $jsonData['shipping']['address_2'],
             'cdeladdcity' => $jsonData['shipping']['city'],
             'cdeladdstate' => $jsonData['shipping']['state'],
             'cdeladdcountry' => $jsonData['shipping']['country'],
             'cdeladdzip' => $jsonData['shipping']['postcode'],
-            
+
 
 
 
@@ -86,7 +86,7 @@ class OrderController extends BaseController
                 'compcode' => $this->company_code,
                 'cempid' => $this->generateCustomerCode(),
                 'cname' => $customerName,
-                'ctradename' => $jsonData['billing']['company'],
+                'ctradename' => strtoupper($jsonData['billing']['company']),
                 'chouseno' => $jsonData['billing']['address_1'],
                 'ccity' => $jsonData['billing']['city'],
                 'cstate' => $jsonData['billing']['state'],
