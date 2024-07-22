@@ -101,7 +101,7 @@ $company = $_SESSION['companyid'];
 						<th class="text-center">Supplier</th>
 						<th class="text-center">Gross</th>
 						<th class="text-center">PO Date</th>
-            <th class="text-center">Status</th>
+            			<th class="text-center">Status</th>
 						<th class="text-center">Actions</th>
 					</tr>
 				</thead>
@@ -110,55 +110,58 @@ $company = $_SESSION['companyid'];
 		</section>
 	</div>		
     
-<form name="frmedit" id="frmedit" method="post" action="Purch_edit.php">
-	<input type="hidden" name="txtctranno" id="txtctranno" />
-	<input type="hidden" name="hdnsrchval" id="hdnsrchval" />
-	<input type="hidden" name="hdnsrchsta" id="hdnsrchsta" />
-</form>		
+	<form name="frmedit" id="frmedit" method="post" action="Purch_edit.php">
+		<input type="hidden" name="txtctranno" id="txtctranno" />
+		<input type="hidden" name="hdnsrchval" id="hdnsrchval" />
+		<input type="hidden" name="hdnsrchsta" id="hdnsrchsta" />
+		<input type="hidden" name="hdnsrchtyp" id="hdnsrchtyp" />
+		<input type="hidden" name="hdnsrchdte" id="hdnsrchdte" />
+		<input type="hidden" name="hdnsrchdtef" id="hdnsrchdtef" />
+		<input type="hidden" name="hdnsrchdtet" id="hdnsrchdtet" />
+	</form>		
 
-
-<!-- 1) Alert Modal -->
-<div class="modal fade" id="AlertModal" tabindex="-1" role="dialog" data-keyboard="false" data-backdrop="static" aria-hidden="true">
-    <div class="vertical-alignment-helper">
-        <div class="modal-dialog vertical-align-top">
-            <div class="modal-content">
-               <div class="alert-modal-danger">
-                  <p id="AlertMsg"></p>
-                <p>
-                    <center>
-                        <button type="button" class="btn btn-primary btn-sm" id="OK" onclick="trans_send('OK')">Ok</button>
-                        <button type="button" class="btn btn-danger btn-sm" id="Cancel" onclick="trans_send('Cancel')">Cancel</button>
-                        
-                        
-                        <button type="button" class="btn btn-primary btn-sm" data-dismiss="modal" id="alertbtnOK">Ok</button>
-                        
-                        <input type="hidden" id="typ" name="typ" value = "">
-                        <input type="hidden" id="modzx" name="modzx" value = "">
-                    </center>
-                </p>
-               </div> 
-            </div>
-        </div>
-    </div>
-</div>
-
-<!-- 1) TRACKER Modal -->
-<div class="modal fade" id="TrackMod" tabindex="-1" role="dialog" data-keyboard="false" data-backdrop="static" aria-hidden="true">
-	<div class="modal-dialog modal-lg">
-    <div class="modal-content">
-
-      <div class="modal-header">
-        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-        <h3 class="modal-title" id="InvListHdr">PO Approval Status</h3>
-      </div>
-            
-      <div class="modal-body pre-scrollable" id="divtracker" style="height: 45vh">
-				
+	<!-- 1) Alert Modal -->
+	<div class="modal fade" id="AlertModal" tabindex="-1" role="dialog" data-keyboard="false" data-backdrop="static" aria-hidden="true">
+		<div class="vertical-alignment-helper">
+			<div class="modal-dialog vertical-align-top">
+				<div class="modal-content">
+				<div class="alert-modal-danger">
+					<p id="AlertMsg"></p>
+					<p>
+						<center>
+							<button type="button" class="btn btn-primary btn-sm" id="OK" onclick="trans_send('OK')">Ok</button>
+							<button type="button" class="btn btn-danger btn-sm" id="Cancel" onclick="trans_send('Cancel')">Cancel</button>
+							
+							
+							<button type="button" class="btn btn-primary btn-sm" data-dismiss="modal" id="alertbtnOK">Ok</button>
+							
+							<input type="hidden" id="typ" name="typ" value = "">
+							<input type="hidden" id="modzx" name="modzx" value = "">
+						</center>
+					</p>
+				</div> 
+				</div>
 			</div>
-
 		</div>
 	</div>
-</div>
+
+	<!-- 1) TRACKER Modal -->
+	<div class="modal fade" id="TrackMod" tabindex="-1" role="dialog" data-keyboard="false" data-backdrop="static" aria-hidden="true">
+		<div class="modal-dialog modal-lg">
+			<div class="modal-content">
+
+				<div class="modal-header">
+					<button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+					<h3 class="modal-title" id="InvListHdr">PO Approval Status</h3>
+				</div>
+				
+				<div class="modal-body pre-scrollable" id="divtracker" style="height: 45vh">
+					
+				</div>
+
+			</div>
+		</div>
+	</div>
 
   	<link rel="stylesheet" type="text/css" href="../../Bootstrap/DataTable/DataTable.css"> 
 	<script type="text/javascript" language="javascript" src="../../Bootstrap/DataTable/jquery.dataTables.min.js"></script>
@@ -325,6 +328,38 @@ $company = $_SESSION['companyid'];
 					}
 				});
 		
+			}else if(idz=="OK" && x=="CLOSE"){
+
+				bootbox.prompt({
+					title: 'Enter reason for closing.',
+					inputType: 'text',
+					centerVertical: true,
+					callback: function (result) {
+						if(result!="" && result!=null){
+							$.ajax ({
+								url: "Purch_Tran.php",
+								data: { x: num, typ: x, canmsg: result },
+								dataType: "json",
+								beforeSend: function() {
+									$("#AlertMsg").html("&nbsp;&nbsp;<b>Processing " + num + ": </b> Please wait a moment...");
+									$("#alertbtnOK").css("display", "none");
+									$("#OK").css("display", "none");
+									$("#Cancel").css("display", "none");
+								},
+								success: function( data ) {
+									console.log(data);
+									setmsg(data,num);
+								}
+							});
+						}else{
+							$("#AlertMsg").html("Reason for closing is required!");
+							$("#alertbtnOK").css("display", "inline");
+							$("#OK").css("display", "none");
+							$("#Cancel").css("display", "none");
+						}						
+					}
+				});
+
 			}else if(idz=="Cancel"){
 			
 				$("#AlertMsg").html("");
@@ -387,7 +422,7 @@ $company = $_SESSION['companyid'];
 								sts="class='text-danger'";
 							}
 
-									return "<a "+sts+" href=\"javascript:;\" onClick=\"editfrm('"+full[0]+"');\">"+full[0]+"</a>";
+							return "<a "+sts+" href=\"javascript:;\" onClick=\"editfrm('"+full[0]+"');\">"+full[0]+"</a>";
 								
 						}
 							
@@ -416,7 +451,12 @@ $company = $_SESSION['companyid'];
 											if(full[8] == 1){
 												return '<a href="#" class="canceltool" data-id="'+full[0]+'" data-stat="VOID" style="color: red !important"><b>Voided</b></a>';
 											}else{
-												return 'Posted';
+												if(full[10] == 1){
+													return 'Posted <a href="#" class="canceltool" data-id="'+full[0]+'" data-stat="CLOSED" style="color: red !important"><b>(Closed)</b></a>';
+												}else{
+													return 'Posted';
+												}
+												
 											}			
 																					
 										}else if (full[5] == 1) { //12 sent 13 void 4 apprve 5 cancel
@@ -468,11 +508,12 @@ $company = $_SESSION['companyid'];
 									}
 
 									if(full[7] == 1) {
-										return "<div id=\"msg"+full[0]+"\"> "+ $msgx +" <button type=\"button\" onClick=\"track('"+full[0]+"')\" class=\"btn btn-xs btn-default\"> <i class=\"fa fa-file-text-o\" style=\"font-size:20px;color: #3374ff;\" title=\"Track transaction\"></i></button> </div>"
+										return "<div id=\"msg"+full[0]+"\"> "+ $msgx + " <button type=\"button\" onClick=\"track('"+full[0]+"')\" class=\"btn btn-xs btn-default\"> <i class=\"fa fa-file-text-o\" style=\"font-size:20px;color: #3374ff;\" title=\"Track transaction\"></i></button></div>"
 									}else{
 										if($msgx==""){
 											$msgx = "-";
 										}
+
 										return "<div id=\"msg"+full[0]+"\"> "+ $msgx +" </div>";
 									}
 

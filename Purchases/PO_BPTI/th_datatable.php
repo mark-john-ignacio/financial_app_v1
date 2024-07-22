@@ -81,6 +81,7 @@
 		$sub_array[] = $row['lsent'];
 		$sub_array[] = $row['lvoid'];
 		$sub_array[] = number_format($row['ngross'],2);
+		$sub_array[] = $row['lclosed'];
 		$data[] = $sub_array;
 	}
 
