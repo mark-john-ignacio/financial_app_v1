@@ -15,8 +15,14 @@ class ItemsModel extends Model
     protected $allowedFields    = [
         "compcode",
         "cpartno",
+        "cskucode",
         "citemdesc",
         "cunit",
+        "cclass",
+        "ctype",
+        "csalestype",
+        "ctradetype",
+        "ctaxcode",
 
     ];
 
