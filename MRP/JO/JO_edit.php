@@ -308,7 +308,7 @@
 							</div>
 
 							<div class="col-xs-12  nopadwtop">
-								<div class="col-xs-6 nopadwleft"><input type="text" id="citemdesc" name="citemdesc" class="form-control input-sm required" required placeholder="Item Description..." readonly value="<?=$arrmrpjo[0]['citemdesc']?>"> <input type="hidden" id="citemno" name="citemno" value="<?=$arrmrpjo[0]['citemno']?>"> <input type="hidden" id="nrefident" name="nrefident" value="<?=$arrmrpjo[0]['nrefident']?>"></div>
+								<div class="col-xs-6 nopadwleft"><input type="text" id="citemdesc" name="citemdesc" class="form-control input-sm required" required placeholder="Item Description..." value="<?=$arrmrpjo[0]['citemdesc']?>"> <input type="hidden" id="citemno" name="citemno" value="<?=$arrmrpjo[0]['citemno']?>"> <input type="hidden" id="nrefident" name="nrefident" value="<?=$arrmrpjo[0]['nrefident']?>"></div>
 								<div class="col-xs-1 nopadwleft"><input type="text" id="txtcunit" name="txtcunit" class="form-control input-sm required" required placeholder="UOM..." readonly  value="<?=$arrmrpjo[0]['cunit']?>"></div>
 								<div class="col-xs-1 nopadwleft"><input type="text" id="txtjoqty" name="txtjoqty" class="form-control input-sm required text-right numeric" required placeholder="0.00"  value="<?=$arrmrpjo[0]['nqty']?>"></div>
 								<div class="col-xs-1 nopadwleft"><input type="text" id="txtworkinghrs" name="txtworkinghrs" class="form-control input-sm required text-right numeric" required placeholder="0.00"  value="<?=$arrmrpjo[0]['nworkhrs']?>"></div>
