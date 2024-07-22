@@ -9,7 +9,7 @@ class SalesOrderModel extends Model
     protected $table            = 'so';
     protected $primaryKey       = 'id';
     protected $useAutoIncrement = true;
-    protected $returnType       = 'object';
+    protected $returnType       = 'App\Entities\WooCommerceOrderSync\SalesOrderEntity';
     protected $useSoftDeletes   = false;
     protected $protectFields    = true;
     protected $allowedFields    = [

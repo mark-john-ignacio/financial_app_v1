@@ -6,6 +6,8 @@ use App\Controllers\BaseController;
 use CodeIgniter\HTTP\ResponseInterface;
 use App\Models\WooCommerceOrderSync\SalesOrderModel;
 use App\Models\WooCommerceOrderSync\CustomersModel;
+use App\Models\WooCommerceOrderSync\SalesOrderItemsModel;
+use App\Models\WooCommerceOrderSync\ItemsModel;
 use CodeIgniter\RESTful\ResourceController;
 
 class OrderController extends BaseController
@@ -16,6 +18,8 @@ class OrderController extends BaseController
     {
         $this->salesOrderModel = new SalesOrderModel();
         $this->customersModel = new CustomersModel();
+        $this->salesOrderItemsModel = new SalesOrderItemsModel();
+        $this->itemsModel = new ItemsModel();
         $this->company_code = "001";
     }
     public function receiveOrder(){
@@ -61,18 +65,15 @@ class OrderController extends BaseController
             'cdeladdstate' => $jsonData['shipping']['state'],
             'cdeladdcountry' => $jsonData['shipping']['country'],
             'cdeladdzip' => $jsonData['shipping']['postcode'],
-
-
-
-
-
-
         ];
 
-        if($this->salesOrderModel->insert($data)){
+        $result = $this->salesOrderModel->insert($data);
+
+        if($result){
             return $this->response->setJSON(['message' => 'Order received']);
-        }else{ 
-            return $this->response->setJSON(['message' => 'Order failed']);
+        }else{
+            $error = $result;
+            return $this->response->setJSON(['message' => $error]);
         }
     }
 
@@ -102,7 +103,7 @@ class OrderController extends BaseController
         // Fetch the highest customer code from the database
         $highestCode = $this->customersModel
                             ->where('compcode', $this->company_code)
-                            ->where('cempid LIKE', 'CUST%')
+                            ->where('cempid LIKE', 'CUSTWC_%')
                             ->orderBy('cempid', 'desc')
                             ->first();
     
@@ -117,11 +118,14 @@ class OrderController extends BaseController
         // Increment the number to get the next unique number
         $newNumber = $numberPart + 1;
     
+        // Determine the padding length dynamically based on the highest number part
+        $paddingLength = max(3, strlen((string)$numberPart));
+    
         // Format the new number to maintain leading zeros
-        $formattedNumber = str_pad($newNumber, 3, '0', STR_PAD_LEFT);
+        $formattedNumber = str_pad($newNumber, $paddingLength, '0', STR_PAD_LEFT);
     
         // Generate the new customer code
-        $newCustomerCode = "CUST" . $formattedNumber;
+        $newCustomerCode = "CUSTWC_" . $formattedNumber;
     
         return $newCustomerCode;
     }
