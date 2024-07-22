@@ -48,7 +48,7 @@ function chkgrp($valz) {
 		$nFactor = $_REQUEST['nfactor'];
 
 		if(isset($_REQUEST['acctid'])){
-			$cacctcode = $_REQUEST['acctid']; 
+			$cacctcode = "'".$_REQUEST['acctid']."'"; 
 		}else{
 			$cacctcode = "''";
 		}

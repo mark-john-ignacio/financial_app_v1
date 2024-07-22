@@ -1,10 +1,28 @@
 <?php
-if(!isset($_SESSION)){
-session_start();
-}
+	if(!isset($_SESSION)){
+		session_start();
+	}
+	
+	include('../../vendor/autoload.php');
 
-include('../../Connection/connection_string.php');
-include('../../include/denied.php');
+	$mpdf = new \Mpdf\Mpdf([
+		'mode' => '',
+		'format' => 'Letter',
+		'default_font_size' => 9,
+		'default_font' => 'Arial, sans-serif',
+		'margin_left' => 10,
+		'margin_right' => 10,
+		'margin_top' => 11,
+		'margin_bottom' => 11,
+		'margin_header' => 9,
+		'margin_footer' => 9,
+		'orientation' => 'P',
+		'setAutoBottomMargin' => 'stretch',
+		'setAutoTopMargin' => 'stretch'
+	]);
+
+	include('../../Connection/connection_string.php');
+	include('../../include/denied.php');
 
 	$company = $_SESSION['companyid'];
 	$tranno = $_POST['hdntransid'];
@@ -24,10 +42,24 @@ include('../../include/denied.php');
 	}
 	
 	$arrmrpjo = array();
+	$Joddate = "";
+	$JoRefNo = "";
+	$JoCname = "";
+	$Josecdesc = "";
+	$Jopriority = "";
+	$Jotarget = "";
 	$sql = "select X.*, A.citemdesc, C.cname, D.cdesc as secdesc from mrp_jo X left join items A on X.compcode=A.compcode and X.citemno=A.cpartno left join customers C on X.compcode=C.compcode and X.ccode=C.cempid left join locations D on X.compcode=D.compcode and X.location_id=D.nid where X.compcode='$company' and X.ctranno = '$tranno'";
 	$resultmain = mysqli_query ($con, $sql); 
 	while($row2 = mysqli_fetch_array($resultmain, MYSQLI_ASSOC)){
-		$arrmrpjo[] = $row2;				
+		$arrmrpjo[] = $row2;	
+		
+		$Joddate = $row2['ddate'];
+		$JoRefNo = $row2['crefSO'];
+		$JoCname = $row2['cname'];
+
+		$Josecdesc = $row2['secdesc'];
+		$Jopriority = $row2['cpriority'];
+		$Jotarget = $row2['dtargetdate'];
 	}
 
 	$arrmrpjoproc = array();
@@ -51,92 +83,228 @@ include('../../include/denied.php');
 		$arrmrpjo_ptmain[] = $row2;				
 	}
 
-?>
 
-<!DOCTYPE html>
-<html>
-<head>
-	<style>
-		body{
-			font-family: Verdana, sans-serif;
-			font-size: 9pt;
-		}
-		.tdpadx{
-			padding-top: 5px; 
-			padding-bottom: 5px
-		}
-		.tddetz{
-			border-left: 1px solid; 
-			border-right: 1px solid;
-		}
-		.tdright{
-			padding-right: 10px;
-		}
-		#imgcontent {
-        	position: relative;
-		}
-		#imgcontent img {
-			position: absolute;
-			top: 2px;
-			left: 3px;
-		}
-	</style>
-</head>
+	$sethdr = '<table border="0" width="100%"  id="tblMain">
+		<tr>
+			<td align="left" width="250px"> 
+				<img src="../'.$logosrc.'" width="150px">
+			</td>
 
-<body onLoad="window.print()"> <!-- onLoad="window.print()" -->
+			<td align="center"> 
+				<h1>JOB ORDER</h1>
+			</td>
 
-<table border="0" width="100%"  id="tblMain">
-	<tr>
-		<td align="left" width="250px"> 
-			<img src="<?php echo "../".$logosrc; ?>" width="150px">
-		</td>
-		<!--<td align="left"> 
+			<td align="left" width="250px"> 
+				&nbsp;
+			</td>
+		</tr>
+	</table>';
 
-				<table border="0" width="100%">
-						<tr>
-							<td><font style="font-size: 18px;"><?//php echo $logonamz; ?></font></td>
-						</tr>
-						<tr>
-							<td><font><?//php echo $logoaddrs; ?></font></td>
-						</tr>
-				</table>
+	$sethdr = $sethdr . '<table border="0" width="100%" cellpadding="1px"  id="tblMain">		
+		<tr>
+			<td width="100px"><b>Date Release: </b></td>
+			<td>'.date_format(date_create($Joddate), "M d, Y").'</td>
+			<td width="100px"><b>SO No.: </b></td>
+			<td>'.$JoRefNo.'</td>
+		</tr>
 
-		</td>-->
-		<td align="center"> 
-			<h1>JOB ORDER</h1>
-		</td>
-	</tr>
+		<tr>
+			<td width="100px"><b>Customer: </b></td>
+			<td>'.$JoCname.' </td>
+			<td width="100px"><b>JO No.: </b></td>
+			<td>'.$tranno.' </td>
+		</tr>
+		</table>
+		<table border="0" width="100%" cellpadding="1px">
+			<tr>
+				<td width="33%"> <b>Department: </b> '.$Josecdesc.'</td> 
+				<td width="34%"> <b>Priority: </b> '.$Jopriority.'</td>
+				<td width="33%"> <b>Target Date (Finished): </b> '.date_format(date_create($Jotarget),"M d, Y").'</td>
+			</tr>
+		</table>
+		<table border="0" width="100%">
+			<tr>
+				<th> Item </th> 
+				<th> JO Qty</th>
+				<th> Working Hrs</th>
+				<th> Setup Time</th>
+				<th> Cycle Time</th>
+				<th> Total Time</th>
+			</tr>
+
+			<tr>
+				<td align="center"> '.$arrmrpjo[0]['citemdesc'].' </td>
+				<td align="center"> '.number_format($arrmrpjo[0]['nqty']).' </td>
+				<td align="center"> '.number_format($arrmrpjo[0]['nworkhrs'],2).' </td>
+				<td align="center"> '.number_format($arrmrpjo[0]['nsetuptime'],2).' </td>
+				<td align="center"> '.number_format($arrmrpjo[0]['ncycletime'],2).' </td>
+				<td align="center"> '.number_format($arrmrpjo[0]['ntottime'],2).' </td>
+			</tr>
+		</table>
+		<hr>
+		<table border="0" width="100%">
+			<tr>
+				<th width="45%"> Customer PO / Ref Work Week: </th> 
+				<td width="15%"> '.$arrmrpjo[0]['cnarration'].'</td>
+				<th width="25%"> Product Type</th>
+				<td width="25%"> '.$arrmrpjo[0]['cproductype'].'</td>
+			</tr>
+		</table>
+		<table border="1" width="100%" cellpadding="1px" style="border-collapse: collapse;">
+			<tr>
+				<td width="33%" valign="top" height="50px"> <b> Prepared by: </b></td> 
+				<td width="34%" valign="top" height="50px"> <b> Checked by: </b></td> 
+				<td width="33%" valign="top" height="50px"> <b> Approved by: </b></td> 
+			</tr>
+	</table>';
+
+	$setfooter = '<table border="0" width="100%" style="border-collapse: collapse;">
+		<tr>
+			<th rowspan="4" valign="top" align="left" width="40%" style="border-top: 1px solid #000; border-left: 1px solid #000; border-bottom: 1px solid #000; border-right: 1px solid #000"> REMARKS </th>
+		</tr>
+		<tr>
+			<th colspan="4" style="border-top: 1px solid #000; border-right: 1px solid #000"> RECEIVED BY </th> 
+		</tr>
+		<tr>
+			<th width="20%" style="text-align: left"> Production: </th>
+			<td>&nbsp;</td> 
+			<th width="20%" style="text-align: left;"> Warehouse: </th>
+			<td style="border-right: 1px solid #000">&nbsp;</td> 
+		</tr>
+		<tr>
+			<th width="20%" style="text-align: left; border-bottom: 1px solid #000"> Date: </th>
+			<td style="border-bottom: 1px solid #000">&nbsp;</td> 
+			<th width="20%" style="text-align: left; border-bottom: 1px solid #000"> Date: </th>
+			<td style="border-right: 1px solid #000; border-bottom: 1px solid #000">&nbsp;</td> 
+		</tr>
+	</table>
+	<table border="0" width="100%">
+		<tr>
+			<td>'.date("H:i:s").'</td>
+			<td>'.date("d-m-Y").'</td>
+			<td>Note: In Case of Error Report to the Concern Dpet. within 24hrs ERASURE IS NOT ALLOWED</td>
+			<td>BMRC-PL-014-B</td>
+		</tr>
+	</table>';
+
+	$mpdf->SetHTMLHeader($sethdr);
+	$mpdf->SetHTMLFooter($setfooter);
+
+	if(count($arrmrpjo_pt)>0){
+		//$mpdf->AddPage();
+	}
+
+	$html = '<table border="1" width="100%" cellpadding="3px"  id="tblMain" style="border-collapse: collapse;">
+		<tr>
+			<th width="60px"> Machine </th> 
+			<th> Process</th>
+			<th style="text-align: center;" width="60px"> Date Started</th>
+			<th style="text-align: center;" width="60px"> Date Ended</th>
+			<th style="text-align: center;" width="60px"> Actual Output</th>
+			<th> Operator</th>
+			<th style="text-align: center" width="60px"> Reject Qty</th>
+			<th style="text-align: center" width="60px"> Scrap Qty</th>
+			<th style="text-align: center" width="60px"> QC </th>
+			<th> Remarks</th>
+		</tr>';
+
+
+		$totrej = 0;
+		$totscrp = 0;
+		$xcnt = 0;
+		foreach($arrmrpjo_ptmain as $bv){
+			$xcnt++;
+
+			$xmpdesc = (strlen($bv['mrp_process_desc'])>30) ? (substr($bv['mrp_process_desc'],0,30).'...') : $bv['mrp_process_desc'];
+
+			$html = $html . '<tr> 
+				<td>'.$bv['cmachinedesc'].'</td> 
+				<td style="padding-left:5px; white-space: nowrap;">'.$xmpdesc.'</td>
+				<td>'.$bv['ddatestart'].'</td>
+				<td>'.$bv['ddateend'].'</td>
+				<td style="text-align: center">'.((intval($bv['nactualoutput'])>0) ? number_format($bv['nactualoutput']) : "").'</td>
+				<td>'.$bv['operator_name'].'</td>
+				<td style="text-align: center">'.((intval($bv['nrejectqty'])>0) ? number_format($bv['nrejectqty']) : "").'</td>
+				<td style="text-align: center">'.((intval($bv['nscrapqty'])>0) ? number_format($bv['nscrapqty']) : "").'</td>
+				<td style="text-align: center">'.$bv['qc_name'].'</td>
+				<td>'.$bv['cremarks'].'</td>				
+			</tr>';
 	
-</table>
+			$totrej = $totrej + floatval($bv['nrejectqty']);
+			$totscrp = $totscrp + floatval($bv['nscrapqty']);
+		}
 
-<!-- MAIN JO PRINT -->
-<table border="0" width="100%" cellpadding="1px"  id="tblMain">
-	<tr>
-		<td width="100px"><b>Date Release: </b></td>
-		<td> <?=date_format(date_create($arrmrpjo[0]['ddate']), "M d, Y")?> </td>
-		<td width="100px"><b>SO No.: </b></td>
-		<td> <?=$arrmrpjo[0]['crefSO']?> </td>
-	</tr>
+		if($xcnt==0){
+			$html = $html . '<tr> <td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td></tr>';
+		}
 
-	<tr>
-		<td width="100px"><b>Customer: </b></td>
-		<td> <?=$arrmrpjo[0]['cname']?> </td>
-		<td width="100px"><b>JO No.: </b></td>
-		<td> <?=$tranno?> </td>
-	</tr>
+		if($xcnt<25){
+			for($x = $xcnt; $x<=25; $x++){
+				$html = $html . '<tr> <td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td></tr>';
+			}
+		}
 
-	<tr>
-		<td colspan="4"> 
-			<table border="0" width="100%">
-				<td> <b>Department: </b> <?=($arrmrpjo[0]['secdesc'])?></td> 
-				<td> <b>Priority: </b> <?=($arrmrpjo[0]['cpriority'])?></td>
-				<td> <b>Target Date (Finished): </b> <?=date_format(date_create($arrmrpjo[0]['dtargetdate']),"M d, Y")?></td>
+		$html = $html . '<tr> 
+			<td>&nbsp;</td>
+			<td>&nbsp;</td>
+			<td>&nbsp;</td>
+			<td>&nbsp;</td>
+			<td>&nbsp;</td>
+			<td align="right"><b> Total: </b></td>
+			<td style="text-align: center">'.((intval($totrej)>0) ? number_format($totrej) : "").'</td>
+			<td style="text-align: center">'.((intval($totscrp)>0) ? number_format($totscrp) : "").'</td>
+			<td>&nbsp;</td>
+			<td>&nbsp;</td>				
+		</tr>
+	</table>';
+
+	
+	$mpdf->WriteHTML($html);
+
+	//echo $sethdr.$html.$setfooter;
+
+	/* FOR SUB JOs */
+	$sethdr = "";
+	$html = "";
+	$setfooter = "";
+	$xxccnt = 0;
+	foreach($arrmrpjoproc as $rsc){
+		$xxccnt++;
+
+		$sethdr = '<table border="0" width="100%">
+			<tr>
+				<td align="left" width="250px"> 
+					<img src="../'.$logosrc.'" width="150px">
+				</td>
+
+				<td align="center"> 
+					<h1>JOB ORDER</h1>
+				</td>
+			</tr>
+		</table>';
+
+		$sethdr = $sethdr . '<table border="0" width="100%" cellpadding="1px">		
+			<tr>
+				<td width="100px"><b>Date Release: </b></td>
+				<td>'.date_format(date_create($Joddate), "M d, Y").'</td>
+				<td width="100px"><b>SO No.: </b></td>
+				<td>'.$tranno.'</td>
+			</tr>
+
+			<tr>
+				<td width="100px"><b>Customer: </b></td>
+				<td>'.$JoCname.' </td>
+				<td width="100px"><b>JO No.: </b></td>
+				<td>'.$rsc['ctranno'].' </td>
+			</tr>
 			</table>
-		</td>
-	</tr>
-
-	<tr>
-		<td colspan="4" style="padding-top: 10px"> 
+			<table border="0" width="100%" cellpadding="1px">
+				<tr>
+					<td width="33%"> <b>Department: </b> '.$Josecdesc.'</td> 
+					<td width="34%"> <b>Priority: </b> '.$Jopriority.'</td>
+					<td width="33%"> <b>Target Date (Finished): </b> '.date_format(date_create($Jotarget),"M d, Y").'</td>
+				</tr>
+			</table>
 			<table border="0" width="100%">
 				<tr>
 					<th> Item </th> 
@@ -148,356 +316,143 @@ include('../../include/denied.php');
 				</tr>
 
 				<tr>
-					<td align="center"> <?=$arrmrpjo[0]['citemdesc']?> </td>
-					<td align="center"> <?=number_format($arrmrpjo[0]['nqty'])?> </td>
-					<td align="center"> <?=number_format($arrmrpjo[0]['nworkhrs'],2)?> </td>
-					<td align="center"> <?=number_format($arrmrpjo[0]['nsetuptime'],2)?> </td>
-					<td align="center"> <?=number_format($arrmrpjo[0]['ncycletime'],2)?> </td>
-					<td align="center"> <?=number_format($arrmrpjo[0]['ntottime'],2)?> </td>
+					<td align="center"> '.$rsc['citemdesc'].' </td>
+					<td align="center"> '.number_format($rsc['nqty']).' </td>
+					<td align="center"> '.number_format($rsc['nworkhrs'],2).' </td>
+					<td align="center"> '.number_format($rsc['nsetuptime'],2).' </td>
+					<td align="center"> '.number_format($rsc['ncycletime'],2).' </td>
+					<td align="center"> '.number_format($rsc['ntottime'],2).' </td>
 				</tr>
 			</table>
-		</td>
-	</tr>
-
-	<tr>
-		<td colspan="4" style="padding-top: 10px; border-top: 1px solid"> 
+			<hr>
 			<table border="0" width="100%">
 				<tr>
-					<th width="25%"> Customer PO / Ref Work Week: </th> 
-					<td width="25%"> <?=$arrmrpjo[0]['cnarration']?></td>
+					<th width="45%"> Customer PO / Ref Work Week: </th> 
+					<td width="15%"> '.$arrmrpjo[0]['cnarration'].'</td>
 					<th width="25%"> Product Type</th>
-					<td width="25%"> <?=$arrmrpjo[0]['cproductype']?></td>
+					<td width="25%"> '.$arrmrpjo[0]['cproductype'].'</td>
 				</tr>
 			</table>
-		</td>
-	</tr>
-
-	<tr>
-		<td colspan="4"> 
-			<table border="1" width="100%" style="border-collapse: collapse;">
+			<table border="1" width="100%" cellpadding="1px" style="border-collapse: collapse;">
 				<tr>
 					<td width="33%" valign="top" height="50px"> <b> Prepared by: </b></td> 
 					<td width="34%" valign="top" height="50px"> <b> Checked by: </b></td> 
 					<td width="33%" valign="top" height="50px"> <b> Approved by: </b></td> 
 				</tr>
-			</table>
-		</td>
-	</tr>
-</table>
+		</table>';
 
-<br>
+		$setfooter = '<table border="0" width="100%" style="border-collapse: collapse;">
+			<tr>
+				<th rowspan="4" valign="top" align="left" width="40%" style="border-top: 1px solid #000; border-left: 1px solid #000; border-bottom: 1px solid #000; border-right: 1px solid #000"> REMARKS </th>
+			</tr>
+			<tr>
+				<th colspan="4" style="border-top: 1px solid #000; border-right: 1px solid #000"> RECEIVED BY </th> 
+			</tr>
+			<tr>
+				<th width="20%" style="text-align: left"> Production: </th>
+				<td>&nbsp;</td> 
+				<th width="20%" style="text-align: left;"> Warehouse: </th>
+				<td style="border-right: 1px solid #000">&nbsp;</td> 
+			</tr>
+			<tr>
+				<th width="20%" style="text-align: left; border-bottom: 1px solid #000"> Date: </th>
+				<td style="border-bottom: 1px solid #000">&nbsp;</td> 
+				<th width="20%" style="text-align: left; border-bottom: 1px solid #000"> Date: </th>
+				<td style="border-right: 1px solid #000; border-bottom: 1px solid #000">&nbsp;</td> 
+			</tr>
+		</table>
+		<table border="0" width="100%">
+			<tr>
+				<td>'.date("H:i:s").'</td>
+				<td>'.date("d-m-Y").'</td>
+				<td>Note: In Case of Error Report to the Concern Dpet. within 24hrs ERASURE IS NOT ALLOWED</td>
+				<td>BMRC-PL-014-B</td>
+			</tr>
+		</table>';
 
-<table border="1" width="100%" cellpadding="3px"  id="tblMain" style="border-collapse: collapse;">
-	<tr>
-		<th> Machine </th> 
-		<th> Process</th>
-		<th> Date Started</th>
-		<th> Date Ended</th>
-		<th> Actual Output</th>
-		<th> Operator</th>
-		<th> Reject Qty</th>
-		<th> Scrap Qty</th>
-		<th> QC</th>
-		<th> Remarks</th>
-	</tr>
+		$mpdf->SetHTMLHeader($sethdr);
+		$mpdf->SetHTMLFooter($setfooter);
 
-	<?php
+		if(count($arrmrpjo_pt)>$xxccnt){
+			$mpdf->AddPage();
+		}
+
+		$html = '<table border="1" width="100%" cellpadding="3px" style="border-collapse: collapse;">
+		<tr>
+			<th width="60px"> Machine </th> 
+			<th> Process</th>
+			<th style="text-align: center;" width="60px"> Date Started</th>
+			<th style="text-align: center;" width="60px"> Date Ended</th>
+			<th style="text-align: center;" width="60px"> Actual Output</th>
+			<th> Operator</th>
+			<th style="text-align: center" width="60px"> Reject Qty</th>
+			<th style="text-align: center" width="60px"> Scrap Qty</th>
+			<th style="text-align: center" width="60px"> QC </th>
+			<th> Remarks</th>
+		</tr>';
+
+
 		$totrej = 0;
 		$totscrp = 0;
-		//foreach($arrmrpjoproc as $rsc){
-	?>
-		<!--<tr> 
-				<td>&nbsp;</td>
-				<td> <b><?//=$rsc['citemdesc']?><b></td>
-				<td>&nbsp;</td>
-				<td>&nbsp;</td>
-				<td>&nbsp;</td>
-				<td>&nbsp;</td>
-				<td>&nbsp;</td>
-				<td>&nbsp;</td>
-				<td>&nbsp;</td>
-				<td>&nbsp;</td>				
-		</tr>-->
+		$xcnt = 0;
+		foreach($arrmrpjo_pt as $bv){
 
-		<?php
-			//foreach($arrmrpjo_pt as $bv){
-			//	if($rsc['ctranno']==$bv['ctranno']){
-		?>
+			if($rsc['ctranno']==$bv['ctranno']){
+				$xcnt++;
 
-			<!--<tr> 
-				<td><//?=$bv['cmachinedesc']?> </td> 
-				<td style="padding-left:10px"><?//=$bv['mrp_process_desc']?> </td>
-				<td><?//=$bv['ddatestart']?></td>
-				<td><?//=$bv['ddateend']?></td>
-				<td style="text-align: center"><?//=(intval($bv['nactualoutput'])>0) ? number_format($bv['nactualoutput']) : ""?></td>
-				<td><?//=$bv['operator_name']?></td>
-				<td style="text-align: center"><?//=(intval($bv['nrejectqty'])>0) ? number_format($bv['nrejectqty']) : ""?></td>
-				<td style="text-align: center"><?//=(intval($bv['nscrapqty'])>0) ? number_format($bv['nscrapqty']) : ""?></td>
-				<td><//=$bv['qc_name']?></td>
-				<td><?//=$bv['cremarks']?></td>		-->		
-			</tr>
-		<?php
-		/*			$totrej = $totrej + floatval($bv['nrejectqty']);
-					$totscrp = $totscrp + floatval($bv['nscrapqty']);
-				}
-			}
-		?>
-	<?php
-		}*/
+				$xmpdesc = (strlen($bv['mrp_process_desc'])>30) ? (substr($bv['mrp_process_desc'],0,30).'...') : $bv['mrp_process_desc'];
 
-		//if(count($arrmrpjoproc)>=1){
-	?>
-
-			<!--<tr> 
-				<td>&nbsp;</td>
-				<td>&nbsp;</td>
-				<td>&nbsp;</td>
-				<td>&nbsp;</td>
-				<td>&nbsp;</td>
-				<td>&nbsp;</td>
-				<td>&nbsp;</td>
-				<td>&nbsp;</td>
-				<td>&nbsp;</td>
-				<td>&nbsp;</td>				
-			</tr> -->
-
-		<?php
-		//}
+				$html = $html . '<tr> 
+					<td>'.$bv['cmachinedesc'].'</td> 
+					<td style="padding-left:5px; white-space: nowrap;">'.$xmpdesc.'</td>
+					<td>'.$bv['ddatestart'].'</td>
+					<td>'.$bv['ddateend'].'</td>
+					<td style="text-align: center">'.((intval($bv['nactualoutput'])>0) ? number_format($bv['nactualoutput']) : "").'</td>
+					<td>'.$bv['operator_name'].'</td>
+					<td style="text-align: center">'.((intval($bv['nrejectqty'])>0) ? number_format($bv['nrejectqty']) : "").'</td>
+					<td style="text-align: center">'.((intval($bv['nscrapqty'])>0) ? number_format($bv['nscrapqty']) : "").'</td>
+					<td>'.$bv['qc_name'].'</td>
+					<td>'.$bv['cremarks'].'</td>				
+				</tr>';
 		
-			foreach($arrmrpjo_ptmain as $bv){
-		?>
-
-			<tr> 
-				<td><?=$bv['cmachinedesc']?> </td> 
-				<td style="padding-left:10px"><?=$bv['mrp_process_desc']?> </td>
-				<td><?=$bv['ddatestart']?></td>
-				<td><?=$bv['ddateend']?></td>
-				<td style="text-align: center"><?=(intval($bv['nactualoutput'])>0) ? number_format($bv['nactualoutput']) : ""?></td>
-				<td><?=$bv['operator_name']?></td>
-				<td style="text-align: center"><?=(intval($bv['nrejectqty'])>0) ? number_format($bv['nrejectqty']) : ""?></td>
-				<td style="text-align: center"><?=(intval($bv['nscrapqty'])>0) ? number_format($bv['nscrapqty']) : ""?></td>
-				<td><?=$bv['qc_name']?></td>
-				<td><?=$bv['cremarks']?></td>				
-			</tr>
-		<?php
 				$totrej = $totrej + floatval($bv['nrejectqty']);
 				$totscrp = $totscrp + floatval($bv['nscrapqty']);
 			}
-		?>
+		}
 
-			<tr> 
-				<td>&nbsp;</td>
-				<td>&nbsp;</td>
-				<td>&nbsp;</td>
-				<td>&nbsp;</td>
-				<td>&nbsp;</td>
-				<td align="right"><b> Total: </b></td>
-				<td style="text-align: center"><?=(intval($totrej)>0) ? number_format($totrej) : ""?></td>
-				<td style="text-align: center"><?=(intval($totscrp)>0) ? number_format($totscrp) : ""?></td>
-				<td>&nbsp;</td>
-				<td>&nbsp;</td>				
+		if($xcnt==0){
+			$html = $html . '<tr> <td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td></tr>';
+		}
+		
+		if($xcnt<25){
+			for($x = $xcnt; $x<=25; $x++){
+				$html = $html . '<tr> <td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td></tr>';
+			}
+		}
+
+		$html = $html . '<tr> 
+			<td>&nbsp;</td>
+			<td>&nbsp;</td>
+			<td>&nbsp;</td>
+			<td>&nbsp;</td>
+			<td>&nbsp;</td>
+			<td align="right"><b> Total: </b></td>
+			<td style="text-align: center">'.((intval($totrej)>0) ? number_format($totrej) : "").'</td>
+			<td style="text-align: center">'.((intval($totscrp)>0) ? number_format($totscrp) : "").'</td>
+			<td>&nbsp;</td>
+			<td>&nbsp;</td>				
 			</tr>
-</table>
-<br>
-<table border="1" width="100%" style="border-collapse: collapse;">
-	<tr>
-		<td width="30%" valign="top" height="50px"> <b> REMARKS: </b></td> 
-		<td valign="top" height="50px"> 
-			<table border="0" width="100%">
-				<tr>
-					<th colspan="4"> RECEIVED BY </th> 
-				</tr>
-				<tr>
-					<th width="20%" style="text-align: left"> Production: </th>
-					<td>&nbsp;</td> 
-					<th width="20%" style="text-align: left"> Warehouse: </th>
-					<td>&nbsp;</td> 
-				</tr>
-				<tr>
-					<th width="20%" style="text-align: left"> Date: </th>
-					<td>&nbsp;</td> 
-					<th width="20%" style="text-align: left"> Date: </th>
-					<td>&nbsp;</td> 
-				</tr>
-			</table>
-		</td> 
-	</tr>
-</table>
-<!-- END MAIN JO PRINT --> 
+		</table>';
 
+		$mpdf->WriteHTML($html);
 
-<!-- SUB JO PRINT -->
-<?php
-	foreach($arrmrpjoproc as $rsc){
-?>
+		$sethdr = "";
+		$html = "";
+		$setfooter = "";
 
-	<table border="0" width="100%"  id="tblMain" style="page-break-before:always">
-		<tr>
-			<td align="left" width="250px"> 
-				<img src="<?php echo "../".$logosrc; ?>" width="150px">
-			</td>
-			<!--<td align="left"> 
+		//echo $sethdr.$html.$setfooter;
 
-					<table border="0" width="100%">
-							<tr>
-								<td><font style="font-size: 18px;"><?//php echo $logonamz; ?></font></td>
-							</tr>
-							<tr>
-								<td><font><?//php echo $logoaddrs; ?></font></td>
-							</tr>
-					</table>
-
-			</td>-->
-			<td align="center"> 
-				<h1>JOB ORDER</h1>
-			</td>
-		</tr>
-		
-	</table>
-
-	<table border="0" width="100%" cellpadding="1px"  id="tblMain" >
-		<tr>
-			<td width="100px"><b>Date Release: </b></td>
-			<td> <?=date_format(date_create($arrmrpjo[0]['ddate']), "M d, Y")?> </td>
-			<td width="100px"><b>Main JO No.: </b></td>
-			<td> <?=$tranno?> </td>
-		</tr>
-
-		<tr>
-			<td width="100px"><b>Customer: </b></td>
-			<td> <?=$arrmrpjo[0]['cname']?> </td>
-			<td width="100px"><b>Sub JO No.: </b></td>
-			<td> <?=$rsc['ctranno']?> </td>
-		</tr>
-
-		<tr>
-			<td colspan="4"> 
-				<table border="0" width="100%">
-					<td> <b>Department: </b> <?=($arrmrpjo[0]['secdesc'])?></td> 
-					<td> <b>Priority: </b> <?=($arrmrpjo[0]['cpriority'])?></td>
-					<td> <b>Target Date (Finished): </b> <?=date_format(date_create($arrmrpjo[0]['dtargetdate']),"d-m-Y")?></td>
-				</table>
-			</td>
-		</tr>
-
-		<tr>
-			<td colspan="4" style="padding-top: 10px"> 
-				<table border="0" width="100%">
-					<tr>
-						<th> Item </th> 
-						<th> JO Qty</th>
-						<th> Working Hrs</th>
-						<th> Setup Time</th>
-						<th> Cycle Time</th>
-						<th> Total Time</th>
-					</tr>
-
-					<tr>
-						<td align="center"> <?=$rsc['citemdesc']?> </td>
-						<td align="center"> <?=number_format($rsc['nqty'])?> </td>
-						<td align="center"> <?=number_format($rsc['nworkhrs'],2)?> </td>
-						<td align="center"> <?=number_format($rsc['nsetuptime'],2)?> </td>
-						<td align="center"> <?=number_format($rsc['ncycletime'],2)?> </td>
-						<td align="center"> <?=number_format($rsc['ntottime'],2)?> </td>
-					</tr>
-				</table>
-			</td>
-		</tr>
-
-		<tr>
-			<td colspan="4" style="padding-top: 10px; border-top: 1px solid"> 
-				<table border="0" width="100%">
-					<tr>
-						<th width="25%"> Customer PO / Ref Work Week: </th> 
-						<td width="25%"> <?=$arrmrpjo[0]['cnarration']?></td>
-						<th width="25%"> Product Type</th>
-						<td width="25%"> <?=$arrmrpjo[0]['cproductype']?></td>
-					</tr>
-				</table>
-			</td>
-		</tr>
-
-		<tr>
-			<td colspan="4"> 
-				<table border="1" width="100%" style="border-collapse: collapse;">
-					<tr>
-						<td width="33%" valign="top" height="50px"> <b> Prepared by: </b></td> 
-						<td width="34%" valign="top" height="50px"> <b> Checked by: </b></td> 
-						<td width="33%" valign="top" height="50px"> <b> Approved by: </b></td> 
-					</tr>
-				</table>
-			</td>
-		</tr>
-
-	</table>
-	<br><br>
-	<table border="1" width="100%" cellpadding="3px"  id="tblMain" style="border-collapse: collapse; margin-top: 10px">
-		<tr>
-			<th> Machine </th> 
-			<th> Process</th>
-			<th> Date Started</th>
-			<th> Date Ended</th>
-			<th> Actual Output</th>
-			<th> Operator</th>
-			<th> Reject Qty</th>
-			<th> Scrap Qty</th>
-			<th> QC</th>
-			<th> Remarks</th>
-		</tr>
-
-			<?php
-				foreach($arrmrpjo_pt as $bv){
-					if($rsc['ctranno']==$bv['ctranno']){
-			?>
-
-				<tr> 
-					<td><?=$bv['cmachinedesc']?> </td> 
-					<td style="padding-left:10px"><?=$bv['mrp_process_desc']?> </td>
-					<td><?=$bv['ddatestart']?></td>
-					<td><?=$bv['ddateend']?></td>
-					<td style="text-align: center"><?=(intval($bv['nactualoutput'])>0) ? number_format($bv['nactualoutput']) : ""?></td>
-					<td><?=$bv['operator_name']?></td>
-					<td style="text-align: center"><?=(intval($bv['nrejectqty'])>0) ? number_format($bv['nrejectqty']) : ""?></td>
-					<td style="text-align: center"><?=(intval($bv['nscrapqty'])>0) ? number_format($bv['nscrapqty']) : ""?></td>
-					<td><?=$bv['qc_name']?></td>
-					<td><?=$bv['cremarks']?></td>				
-				</tr>
-
-			<?php
-					}
-				}
-			?>
-		
-	</table>
-
-	<br>
-	<table border="1" width="100%" style="border-collapse: collapse;">
-		<tr>
-			<td width="30%" valign="top" height="50px"> <b> REMARKS: </b></td> 
-			<td valign="top" height="50px"> 
-				<table border="0" width="100%">
-					<tr>
-						<th colspan="4"> RECEIVED BY </th> 
-					</tr>
-					<tr>
-						<th width="20%" style="text-align: left"> Production: </th>
-						<td>&nbsp;</td> 
-						<th width="20%" style="text-align: left"> Warehouse: </th>
-						<td>&nbsp;</td> 
-					</tr>
-					<tr>
-						<th width="20%" style="text-align: left"> Date: </th>
-						<td>&nbsp;</td> 
-						<th width="20%" style="text-align: left"> Date: </th>
-						<td>&nbsp;</td> 
-					</tr>
-				</table>
-			</td> 
-		</tr>
-	</table>
-<?php
 	}
+
+	$mpdf->Output($tranno,'I');
 ?>
-<!-- END SUB JO PRINT -->
-</body>
-</html>

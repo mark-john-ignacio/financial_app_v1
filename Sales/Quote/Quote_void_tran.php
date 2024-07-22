@@ -24,8 +24,8 @@
 		$status = "True";
 
 		foreach($_POST["allbox"] as $rz){
-			mysqli_query($con,"INSERT INTO logfile(`compcode`, `ctranno`, `cuser`, `ddate`, `cevent`, `module`, `cmachine`, `cremarks`) 
-		values('$company', '$rz','$preparedby',NOW(),'VOID','QUOTATION','$compname','Void Record')");
+			mysqli_query($con,"INSERT INTO logfile(`compcode`, `ctranno`, `cuser`, `ddate`, `cevent`, `module`, `cmachine`, `cremarks`, `cancel_rem`) 
+		values('$company', '$rz','$preparedby',NOW(),'VOID','QUOTATION','$compname','Void Record','".$_POST["hdnreason"]."')");
 		}
 
 	}

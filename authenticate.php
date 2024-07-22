@@ -156,7 +156,11 @@
                 }
             //END REMEBER
 
-            header("Location: main.php");
+            if($row['usertype']=="ADMIN"){
+                header("Location: main.php");
+            }elseif($row['usertype']=="CASHIER"){
+                header("Location: POS/index.php");
+            }
 
 
         }else{

@@ -7,7 +7,8 @@
 	$company = $_SESSION['companyid'];
 
 	//get all SO
-	$resq = mysqli_query ($con, "Select cpono as ctranno, nident,citemno,(nqty*nfactor) as nqty From purchase_t where compcode='$company' and citemno='".$_REQUEST['itm']."'");
+	@$arrresq = array();
+	$resq = mysqli_query ($con, "Select cpono as ctranno, nident,citemno,(nqty*nfactor) as nqty From purchase_t where compcode='$company' and citemdesc like '%".$_REQUEST['itm']."%'");
 	if (mysqli_num_rows($resq)!=0){
 		while($row = mysqli_fetch_array($resq, MYSQLI_ASSOC)){
 			@$arrresq[]=$row;

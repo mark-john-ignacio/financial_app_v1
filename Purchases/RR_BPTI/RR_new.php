@@ -755,7 +755,7 @@ $company = $_SESSION['companyid'];
 
 				$.ajax({
 					url: 'th_qolist_items.php',
-					data: 'x='+$('#txtcustid').val()+'&itm='+item.id,
+					data: 'x='+$('#txtcustid').val()+'&itm='+item.cname,
 					dataType: 'json',
 					method: 'post',
 					success: function (data) {
@@ -1302,7 +1302,7 @@ $company = $_SESSION['companyid'];
 					salesnos = salesnos + ",";
 				}
 							
-				salesnos = salesnos +  $(this).find('input[type="hidden"][name="txtitemcode"]').val();
+				salesnos = salesnos +  $(this).find('input[type="hidden"][name="txtnrefident"]').val();
 			}
 			
 		});
@@ -1420,272 +1420,270 @@ $company = $_SESSION['companyid'];
 
 	}
 
-
-
-function chkform(){
-	var ISOK = "YES";
-	
-	if(document.getElementById("txtcust").value=="" && document.getElementById("txtcustid").value==""){
-
-			$("#AlertMsg").html("");
-			
-			$("#AlertMsg").html("&nbsp;&nbsp;Supplier Required!");
-			$("#alertbtnOK").show();
-			$("#AlertModal").modal('show');
-
-		document.getElementById("txtcust").focus();
-		return false;
-
+	function chkform(){
+		var ISOK = "YES";
 		
-		ISOK = "NO";
-	}
-	
-	if(document.getElementById("txtSuppSI").value==""){
+		if(document.getElementById("txtcust").value=="" && document.getElementById("txtcustid").value==""){
 
-			$("#AlertMsg").html("");
+				$("#AlertMsg").html("");
+				
+				$("#AlertMsg").html("&nbsp;&nbsp;Supplier Required!");
+				$("#alertbtnOK").show();
+				$("#AlertModal").modal('show');
+
+			document.getElementById("txtcust").focus();
+			return false;
+
 			
-			$("#AlertMsg").html("&nbsp;&nbsp;Supplier DR is required!");
-			$("#alertbtnOK").show();
-			$("#AlertModal").modal('show');
-
-		document.getElementById("txtSuppSI").focus();
-		return false;
-
+			ISOK = "NO";
+		}
 		
-		ISOK = "NO";
-	}
-	
-	var tbl = document.getElementById('MyTable').getElementsByTagName('tr');
-	var lastRow = tbl.length-1;
-	
-	if(lastRow == 0){
-			$("#AlertMsg").html("");
-			
-			$("#AlertMsg").html("&nbsp;&nbsp;NO details found!");
-			$("#alertbtnOK").show();
-			$("#AlertModal").modal('show');
+		if(document.getElementById("txtSuppSI").value==""){
 
-		return false;
-		ISOK = "NO";
-	}
-	else{
-		var msgz = "";
-		var myqty = "";
-		var myav = "";
-		var myfacx = "";
-		var myprice = "";
+				$("#AlertMsg").html("");
+				
+				$("#AlertMsg").html("&nbsp;&nbsp;Supplier DR is required!");
+				$("#alertbtnOK").show();
+				$("#AlertModal").modal('show');
 
-		$("#MyTable > tbody > tr").each(function(index) {
-			
-			myqty = $(this).find('input[name="txtnqty"]').val();
-			//myprice = $(this).find('input[name="txtnprice"]').val();
-			
-			if(myqty == 0 || myqty == ""){
-				msgz = msgz + "<br>&nbsp;&nbsp;&nbsp;&nbsp;Zero or blank qty is not allowed: row " + index;	
-			}
-			
-		//	if(myprice == 0 || myprice == ""){
-		//		msgz = msgz + "<br>&nbsp;&nbsp;&nbsp;&nbsp;Zero amount is not allowed: row " + index;	
-		//	}
+			document.getElementById("txtSuppSI").focus();
+			return false;
 
-		});
+			
+			ISOK = "NO";
+		}
 		
-		if(msgz!=""){
-			$("#AlertMsg").html("");
-			
-			$("#AlertMsg").html("&nbsp;&nbsp;Details Error: "+msgz);
-			$("#alertbtnOK").show();
-			$("#AlertModal").modal('show');
+		var tbl = document.getElementById('MyTable').getElementsByTagName('tr');
+		var lastRow = tbl.length-1;
+		
+		if(lastRow == 0){
+				$("#AlertMsg").html("");
+				
+				$("#AlertMsg").html("&nbsp;&nbsp;NO details found!");
+				$("#alertbtnOK").show();
+				$("#AlertModal").modal('show');
 
 			return false;
 			ISOK = "NO";
 		}
-	}
-	
-	if(ISOK == "YES"){
-	var trancode = "";
-	var isDone = "True";
-
-
-		//Saving the header
-
-		/*
-		var ccode = $("#txtcustid").val();
-		var crem = $("#txtremarks").val();
-		var ddate = $("#date_received").val();
-		var ngross = $("#txtnGross").val(); 
-		var ccustsi = $("#txtSuppSI").val();
-		*/
-		var myform = $("#frmpos").serialize();
-		var formdata = new FormData($('#frmpos')[0]);
-		formdata.delete('upload[]')
-		jQuery.each($('#file-0')[0].files, function(i, file){
-			formdata.append('file-'+i, file);
-		});
-		
-		$.ajax ({
-			url: "RR_newsave.php",
-			//data: { ccode: ccode, crem: crem, ddate: ddate, ngross: ngross, ccustsi:ccustsi },
-			data: formdata,
-			cache: false,
-			processData: false,
-			contentType: false,
-			method: 'post',
-			type: 'post',
-			async: false,
-			beforeSend: function(){
-				$("#AlertMsg").html("&nbsp;&nbsp;<b>SAVING NEW RR: </b> Please wait a moment...");
-				$("#alertbtnOK").hide();
-				$("#AlertModal").modal('show');
-			},
-			success: function( data ) {
-				if(data.trim()!="False"){
-					trancode = data.trim();
-				}
-			}
-		});
-		
-		
-		if(trancode!=""){
-			//Save Details
-			$("#MyTable > tbody > tr").each(function(index) {	
-			
-				var citmno = $(this).find('input[type="hidden"][name="txtitemcode"]').val();
-				var cskuno = $(this).find('input[type="hidden"][name="txtcskuode"]').val();
-				var cskudesc = $(this).find('input[type="hidden"][name="txtcitmdesc"]').val();
-
-				var cuom = $(this).find('select[name="seluom"]').val();
-						if(cuom=="" || cuom==null){
-							var cuom = $(this).find('input[type="hidden"][name="seluom"]').val();
-						}
-				var nqty = $(this).find('input[name="txtnqty"]').val();
-				var nqtyOrig = $(this).find('input[type="hidden"][name="txtnqtyORIG"]').val();
-				var mainunit = $(this).find('input[type="hidden"][name="hdnmainuom"]').val();
-				var nfactor = $(this).find('input[name="hdnfactor"]').val();
-
-				var xcref = $(this).find('input[type="hidden"][name="txtcreference"]').val();
-				var crefidnt = $(this).find('input[type="hidden"][name="txtnrefident"]').val();
-				var ncostid = $(this).find('input[type="hidden"][name="txtncostid"]').val();  
-				var ncostdesc = $(this).find('input[type="hidden"][name="txtncostdesc"]').val(); 
-				var crmkss = $(this).find('input[name="txtcremarks"]').val();
-
-				//alert("trancode="+ trancode+ "&indx=" + index+ "&citmno=" + citmno+ "&cuom=" + cuom+ "&nqty=" + nqty+ "&mainunit=" + mainunit+ "&nfactor=" + nfactor+ "&nqtyorig=" + nqtyOrig+ "&xcref=" + xcref+ "&crefidnt=" + crefidnt);
-
-				if(nqty!==undefined){
-					nqty = nqty.replace(/,/g,'');
-				}
-				
-				$.ajax ({
-					url: "RR_newsavedet.php",
-					data: { trancode: trancode, indx: index, citmno: citmno, cskuno:cskuno, cskudesc:cskudesc, cuom: cuom, nqty:nqty, mainunit:mainunit, nfactor:nfactor, nqtyorig:nqtyOrig, xcref:xcref, crefidnt:crefidnt, ncostid:ncostid, ncostdesc:ncostdesc, crmkss:crmkss},
-					async: false,
-					success: function( data ) {
-						if(data.trim()=="False"){
-							isDone = "False";
-						}
-					}
-				});
-				
-			});
-
-			
-			$("#MyTable2 > tbody > tr").each(function(index) {	
-
-				var xcref = $(this).find('input[type="hidden"][name="sertabrefno"]').val();   
-				var crefidnt = $(this).find('input[type="hidden"][name="sertabident"]').val();
-				var citmno = $(this).find('input[type="hidden"][name="sertabitmcode"]').val();
-				var cuom = $(this).find('input[type="hidden"][name="sertabuom"]').val();
-				var nqty = $(this).find('input[type="hidden"][name="sertabqty"]').val();
-				var clotsx = $(this).find('input[name="sertablots"]').val();				
-				var cpackl = $(this).find('input[type="hidden"][name="sertabpacks"]').val(); 
-				var clocas = $(this).find('input[type="hidden"][name="sertablocas"]').val();
-
-				$.ajax ({
-					url: "RR_newsavedetserials.php",
-					data: { trancode: trancode, indx: index, citmno: citmno, cuom: cuom, nqty:nqty, clocas:clocas, xcref:xcref, crefidnt:crefidnt, clotsx:clotsx, cpackl:cpackl },
-					async: false,
-					success: function( data ) {
-						if(data.trim()=="False"){
-							isDone = "False";
-						}
-					}
-				});
-				
-			});
-			
-			
-			if(isDone=="True"){
-				$("#AlertMsg").html("<b>SUCCESFULLY SAVED: </b> Please wait a moment...");
-				$("#alertbtnOK").hide();
-
-					setTimeout(function() {
-						$("#AlertMsg").html("");
-						$('#AlertModal').modal('hide');
-			
-							$("#txtctranno").val(trancode);
-							$("#frmedit").submit();
-			
-					}, 2000); // milliseconds = 3seconds
-
-				
-			}
-
-		}
 		else{
-				$("#AlertMsg").html("<b>ERROR: </b> There's a problem saving your transaction...<br><br>" + trancode);
+			var msgz = "";
+			var myqty = "";
+			var myav = "";
+			var myfacx = "";
+			var myprice = "";
+
+			$("#MyTable > tbody > tr").each(function(index) {
+				
+				myqty = $(this).find('input[name="txtnqty"]').val();
+				//myprice = $(this).find('input[name="txtnprice"]').val();
+				
+				if(myqty == 0 || myqty == ""){
+					msgz = msgz + "<br>&nbsp;&nbsp;&nbsp;&nbsp;Zero or blank qty is not allowed: row " + index;	
+				}
+				
+			//	if(myprice == 0 || myprice == ""){
+			//		msgz = msgz + "<br>&nbsp;&nbsp;&nbsp;&nbsp;Zero amount is not allowed: row " + index;	
+			//	}
+
+			});
+			
+			if(msgz!=""){
+				$("#AlertMsg").html("");
+				
+				$("#AlertMsg").html("&nbsp;&nbsp;Details Error: "+msgz);
 				$("#alertbtnOK").show();
 				$("#AlertModal").modal('show');
+
+				return false;
+				ISOK = "NO";
+			}
 		}
+		
+		if(ISOK == "YES"){
+		var trancode = "";
+		var isDone = "True";
 
 
+			//Saving the header
 
-	}
-
-}
-
-/*
-function convertCurrency(fromCurrency) {
-  
-  toCurrency = $("#basecurrvalmain").val(); //statgetrate
-   $.ajax ({
-	 url: "../../Sales/th_convertcurr.php",
-	 data: { fromcurr: fromCurrency, tocurr: toCurrency },
-	 async: false,
-	 beforeSend: function () {
-		 $("#statgetrate").html(" <i>Getting exchange rate please wait...</i>");
-	 },
-	 success: function( data ) {
-
-		 $("#basecurrval").val(data);
-		 $("#hidcurrvaldesc").val($( "#selbasecurr option:selected" ).text()); 
-
-	 },
-	 complete: function(){
-		 $("#statgetrate").html("");
-		 recomputeCurr();
-	 }
- });
-
-}
-
-function recomputeCurr(){
-
-	var newcurate = $("#basecurrval").val();
-	var rowCount = $('#MyTable tr').length;
+			/*
+			var ccode = $("#txtcustid").val();
+			var crem = $("#txtremarks").val();
+			var ddate = $("#date_received").val();
+			var ngross = $("#txtnGross").val(); 
+			var ccustsi = $("#txtSuppSI").val();
+			*/
+			var myform = $("#frmpos").serialize();
+			var formdata = new FormData($('#frmpos')[0]);
+			formdata.delete('upload[]')
+			jQuery.each($('#file-0')[0].files, function(i, file){
+				formdata.append('file-'+i, file);
+			});
 			
-	var gross = 0;
-	var amt = 0;
+			$.ajax ({
+				url: "RR_newsave.php",
+				//data: { ccode: ccode, crem: crem, ddate: ddate, ngross: ngross, ccustsi:ccustsi },
+				data: formdata,
+				cache: false,
+				processData: false,
+				contentType: false,
+				method: 'post',
+				type: 'post',
+				async: false,
+				beforeSend: function(){
+					$("#AlertMsg").html("&nbsp;&nbsp;<b>SAVING NEW RR: </b> Please wait a moment...");
+					$("#alertbtnOK").hide();
+					$("#AlertModal").modal('show');
+				},
+				success: function( data ) {
+					if(data.trim()!="False"){
+						trancode = data.trim();
+					}
+				}
+			});
+			
+			
+			if(trancode!=""){
+				//Save Details
+				$("#MyTable > tbody > tr").each(function(index) {	
+				
+					var citmno = $(this).find('input[type="hidden"][name="txtitemcode"]').val();
+					var cskuno = $(this).find('input[type="hidden"][name="txtcskuode"]').val();
+					var cskudesc = $(this).find('input[type="hidden"][name="txtcitmdesc"]').val();
 
-	if(rowCount>1){
-		for (var i = 1; i <= rowCount-1; i++) {
-			amt = $("#txtntranamount"+i).val();			
-			recurr = parseFloat(newcurate) * parseFloat(amt);
+					var cuom = $(this).find('select[name="seluom"]').val();
+							if(cuom=="" || cuom==null){
+								var cuom = $(this).find('input[type="hidden"][name="seluom"]').val();
+							}
+					var nqty = $(this).find('input[name="txtnqty"]').val();
+					var nqtyOrig = $(this).find('input[type="hidden"][name="txtnqtyORIG"]').val();
+					var mainunit = $(this).find('input[type="hidden"][name="hdnmainuom"]').val();
+					var nfactor = $(this).find('input[name="hdnfactor"]').val();
 
-			$("#txtnamount"+i).val(recurr.toFixed(4));
+					var xcref = $(this).find('input[type="hidden"][name="txtcreference"]').val();
+					var crefidnt = $(this).find('input[type="hidden"][name="txtnrefident"]').val();
+					var ncostid = $(this).find('input[type="hidden"][name="txtncostid"]').val();  
+					var ncostdesc = $(this).find('input[type="hidden"][name="txtncostdesc"]').val(); 
+					var crmkss = $(this).find('input[name="txtcremarks"]').val();
+
+					//alert("trancode="+ trancode+ "&indx=" + index+ "&citmno=" + citmno+ "&cuom=" + cuom+ "&nqty=" + nqty+ "&mainunit=" + mainunit+ "&nfactor=" + nfactor+ "&nqtyorig=" + nqtyOrig+ "&xcref=" + xcref+ "&crefidnt=" + crefidnt);
+
+					if(nqty!==undefined){
+						nqty = nqty.replace(/,/g,'');
+					}
+					
+					$.ajax ({
+						url: "RR_newsavedet.php",
+						data: { trancode: trancode, indx: index, citmno: citmno, cskuno:cskuno, cskudesc:cskudesc, cuom: cuom, nqty:nqty, mainunit:mainunit, nfactor:nfactor, nqtyorig:nqtyOrig, xcref:xcref, crefidnt:crefidnt, ncostid:ncostid, ncostdesc:ncostdesc, crmkss:crmkss},
+						async: false,
+						success: function( data ) {
+							if(data.trim()=="False"){
+								isDone = "False";
+							}
+						}
+					});
+					
+				});
+
+				
+				$("#MyTable2 > tbody > tr").each(function(index) {	
+
+					var xcref = $(this).find('input[type="hidden"][name="sertabrefno"]').val();   
+					var crefidnt = $(this).find('input[type="hidden"][name="sertabident"]').val();
+					var citmno = $(this).find('input[type="hidden"][name="sertabitmcode"]').val();
+					var cuom = $(this).find('input[type="hidden"][name="sertabuom"]').val();
+					var nqty = $(this).find('input[type="hidden"][name="sertabqty"]').val();
+					var clotsx = $(this).find('input[name="sertablots"]').val();				
+					var cpackl = $(this).find('input[type="hidden"][name="sertabpacks"]').val(); 
+					var clocas = $(this).find('input[type="hidden"][name="sertablocas"]').val();
+
+					$.ajax ({
+						url: "RR_newsavedetserials.php",
+						data: { trancode: trancode, indx: index, citmno: citmno, cuom: cuom, nqty:nqty, clocas:clocas, xcref:xcref, crefidnt:crefidnt, clotsx:clotsx, cpackl:cpackl },
+						async: false,
+						success: function( data ) {
+							if(data.trim()=="False"){
+								isDone = "False";
+							}
+						}
+					});
+					
+				});
+				
+				
+				if(isDone=="True"){
+					$("#AlertMsg").html("<b>SUCCESFULLY SAVED: </b> Please wait a moment...");
+					$("#alertbtnOK").hide();
+
+						setTimeout(function() {
+							$("#AlertMsg").html("");
+							$('#AlertModal').modal('hide');
+				
+								$("#txtctranno").val(trancode);
+								$("#frmedit").submit();
+				
+						}, 2000); // milliseconds = 3seconds
+
+					
+				}
+
+			}
+			else{
+					$("#AlertMsg").html("<b>ERROR: </b> There's a problem saving your transaction...<br><br>" + trancode);
+					$("#alertbtnOK").show();
+					$("#AlertModal").modal('show');
+			}
+
+
+
 		}
+
 	}
 
-	ComputeGross();
-}
-*/
+	/*
+	function convertCurrency(fromCurrency) {
+	
+	toCurrency = $("#basecurrvalmain").val(); //statgetrate
+	$.ajax ({
+		url: "../../Sales/th_convertcurr.php",
+		data: { fromcurr: fromCurrency, tocurr: toCurrency },
+		async: false,
+		beforeSend: function () {
+			$("#statgetrate").html(" <i>Getting exchange rate please wait...</i>");
+		},
+		success: function( data ) {
+
+			$("#basecurrval").val(data);
+			$("#hidcurrvaldesc").val($( "#selbasecurr option:selected" ).text()); 
+
+		},
+		complete: function(){
+			$("#statgetrate").html("");
+			recomputeCurr();
+		}
+	});
+
+	}
+
+	function recomputeCurr(){
+
+		var newcurate = $("#basecurrval").val();
+		var rowCount = $('#MyTable tr').length;
+				
+		var gross = 0;
+		var amt = 0;
+
+		if(rowCount>1){
+			for (var i = 1; i <= rowCount-1; i++) {
+				amt = $("#txtntranamount"+i).val();			
+				recurr = parseFloat(newcurate) * parseFloat(amt);
+
+				$("#txtnamount"+i).val(recurr.toFixed(4));
+			}
+		}
+
+		ComputeGross();
+	}
+	*/
 </script>

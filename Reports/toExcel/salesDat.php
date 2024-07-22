@@ -135,19 +135,19 @@ $spreadsheet->getProperties()->setCreator('Myx Financials')
             ->setCellValue("B$index", TinValidation($row['ctin']))
             ->setCellValue("C$index", $row['cname'])
             ->setCellValue("E$index", $fullAddress)
-            ->setCellValue("F$index", $computation['gross'])
-            ->setCellValue("G$index", $computation['exempt'],2)
-            ->setCellValue("H$index", $computation['zero'],2)
-            ->setCellValue("I$index", $computation['net'],2)
-            ->setCellValue("J$index", $computation['vat'],2)
-            ->setCellValue("K$index", $computation['gross_vat'],2);
+            ->setCellValue("F$index", round((float)$computation['gross'],2))
+            ->setCellValue("G$index", round((float)$computation['exempt'],2))
+            ->setCellValue("H$index", round((float)$computation['zero'],2))
+            ->setCellValue("I$index", round((float)$computation['net'],2))
+            ->setCellValue("J$index", round((float)$computation['vat'],2))
+            ->setCellValue("K$index", round((float)$computation['gross_vat'],2));
 
-            $TOTAL_GROSS += floatval($computation['gross']); 
-            $TOTAL_EXEMPT += floatval($computation['exempt']); 
-            $TOTAL_ZERO_RATED += floatval($computation['zero']); 
-            $TOTAL_TAXABLE += floatval($computation['net']); 
-            $TOTAL_VAT += floatval($computation['vat']);
-            $TOTAl_TAX_GROSS += floatval($computation['gross_vat']);
+            $TOTAL_GROSS += round((float)floatval($computation['gross']),2); 
+            $TOTAL_EXEMPT += round((float)floatval($computation['exempt']),2); 
+            $TOTAL_ZERO_RATED += round((float)floatval($computation['zero']),2); 
+            $TOTAL_TAXABLE += round((float)floatval($computation['net']),2); 
+            $TOTAL_VAT += round((float)floatval($computation['vat']),2);
+            $TOTAl_TAX_GROSS += round((float)floatval($computation['gross_vat']),2);
         }
         $lastindex = $index;
         $index += 2;

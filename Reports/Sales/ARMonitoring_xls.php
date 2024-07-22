@@ -56,8 +56,8 @@
 		->setCellValue('B5', 'Transaction No.')
 		->setCellValue('C5', 'Reference')
 		->setCellValue('D5', 'Date')
-		->setCellValue('E5', 'Customer')
-		->setCellValue('F5', '')
+		->setCellValue('E5', 'Customer Code')
+		->setCellValue('F5', 'Customer Name')
 		->setCellValue('G5', 'Vatable Sales')
 		->setCellValue('H5', 'VAT%')
 		->setCellValue('I5', 'VAT Amount')
@@ -69,8 +69,6 @@
 		->setCellValue('O5', 'Amount Collected')
 		->setCellValue('P5', 'Balance')
 		->setCellValue('Q5', 'Status');
-
-	$spreadsheet->getActiveSheet()->mergeCells("E5:F5");
 	$spreadsheet->getActiveSheet()->getStyle('A5:Q5')->getFont()->setBold(true);
 
 	$postedtran = $_POST["selrpt"];

@@ -211,9 +211,12 @@ mysqli_close($con);
 	<script>
 	
 		$(function(){
-			$('#example').DataTable();
+
 			$("#add_err").hide();
 			$(".itmalert").hide();
+			
+			$('#example').DataTable();
+			
 
 			// Adding new user
 			$("#btnadd").on("click", function() {

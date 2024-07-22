@@ -324,11 +324,33 @@
 		$spreadsheet->setActiveSheetIndex(0)->getStyle('C'.$cnt)->getNumberFormat()->setFormatCode("_(* #,##0.00_);_(* \(#,##0.00\);_(* \"-\"??_);_(@_)");	
 		$spreadsheet->getActiveSheet()->getStyle("A".$cnt.":C".$cnt)->getFont()->setBold(true);
 	
+		if($ccate=="REVENUE"){
+			$profitRevn = floatval($arrlvlamt[0]);
+		}
+	
+		if($ccate=="COST OF SALES"){				
+			 $profitCost= floatval($arrlvlamt[0]);
+		}
+		
 		if($ccate=="EXPENSES"){
 			$BPEXPzc0 = floatval($arrlvlamt[0]);
 		}
 	
-		$xctot = $BPROFITzc0-$BPEXPzc0;
+		
+		if(floatval($BPEXPzc0)==0){
+			$xctot = floatval($profitRevn) - floatval($profitCost);
+			$donetwo = ($BPROFITzc0<0) ? "(".number_format(abs($BPROFITzc0),2).")" : number_format(($BPROFITzc0),2);
+			$cnt++;
+			$spreadsheet->setActiveSheetIndex(0)
+				->setCellValue('A'.$cnt, "GROSS PROFIT")
+				->setCellValue('C'.$cnt, $donetwo);
+			$spreadsheet->getActiveSheet()->mergeCells("A".$cnt.":B".$cnt);
+			$spreadsheet->setActiveSheetIndex(0)->getStyle('C'.$cnt)->getNumberFormat()->setFormatCode("_(* #,##0.00_);_(* \(#,##0.00\);_(* \"-\"??_);_(@_)");	
+			$spreadsheet->getActiveSheet()->getStyle("A".$cnt.":C".$cnt)->getFont()->setBold(true);
+		}else{
+			$xctot = $BPROFITzc0-$BPEXPzc0;
+		}
+
 		$xctotax = 0;
 		$xctotaxaftr = 0;
 

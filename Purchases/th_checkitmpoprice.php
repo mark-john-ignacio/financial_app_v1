@@ -14,7 +14,7 @@
 	$sql = "Select A.nprice
 		from purchase_t A
 		left join purchase B on A.compcode=B.compcode and A.cpono=B.cpono
-		where A.compcode='$company' and A.citemno='$itm' and A.cunit='$itmunit' and B.ccode='$custver' order by B.ddate DESC LIMIT 1";
+		where A.compcode='$company' and A.citemdesc='$itm' and A.cunit='$itmunit' and B.ccode='$custver' order by B.ddate DESC LIMIT 1";
 	
 	$result = mysqli_query ($con, $sql);
 

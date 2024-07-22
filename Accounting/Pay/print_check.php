@@ -180,7 +180,7 @@ function numberTowords($num)
 		.ewdatemo{
 			position: absolute;
 			float: right;
-			top: 45px;
+			top: 40px;
 			right: 215px;
 			width: 30px;
 			height:  25px;    
@@ -191,7 +191,7 @@ function numberTowords($num)
 		.ewdatedy{
 			position: absolute;
 			float: right;
-			top: 45px;
+			top: 40px;
 			right: 179px;
 			width: 30px;
 			height:  25px;    
@@ -201,7 +201,7 @@ function numberTowords($num)
 		.ewdateyr{
 			position: absolute;
 			float: right;
-			top: 45px;
+			top: 40px;
 			right: 139px;
 			width: 30px;
 			height:  25px;    
@@ -211,7 +211,7 @@ function numberTowords($num)
 		.ewdamt{
 			position: absolute;
 			float: right;
-			top: 80px;
+			top: 75px;
 			right:70px;
 			width: 150px;
 			height:  18px;   
@@ -220,7 +220,7 @@ function numberTowords($num)
 		}
 		.ewdpay{
 			position: absolute;
-			top: 81px;
+			top: 76px;
 			left: 165px;
 			width: 338px;
 			height:  18px;   
@@ -229,7 +229,7 @@ function numberTowords($num)
 		}
 		.ewdamtwords{
 			position: absolute;
-			top: 110px;
+			top: 105px;
 			left: 132px;
 			width: 600px;
 			height:  18px;    

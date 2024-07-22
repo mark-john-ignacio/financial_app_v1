@@ -88,7 +88,7 @@
 	$sql = "select a.citemno, sum(a.nqty) as nqty
 	From invcount_t a left join invcount b on a.compcode=b.compcode and a.ctranno=b.ctranno 
 	left join items c on a.compcode=c.compcode and a.citemno=c.cpartno 
-	where a.compcode='$company' and b.section_nid='".$whse_req."' and b.ctype='ending' and c.linventoriable=0 and b.dcutdate between STR_TO_DATE('$dtfrom', '%m/%d/%Y') and STR_TO_DATE('$dtto', '%m/%d/%Y') group by a.citemno";
+	where a.compcode='$company' and b.section_nid='".$whse_req."' and b.ctype='ending' and c.linventoriable=0 and b.dcutdate between STR_TO_DATE('$dtfrom', '%m/%d/%Y') and STR_TO_DATE('$dtto', '%m/%d/%Y') and b.lapproved=1 group by a.citemno";
 
 	$invending= mysqli_query($con,$sql);
 	$rowEnd = $invending->fetch_all(MYSQLI_ASSOC);
@@ -118,13 +118,13 @@
 <table width="100%" border="0" align="center" cellpadding="3">
   <tr>
 		<?php
-		$varincnt = 1;
+		$varincnt = 2;
 		$varoutcnt = 1;
 
 			if($whse_req==$whseRR){
 				$varincnt++;
 		?>
-    <td>PU - Purchases</td>
+    	<td>PU - Purchases</td>
 		<?php
 			} 
 			
@@ -135,6 +135,7 @@
 		<?php
 			} 
 		?>
+		<td>PROD - Production Output</td> 
 		<td>IT - Inventory Transfer</td> 
 		<?php		
 			if($whse_req==$whseFG){
@@ -161,11 +162,11 @@
     <th rowspan="2" style="text-align:center; border-right:1px solid">UOM</th>
     <th rowspan="2" style="text-align:center; border-right:1px solid">Beg</th>
     <th colspan="<?=$varincnt?>" style="text-align:center; border-right:1px solid">Inventory In</th>
-		<th rowspan="2" style="text-align:center; border-right:1px solid">Total Available</th>
+	<th rowspan="2" style="text-align:center; border-right:1px solid">Total Available</th>
     <th colspan="<?=$varoutcnt?>" style="text-align:center; border-right:1px solid">Inventory Out</th>
     <th rowspan="2" style="text-align:center; border-right:1px solid">Theo End</th>
-		<th rowspan="2" style="text-align:center; border-right:1px solid">Actual Count</th>
-		<th rowspan="2" style="text-align:center; border-right:1px solid">Variance</th>
+	<th rowspan="2" style="text-align:center; border-right:1px solid">Actual Count</th>
+	<th rowspan="2" style="text-align:center; border-right:1px solid">Variance</th>
     <!--<th rowspan="2" style="text-align:center; border-right:1px solid">Ave Cost/Unit</th>
     <th rowspan="2" style="text-align:center; border-right:1px solid">Ave Retail/Unit</th>-->
   </tr>
@@ -182,6 +183,7 @@
 		<?php
 			}
 		?>
+		<th style="text-align:center; border-right:1px solid">PROD</th>
 		<th style="text-align:center; border-right:1px solid">IT</th>
 		<?php
 			if($whse_req==$whseFG){
@@ -259,6 +261,17 @@
 			<td align="center" style="text-align: center; border-right:1px solid">
 				<?php
 					foreach($arrothers as $rsx){
+						if($rsx['ctype']=="INVCNT" && $rsx['citemno']==$rxrow['citemno']){
+							echo number_format($rsx['nqtyin']);
+							$totIn = $totIn + floatval($rsx['nqtyin']);
+							break;
+						}
+					}
+				?>
+			</td> 
+			<td align="center" style="text-align: center; border-right:1px solid">
+				<?php
+					foreach($arrothers as $rsx){
 						if($rsx['ctype']=="INVTRANS" && $rsx['citemno']==$rxrow['citemno']){
 							echo number_format($rsx['nqtyin']);
 							$totIn = $totIn + floatval($rsx['nqtyin']);
@@ -314,7 +327,7 @@
 				?>
 			</td> 
 			<td align="center" style="text-align: center; border-right:1px solid">
-					<b><?=$totIn-$totOut?></b>
+					<b><?=(intval($totIn-$totOut)!==0) ? number_format($totIn-$totOut) : ""?></b>
 			</td>
 			<td align="center" style="text-align: center; border-right:1px solid">
 				<b>

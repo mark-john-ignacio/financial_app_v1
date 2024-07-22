@@ -7,7 +7,9 @@
 	$company = $_SESSION['companyid'];
 
 	$avail = $_REQUEST['itmbal'];
-	$date1 = date("Y-m-d");
+	//$date1 = date("Y-m-d");
+	$date=date_create($_REQUEST['ddate']);
+	$date1 = date_format($date,"Y-m-d");
 
 	//get all so
 	$resq = mysqli_query ($con, "Select A.*, B.cvattype, C.cpartno, C.citemdesc From so_t A left join quote B on A.compcode=B.compcode and A.ctranno=B.ctranno left join items C on A.compcode=C.compcode and A.citemno=C.cpartno  where A.compcode='$company' and A.ctranno = '".$_REQUEST['id']."'");
@@ -66,7 +68,7 @@
 		if($xremain>0){
 			$json['id'] = $row['cpartno'];
 			$json['desc'] = $row['citemdesc'];
-			$json['nqty'] = $row['nqty'];
+			$json['nqty'] = $availinvtory;
 			$json['totqty'] = $nqty1 - $nqty2;
 			$json['cqtyunit'] = $row['cmainunit'];
 			$json['cunit'] = $row['cunit'];

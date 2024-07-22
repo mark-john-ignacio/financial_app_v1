@@ -194,7 +194,7 @@ class Database extends Config
         // // Load connection details from external file
         require '../../Connection/connection_string.php'; // Adjust the path as necessary
 
-        // // Extracted details with corrected typo
+        // // // Extracted details with corrected typo
         $hostname = $hostname;
         $dbname = $dbanme; // Corrected typo here
         $username = $usn;

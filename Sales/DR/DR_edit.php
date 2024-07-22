@@ -1365,7 +1365,7 @@ $(function(){
 			//add details
 			//alert("th_qolistputall.php?id=" + $(this).val() + "&itmbal=" + xChkBal);
 				$.ajax({
-					url : "th_qolistputall.php?id=" + $(this).val() + "&itmbal=" + xChkBal,
+					url : "th_qolistputall.php?id=" + $(this).val() + "&itmbal=" + xChkBal+ "&ddate=" + $("#date_delivery").val(),
 					type: "GET",
 					dataType: "JSON",
 					async: false,
@@ -2129,7 +2129,7 @@ function InsertSI(){
 				var tranno = $(this).data("id");
 	   			var id = $(this).val();
 	   			$.ajax({
-					url : "th_qolistput.php?id=" + tranno + "&itm=" + id,
+					url : "th_qolistput.php?id=" + tranno + "&itm=" + id + "&ddate=" + $("#date_delivery").val(),
 					type: "GET",
 					dataType: "JSON",
 					success: function(data)

@@ -74,7 +74,6 @@
         <td style="padding:2px">
           <div class="col-xs-8 nopadding">
             <select id="selrpt" name="selrpt" class="form-control input-sm selectpicker"  tabindex="4">
-              <option value="">All Transactions</option>   
               <option value="1">All Posted Transactions</option>      
               <option value="0">All Pending Transactions</option>    
               <option value="2">All Cancelled/Void Transactions</option>        
