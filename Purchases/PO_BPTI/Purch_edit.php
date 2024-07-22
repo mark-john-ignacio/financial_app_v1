@@ -561,6 +561,7 @@ if (mysqli_num_rows($sqlhead)!=0) {
 							<table id="MyTable" class="MyTable table-sm table-bordered" border="1">
 								<thead>
 									<tr>
+										<th style="border-bottom:1px solid #999" width="50px">&nbsp;</th>
 										<?php
 											if($xAllowITMCH==1){
 										?>	
@@ -1522,7 +1523,7 @@ else{
 			crefPRIdent = dcrefident;
 
 			if(nqty=="" && nprice=="" && namount=="" && nfactor=="" && cmainunit==""){
-				var itmprice = chkprice(itmcode,itmunit);
+				var itmprice = chkprice(itmdesc,itmunit);
 				var itmamnt = itmprice;
 				var itmbaseamnt = itmprice;
 				var itmfactor = 1;
@@ -1548,9 +1549,9 @@ else{
 					}
 			}
 		}else{
-			var itmprice = chkprice(itmcode,itmunit);
-			var itmamnt = parseFloat(itmnqty)*parseFloat(itmprice);
-			var itmbaseamnt = parseFloat($("#basecurrval").val())*parseFloat(itmamnt);  
+			var itmprice = chkprice(itmdesc,itmunit);
+			var itmamnt = parseFloat($("#basecurrval").val())*parseFloat(itmamnt);
+			var itmbaseamnt =  parseFloat(itmnqty)*parseFloat(itmprice); 
 		}
 
 			var uomoptions = "";
@@ -1584,6 +1585,8 @@ else{
 			
 		var tbl = document.getElementById('MyTable').getElementsByTagName('tr');
 		var lastRow = tbl.length;
+
+		var tdxnum = "<td align=\"center\"><input type=\"text\" class=\"form-control input-xs\" id=\"txtnum"+lastRow+"\" value=\""+lastRow+"\" readonly></td>";
 
 		var tdedt = "";
 		<?php
@@ -1661,7 +1664,7 @@ else{
 		var tditmremarks = "<td width=\"150\"> <input type='text' class='form-control input-xs' value='"+crem+"' name=\"txtitemrem\" id=\"txtitemrem" + lastRow + "\" maxlength=\"255\"></td>";
 
 		//tdneeded
-		$('#MyTable > tbody:last-child').append('<tr>'+tdedt + tditmpartdesc + tditmdesc + tditmcode + vattd + tditmunit + tditmqty + tditmprice + tditmbaseamount + tditmremarks + tditmdel + '</tr>');
+		$('#MyTable > tbody:last-child').append('<tr>'+tdxnum+tdedt + tditmpartdesc + tditmdesc + tditmcode + vattd + tditmunit + tditmqty + tditmprice + tditmbaseamount + tditmremarks + tditmdel + '</tr>');
 
 		//$('#MyTable > tbody:last-child').append('<tr>'+tdedt+tditmcode + tditmdesc + ewttd + vattd + tditmunit + tditmqty + tditmprice + tditmbaseamount + tditmamount+ tdneeded + tditmremarks + tditmdel + '</tr>');
 
@@ -1690,7 +1693,7 @@ else{
 			
 			$("#seluom"+lastRow).on('change', function() {
 
-				var xyz = chkprice(itmcode,$(this).val());
+				var xyz = chkprice(itmdesc,$(this).val());
 				
 				$('#txtnprice'+lastRow).val(xyz.trim());
 				
@@ -1725,10 +1728,11 @@ else{
 		if(rowCount>1){
 			for (var i = xy+1; i <= rowCount; i++) {
 
+				var ITMtxtnum = document.getElementById('txtnum' + i);
 				var ITMedt = document.getElementById('txtedtitm' + i);
 				var ITMCode = document.getElementById('txtitemcode' + i);
 				var ITMDesc = document.getElementById('txtitemdesc' + i);
-				var ITMewt = document.getElementById('selitmewtyp' + i);
+				//var ITMewt = document.getElementById('selitmewtyp' + i);
 				var ITMvats = document.getElementById('selitmvatyp' + i);
 				var ITMuom = document.getElementById('seluom' + i);
 				var ITMqty = document.getElementById('txtnqty' + i);
@@ -1748,7 +1752,7 @@ else{
 
 				ITMCode.id = "txtitemcode" + za;
 				ITMDesc.id = "txtitemdesc" + za;
-				ITMewt.id = "selitmewtyp" + za;
+				//ITMewt.id = "selitmewtyp" + za;
 				ITMvats.id = "selitmvatyp" + za;
 				ITMuom.id = "seluom" + za;
 				ITMqty.id = "txtnqty" + za;
@@ -1763,6 +1767,9 @@ else{
 				ITMdelx.id = "del" + za;
 	
 				ITMremx.id = "txtitemrem" + za;
+
+				ITMtxtnum.id = "txtnum" + za;
+				ITMtxtnum.value = za;
 			}
 		}
 	}
@@ -2369,21 +2376,23 @@ else{
 	function getcontact(cid){
 
 		$.ajax({
-					url:'../get_contactinfo.php',
-					data: 'c_id='+ cid,                 
-					success: function(value){
-						if(value!=""){
-							if(value.trim()=="Multi"){
-								$("#btnSearchCont").click();
-							}else{
-									var data = value.split(":");
-									
-									$('#txtcontactname').val(data[0]);
-									//$('#txtcontactdesig').val(data[1]);
+			url:'get_contactinfo.php',
+			data: 'c_id='+ cid,                 
+			success: function(value){
+				if(value!=""){
+					if(value.trim()=="Multi"){
+						$("#btnSearchCont").click();
+					}else{
+						var data = value.split(":");
+						
+						$('#txtcontactname').val(data[0]);
+						//$('#txtcontactdesig').val(data[1]);
 						//$('#txtcontactdept').val(data[2]);
 						$("#contact_email").val(data[3]);
-							}
-						}
+						$("#contact_mobile").val(data[4]);
+						$("#contact_fax").val(data[6]);
+					}
+				}
 			}
 		});
 
@@ -2391,67 +2400,77 @@ else{
 
 	function openinv(){
 
-		//clear table body if may laman
-		$('#MyInvTbl tbody').empty(); 
-		$('#MyInvDetList tbody').empty();
-				
-		//get salesno na selected na
-		var y;
-		var salesnos = "";
-		var xstat =  "YES";
+		if($("#txtcust").val()=="" || $("#txtcustid").val()==""){
 
-		$.ajax({ //		data: 'x='+x,
-			url: 'th_prlist.php',
-			dataType: 'json',
-			method: 'post',
-			success: function (data) {
+			$("#AlertMsg").html("Please pick a supplier!");
+			$("#alertbtnOK").show();
+			$("#AlertModal").modal('show');
 
-				$("#allbox").prop('checked', false);
-							
-				console.log(data);
-				$.each(data,function(index,item){
+		}else{
+
+			//clear table body if may laman
+			$('#MyInvTbl tbody').empty(); 
+			$('#MyInvDetList tbody').empty();
+					
+			//get salesno na selected na
+			var y;
+			var salesnos = "";
+			var xstat =  "YES";
+
+			$.ajax({ //		data: 'x='+x,
+				url: 'th_prlist.php',
+				dataType: 'json',
+				method: 'post',
+				success: function (data) {
+
+					$("#allbox").prop('checked', false);
 								
-					if(item.cpono=="NONE"){
-						$("#AlertMsg").html("No Purchase Request Available");
-						$("#alertbtnOK").show();
-						$("#AlertModal").modal('show');
-
-						xstat = "NO";
+					console.log(data);
+					$.each(data,function(index,item){
 									
-						$("#txtcustid").attr("readonly", false);
-						$("#txtcust").attr("readonly", false);
+						if(item.cpono=="NONE"){
+							$("#AlertMsg").html("No Purchase Request Available");
+							$("#alertbtnOK").show();
+							$("#AlertModal").modal('show');
 
+							xstat = "NO";
+										
+							$("#txtcustid").attr("readonly", false);
+							$("#txtcust").attr("readonly", false);
+
+						}
+						else{
+							$("<tr>").append(
+								$("<td id='td"+item.cprno+"'>").text(item.cprno),
+								$("<td>").text(item.cdesc)
+							).appendTo("#MyInvTbl tbody");
+										
+										
+							$("#td"+item.cprno).on("click", function(){
+								opengetdet($(this).text());
+							});
+										
+							$("#td"+item.cprno).on("mouseover", function(){
+								$(this).css('cursor','pointer');
+							});
+						}
+
+					});
+								
+					if(xstat=="YES"){
+						$('#mySIRef').modal('show');
 					}
-					else{
-						$("<tr>").append(
-							$("<td id='td"+item.cprno+"'>").text(item.cprno),
-							$("<td>").text(item.cdesc)
-						).appendTo("#MyInvTbl tbody");
-									
-									
-						$("#td"+item.cprno).on("click", function(){
-							opengetdet($(this).text());
-						});
-									
-						$("#td"+item.cprno).on("mouseover", function(){
-							$(this).css('cursor','pointer');
-						});
-					}
+				},
+				error: function (req, status, err) {
 
-				});
-							
-				if(xstat=="YES"){
-					$('#mySIRef').modal('show');
+					console.log('Something went wrong', status, err);
+					$("#AlertMsg").html("Something went wrong<br>Status: "+status +"<br>Error: "+err);
+					$("#alertbtnOK").show();
+					$("#AlertModal").modal('show');
 				}
-			},
-			error: function (req, status, err) {
+			});
 
-				console.log('Something went wrong', status, err);
-				$("#AlertMsg").html("Something went wrong<br>Status: "+status +"<br>Error: "+err);
-				$("#alertbtnOK").show();
-				$("#AlertModal").modal('show');
-			}
-		});
+		}
 
 	}
 

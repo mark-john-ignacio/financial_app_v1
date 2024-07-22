@@ -29,7 +29,7 @@ require_once "../../Connection/connection_string.php";
 
 		$rfplist = array();
 		$rfplistamt = array();
-		$sql = "Select A.ctranno, A.capvno, A.cacctno, A.npayable from rfp_t A left join rfp B on A.compcode=B.compcode and A.ctranno=B.ctranno where A.compcode='$company' and B.lapproved = 1 and B.lvoid=0";
+		$sql = "Select A.ctranno, A.capvno, A.cacctno, sum(A.npayable) as npayable from rfp_t A left join rfp B on A.compcode=B.compcode and A.ctranno=B.ctranno where A.compcode='$company' and B.lapproved = 1 and B.lvoid=0 Group By A.ctranno, A.capvno, A.cacctno";
 		$result = mysqli_query ($con, $sql); 
 		while($row = mysqli_fetch_array($result, MYSQLI_ASSOC)){
 			$rfplist[] = $row;
@@ -99,7 +99,7 @@ require_once "../../Connection/connection_string.php";
 			$xrefrfpay = 0;
 			if($nRFPvalue==1){
 				foreach($rfplist as $rs0){
-					if($row['ctranno']==$rs0['capvno'] && $row['cacctno']==$rs0['cacctno']){
+					if($row['ctranno']==$rs0['capvno'] && $row['cacctno']==$rs0['cacctno']){ // && $row['namount']==$rs0['ngrossamt']
 						$isyes = "True";
 						$xrefrfpay = $rs0['npayable'];
 						$xrefrfp = $rs0['ctranno'];

@@ -216,10 +216,10 @@
 	values('$company','$cSINo','$preparedby',NOW(),'INSERTED','CHECK ISSUANCE','$compname','Inserted New Record')");
 
 ?>
-<form action="PayBill_edit.php" name="frmpos" id="frmpos" method="post">
+<form action="th_acctentry2.php" name="frmpos" id="frmpos" method="post">
 	<input type="hidden" name="txtctranno" id="txtctranno" value="<?php echo $cSINo;?>" />
 </form>
 <script>
-	alert('Record Succesfully Saved');
+	//alert('Record Succesfully Saved');
   	document.forms['frmpos'].submit();
 </script>

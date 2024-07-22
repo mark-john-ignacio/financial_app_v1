@@ -35,10 +35,11 @@ $spreadsheet->setActiveSheetIndex(0)
 	->setCellValue('I1', 'PO Price')
 	->setCellValue('J1', 'PO Amount')
 	->setCellValue('K1', 'SI Price')
-	->setCellValue('L1', 'SI Amount');
+	->setCellValue('L1', 'SI Amount')
+	->setCellValue('M1', 'Currency');
 
 $spreadsheet->getActiveSheet()->mergeCells("E1:F1");
-$spreadsheet->getActiveSheet()->getStyle('A1:L1')->getFont()->setBold(true);
+$spreadsheet->getActiveSheet()->getStyle('A1:M1')->getFont()->setBold(true);
 
 //start ng details//
 $company = $_SESSION['companyid'];
@@ -64,7 +65,7 @@ if($rpt==""){
 }
 
 $arrPO = array();
-$result=mysqli_query($con,"Select A.cpono, A.nident, A.citemno, A.nprice, A.namount From purchase_t A left join purchase B on A.compcode=B.compcode and A.cpono=B.cpono where A.compcode='".$company."' and B.lcancelled=0 and B.lapproved=1 and B.lvoid=0");
+$result=mysqli_query($con,"Select A.cpono, A.nident, A.citemno, A.nprice, A.namount, B.ccurrencycode From purchase_t A left join purchase B on A.compcode=B.compcode and A.cpono=B.cpono where A.compcode='".$company."' and B.lcancelled=0 and B.lapproved=1 and B.lvoid=0");
 while($row = mysqli_fetch_array($result, MYSQLI_ASSOC)){
 	$arrPO[] = $row;
 }
@@ -111,9 +112,11 @@ while($row = mysqli_fetch_array($result, MYSQLI_ASSOC))
 
 	//find PO reference
 	$POPrice = 0;
+	$POCurrCode = "";
 	foreach($arrPO as $rowPO){
 		if($rowPO['cpono']==$row['creference'] && $rowPO['citemno']==$row['citemno'] && $rowPO['nident']==$row['nrefidentity']){
 			$POPrice = $rowPO['nprice'];
+			$POCurrCode = $rowPO['ccurrencycode'];
 		}
 	}
 
@@ -144,7 +147,8 @@ while($row = mysqli_fetch_array($result, MYSQLI_ASSOC))
 		->setCellValue('I'.$cnt, $POPrice)
 		->setCellValue('J'.$cnt, $POAmt)
 		->setCellValue('K'.$cnt, $SIPrice)
-		->setCellValue('L'.$cnt, $SIAmt);
+		->setCellValue('L'.$cnt, $SIAmt)
+		->setCellValue('L'.$cnt, $POCurrCode);
 
 		$spreadsheet->setActiveSheetIndex(0)->getStyle('H'.$cnt)->getNumberFormat()->setFormatCode("_(* #,##0.00_);_(* \(#,##0.00\);_(* \"-\"??_);_(@_)");
 		$spreadsheet->setActiveSheetIndex(0)->getStyle('I'.$cnt)->getNumberFormat()->setFormatCode("_(* #,##0.00_);_(* \(#,##0.00\);_(* \"-\"??_);_(@_)");
@@ -175,11 +179,12 @@ while($row = mysqli_fetch_array($result, MYSQLI_ASSOC))
 		->setCellValue('I'.$cnt, "")
     ->setCellValue('J'.$cnt, $TOTPOAmt)
 		->setCellValue('K'.$cnt, "")
-		->setCellValue('L'.$cnt, $TOTSIAmt);
+		->setCellValue('L'.$cnt, $TOTSIAmt)
+		->setCellValue('M'.$cnt, "");
 	$spreadsheet->setActiveSheetIndex(0)->getStyle('J'.$cnt)->getNumberFormat()->setFormatCode("_(* #,##0.00_);_(* \(#,##0.00\);_(* \"-\"??_);_(@_)");
 	$spreadsheet->setActiveSheetIndex(0)->getStyle('L'.$cnt)->getNumberFormat()->setFormatCode("_(* #,##0.00_);_(* \(#,##0.00\);_(* \"-\"??_);_(@_)");
 	$spreadsheet->setActiveSheetIndex(0)->getStyle("A".$cnt)->getAlignment()->setHorizontal('right');
-	$spreadsheet->getActiveSheet()->getStyle("A".$cnt.":L".$cnt)->getFont()->setBold(true);
+	$spreadsheet->getActiveSheet()->getStyle("A".$cnt.":M".$cnt)->getFont()->setBold(true);
 //End Details
 
 

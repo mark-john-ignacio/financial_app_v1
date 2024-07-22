@@ -6,9 +6,11 @@ require_once "../../Connection/connection_string.php";
 
 		$company = $_SESSION['companyid'];
 
-		$avail = $_REQUEST['itm'];
-		$date1 = date("Y-m-d");
-		
+		$avail = $_REQUEST['itmbal'];
+		//$date1 = date("Y-m-d");
+		$date=date_create($_REQUEST['ddate']);
+		$date1 = date_format($date,"Y-m-d");
+
 		if($avail==1){
 			$sql = "select a.nident, a.ctranno, a.citemno as cpartno, b.citemdesc, a.cunit, a.nqty as totqty, 1 as nqty, a.nprice, a.nbaseamount, a.namount, a.cmainunit as qtyunit, a.nfactor, ifnull(c.nqty,0) as totqty2 
 			from so_t a 
@@ -45,30 +47,27 @@ require_once "../../Connection/connection_string.php";
 			WHERE a.compcode='$company' and a.ctranno = '".$_REQUEST['id']."' and a.nident = '".$_REQUEST['itm']."'";
 
 		}
-		
-	//echo $sql;
 	
 	$result = mysqli_query ($con, $sql); 
 	while($row = mysqli_fetch_array($result, MYSQLI_ASSOC)){
-	
 	//if($row['nqty']>=1){
 			
 		$nqty1 = $row['totqty'];
 		$nqty2 = $row['totqty2']; 
 		
-		 $json['id'] = $row['cpartno'];
-	   $json['desc'] = $row['citemdesc'];
-		 $json['nqty'] = $row['nqty'];
-		 $json['totqty'] = $nqty1 - $nqty2;
-		 $json['cqtyunit'] = $row['qtyunit'];
-		 $json['cunit'] = $row['cunit'];
-		 $json['nfactor'] = $row['nfactor'];
-		 $json['nprice'] = $row['nprice'];
-		 $json['nbaseamount'] = $row['nbaseamount'];
-		 $json['namount'] = $row['namount'];
-		 $json['xref'] = $row['ctranno'];
-		 $json['xrefident'] = $row['nident'];
-		 $json2[] = $json;
+		$json['id'] = $row['cpartno'];
+		$json['desc'] = $row['citemdesc'];
+		$json['nqty'] = $row['nqty'];
+		$json['totqty'] = $nqty1 - $nqty2;
+		$json['cqtyunit'] = $row['qtyunit'];
+		$json['cunit'] = $row['cunit'];
+		$json['nfactor'] = $row['nfactor'];
+		$json['nprice'] = $row['nprice'];
+		$json['nbaseamount'] = $row['nbaseamount'];
+		$json['namount'] = $row['namount'];
+		$json['xref'] = $row['ctranno'];
+		$json['xrefident'] = $row['nident'];
+		$json2[] = $json;
 
 //	}
 	

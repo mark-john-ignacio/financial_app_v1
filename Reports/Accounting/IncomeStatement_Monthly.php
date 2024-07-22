@@ -432,6 +432,7 @@
 
 		echo "<tr><td colspan='2' style='border-bottom: 2px solid #000; border-top: 1px solid #000;'><b>TOTAL ".$ccate."</b></td>";
 
+		$forexpchk = 0;
 		foreach($hdr_months as $rxzm){
 
 			$donetwo = ($arrlvlamt[0][$rxzm]<0) ? "(".number_format(abs($arrlvlamt[0][$rxzm]),2).")" : number_format(($arrlvlamt[0][$rxzm]),2);
@@ -440,7 +441,16 @@
 
 			echo "<td align='right' style='border-bottom: 2px solid #000; border-top: 1px solid #000; ; padding-right: 20px; padding-left: 20px;'><b>".$donetwo."</b></td>";
 
+			if($ccate=="REVENUE"){
+				$profitRevn[$rxzm] = floatval($arrlvlamt[0][$rxzm]);
+			}
+		
+			if($ccate=="COST OF SALES"){				
+				 $profitCost[$rxzm]= floatval($arrlvlamt[0][$rxzm]);
+			}
+
 			if($ccate=="EXPENSES"){
+				$forexpchk = $forexpchk + floatval($arrlvlamt[0][$rxzm]);
 				$BPEXPzc0[$rxzm] = floatval($arrlvlamt[0][$rxzm]);
 			}
 		
@@ -450,6 +460,20 @@
 		}
 
 		echo "</tr>";
+
+
+		if(floatval($forexpchk)==0){
+			echo "<tr><td colspan='2' style='padding-top:10px'><b>GROSS PROFIT</b></td>";
+
+			foreach($hdr_months as $rxzm){
+				$xctot[$rxzm] = floatval($profitRevn[$rxzm]) - floatval($profitCost[$rxzm]);
+				$donetwo = ($xctot[$rxzm]<0) ? "(".number_format(abs($xctot[$rxzm]),2).")" : number_format(($xctot[$rxzm]),2);
+
+				echo "<td align='right' style='border-bottom: 1px solid #000; padding-top:10px; padding-right: 20px; padding-left: 20px;'><b>".$donetwo."</b></td>";
+			}
+
+			echo "</tr>";
+		}
 
 ?>
 

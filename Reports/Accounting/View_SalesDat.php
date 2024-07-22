@@ -60,7 +60,7 @@
                     <th>Name of Customer <br>(Last Name, First Name, Middle Name)</th>
                     <th>Customer Address</th>
                     <th>Amount of Gross Sales</th>
-                    <th>Amount of Excempt Sales</th>
+                    <th>Amount of Exempt Sales</th>
                     <th>Amount of Zero Rated Sales</th>
                     <th>Amount of Taxable Sales</th>
                     <th>Amount of Output Tax</th>

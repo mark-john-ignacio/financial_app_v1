@@ -14,6 +14,7 @@
 
 	require_once "../../include/denied.php";
 	require_once "../../include/access.php";
+	require_once "../../Model/helper.php";
 	require_once "../../include/sendEmail.php";
 
 	//POST RECORD
@@ -240,8 +241,8 @@
 					$msgz = "<b>SUCCESS: </b>Your transaction is successfully cancelled!";
 					$status = "Cancelled";
 
-					mysqli_query($con,"INSERT INTO logfile(`ctranno`, `cuser`, `ddate`, `cevent`, `module`, `cmachine`, `cremarks`) 
-					values('$tranno','$preparedby',NOW(),'CANCELLED','PURCHASE REQUEST','$compname','Cancel Record')");
+					mysqli_query($con,"INSERT INTO logfile(`ctranno`, `cuser`, `ddate`, `cevent`, `module`, `cmachine`, `cremarks`, `cancel_rem`) 
+					values('$tranno','$preparedby',NOW(),'CANCELLED','PURCHASE REQUEST','$compname','Cancel Record','".$_REQUEST["canmsg"]."')");
 
 				}
 
@@ -261,8 +262,8 @@
 		$msgz = "<b>SUCCESS: </b>Your transaction is successfully cancelled!";
 		$status = "Cancelled";
 
-		mysqli_query($con,"INSERT INTO logfile(`ctranno`, `cuser`, `ddate`, `cevent`, `module`, `cmachine`, `cremarks`) 
-		values('$tranno','$preparedby',NOW(),'CANCELLED','PURCHASE REQUEST','$compname','Cancel Record')");
+		mysqli_query($con,"INSERT INTO logfile(`ctranno`, `cuser`, `ddate`, `cevent`, `module`, `cmachine`, `cremarks`, `cancel_rem`) 
+		values('$tranno','$preparedby',NOW(),'CANCELLED','PURCHASE REQUEST','$compname','Cancel Record','".$_REQUEST["canmsg"]."')");
 
 	}
 
@@ -351,7 +352,15 @@
 					if (mysqli_num_rows($resemailapps)!=0) {
 						while($row = mysqli_fetch_array($resemailapps, MYSQLI_ASSOC)){
 
-							sendEmail($row['cemailadd'],$row['Fname'],$tranno);
+							$output='<p>Dear '.$row['Fname'].',</p>';
+							$output.='<p>This email is to notify that the PR# '.$tranno.' is waiting for your approval.</p>'; 
+							$output.='<p>Thanks,</p>';
+							$output.='<p>Myx Financials,</p>';
+
+							$subject = $logonamz." - Purchase Request";
+							$getcred = getEmailCred();
+
+							sendEmail($row['cemailadd'],$output,$subject,$logonamz,$getcred);
 
 						}
 					}

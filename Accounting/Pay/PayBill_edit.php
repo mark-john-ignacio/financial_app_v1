@@ -548,7 +548,7 @@ if (mysqli_num_rows($sqlchk)!=0) {
 						if($poststat=="True"){
 					?>
 
-					<button type="button" class="btn btn-primary btn-sm" tabindex="6" onClick="window.location.href='PayBill.php?ix=<?=isset($_REQUEST['hdnsrchval']) ? $_REQUEST['hdnsrchval'] : ""?>';" id="btnMain" name="btnMain">
+					<button type="button" class="btn btn-primary btn-sm" tabindex="6" onClick="window.location.href='PayBill.php?ix=<?=isset($_REQUEST['hdnsrchval']) ? $_REQUEST['hdnsrchval'] : ""?>&st=<?=isset($_REQUEST['hdnsrchsta']) ? $_REQUEST['hdnsrchsta'] : ""?>&sdtf=<?=isset($_REQUEST['hdnsrchdte']) ? $_REQUEST['hdnsrchdte'] : ""?>&dtfr=<?=isset($_REQUEST['hdnsrchdtef']) ? $_REQUEST['hdnsrchdtef'] : ""?>&dtto=<?=isset($_REQUEST['hdnsrchdtet']) ? $_REQUEST['hdnsrchdtet'] : ""?>';" id="btnMain" name="btnMain">
 						Back to Main<br>(ESC)
 					</button>
 				
@@ -794,7 +794,12 @@ else{
 								<td>Account Credit</td>  
 							</tr>		
 							<?php
-								$getewtcd = mysqli_query($con,"SELECT * FROM glactivity where compcode='$company' and ctranno='$ccvno'"); 
+
+								if($lPosted==1 && $lVoid==0){
+									$getewtcd = mysqli_query($con,"SELECT * FROM glactivity where compcode='$company' and ctranno='$ccvno'"); 
+								}else{
+									$getewtcd = mysqli_query($con,"SELECT cacctno as acctno, ctitle, ndebit, ncredit FROM paybill_acct where compcode='$company' and ctranno='$ccvno'");
+								}
 								if (mysqli_num_rows($getewtcd)!=0) {
 									while($row = mysqli_fetch_array($getewtcd, MYSQLI_ASSOC)){
 							?>					
@@ -1987,9 +1992,9 @@ else{
 		$("#btnPrint").attr("disabled", false);
 		$("#btnEdit").attr("disabled", false);
 
-		if(document.getElementById("hdnposted").value==1 && document.getElementById("hdnvoid").value==0){
+		//if(document.getElementById("hdnposted").value==1 && document.getElementById("hdnvoid").value==0){
 			$("#btnentry").attr("disabled", false);
-		}
+		//}
 
 		$("#btn-closemod").attr("disabled", false); 
 

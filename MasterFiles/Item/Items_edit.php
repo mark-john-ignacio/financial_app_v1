@@ -456,7 +456,7 @@
                             </div>
                             
                             <div class="col-xs-1 nopadwtop">
-                                <input type="text" class="numeric form-control input-sm" id="txtcmarkUp" name="txtcmarkUp" required value="<?php echo $MarkUp;?>" autocomplete="off"> 
+                                <input type="text" class="numeric form-control input-sm" id="txtcmarkUp" name="txtcmarkUp" <?php if($cPriceType=="MU") { echo "required"; } ?> value="<?php echo $MarkUp;?>" autocomplete="off"> 
                             </div>
                             <div class="col-xs-1 nopadwtop">
                                 <div style=" padding: 5px 10px;">
@@ -471,7 +471,7 @@
                             </div>
                             
                             <div class="col-xs-1 nopadwtop">
-                                <input type="text" class="numeric form-control input-sm" id="txtcmarkUp" name="txtcmarkUp" required value="<?php echo $MarkUp;?>" autocomplete="off"> 
+                                <input type="text" class="numeric form-control input-sm" id="txtcmarkUp" name="txtcmarkUp" <?php if($cPriceType=="MUFIX") { echo "required"; } ?> value="<?php echo $MarkUp;?>" autocomplete="off"> 
                             </div>
                         </div>
 
@@ -1188,12 +1188,15 @@
             var xy = $(this).val();
 
             if(xy=="PM"){
+                $("#txtcmarkUp").attr("required",false);
                 $("#divItmMarkUp").hide();
                 $("#divItmMarkUpFix").hide();
             }else if(xy=="MU"){
+                $("#txtcmarkUp").attr("required",true);
                 $("#divItmMarkUp").show();
                 $("#divItmMarkUpFix").hide();						
             }else if(xy=="MUFIX"){
+                $("#txtcmarkUp").attr("required",true);
                 $("#divItmMarkUpFix").show();	
                 $("#divItmMarkUp").hide();						
             }

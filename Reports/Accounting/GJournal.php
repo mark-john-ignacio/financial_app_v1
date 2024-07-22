@@ -72,7 +72,7 @@
 	$sql = "Select A.cmodule, A.ctranno, A.ddate, A.acctno, B.cacctdesc, A.ndebit, A.ncredit, A.ddate, C.cmemo
 			From glactivity A 
 			left join accounts B on A.compcode=B.compcode and A.acctno=B.cacctid
-			left join journal C on A.compcode=B.compcode and A.ctranno=C.ctranno
+			left join journal C on A.compcode=C.compcode and A.ctranno=C.ctranno
 			Where A.compcode='$company' and A.cmodule='JE' and A.ddate between STR_TO_DATE('".$_REQUEST['date1']."', '%m/%d/%Y') and STR_TO_DATE('".$_REQUEST['date2']."', '%m/%d/%Y')
 			Order By A.ctranno, A.nidentity";
 

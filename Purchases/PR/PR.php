@@ -33,7 +33,7 @@
 
 
 	$arrseclist = array();
-	$sqlempsec = mysqli_query($con,"select A.section_nid as nid, B.cdesc from users_sections A left join locations B on A.section_nid=B.nid where A.UserID='$employeeid' and B.cstatus='ACTIVE' Order By B.cdesc");
+	$sqlempsec = mysqli_query($con,"select A.section_nid as nid, B.cdesc from users_sections A left join locations B on A.section_nid=B.nid and B.compcode='$company' where A.UserID='$employeeid' and B.cstatus='ACTIVE' Order By B.cdesc");
 	$rowdetloc = $sqlempsec->fetch_all(MYSQLI_ASSOC);
 	foreach($rowdetloc as $row0){
 		$arrseclist[] = $row0['nid'];
@@ -48,11 +48,12 @@
 		}
 	}
 
+	//"Select * from purchrequest_trans_approvals where compcode='$company' and lapproved=0 and lreject=0 and userid = '$employeeid' Group BY cprno HAVING nlevel = MIN(nlevel) Order By cprno, nlevel"
 	$chkapprovals = array();
-	$sqlappx = mysqli_query($con,"Select * from purchrequest_trans_approvals where compcode='$company' and lapproved=0 and lreject=0 and userid = '$employeeid' Group BY cprno HAVING nlevel = MIN(nlevel) Order By cprno, nlevel");
+	$sqlappx = mysqli_query($con,"Select A.* FROM purchrequest_trans_approvals A left join (Select cprno, MIN(nlevel) as nlevel from purchrequest_trans_approvals where compcode='$company' and lapproved=0 and lreject=0 Group By cprno Order By cprno, nlevel) B on A.cprno=B.cprno where A.compcode='$company' and A.lapproved=0 and A.lreject=0 and A.nlevel=B.nlevel");
 	if (mysqli_num_rows($sqlappx)!=0) {
 		while($rows = mysqli_fetch_array($sqlappx, MYSQLI_ASSOC)){
-			@$chkapprovals[] = $rows['cprno']; 
+			@$chkapprovals[] = $rows; 
 		}
 	}
 ?>
@@ -66,26 +67,30 @@
 
 	<title>Myx Financials</title>
 
-	<link href="../../global/plugins/font-awesome/css/font-awesome.min.css" rel="stylesheet" type="text/css"/> 
-	<link rel="stylesheet" type="text/css" href="../../Bootstrap/css/bootstrap.css?x=<?=time()?>">
+	<link href="../../global/plugins/font-awesome/css/font-awesome.min.css" rel="stylesheet" type="text/css"/>
+	<link href="../../global/plugins/simple-line-icons/simple-line-icons.min.css" rel="stylesheet" type="text/css"/>
 
-	<link rel="stylesheet" type="text/css" href="../../Bootstrap/css/alert-modal.css">
-	<script src="../../Bootstrap/js/jquery-3.2.1.min.js"></script>
-	<script src="../../Bootstrap/js/bootstrap.js"></script>
+	<link rel="stylesheet" type="text/css" href="../../Bootstrap/css/bootstrap.css?x=<?=time()?>">  
+	<link rel="stylesheet" type="text/css" href="../../Bootstrap/css/alert-modal.css">  
+	<link rel="stylesheet" type="text/css" href="../../Bootstrap/DataTable/DataTable.css">
+
+	<link rel="stylesheet" type="text/css" href="../../global/plugins/bootstrap-daterangepicker/daterangepicker.css?x=<?=time()?>"/>
+
+	<link href="../../global/css/components.css?x=<?=time()?>" rel="stylesheet" type="text/css"/>
 
 </head>
 
 <body style="padding:5px">
 	<div>
-		<section>
-        <div>
-        	<div style="float:left; width:50%">
-				<font size="+2"><u>Purchase Request List</u></font>	
-          </div>
-        </div>
-			<br><br>
 
-			<div class="col-xs-12 nopadwdown">
+		<div class="row">
+			<div class="col-xs-12">
+				<font size="+2"><u>Purchase Request List</u></font>	
+          	</div>
+        </div>
+
+		<div class="row">
+			<div class="col-xs-12">
 				<div class="col-xs-4 nopadding">
 					<button type="button" class="btn btn-primary btn-sm" onClick="location.href='PR_new.php'"><span class="glyphicon glyphicon glyphicon-file"></span>&nbsp;Create New (F1)</button>
 					<?php
@@ -96,82 +101,137 @@
 						}
 					?>
 				</div>
-        <div class="col-xs-1 nopadwtop text-right" style="height:30px !important; padding-right: 10px !important">
-          <b> Search PR No: </b>
-        </div>
+			</div>
+		</div>
+
+        <div class="row">
+			<div class="col-xs-12" style="padding-top: 5px !important">
 				<div class="col-xs-2 text-right nopadding">
-					<input type="text" name="searchByName" id="searchByName" value="<?=(isset($_REQUEST['ix'])) ? $_REQUEST['ix'] : "";?>" class="form-control input-sm" placeholder="Search PR No...">
+					<input type="text" name="searchByName" id="searchByName" value="<?=(isset($_REQUEST['ix'])) ? $_REQUEST['ix'] : "";?>" class="form-control" placeholder="Search PR No...">
 				</div>
 				<div class="col-xs-3 text-right nopadwleft">
-					<select class="form-control input-sm" name="selwhfrom" id="selwhfrom"> 
+					<select class="form-control" name="selwhfrom" id="selwhfrom"> 
 						<option value="">All Sections</option>	
 						<?php
-								foreach($rowdetloc as $localocs){									
+							foreach($rowdetloc as $localocs){									
 						?>
-									<option value="<?php echo $localocs['nid'];?>"><?php echo $localocs['cdesc'];?></option>										
+							<option value="<?php echo $localocs['nid'];?>" <?=(isset($_REQUEST['swh'])) ? (($_REQUEST['swh']==$localocs['nid']) ? "selected" : "" ) : "";?>><?php echo $localocs['cdesc'];?></option>										
 						<?php	
-								}						
+							}						
 						?>
 					</select>
 				</div>
 				<div class="col-xs-2 text-right nopadwleft">
-					<select  class="form-control input-sm" name="selstats" id="selstats">
-						<option value=""> All Transactions</option>
-						<option value="post"> Posted </option>
-						<option value="cancel"> Cancelled </option>
-						<option value="void"> Voided </option>
-						<option value="pending"> Pending </option>
+					<select  class="form-control" name="selstats" id="selstats">
+						<option value=""> All Status</option>
+						<option value="post" <?=(isset($_REQUEST['st'])) ? (($_REQUEST['st']=="post") ? "selected" : "" ) : "";?>> Posted </option>
+						<option value="cancel" <?=(isset($_REQUEST['st'])) ? (($_REQUEST['st']=="cancel") ? "selected" : "" ) : "";?>> Cancelled </option>
+						<option value="void" <?=(isset($_REQUEST['st'])) ? (($_REQUEST['st']=="void") ? "selected" : "" ) : "";?>> Voided </option>
+						<option value="pending" <?=(isset($_REQUEST['st'])) ? (($_REQUEST['st']=="pending") ? "selected" : "" ) : "";?>> Pending </option>
+						<option value="approve" <?=(isset($_REQUEST['st'])) ? (($_REQUEST['st']=="approve") ? "selected" : "" ) : "";?>> For Approval </option>
 					</select>
 				</div>
-			</div>
+				<div class="col-xs-2 text-right nopadwleft">
+					<select  class="form-control" name="seldtfl" id="seldtfl">
+						<option value="A.ddate" <?=(isset($_REQUEST['sdtf'])) ? (($_REQUEST['sdtf']=="A.ddate") ? "selected" : "" ) : "";?>>Encoding Date </option>
+						<option value="A.dneeded" <?=(isset($_REQUEST['sdtf'])) ? (($_REQUEST['sdtf']=="A.dneeded") ? "selected" : "" ) : "";?>>Date Needed </option>
+					</select>
+				</div>
+				<div class="col-xs-3 nopadwleft">
+					<div class="input-group input-slarge">
+						<span class="input-group-addon">
+							<i class="fa fa-calendar"></i>										
+						</span>
+						<input type="text" class="form-control" id="dtefilter" name="dtefilter" placeholder="Date Range..." readonly style="cursor: pointer">
+						<span class="input-group-addon" style="cursor: pointer" id="cleardate">	 
+							<i class="fa fa-times"></i>								
+						</span>
+						<input type="hidden" id="dtefilterfrom" value="<?=(isset($_REQUEST['dtfr'])) ? $_REQUEST['dtfr'] : date('Y-m-d', strtotime('-7 days')) ;?>">
+						<input type="hidden" id="dtefilterto" value="<?=(isset($_REQUEST['dtto'])) ? $_REQUEST['dtto'] : date("Y-m-d");?>">
+					</div>
 
-      <br><br>
-			<table id="example" class="display" cellspacing="0" width="100%">
-				<thead>
-					<tr>
-						<th>PR No</th>
-						<th>Requested By</th>
-						<th>Section</th>
-						<th>Date Needed</th>
-						<th>Created Date</th>
-            <th class="text-center">Status</th>
-						<th class="text-center">Actions</th>
-					</tr>
-				</thead>
-			</table>
+				</div>
+			</div>
+		</div>
+
+		<hr>
+
+		<table id="example" class="display" cellspacing="0" width="100%">
+			<thead>
+				<tr>
+					<th>PR No</th>
+					<th>Requested By</th>
+					<th>Section</th>
+					<th>Date Needed</th>
+					<th>Created Date</th>
+					<th class="text-center">Status</th>
+					<th class="text-center">Actions</th>
+				</tr>
+			</thead>
+		</table>
 
 		</section>
 	</div>		
     
 	<form name="frmedit" id="frmedit" method="post" action="PR_edit.php">
 		<input type="hidden" name="txtctranno" id="txtctranno" />
-		<input type="hidden" name="hdnsrchval" id="hdnsrchval" /> 
+		<input type="hidden" name="hdnsrchval" id="hdnsrchval" />
+		<input type="hidden" name="hdnsrchsta" id="hdnsrchsta" />
 		<input type="hidden" name="hdnsrchsec" id="hdnsrchsec" />
+		<input type="hidden" name="hdnsrchdte" id="hdnsrchdte" />
+		<input type="hidden" name="hdnsrchdtef" id="hdnsrchdtef" />
+		<input type="hidden" name="hdnsrchdtet" id="hdnsrchdtet" />
 	</form>		
 
 	<!-- 1) Alert Modal -->
 	<div class="modal fade" id="AlertModal" tabindex="-1" role="dialog" data-keyboard="false" data-backdrop="static" aria-hidden="true">
-			<div class="vertical-alignment-helper">
-					<div class="modal-dialog vertical-align-top">
-							<div class="modal-content">
-								<div class="alert-modal-danger">
-										<p id="AlertMsg"></p>
-									<p>
-											<center>
-													<button type="button" class="btn btn-primary btn-sm" id="OK" onclick="trans_send('OK')">Ok</button>
-													<button type="button" class="btn btn-danger btn-sm" id="Cancel" onclick="trans_send('Cancel')">Cancel</button>
-													
-													
-													<button type="button" class="btn btn-primary btn-sm" data-dismiss="modal" id="alertbtnOK">Ok</button>
-													
-													<input type="hidden" id="typ" name="typ" value = "">
-													<input type="hidden" id="modzx" name="modzx" value = "">
-											</center>
-									</p>
-								</div> 
-							</div>
-					</div>
+		<div class="vertical-alignment-helper">
+			<div class="modal-dialog vertical-align-top">
+				<div class="modal-content">
+					<div class="alert-modal-danger">
+						<p id="AlertMsg"></p>
+						<p>
+							<center>
+								<button type="button" class="btn btn-primary btn-sm" id="OK" onclick="trans_send('OK')">Ok</button>
+								<button type="button" class="btn btn-danger btn-sm" id="Cancel" onclick="trans_send('Cancel')">Cancel</button>
+								
+								
+								<button type="button" class="btn btn-primary btn-sm" data-dismiss="modal" id="alertbtnOK">Ok</button>
+								
+								<input type="hidden" id="typ" name="typ" value = "">
+								<input type="hidden" id="modzx" name="modzx" value = "">
+							</center>
+						</p>
+					</div> 
+				</div>
 			</div>
+		</div>
+	</div>
+
+	<!-- 1) Alert Modal For Filter -->
+	<div class="modal fade" id="AlertFilterMod" tabindex="-1" role="dialog" data-keyboard="false" data-backdrop="static" aria-hidden="true">
+		<div class="vertical-alignment-helper">
+			<div class="modal-dialog vertical-align-top">
+				<div class="modal-content">
+				<div class="alert-modal-danger">
+					<p id="AlertMsgFil"></p>
+					<p>
+						<center>
+							<button type="button" class="btn btn-primary btn-sm" id="OKFil" onclick="trans_filtr('OK')">Ok</button>
+							<button type="button" class="btn btn-danger btn-sm" id="CancelFil" onclick="trans_filtr('Cancel')">Cancel</button>
+							
+							
+							<button type="button" class="btn btn-primary btn-sm" data-dismiss="modal" id="alertbtnFilOK">Ok</button>
+							
+							<input type="hidden" id="dtrfromx" value = ""> 
+							<input type="hidden" id="dtrtox" value = ""> 
+
+						</center>
+					</p>
+				</div> 
+				</div>
+			</div>
+		</div>
 	</div>
 
 	<!-- 1) TRACKER Modal -->
@@ -195,83 +255,180 @@
 </body>
 </html>
 
-  <link rel="stylesheet" type="text/css" href="../../Bootstrap/DataTable/DataTable.css"> 
+	<script type="text/javascript" language="javascript" src="../../Bootstrap/js/jquery-3.2.1.min.js"></script>
+	<script src="../../global/plugins/jquery-ui/jquery-ui-1.10.3.custom.min.js" type="text/javascript"></script>
+	<script type="text/javascript" language="javascript" src="../../Bootstrap/js/bootstrap.js"></script>	
+
+	<script type="text/javascript" src="../../global/plugins/bootstrap-daterangepicker/moment.min.js?x=<?=time()?>"></script>
+	<script type="text/javascript" src="../../global/plugins/bootstrap-daterangepicker/daterangepicker.js?x=<?=time()?>"></script>
+
+	<script src="../../global/plugins/bootbox/bootbox.min.js" type="text/javascript"></script>
+
 	<script type="text/javascript" language="javascript" src="../../Bootstrap/DataTable/jquery.dataTables.min.js"></script>
 	
 	<script>
 		$(document).ready(function() {
 
-			fill_datatable("<?=(isset($_REQUEST['ix'])) ? $_REQUEST['ix'] : "";?>");
+			fill_datatable("<?=(isset($_REQUEST['ix'])) ? $_REQUEST['ix'] : "";?>", $('#selwhfrom').val(), $('#selstats').val(), $('#seldtfl').val(), $('#dtefilterfrom').val(), $('#dtefilterto').val());	
+
+			$('#dtefilter').daterangepicker({
+				"autoApply": true,
+				"opens": 'left',
+				"format": 'MM/DD/YYYY',
+				"startDate": moment($('#dtefilterfrom').val()).format('MM/DD/YYYY'),
+				"endDate": moment($('#dtefilterto').val()).format('MM/DD/YYYY')
+			});  
+
+			$('#dtefilter').on('apply.daterangepicker', function(ev, picker) {
+
+				$('#dtefilterfrom').val(picker.startDate.format('YYYY-MM-DD'));
+				$('#dtefilterto').val(picker.endDate.format('YYYY-MM-DD'));
+
+				filter_check();
+
+			});
+
+			$("#cleardate").on("click", function(){
+
+				$('#dtrfromx').val($('#dtefilterfrom').val());
+				$('#dtrtox').val($('#dtefilterto').val());
+
+				$('#dtefilter').val('');
+				$('#dtefilterfrom').val('');
+				$('#dtefilterto').val('');
+
+				filter_check();
+				
+			});
 
 			$("#searchByName").keyup(function(){
-					var searchByName = $('#searchByName').val();
-					var searchBySec = $('#selwhfrom').val();
-					var searchBystat = $('#selstats').val();
-
-					$('#example').DataTable().destroy();
-					fill_datatable(searchByName, searchBySec, searchBystat);
-
+				filter_check();
 			});
 
 			$("#selwhfrom").on("change", function() {
-				var searchByName = $('#searchByName').val();
-				var searchBySec = $('#selwhfrom').val();
-				var searchBystat = $('#selstats').val();
-
-				$('#example').DataTable().destroy();
-				fill_datatable(searchByName, searchBySec, searchBystat);
+				filter_check();
 			});
 
-			$("#selstats").change(function(){
-				var searchByName = $('#searchByName').val(); 
-				var searchBySec = $('#selwhfrom').val();
-				var searchBystat = $('#selstats').val(); 
-
-				$('#example').DataTable().destroy();
-				fill_datatable(searchByName, searchBySec, searchBystat);
-
+			$("#selstats, #selstypes, #seldtfl").change(function(){
+				filter_check();
 			});
+
+			$('body').tooltip({
+				selector: '.canceltool',
+				title: fetchData,
+				html: true,
+				placement: 'top'
+			});
+
+			function fetchData()
+			{
+				var fetch_data = '';
+				var element = $(this);
+				var id = element.attr("data-id");
+				var stat = element.attr("data-stat");
+				$.ajax({
+					url:"../../include/fetchcancel.php",
+					method:"POST",
+					async: false,
+					data:{id:id, stat:stat},
+					success:function(data)
+					{
+						fetch_data = data;
+					}
+				});   
+				return fetch_data;
+			}
 
 		});
 
 		
 		$(document).keydown(function(e) {		 
-				if(e.keyCode == 112) { //F2
-					e.preventDefault();
-					window.location = "PR_new.php";
-				}
+			if(e.keyCode == 112) { //F2
+				e.preventDefault();
+				window.location = "PR_new.php";
+			}
 		});
 
+		function filter_check(){
+			var searchByName = $('#searchByName').val();
+			var searchBystat = $('#selstats').val();
+			var searchBySec = $('#selwhfrom').val();
+			var searchBydtfil = $('#seldtfl').val();
+			var searchBydtfr = $('#dtefilterfrom').val();
+			var searchBydtto = $('#dtefilterto').val();
+
+			if(searchByName=="" && searchBystat=="" && searchBySec=="" && searchBydtfr=="" && searchBydtto==""){
+				$("#AlertMsgFil").html("&nbsp;&nbsp;<b>Warning!: </b> Loading data without any filters may cause slowdown.<br> Do you want to continue?");
+				$("#alertbtnFilOK").css("display", "none");
+				$("#OKFil").css("display", "inline");
+				$("#CancelFil").css("display", "inline");
+
+				$("#AlertFilterMod").modal("show");
+			}else{
+
+				$('#example').DataTable().destroy();
+				fill_datatable(searchByName,searchBySec,searchBystat,searchBydtfil,searchBydtfr,searchBydtto);
+			}
+		}
+
+		function trans_filtr($btnclick){
+			if($btnclick=="OK"){
+				var searchByName = $('#searchByName').val();
+				var searchBystat = $('#selstats').val();
+				var searchBySec = $('#selwhfrom').val();
+				var searchBydtfil = $('#seldtfl').val();
+				var searchBydtfr = $('#dtefilterfrom').val();
+				var searchBydtto = $('#dtefilterto').val();
+
+				$('#example').DataTable().destroy();
+				fill_datatable(searchByName,searchBySec,searchBystat,searchBydtfil,searchBydtfr,searchBydtto);
+			}else{
+				$('#dtefilterfrom').val($('#dtrfromx').val());
+				$('#dtefilterto').val($('#dtrtox').val());
+
+				var start_date = moment($('#dtefilterfrom').val()).format('MM/DD/YYYY');
+				var end_date = moment($('#dtefilterto').val()).format('MM/DD/YYYY');
+
+				$('#dtefilter').data('daterangepicker').setStartDate(start_date);
+				$('#dtefilter').data('daterangepicker').setEndDate(end_date);
+
+			}
+			$("#AlertFilterMod").modal("hide");
+		}
 
 		function editfrm(x){
 			$('#txtctranno').val(x); 
 			$('#hdnsrchval').val($('#searchByName').val()); 
-			$('#hdnsrchsec').val($('#selwhfrom').val()); 
+			$('#hdnsrchsec').val($('#selwhfrom').val());
+			$('#hdnsrchsta').val($('#selstats').val());
+			$('#hdnsrchdte').val($('#seldtfl').val());
+			$('#hdnsrchdtef').val($('#dtefilterfrom').val());
+			$('#hdnsrchdtet').val($('#dtefilterto').val());
 			document.getElementById("frmedit").submit();
 		}
 		
-		function fill_datatable(searchByName = '', searchBySec = '', searchBystat = ''){
+		function fill_datatable(searchByName = '', searchBySec = '', searchBystat = '',searchBydtfil = '',searchBydtfr = '', searchBydtto = ''){
 			var dataTable = $('#example').DataTable( {
 				stateSave: true,
-		    "processing" : true,
-		    "serverSide" : true,
-		    "lengthChange": true,
-		    "order" : [],
-		    "searching" : false,
-		    "ajax" : {
+				"processing" : true,
+				"serverSide" : true,
+				"lengthChange": true,
+				"order" : [],
+				"searching" : false,
+				"ajax" : {
 					url:"th_datatable.php",
 					type:"POST",
-					data:{ searchByName: searchByName, searchBySec: searchBySec, searchBystat: searchBystat }
-		    },
+					data:{ searchByName: searchByName, searchBySec: searchBySec, searchBystat: searchBystat, searchBydtfil:searchBydtfil ,searchBydtfr:searchBydtfr, searchBydtto:searchBydtto }
+		    	},
 					"columns": [
 						{ "data": null,
-								"render": function (data, type, full, row) {
-										var sts = "";
-										if (full[6] == 1 || full[8] == 1) {
-											sts="class='text-danger'";
-										}
-										return "<a "+sts+" href=\"javascript:;\" onclick=\"editfrm('"+full[0]+"')\">"+full[0]+"</a>";
-								}								
+							"render": function (data, type, full, row) {
+								var sts = "";
+								if (full[6] == 1 || full[8] == 1) {
+									sts="class='text-danger'";
+								}
+								return "<a "+sts+" href=\"javascript:;\" onclick=\"editfrm('"+full[0]+"')\">"+full[0]+"</a>";
+							}								
 						},
 						{ "data": 1 },
 						{ "data": 2 },
@@ -284,18 +441,38 @@
 									return "For Sending";
 								}else{
 									if(full[5]==0 && full[6]==0){
-										return "For Approval";
+										var chkrejstat = "Pending";
+										var xcz = '<?=json_encode(@$chkapprovals)?>';
+										if(xcz!=""){
+											$.each( JSON.parse(xcz), function( key, val ) {
+												if(val.cprno==full[0] && val.userid=='<?=$employeeid?>'){
+													chkrejstat = "For Approval";
+												}
+												
+											});
+										}
+										return chkrejstat;
 									}else{
 										if(full[5]==1){
 											if(full[8] == 1){
-												return '<b>Voided</b>';
+												return '<a href="#" class="canceltool" data-id="'+full[0]+'" data-stat="VOID" style="color: red !important"><b>Voided</b></a>';
 											}else{
 												return 'Posted';
 											}
 										}else if(full[6]==1){
-											return '<b>Cancelled</b>';
+											return '<a href="#" class="canceltool" data-id="'+full[0]+'" data-stat="CANCELLED" style="color: red !important"><b>Cancelled</b></a>';
 										}else{
-											return "Pending";
+											var chkrejstat = "Pending";
+											var xcz = '<?=json_encode(@$chkapprovals)?>';
+											if(xcz!=""){
+												$.each( JSON.parse(xcz), function( key, val ) {
+													if(val.cprno==full[0] && val.userid=='<?=$employeeid?>'){
+														chkrejstat = "For Approval";
+													}
+													
+												});
+											}
+											return chkrejstat;
 										}
 									}
 
@@ -315,7 +492,7 @@
 
 									if(full[7]==0){
 
-										mgsx = mgsx + "<a href=\"javascript:;\" onClick=\"trans('SEND','"+full[0]+"','"+full[10]+"')\" class=\"btn btn-xs btn-default\"><i class=\"fa fa-share\" style=\"font-size:20px;color: #ffb533;\" title=\"Send transaction\"></i></a> <a href=\"javascript:;\" onClick=\"trans('CANCEL1','"+full[0]+"','"+full[10]+"')\" class=\"btn btn-xs btn-default\"><i class=\"fa fa-thumbs-down\" style=\"font-size:20px;color: Red;\" title=\"Cancel transaction\"></i></a>";
+										mgsx = mgsx + "<a href=\"javascript:;\" onClick=\"trans('SEND','"+full[0]+"','"+full[10]+"')\" class=\"btn btn-icon-only white\"><i class=\"fa fa-share\" style=\"font-size:20px;color: #ffb533;\" title=\"Send transaction\"></i></a> <a href=\"javascript:;\" onClick=\"trans('CANCEL1','"+full[0]+"','"+full[10]+"')\" class=\"btn btn-icon-only white\"><i class=\"fa fa-thumbs-down\" style=\"font-size:20px;color: Red;\" title=\"Cancel transaction\"></i></a>";
 										
 									}else{
 
@@ -326,7 +503,7 @@
 											var xcz = '<?=json_encode(@$chkapprovals)?>';
 											if(xcz!=""){
 												$.each( JSON.parse(xcz), function( key, val ) {
-													if(val==full[0]){
+													if(val.cprno==full[0] && val.userid=='<?=$employeeid?>'){
 														chkrejstat1 = "";
 														chkrejstat2 = "";
 													}
@@ -342,7 +519,7 @@
 												chkrejstat2 = "<?=($cancstat!="True") ? " disabled" : ""?>";
 											}
 											
-											mgsx = mgsx + "<button type=\"button\" onClick=\"trans('POST','"+full[0]+"','"+full[10]+"')\" class=\"btn btn-xs btn-default\" "+chkrejstat1+"><i class=\"fa fa-thumbs-up\" style=\"font-size:20px;color:Green ;\" title=\"Approve transaction\"></i></button> <button type=\"button\" onClick=\"trans('CANCEL','"+full[0]+"','"+full[10]+"')\" class=\"btn btn-xs btn-default\" "+chkrejstat2+"><i class=\"fa fa-thumbs-down\" style=\"font-size:20px;color:Red ;\" title=\"Cancel transaction\"></i></button>";
+											mgsx = mgsx + "<button type=\"button\" onClick=\"trans('POST','"+full[0]+"','"+full[10]+"')\" class=\"btn btn-icon-only white\" "+chkrejstat1+"><i class=\"fa fa-thumbs-up\" style=\"font-size:20px;color:Green ;\" title=\"Approve transaction\"></i></button> <button type=\"button\" onClick=\"trans('CANCEL','"+full[0]+"','"+full[10]+"')\" class=\"btn btn-icon-only white\" "+chkrejstat2+"><i class=\"fa fa-thumbs-down\" style=\"font-size:20px;color:Red ;\" title=\"Cancel transaction\"></i></button>";
 										}
 									}
 
@@ -353,7 +530,7 @@
 									if(mgsx=="-"){
 										mgsx = "";
 									}
-									mgsx = mgsx + " <button type=\"button\" onClick=\"track('"+full[0]+"')\" class=\"btn btn-xs btn-default\"><i class=\"fa fa-file-text-o\" style=\"font-size:20px;color: #3374ff;\" title=\"Track transaction\"></i></button>";
+									mgsx = mgsx + " <button type=\"button\" onClick=\"track('"+full[0]+"')\" class=\"btn btn-icon-only white\"><i class=\"fa fa-file-text-o\" style=\"font-size:20px;color: #3374ff;\" title=\"Track transaction\"></i></button>";
 								}
 
 								mgsx = mgsx +  " </div>";
@@ -370,9 +547,13 @@
 							"className": "text-right"
 						},
 						{
-							"targets": [5,6],
-							"className": "text-center",
-							orderable: false
+							"targets": [5],
+							"className": "text-center dt-body-nowrap"
+						},
+						{
+							"targets": [6],
+							"className": "text-center dt-body-nowrap",
+							"orderable": false
 						}
 					],
 					"createdRow": function( row, data, dataIndex ) {
@@ -427,39 +608,61 @@
 			var num = "";
 			var msg = "";
 
-			if(idz=="OK"){
-				var x = $("#typ").val();
-				var num = $("#modzx").val();
-				
-				if(x=="POST"){
-					var msg = "POSTED";
-				}
-				else if(x=="CANCEL" || x=="CANCEL1"){
-					var msg = "CANCELLED";
-				}
-				else if(x=="SEND"){
-					var msg = "SENT";
-				}
+			var x = $("#typ").val();
+			var num = $("#modzx").val();
 
-					$.ajax ({
-						url: "PR_Tran.php",
-						data: { x: num, typ: x },
-						dataType: "json",
-						beforeSend: function() {
-							$("#AlertMsg").html("&nbsp;&nbsp;<b>Processing " + num + ": </b> Please wait a moment...");
-							$("#alertbtnOK").css("display", "none");
+			if(idz=="OK" && (x=="POST" || x=="SEND")){
+
+				$.ajax ({
+					url: "PR_Tran.php",
+					data: { x: num, typ: x, canmsg: "" },
+					dataType: "json",
+					beforeSend: function() {
+						$("#AlertMsg").html("&nbsp;&nbsp;<b>Processing " + num + ": </b> Please wait a moment...");
+						$("#alertbtnOK").css("display", "none");
+						$("#OK").css("display", "none");
+						$("#Cancel").css("display", "none");
+					},
+					success: function( data ) {
+						console.log(data);
+						setmsg(data,num);
+					}
+				});
+				
+
+			}else if(idz=="OK" && (x=="CANCEL" || x=="CANCEL1")){
+
+				bootbox.prompt({
+					title: 'Enter reason for cancellation.',
+					inputType: 'text',
+					centerVertical: true,
+					callback: function (result) {
+						if(result!="" && result!=null){
+							$.ajax ({
+								url: "PR_Tran.php",
+								data: { x: num, typ: x, canmsg: result },
+								dataType: "json",
+								beforeSend: function() {
+									$("#AlertMsg").html("&nbsp;&nbsp;<b>Processing " + num + ": </b> Please wait a moment...");
+									$("#alertbtnOK").css("display", "none");
+									$("#OK").css("display", "none");
+									$("#Cancel").css("display", "none");
+								},
+								success: function( data ) {
+									console.log(data);
+									setmsg(data,num);
+								}
+							});
+						}else{
+							$("#AlertMsg").html("Reason for cancellation is required!");
+							$("#alertbtnOK").css("display", "inline");
 							$("#OK").css("display", "none");
 							$("#Cancel").css("display", "none");
-						},
-						success: function( data ) {
-							console.log(data);
-							setmsg(data,num);
-						}
-					});
-				
+						}						
+					}
+				});
 
-			}
-			else if(idz=="Cancel"){
+			}else if(idz=="Cancel"){
 				
 				$("#AlertMsg").html("");
 				$("#AlertModal").modal('hide');
@@ -471,34 +674,34 @@
 		function setmsg(data,num){
 			$.each(data,function(key,value){
 														
-							if(value.stat!="False"){
-								$("#msg"+num).html(value.stat);								
-									
-								$("#AlertMsg").html("");
-									
-									$("#AlertMsg").html("&nbsp;&nbsp;<b>" + num + ": </b> Successfully "+value.stat+"...");
-									$("#alertbtnOK").show();
-									$("#OK").hide();
-									$("#Cancel").hide();
-									$("#AlertModal").modal('show');
+				if(value.stat!="False"){
+					$("#msg"+num).html(value.stat);								
+						
+					$("#AlertMsg").html("");
+						
+						$("#AlertMsg").html("&nbsp;&nbsp;<b>" + num + ": </b> Successfully "+value.stat+"...");
+						$("#alertbtnOK").show();
+						$("#OK").hide();
+						$("#Cancel").hide();
+						$("#AlertModal").modal('show');
 
-								
-			
-							}
-							else{
-							//	alert(item.ms);
+					
 
-								
-								$("#AlertMsg").html("");
-								
-								$("#AlertMsg").html(value.ms);
-								$("#alertbtnOK").show();
-								$("#OK").hide();
-								$("#Cancel").hide();
-								$("#AlertModal").modal('show');
-								
-			
-							}
-						});
-			}
+				}
+				else{
+					//	alert(item.ms);
+
+					
+					$("#AlertMsg").html("");
+					
+					$("#AlertMsg").html(value.ms);
+					$("#alertbtnOK").show();
+					$("#OK").hide();
+					$("#Cancel").hide();
+					$("#AlertModal").modal('show');
+					
+
+				}
+			});
+		}
 	</script>

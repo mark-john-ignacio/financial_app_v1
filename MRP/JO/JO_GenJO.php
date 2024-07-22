@@ -83,7 +83,7 @@
 			$nxtlvl = intval($lvl)+1;
 			
 		
-			$totqty = floatval($qty)*floatval($rs2['nqty1']);
+			$totqty = round(floatval($qty)*floatval($rs2['nqty1']));
 
 			//echo $itm."==".$rs2['cmainitemno']."&&". $rs2['nversion']."==".$xcver."<br><br>";
 			if($itm==$rs2['cmainitemno'] && $rs2['nversion']==$xcver){

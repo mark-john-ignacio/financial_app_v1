@@ -113,7 +113,6 @@
 		->setCellValue('I6', 'Total Amount')
 		->setCellValue('J6', 'Status');
 
-	$spreadsheet->getActiveSheet()->mergeCells("D6:E6");
 	$spreadsheet->getActiveSheet()->getStyle('A6:J6')->getFont()->setBold(true);
 
 	$salesno = "";

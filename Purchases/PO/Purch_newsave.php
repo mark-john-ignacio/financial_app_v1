@@ -53,6 +53,7 @@ else {
 
 	
 	$cCustID = $_REQUEST['txtcustid'];
+	$dPODate = $_REQUEST['date_delivery'];
 	$dDelDate = $_REQUEST['date_needed'];
 	$cRemarks = chkgrp($_REQUEST['txtremarks']); 
 	$cContact = chkgrp($_REQUEST['txtcontactname']); 
@@ -109,7 +110,7 @@ else {
 	$preparedby = $_SESSION['employeeid'];
 	
 	//INSERT HEADER	
-	if (!mysqli_query($con,"INSERT INTO purchase(`compcode`, `cpono`, `ccode`, `cremarks`, `ddate`, `dneeded`, `nnet`, `nvat`, `nexempt`, `newt`, `cewtcode`, `ngrossbefore`, `ngross`, `nbasegross`, `ccurrencycode`, `ccurrencydesc`, `nexchangerate`, `cpreparedby`, `lcancelled`, `lapproved`, `lprintposted`, `ccustacctcode`, `ccontact`, `ccontactemail`, `ladvancepay`, `cterms`, `cdelto`, `ddeladd`, `ddelinfo`, `cbillto`) values('$company', '$cSINo', '$cCustID', $cRemarks, NOW(), STR_TO_DATE('$dDelDate', '%m/%d/%Y'), '$nnetvat', '$nvat' ,'$nexempt', '$nLessEWT', '$cewtcode' ,'$nGrossBefore', '$nGross', '$BaseGross', '$CurrCode', '$CurrDesc', '$CurrRate', '$preparedby', 0, 0, 0, '$AccntCode', $cContact, $cContactEmail, $PayType, $PayTerms, $delto, $deladd, $delnotes, $billto)")){
+	if (!mysqli_query($con,"INSERT INTO purchase(`compcode`, `cpono`, `ccode`, `cremarks`, `ddate`, `dcutdate`, `dneeded`, `nnet`, `nvat`, `nexempt`, `newt`, `cewtcode`, `ngrossbefore`, `ngross`, `nbasegross`, `ccurrencycode`, `ccurrencydesc`, `nexchangerate`, `cpreparedby`, `lcancelled`, `lapproved`, `lprintposted`, `ccustacctcode`, `ccontact`, `ccontactemail`, `ladvancepay`, `cterms`, `cdelto`, `ddeladd`, `ddelinfo`, `cbillto`) values('$company', '$cSINo', '$cCustID', $cRemarks, NOW(), STR_TO_DATE('$dPODate', '%m/%d/%Y'), STR_TO_DATE('$dDelDate', '%m/%d/%Y'), '$nnetvat', '$nvat' ,'$nexempt', '$nLessEWT', '$cewtcode' ,'$nGrossBefore', '$nGross', '$BaseGross', '$CurrCode', '$CurrDesc', '$CurrRate', '$preparedby', 0, 0, 0, '$AccntCode', $cContact, $cContactEmail, $PayType, $PayTerms, $delto, $deladd, $delnotes, $billto)")){
 		echo "False";
 	}
 	else{

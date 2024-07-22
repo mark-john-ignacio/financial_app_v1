@@ -2,13 +2,14 @@
     if(!isset($_SESSION)){
         session_start();
     }
-    $_SESSION['pageid'] = "POS_View.php";
-    $company = $_SESSION['companyid'];
-    $employee_cashier_name = $_SESSION['employeeid'];
+    //$_SESSION['pageid'] = "POS_View.php";
 
     include('../Connection/connection_string.php');
-    include('../include/denied.php');
-    include('../include/access2.php');
+    //include('../include/denied.php');
+    //include('../include/access2.php');
+
+    $company = $_SESSION['companyid'];
+    $employee_cashier_name = $_SESSION['employeeid'];
 
     $category = [];
     $items = [];
@@ -43,6 +44,8 @@
                     group by a.citemno
                 ) c on a.cpartno=c.citemno
             WHERE a.compcode='$company' and a.cstatus = 'ACTIVE' and a.ctradetype='Trade' order by a.cclass, a.citemdesc";
+
+            //echo $sql;
 
     $query = mysqli_query($con, $sql);
     if(mysqli_num_rows($query) != 0) {
@@ -320,7 +323,8 @@
 
                         <div style='height: 350px; overflow: auto;'>
                             <div id='item-wrapper'>
-                                <?php foreach($items as $list):
+                                <?php 
+                                foreach($items as $list):
                                     if($list['isInvetory'] != 1) {?>
                                     
                                         <div class='itmslist' id="itemlist" style="height:100px;                     
@@ -955,9 +959,9 @@
 
 
         $('#btnVoid').click(function(){
-            if(!checkAccess("POS_Void.php")){
-                return;
-            }
+           // if(!checkAccess("POS_Void.php")){
+          //      return;
+          //  }
             if(itemStored.length === 0) {
                 return alert('Transaction is empty!')
             }
@@ -1046,9 +1050,9 @@
                 }
             }
 
-            if(!checkAccess("POS_Hold.php")){
-                return;
-            }
+           // if(!checkAccess("POS_Hold.php")){
+           //     return;
+         //   }
 
             let tranno, msg, print, date;
             var isSuccess = false;
@@ -1141,9 +1145,9 @@
 
         $('#btnPay').click(function(){
 
-            if(!checkAccess("POS_Payment.php")){
-                return;
-            }
+           // if(!checkAccess("POS_Payment.php")){
+           //     return;
+          //  }
             let kitchen_receipt = $("#kitchen_receipt").val();
 
             let waitingTime = $("#waiting_time").val();
@@ -1196,9 +1200,9 @@
 
          $(document).ready(function() {
             $('#btnRetrieve').click(function() {
-                if (!checkAccess("POS_Retrieve.php")) {
-                    return;
-                }
+               // if (!checkAccess("POS_Retrieve.php")) {
+               //     return;
+              //  }
 
                 $.ajax({
                     url: 'Function/th_gethold.php',
