@@ -17,7 +17,20 @@ class SalesOrderItemsModel extends Model
         "cidentity",
         "ctranno",
         "creference",
-        "nident"
+        "nident",
+        "citemno",
+        "nqty",
+        "cunit",
+        'nprice',
+        'namount',
+        'nbaseamount',
+        'cmainunit',
+        'nfactor',
+        'nbase',
+        'ndisc',
+        'nnet',
+        'ctaxcode',
+        'nrate',
         
     ];
 

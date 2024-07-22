@@ -156,7 +156,7 @@ class OrderController extends BaseController
 
                 ];
                 $this->itemsModel->insert($data);
-                $product = $this->itemsModel->where('compcode', $this->company_code)->where('citemdesc', $item['name'])->first();
+                $product = $this->itemsModel->find($this->itemsModel->insertID());
                 $this->prepareAndInsertIntoSalesOrderItems($salesOrderId, $item, $product);
 
             }else{
@@ -201,10 +201,15 @@ class OrderController extends BaseController
     }
 
     private function prepareAndInsertIntoSalesOrderItems($salesOrderId, $item, $product){
+        $cidentity = $this->generateSOTCidentity($salesOrderId);
+        $nident = intval(substr($cidentity, strrpos($cidentity, 'P') + 1));
+
         $data = [
             'compcode' => $this->company_code,
-            'cidentity' => 0,// TODO: Implement the identity generation logic,
+            'cidentity' => $cidentity,
             'ctranno' => $salesOrderId,
+            'creference' => $product->cpartno,
+            'nident' => $nident,
             'citemno' => $product->cpartno,
             'nqty' => $item['quantity'],
             'cunit' => $product->cunit,
@@ -220,5 +225,27 @@ class OrderController extends BaseController
             'nrate' => 0,
         ];
         $this->salesOrderItemsModel->insert($data);
+    }
+
+    private function generateSOTCidentity($salesOrderId){
+
+        $pattern = $salesOrderId . 'P%';
+        $latestItem = $this->salesOrderItemsModel
+                           ->like('cidentity', $pattern, 'after')
+                           ->orderBy('cidentity', 'desc')
+                           ->first();
+    
+        $nextNumber = 0; // Default if no previous items are found
+        if ($latestItem) {
+
+            $currentNumber = substr($latestItem->cidentity, strrpos($latestItem->cidentity, 'P') + 1);
+
+            $nextNumber = intval($currentNumber) + 1;
+        }
+    
+
+        $newCidentity = $salesOrderId . 'P' . $nextNumber;
+    
+        return $newCidentity;
     }
 }
