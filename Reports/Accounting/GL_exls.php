@@ -83,10 +83,11 @@ $spreadsheet->getProperties()->setCreator('Myx Financials')
         ->setCellValue('B7', 'Reference')
         ->setCellValue('C7', 'Description')
         ->setCellValue('D7', 'Customer/Supplier')
-        ->setCellValue('E7', 'Account Title')
-        ->setCellValue('F7', 'Debit')
-        ->setCellValue('G7', 'Credit')
-        ->setCellValue('H7', 'Balance');
+        ->setCellValue('E7', 'Account Code')
+        ->setCellValue('F7', 'Account Title')
+        ->setCellValue('G7', 'Debit')
+        ->setCellValue('H7', 'Credit')
+        ->setCellValue('I7', 'Balance');
 
         // $spreadsheet->getActiveSheet()
         // ->getStyle("A7:G7")->getFill()
@@ -113,23 +114,25 @@ $spreadsheet->getProperties()->setCreator('Myx Financials')
             ->setCellValue('B'.$cnt, $row['ctranno'])
             ->setCellValue('C'.$cnt, (@$descrow['typ'] != null ? @$descrow['typ'] : ''))
             ->setCellValue('D'.$cnt, (@$namerow['cname'] != null ? @$namerow['cname'] : ''))
-            ->setCellValue('E'.$cnt, $row['cacctdesc'])
-            ->setCellValue('F'.$cnt, $row['ndebit'])
-            ->setCellValue('G'.$cnt, $row['ncredit'])
-            ->setCellValue('H'.$cnt, $ntotbal);
+            ->setCellValue('E'.$cnt, $row['acctno'])
+            ->setCellValue('F'.$cnt, $row['cacctdesc'])
+            ->setCellValue('G'.$cnt, $row['ndebit'])
+            ->setCellValue('H'.$cnt, $row['ncredit'])
+            ->setCellValue('I'.$cnt, $ntotbal);
 
-            $spreadsheet->setActiveSheetIndex(0)->getStyle('F'.$cnt)->getNumberFormat()->setFormatCode("_(* #,##0.00_);_(* \(#,##0.00\);_(* \"-\"??_);_(@_)");
             $spreadsheet->setActiveSheetIndex(0)->getStyle('G'.$cnt)->getNumberFormat()->setFormatCode("_(* #,##0.00_);_(* \(#,##0.00\);_(* \"-\"??_);_(@_)");
+            $spreadsheet->setActiveSheetIndex(0)->getStyle('H'.$cnt)->getNumberFormat()->setFormatCode("_(* #,##0.00_);_(* \(#,##0.00\);_(* \"-\"??_);_(@_)");
+            $spreadsheet->setActiveSheetIndex(0)->getStyle('I'.$cnt)->getNumberFormat()->setFormatCode("_(* #,##0.00_);_(* \(#,##0.00\);_(* \"-\"??_);_(@_)");
         
 	}
     $cnt += 2;
 
     $ntotGBalTB = floatval($ntotdebit) - floatval($ntotcredit);
     $spreadsheet->setActiveSheetIndex(0)
-            ->setCellValue('E'.$cnt, 'Total')
-            ->setCellValue('F'.$cnt, floatval($ntotdebit))
-            ->setCellValue('G'.$cnt, floatval($ntotcredit))
-            ->setCellValue('H'.$cnt, floatval($ntotGBalTB));
+            ->setCellValue('F'.$cnt, 'Total')
+            ->setCellValue('G'.$cnt, floatval($ntotdebit))
+            ->setCellValue('H'.$cnt, floatval($ntotcredit))
+            ->setCellValue('I'.$cnt, floatval($ntotGBalTB));
 
 	// Rename worksheet
 	$spreadsheet->getActiveSheet()->setTitle('General Ledger');
