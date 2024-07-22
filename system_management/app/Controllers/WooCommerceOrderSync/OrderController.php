@@ -36,9 +36,10 @@ class OrderController extends BaseController
         $webhookSecret = getenv('WEBHOOK_SECRET');
         $webhookSignature = $this->request->getHeaderLine('x-wc-webhook-signature');
         $computedSignature = base64_encode(hash_hmac('sha256', json_encode($jsonData), $webhookSecret, true));
-        // if (!hash_equals($webhookSignature, $computedSignature)) {
-        //     return $this->response->setJSON(['message' => 'Invalid signature']);
-        // }
+        
+        if (!hash_equals($webhookSignature, $computedSignature)) {
+            return $this->response->setJSON(['message' => 'Invalid signature']);
+        }
         
         // Insert the order data into the database
         $customerCode = $this->getCustomerCode($jsonData);
@@ -111,7 +112,7 @@ class OrderController extends BaseController
     
         if ($highestCode) {
             // Extract the numeric part of the highest code
-            $numberPart = intval(substr($highestCode->cempid, 4));
+            $numberPart = intval(substr($highestCode->cempid, 8));
         } else {
             // If no codes exist, start from 0
             $numberPart = 0;
@@ -132,7 +133,7 @@ class OrderController extends BaseController
         return $newCustomerCode;
     }
 
-    // TODO: Implement the insertOrderItems method
+    // TODO: Implement the insertOrderItems method. Test if it works as expected also on multiple items
     private function insertSalesOrderItems($jsonData, $salesOrderId){
         $items = $jsonData['line_items'];
         foreach ($items as $item){
@@ -178,7 +179,7 @@ class OrderController extends BaseController
     
         if ($highestCode) {
             // Extract the numeric part of the highest code
-            $numberPart = intval(substr($highestCode->cempid, 4));
+            $numberPart = intval(substr($highestCode->cpartno, 4));
         } else {
             // If no codes exist, start from 0
             $numberPart = 0;
