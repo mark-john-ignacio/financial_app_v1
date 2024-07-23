@@ -216,7 +216,7 @@ $company = $_SESSION['companyid'];
 
       <div class="modal-header">
         <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-        <h3 class="modal-title" id="InvListHdr">RFP Approval Status</h3>
+        <h3 class="modal-title" id="InvListHdr">Bills Payment Approval Status</h3>
       </div>
             
       <div class="modal-body pre-scrollable" id="divtracker" style="height: 45vh">
@@ -477,7 +477,7 @@ mysqli_close($con);
 				callback: function (result) {
 					if(result!="" && result!=null){
 						$.ajax ({
-							url: "RFP_Tran.php",
+							url: "PayBill_Tran.php",
 							data: { x: num, typ: x, canmsg: result },
 							dataType: "json",
 							beforeSend: function() {
