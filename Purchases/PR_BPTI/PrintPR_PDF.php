@@ -64,29 +64,29 @@
 	}
 	
 
-	$sethdr = '<table border="0" cellpadding="5px" width="100%" id="tblMain" style="border-collapse:collapse">
+	$sethdr = '<table border="0" width="100%" id="tblMain" style="border-collapse:collapse">
 		<tr>
 			<td height="50px" width="100px"> <img src="../'.$logosrc.'" width="100px"/> </td>
 			<td style="text-align: center" height="50px"> <font style="font-size: 18px;">PURCHASE REQUISITION SLIP</font> </td>
 			<td height="50px" width="100px" style="text-align: right"> {PAGENO} / {nbpg} </td>
 		</tr>
 		<tr>
-			<td style="vertical-align: top; padding-top: 10px; padding-right: 5px;" colspan="3">
+			<td style="vertical-align: top;" colspan="3">
 
 				<table border="0" width="100%" style="border-collapse:collapse">
 					<tr>
-						<td style="padding-bottom: 10px; padding-top: 10px">
+						<td>
 							<font style="font-size: 14px;"><b>Department:</b> '.$SecDesc.'</font>
 						</td>
-						<td align="right" style="padding-bottom: 10px; padding-top: 10px">
+						<td align="right">
 							<font style="font-size: 14px;"><b>Date prepared:</b> '.date("F d, Y").'</font>
 						</td>						
 					</tr>
 					<tr>
-						<td style="padding-bottom: 10px">
+						<td>
 							<font style="font-size: 14px;"><b>Date needed:</b> '.date_format(date_create($DateNeeded),"F d, Y").'</font>
 						</td>
-						<td align="right" style="padding-bottom: 10px">
+						<td align="right">
 							<font style="font-size: 14px;"><b> PR No.:</b> '.$csalesno.'</font>
 						</td>
 
@@ -164,7 +164,7 @@
 	$mpdf = new \Mpdf\Mpdf([
 		'mode' => '',
 		'format' => [215.9, 139.7],
-		'default_font_size' => 10,
+		'default_font_size' => 9,
 		'default_font' => 'Arial, sans-serif',
 		'margin_left' => 10,
 		'margin_right' => 10,
