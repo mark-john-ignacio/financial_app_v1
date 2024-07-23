@@ -12,6 +12,14 @@ $routes->post('/verify-pin', 'PinController::verifyPin');
 
 $routes->post('/receive-order', 'WooCommerceOrderSync\OrderController::receiveOrder');
 
+$routes->group('testing', function ($routes) {
+    $con_path = 'Testing\\AddId';
+    $routes->get('add-id-to-so-table', $con_path . '::AddIdToSOTable');
+    $routes->get('remove-id-from-so-table', $con_path . '::RemoveIdFromSOTable');
+    $routes->get('add-id-to-so-t-table-migration', $con_path . '::AddIdToSOTTableMigration');
+    $routes->get('remove-id-from-so-t-table-migration', $con_path . '::RemoveIdFromSOTTableMigration');
+});
+
 $routes->group('', ['filter' => 'pin_verified'], function ($routes) {
 
     $routes->get('/change-pin', 'PinController::changePin');
