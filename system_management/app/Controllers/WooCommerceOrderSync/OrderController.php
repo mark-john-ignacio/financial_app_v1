@@ -133,7 +133,6 @@ class OrderController extends BaseController
         return $newCustomerCode;
     }
 
-    // TODO: Implement the insertOrderItems method. Test if it works as expected also on multiple items
     private function insertSalesOrderItems($jsonData, $salesOrderId){
         $items = $jsonData['line_items'];
         foreach ($items as $item){
@@ -211,6 +210,7 @@ class OrderController extends BaseController
             'ctranno' => $salesOrderId,
             'creference' => $product->cpartno,
             'nident' => $nident,
+            'nrefident' => $nident,
             'citemno' => $product->cpartno,
             'nqty' => $item['quantity'],
             'cunit' => $product->cunit,

@@ -18,6 +18,7 @@ class SalesOrderItemsModel extends Model
         "ctranno",
         "creference",
         "nident",
+        "nrefident",
         "citemno",
         "nqty",
         "cunit",
