@@ -119,5 +119,11 @@ class AddId extends BaseController
             return $this->response->setStatusCode(500)->setBody('An error occurred: ' . $e->getMessage());
         }
     }
+
+    public function runMigration(){
+        $migrations =  service('migrations');
+        $migrations->setNamespace(null)->latest();
+        return $this->response->setStatusCode(200)->setBody('Migration ran successfully.');
+    }
     
 }
