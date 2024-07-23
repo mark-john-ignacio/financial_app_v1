@@ -36,15 +36,17 @@ class OrderController extends BaseController
         $webhookSecret = getenv('WEBHOOK_SECRET');
         $webhookSignature = $this->request->getHeaderLine('x-wc-webhook-signature');
         $computedSignature = base64_encode(hash_hmac('sha256', json_encode($jsonData), $webhookSecret, true));
-        // if (!hash_equals($webhookSignature, $computedSignature)) {
-        //     return $this->response->setJSON(['message' => 'Invalid signature']);
-        // }
+        
+        if (!hash_equals($webhookSignature, $computedSignature)) {
+            return $this->response->setJSON(['message' => 'Invalid signature']);
+        }
         
         // Insert the order data into the database
         $customerCode = $this->getCustomerCode($jsonData);
+        $ctranno = $this->salesOrderModel->generateSONumber($this->company_code);
         $data = [
             'compcode' => $this->company_code,
-            'ctranno' => $this->salesOrderModel->generateSONumber($this->company_code),
+            'ctranno' => $ctranno,
             'ccode' => $customerCode,
             'ddate' => $jsonData['date_created'],
             'dcutdate' => $jsonData['date_created'],
@@ -70,6 +72,7 @@ class OrderController extends BaseController
         $result = $this->salesOrderModel->insert($data);
 
         if($result){
+            $this->insertSalesOrderItems($jsonData, $ctranno);
             return $this->response->setJSON(['message' => 'Order received']);
         }else{
             $error = $result;
@@ -109,7 +112,7 @@ class OrderController extends BaseController
     
         if ($highestCode) {
             // Extract the numeric part of the highest code
-            $numberPart = intval(substr($highestCode->cempid, 4));
+            $numberPart = intval(substr($highestCode->cempid, 8));
         } else {
             // If no codes exist, start from 0
             $numberPart = 0;
@@ -128,5 +131,122 @@ class OrderController extends BaseController
         $newCustomerCode = "CUSTWC_" . $formattedNumber;
     
         return $newCustomerCode;
+    }
+
+    private function insertSalesOrderItems($jsonData, $salesOrderId){
+        $items = $jsonData['line_items'];
+        foreach ($items as $item){
+            $product = $this->itemsModel->where('compcode', $this->company_code)->where('citemdesc', $item['name'])->first();
+            if (!$product){
+                $data = [
+                    'compcode' => $this->company_code,
+                    'cpartno' => $this->generateItemPartNo(),
+                    'cskucode' => $item['sku'],
+                    'citemdesc' => $item['name'],
+                    'cunit' => 'PCS',
+                    'cclass' => 'Goods',
+                    'ctype' => 'ITEM',
+                    'csalestype' => 'Goods',
+                    'ctradetype' => 'Goods',
+                    'ctaxcode' => 'VT',
+                    'cpricetype' => 'MU',
+                    'nmarkup' => 0,
+                    'ccacctcodesales' => '90',
+
+
+                ];
+                $this->itemsModel->insert($data);
+                $product = $this->itemsModel->find($this->itemsModel->insertID());
+                $this->prepareAndInsertIntoSalesOrderItems($salesOrderId, $item, $product);
+
+            }else{
+                $this->prepareAndInsertIntoSalesOrderItems($salesOrderId, $item, $product);
+            }
+        }
+    }
+
+    private function generateItemPartNo(){
+        $prefix = 'ITEM';
+        $column = 'cpartno';
+        
+        // Fetch the highest customer code from the database
+        $highestCode = $this->itemsModel
+                            ->where('compcode', $this->company_code)
+                            ->where($column . ' LIKE', $prefix . '%')
+                            ->orderBy($column, 'desc')
+                            ->first();
+    
+        if ($highestCode) {
+            // Extract the numeric part of the highest code
+            $numberPart = intval(substr($highestCode->cpartno, 4));
+        } else {
+            // If no codes exist, start from 0
+            $numberPart = 0;
+        }
+    
+        // Increment the number to get the next unique number
+        $newNumber = $numberPart + 1;
+    
+        // Determine the padding length dynamically based on the highest number part
+        $paddingLength = max(3, strlen((string)$numberPart));
+    
+        // Format the new number to maintain leading zeros
+        $formattedNumber = str_pad($newNumber, $paddingLength, '0', STR_PAD_LEFT);
+    
+        // Generate the new customer code
+        $newCustomerCode = $prefix . $formattedNumber;
+    
+        return $newCustomerCode;
+
+    }
+
+    private function prepareAndInsertIntoSalesOrderItems($salesOrderId, $item, $product){
+        $cidentity = $this->generateSOTCidentity($salesOrderId);
+        $nident = intval(substr($cidentity, strrpos($cidentity, 'P') + 1));
+
+        $data = [
+            'compcode' => $this->company_code,
+            'cidentity' => $cidentity,
+            'ctranno' => $salesOrderId,
+            'creference' => $product->cpartno,
+            'nident' => $nident,
+            'nrefident' => $nident,
+            'citemno' => $product->cpartno,
+            'nqty' => $item['quantity'],
+            'cunit' => $product->cunit,
+            'nprice' => $item['total'],
+            'namount' => $item['price'],
+            'nbaseamount' => $item['price'],
+            'cmainunit' => $product->cunit,
+            'nfactor' => 1,
+            'nbase' => 0,
+            'ndisc' => 0,
+            'nnet' => 0,
+            'ctaxcode' => 'NT',
+            'nrate' => 0,
+        ];
+        $this->salesOrderItemsModel->insert($data);
+    }
+
+    private function generateSOTCidentity($salesOrderId){
+
+        $pattern = $salesOrderId . 'P%';
+        $latestItem = $this->salesOrderItemsModel
+                           ->like('cidentity', $pattern, 'after')
+                           ->orderBy('cidentity', 'desc')
+                           ->first();
+    
+        $nextNumber = 0; // Default if no previous items are found
+        if ($latestItem) {
+
+            $currentNumber = substr($latestItem->cidentity, strrpos($latestItem->cidentity, 'P') + 1);
+
+            $nextNumber = intval($currentNumber) + 1;
+        }
+    
+
+        $newCidentity = $salesOrderId . 'P' . $nextNumber;
+    
+        return $newCidentity;
     }
 }
