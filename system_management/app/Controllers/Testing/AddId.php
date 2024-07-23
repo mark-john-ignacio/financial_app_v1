@@ -3,50 +3,121 @@
 namespace App\Controllers\Testing;
 
 use App\Controllers\BaseController;
-use CodeIgniter\Files\File;
 
 class AddId extends BaseController
 {
-    protected $helpers = ['form'];
 
     public function AddIdToSOTable()
     {
-        $this->db->query('ALTER TABLE so DROP PRIMARY KEY');
+        $db = \Config\Database::connect();
 
-        // Add id field to banks table and set it as the primary key
-        $this->db->query('ALTER TABLE so ADD id INT(11) UNSIGNED NOT NULL AUTO_INCREMENT PRIMARY KEY FIRST');
+        try {
+            $db->transStart();
 
-        echo 'id field added to so table';
+            // Drop primary key
+            $db->query('ALTER TABLE so DROP PRIMARY KEY');
+
+            // Add id field to so table and set it as the primary key
+            $db->query('ALTER TABLE so ADD id INT(11) UNSIGNED NOT NULL AUTO_INCREMENT PRIMARY KEY FIRST');
+
+            $db->transComplete();
+
+            if ($db->transStatus() === FALSE) {
+                // Transaction failed, handle error
+                return $this->response->setStatusCode(500)->setBody('Failed to alter table schema.');
+            }
+
+            // Success response
+            return $this->response->setStatusCode(200)->setBody('Table schema altered successfully.');
+        } catch (\Throwable $e) {
+            // Handle exception
+            return $this->response->setStatusCode(500)->setBody('An error occurred: ' . $e->getMessage());
+        }
     }
 
     public function RemoveIdFromSOTable()
     {
-        $this->db->query('ALTER TABLE so DROP COLUMN id');
+        $db = \Config\Database::connect();
 
-        // Restore primary key of banks table
-        $this->db->query('ALTER TABLE so ADD PRIMARY KEY(compcode, ctranno)');
+        try {
+            $db->transStart();
 
-        echo 'id field removed from so table';
+            // Drop id field
+            $db->query('ALTER TABLE so DROP COLUMN id');
+
+            // Restore primary key
+            $db->query('ALTER TABLE so ADD PRIMARY KEY(compcode, ctranno)');
+
+            $db->transComplete();
+
+            if ($db->transStatus() === FALSE) {
+                // Transaction failed, handle error
+                return $this->response->setStatusCode(500)->setBody('Failed to alter table schema.');
+            }
+
+            // Success response
+            return $this->response->setStatusCode(200)->setBody('Table schema altered successfully.');
+        } catch (\Throwable $e) {
+            // Handle exception
+            return $this->response->setStatusCode(500)->setBody('An error occurred: ' . $e->getMessage());
+        }
     }
 
     public function AddIdToSOTTableMigration()
     {
-        $this->db->query('ALTER TABLE so_t DROP PRIMARY KEY');
+        $db = \Config\Database::connect();
 
-        // Add id field to banks table and set it as the primary key
-        $this->db->query('ALTER TABLE so_t ADD id INT(11) UNSIGNED NOT NULL AUTO_INCREMENT PRIMARY KEY FIRST');
+        try {
+            $db->transStart();
 
-        echo 'id field added to so_t table';
+            // Drop primary key
+            $db->query('ALTER TABLE so_t DROP PRIMARY KEY');
+
+            // Add id field to so table and set it as the primary key
+            $db->query('ALTER TABLE so_t ADD id INT(11) UNSIGNED NOT NULL AUTO_INCREMENT PRIMARY KEY FIRST');
+
+            $db->transComplete();
+
+            if ($db->transStatus() === FALSE) {
+                // Transaction failed, handle error
+                return $this->response->setStatusCode(500)->setBody('Failed to alter so_t table schema.');
+            }
+
+            // Success response
+            return $this->response->setStatusCode(200)->setBody('so_t Table schema altered successfully.');
+        } catch (\Throwable $e) {
+            // Handle exception
+            return $this->response->setStatusCode(500)->setBody('An error occurred: ' . $e->getMessage());
+        }
+
     }
 
     public function RemoveIdFromSOTTableMigration()
     {
-        $this->db->query('ALTER TABLE so_t DROP COLUMN id');
+        $db = \Config\Database::connect();
 
-        // Restore primary key of banks table
-        $this->db->query('ALTER TABLE so_t ADD PRIMARY KEY(compcode, cidentity)');
+        try {
+            $db->transStart();
 
-        echo 'id field removed from so_t table';
+            // Drop id field
+            $db->query('ALTER TABLE so_t DROP COLUMN id');
+
+            // Restore primary key
+            $db->query('ALTER TABLE so_t ADD PRIMARY KEY(compcode, cidentity)');
+
+            $db->transComplete();
+
+            if ($db->transStatus() === FALSE) {
+                // Transaction failed, handle error
+                return $this->response->setStatusCode(500)->setBody('Failed to alter so_t table schema.');
+            }
+
+            // Success response
+            return $this->response->setStatusCode(200)->setBody('so_t Table schema altered successfully.');
+        } catch (\Throwable $e) {
+            // Handle exception
+            return $this->response->setStatusCode(500)->setBody('An error occurred: ' . $e->getMessage());
+        }
     }
     
 }
