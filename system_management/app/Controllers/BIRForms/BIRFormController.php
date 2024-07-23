@@ -5,6 +5,7 @@ namespace App\Controllers\BIRForms;
 use App\Controllers\BaseController;
 use CodeIgniter\HTTP\ResponseInterface;
 use App\Models\BIRForms\BIRFormModel;
+use App\Entities\BIRForms\FormEntity;
 
 class BIRFormController extends BaseController
 {
@@ -29,13 +30,20 @@ class BIRFormController extends BaseController
 
     public function new()
     {
-        return view($this->view.'new');
+        return view($this->view.'new', ['form' => new FormEntity]);
     }
 
     public function create()
     {
-        $data = $this->request->getPost();
-        $this->formModel->save($data);
+        $form = new FormEntity($this->request->getPost());
+        $id = $this->formModel->insert($form);
+        if ($id===false){
+            return redirect()->back()->with('errors', $this->formModel->errors());
+        }
+
+        return redirect()->to(site_url('bir-forms/form'));
+
+
         return redirect()->to(site_url('bir-forms/form'));
     }
 

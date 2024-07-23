@@ -40,6 +40,9 @@ class OrderController extends BaseController
         if (!hash_equals($webhookSignature, $computedSignature)) {
             return $this->response->setJSON(['message' => 'Invalid signature']);
         }
+
+        // Log the webhook data
+        $this->logWebhookData($jsonData);
         
         // Insert the order data into the database
         $customerCode = $this->getCustomerCode($jsonData);
@@ -248,5 +251,19 @@ class OrderController extends BaseController
         $newCidentity = $salesOrderId . 'P' . $nextNumber;
     
         return $newCidentity;
+    }
+
+    private function logWebhookData($jsonData)
+    {
+        $logFilePath = WRITEPATH . 'logs/webhook_log_' . date('Y-m-d') . '.log';
+        $logMessage = '[' . date('Y-m-d H:i:s') . '] Webhook Received: ' . json_encode($jsonData) . PHP_EOL;
+
+        // Check if the log file exists and is writable, or if it does not exist, attempt to create it.
+        if (is_writable($logFilePath) || !file_exists($logFilePath) && is_writable(dirname($logFilePath))) {
+            file_put_contents($logFilePath, $logMessage, FILE_APPEND);
+        } else {
+            // Optionally, handle the error in case the log file is not writable or cannot be created.
+            error_log('Failed to write webhook data to log file.');
+        }
     }
 }

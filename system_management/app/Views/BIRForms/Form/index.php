@@ -46,8 +46,9 @@ $(document).ready(function() {
                 data: null,
                 render: function(data, type, row) {
                     return `
-                        <a href="<?= site_url('bir-forms/form/edit') ?>/${row.id}" class="btn btn-sm btn-warning">Edit</a>
-                        <a href="<?= site_url('bir-forms/form/delete') ?>/${row.id}" class="btn btn-sm btn-danger">Delete</a>
+                        <a href="<?= site_url('bir-forms/form/') ?>${row.id}" class="btn btn-sm btn-primary">View</a>
+                        <a href="<?= site_url('bir-forms/form/') ?>${row.id}/edit" class="btn btn-sm btn-warning">Edit</a>
+                        <a href="<?= site_url('bir-forms/form/') ?>/${row.id}/delete" class="btn btn-sm btn-danger">Delete</a>
                     `;
                 }
             }
