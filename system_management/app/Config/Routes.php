@@ -20,6 +20,7 @@ $routes->group('testing', function ($routes) {
     $routes->get('add-id-to-so-t-table', $con_path . '::AddIdToSOTTableMigration');
     $routes->get('remove-id-from-so-t-table', $con_path . '::RemoveIdFromSOTTableMigration');
     $routes->get('run-migration', $con_path . '::runMigration');
+    $routes->get('rollback-migration', $con_path . '::rollbackMigration');
 });
 
 $routes->group('', ['filter' => 'pin_verified'], function ($routes) {

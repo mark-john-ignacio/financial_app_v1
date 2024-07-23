@@ -122,8 +122,29 @@ class AddId extends BaseController
 
     public function runMigration(){
         $migrations =  service('migrations');
-        $migrations->setNamespace(null)->latest();
-        return $this->response->setStatusCode(200)->setBody('Migration ran successfully.');
+        try {
+            // Run all available migrations
+            $migrations->setNamespace(null)->latest('default');
+
+            return $this->response->setStatusCode(200)->setBody('Migration ran successfully.');
+        } catch (\Exception $e) {
+            // Handle exceptions, such as when no migrations are found to run
+            return $this->response->setStatusCode(500)->setBody('Failed to run migration: ' . $e->getMessage());
+        }
+    }
+
+    public function rollbackMigration() {
+        $migrations = service('migrations');
+
+        try {
+            // Rollback the last batch of migrations
+            $migrations->setNamespace(null)->regress(0, 'default');
+
+            return $this->response->setStatusCode(200)->setBody('Migration rolled back successfully.');
+        } catch (\Exception $e) {
+            // Handle exceptions, such as when no migrations are found to rollback
+            return $this->response->setStatusCode(500)->setBody('Failed to roll back migration: ' . $e->getMessage());
+        }
     }
     
 }
