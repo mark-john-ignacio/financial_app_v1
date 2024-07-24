@@ -6,6 +6,7 @@ use App\Controllers\BaseController;
 use CodeIgniter\HTTP\ResponseInterface;
 use App\Models\BIRForms\BIRFormModel;
 use App\Entities\BIRForms\FormEntity;
+use CodeIgniter\Exceptions\PageNotFoundException;
 
 class BIRFormController extends BaseController
 {
@@ -55,8 +56,13 @@ class BIRFormController extends BaseController
 
     public function update($id)
     {
-        $data = $this->request->getPost();
-        $this->formModel->update($id, $data);
+        $form = $this->getEntryOr404($id);
+        $form->fill($this->request->getPost());
+
+        if (!form->hasChanged()){
+            return redirect()->back()
+            ->with('message', 'Nothing to update');
+        }
         return redirect()->to(site_url('bir-forms/form'));
     }
 
@@ -69,6 +75,16 @@ class BIRFormController extends BaseController
     public function show($id)
     {
         $data = ['form' => $this->formModel->find($id)];
-        //return view($this->view.'show', $data);
+        return view($this->view.'show', $data);
+    }
+
+    private function getEntryOr404($id): FormEntity
+    {
+        $entry = $this->formModel->find($id);
+        if ($entry === null){
+            throw new PageNotFoundException("Form with $id id not found");
+        }
+
+        return $entry;
     }
 }

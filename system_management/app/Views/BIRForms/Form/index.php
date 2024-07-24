@@ -8,7 +8,7 @@
     <a href="<?= site_url('bir-forms/form/new') ?>" class="btn btn-primary">Add New</a>
     </div>
     <div class="table-responsive">
-        <table id="formsTable" class="display" style="width:100%">
+        <table id="formsTable" class="display responsive" style="width:100%">
             <thead>
                 <tr>
                     <th>Form Code</th>
@@ -45,10 +45,13 @@ $(document).ready(function() {
             {
                 data: null,
                 render: function(data, type, row) {
+                    var showUrl = "<?= url_to('BIRForms\\BIRFormController::show', ':id') ?>".replace(':id', row.id);
+                    var editUrl = "<?= url_to('BIRForms\\BIRFormController::edit', ':id') ?>".replace(':id', row.id);
+                    var deleteUrl = "<?= url_to('BIRForms\\BIRFormController::delete', ':id') ?>".replace(':id', row.id);
                     return `
-                        <a href="<?= site_url('bir-forms/form/') ?>${row.id}" class="btn btn-sm btn-primary">View</a>
-                        <a href="<?= site_url('bir-forms/form/') ?>${row.id}/edit" class="btn btn-sm btn-warning">Edit</a>
-                        <a href="<?= site_url('bir-forms/form/') ?>/${row.id}/delete" class="btn btn-sm btn-danger">Delete</a>
+                        <a href="${showUrl}" class="btn btn-sm btn-primary">View</a>
+                        <a href="${editUrl}" class="btn btn-sm btn-warning">Edit</a>
+                        <a href="${deleteUrl}" class="btn btn-sm btn-danger">Delete</a>
                     `;
                 }
             }
