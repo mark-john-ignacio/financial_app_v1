@@ -12,6 +12,8 @@
 
     <link href="https://cdn.datatables.net/responsive/3.0.2/css/responsive.bootstrap5.min.css" rel="stylesheet">
 
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@sweetalert2/theme-dark@5/dark.css" />
+
     <script src="<?= base_url("assets/js/jquery-3.7.1.min.js")?>"></script>
     <script src="<?= base_url("assets/js/dataTables.js")?>"></script>
     <script src="<?= base_url("assets/js/bootstrap.bundle.min.js")?>"></script>
@@ -19,6 +21,8 @@
 
     <script src="https://cdn.datatables.net/responsive/3.0.2/js/dataTables.responsive.min.js"></script>
     <script src="https://cdn.datatables.net/responsive/3.0.2/js/responsive.bootstrap5.min.js"></script>
+
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.min.js"></script>
 
 
 
@@ -94,7 +98,8 @@
 <?= $this->renderSection("content") ?>
 
 
+
+<?= $this->renderSection("scripts") ?>
 </body>
 </html>
 
-<?= $this->renderSection("scripts") ?>

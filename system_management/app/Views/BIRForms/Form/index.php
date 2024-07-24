@@ -25,9 +25,12 @@
     </div>
 </div>
 
+<?= $this->endSection() ?>
+
+<?= $this->section("scripts")?>
 <script>
 $(document).ready(function() {
-    $('#formsTable').DataTable({
+    var formsDatatable = $('#formsTable').DataTable({
         ajax: {
             url: '<?= site_url('bir-forms/form/load') ?>',
             dataSrc: '',
@@ -51,12 +54,59 @@ $(document).ready(function() {
                     return `
                         <a href="${showUrl}" class="btn btn-sm btn-primary">View</a>
                         <a href="${editUrl}" class="btn btn-sm btn-warning">Edit</a>
-                        <a href="${deleteUrl}" class="btn btn-sm btn-danger">Delete</a>
+                        <a href="#" class="btn btn-sm btn-danger" onclick="confirmDelete('${deleteUrl}')">Delete</a>
                     `;
                 }
             }
         ]
     });
 });
+
+function confirmDelete(deleteUrl) {
+    Swal.fire({
+        title: 'Are you sure?',
+        text: "You won't be able to revert this!",
+        icon: 'warning',
+        showCancelButton: true,
+        confirmButtonColor: '#3085d6',
+        cancelButtonColor: '#d33',
+        confirmButtonText: 'Yes, delete it!'
+    }).then((result) => {
+        if (result.isConfirmed) {
+            fetch(deleteUrl, {
+                method: 'DELETE',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'X-Requested-With': 'XMLHttpRequest'
+                }
+            })
+            .then(response => {
+                if (response.ok) {
+                    Swal.fire(
+                        'Deleted!',
+                        'Your file has been deleted.',
+                        'success'
+                    ).then(() => {
+                        // Optionally, reload the page or remove the deleted item from the DOM
+                        $('#formsTable').DataTable().ajax.reload();
+                    });
+                } else {
+                    Swal.fire(
+                        'Error!',
+                        'There was a problem deleting your file.',
+                        'error'
+                    );
+                }
+            })
+            .catch(error => {
+                Swal.fire(
+                    'Error!',
+                    'There was a problem deleting your file.',
+                    'error'
+                );
+            });
+        }
+    });
+}
 </script>
 <?= $this->endSection() ?>
