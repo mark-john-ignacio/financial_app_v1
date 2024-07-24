@@ -43,9 +43,6 @@ class BIRFormController extends BaseController
         }
 
         return redirect()->to(site_url('bir-forms/form'));
-
-
-        return redirect()->to(site_url('bir-forms/form'));
     }
 
     public function edit($id)
@@ -57,13 +54,21 @@ class BIRFormController extends BaseController
     public function update($id)
     {
         $form = $this->getEntryOr404($id);
+
         $form->fill($this->request->getPost());
 
-        if (!form->hasChanged()){
+        $form->__unset('_method');
+        
+        if (!$form->hasChanged()){
             return redirect()->back()
-            ->with('message', 'Nothing to update');
+            ->with('error', 'Nothing to update');
         }
-        return redirect()->to(site_url('bir-forms/form'));
+        
+        if (!$this->formModel->save($form)){
+            return redirect()->back()->with('errors', $this->formModel->errors());
+        }
+
+        return redirect()->to(site_url('bir-forms/form/'.$id))->with('message', 'Form updated');
     }
 
     public function delete($id)

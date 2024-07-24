@@ -9,11 +9,10 @@ class BIRFormModel extends Model
     protected $table            = 'nav_menu_forms';
     protected $primaryKey       = 'id';
     protected $useAutoIncrement = true;
-    protected $returnType       = 'object';
+    protected $returnType       = 'App\Entities\BIRForms\FormEntity';
     protected $useSoftDeletes   = false;
     protected $protectFields    = true;
     protected $allowedFields    = [
-        'id',
         'form_code',
         'form_name',
         'filter',

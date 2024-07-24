@@ -9,7 +9,8 @@
     </div>
     <div class="row">
         <div class="col-md-6">
-        <?= form_open(url_to("BIRForms\\BIRFormController::update", $form->id),["method" => "patch"]) ?>
+        <?= form_open(url_to("BIRForms\\BIRFormController::update", $form->id)) ?>
+            <input type="hidden" name="_method" value="PUT">
             <?= $this->include("birforms/form/form") ?>
             <button class="btn btn-primary">Save</button>
         <?= form_close() ?>
