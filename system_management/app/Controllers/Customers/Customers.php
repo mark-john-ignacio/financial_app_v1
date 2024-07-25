@@ -4,18 +4,16 @@ namespace App\Controllers\Customers;
 
 use App\Controllers\BaseController;
 use CodeIgniter\HTTP\ResponseInterface;
-
 use PhpOffice\PhpSpreadsheet\IOFactory;
 use PhpOffice\PhpSpreadsheet\Spreadsheet;
 use PhpOffice\PhpSpreadsheet\Writer\Xlsx;
-
 use CodeIgniter\Files\File;
-
 use App\Models\Customers\CustomersModel;
 
 class Customers extends BaseController
 {
     protected $customerModel;
+    protected $view;
 
     public function __construct()
     {
@@ -25,7 +23,7 @@ class Customers extends BaseController
 
     public function index()
     {
-        return view($this->view.'index');
+        return view($this->view . 'index');
     }
 
     public function load()
@@ -33,10 +31,10 @@ class Customers extends BaseController
         $customers = $this->customerModel->findAll();
         return $this->response->setJSON($customers);
     }
-    
+
     public function upload_form()
     {
-        return view($this->view.'upload_form', ['errors' => []]);
+        return view($this->view . 'upload_form', ['errors' => []]);
     }
 
     public function upload()
@@ -48,26 +46,42 @@ class Customers extends BaseController
             $this->swal('error', 'Please check the form for errors.');
             return view($this->view . 'upload_form', $data);
         }
-    
+
         $file = $this->request->getFile('userfile');
         $errors = $this->processUploadedFile($file);
-    
+
         if (!empty($errors)) {
             $data = ['errors' => $errors];
             return view($this->view . 'upload_form', $data);
         }
 
-        if (! $file->hasMoved()) {
-            $filepath = WRITEPATH . 'uploads/' . $file->store();
+        $spreadsheet = $this->loadSpreadsheet($file->getTempName());
+        $sheetData = $this->getSheetData($spreadsheet);
 
-            $data = ['uploaded_fileinfo' => new File($filepath)];
-
-            return view($this->view.'upload_success', $data);
+        if (!$sheetData) {
+            $errors[] = 'The uploaded file is empty or does not contain the required data.';
+            $data = ['errors' => $errors];
+            return view($this->view . 'upload_form', $data);
         }
 
-        $data = ['errors' => 'The file has already been moved.'];
+        // Move the uploaded file to the desired location
+        $newName = strtotime(time()) . $file->getRandomName();
+        $destinationPath = WRITEPATH . 'uploads/customers/';
 
-        return view($this->view.'upload_form', $data);
+        if (!$file->move($destinationPath, $newName)) {
+            $errors[] = 'Failed to move the uploaded file.';
+            $data = ['errors' => $errors];
+            return view($this->view . 'upload_form', $data);
+        }
+
+        if ($sheetData) {
+            $validationResult = $this->validateSheetData($sheetData);
+            if ($validationResult !== true) {
+                return $validationResult;
+            }
+        }
+
+        // Further processing if needed
     }
 
     private function getValidationRules()
@@ -143,5 +157,74 @@ class Customers extends BaseController
         }
 
         return true;
+    }
+
+    private function getSheetData($spreadsheet)
+    {
+        $sheetNames = $spreadsheet->getSheetNames();
+        $sheet1Data = $spreadsheet->getSheet(0)->toArray();
+
+        if (count($sheet1Data) <= 1 || count($sheetNames) != 4) {
+            return false;
+        }
+
+        return [
+            'sheet1' => $sheet1Data,
+            'sheet2' => $spreadsheet->getSheet(1)->toArray(),
+            'sheet3' => $spreadsheet->getSheet(2)->toArray(),
+            'sheet4' => $spreadsheet->getSheet(3)->toArray(),
+        ];
+    }
+
+    private function validateSheetData($sheetData)
+    {
+        $headers = $this->getHeaders($sheetData['sheet1']);
+        $requiredFields = ['Customer Code', 'Registered Name', 'Business / Trade Name', 'Tin No', 'AR Code'];
+
+        foreach ($sheetData['sheet1'] as $index => $row) {
+            if ($index == 0) continue;
+
+            $rowData = array_combine($headers, array_map('trim', $row));
+            $rowErrors = $this->validateRowData($rowData, $requiredFields);
+
+            if (!empty($rowErrors)) {
+                return $this->handleError(implode(', ', $rowErrors));
+            }
+        }
+
+        return true;
+    }
+
+    private function getHeaders($sheet1Data)
+    {
+        $headers = array_map('strval', $sheet1Data[0]);
+        return $headers;
+    }
+
+    private function validateRowData($rowData, $requiredFields)
+    {
+        $rowErrors = [];
+
+        foreach ($requiredFields as $field) {
+            if (empty($rowData[$field])) {
+                $rowErrors[] = "* $field must be filled";
+            }
+        }
+
+        if (!empty($rowData['Zip Code']) && !is_numeric($rowData['Zip Code'])) {
+            $rowErrors[] = '* Zip Code must be numeric';
+        }
+
+        if (!empty($rowData['Credit Limit']) && !is_numeric($rowData['Credit Limit'])) {
+            $rowErrors[] = '* Credit Limit must be numeric';
+        }
+
+        return $rowErrors;
+    }
+
+    private function handleError($message)
+    {
+        $this->swal('error', $message);
+        return view($this->view . 'upload_form');
     }
 }
