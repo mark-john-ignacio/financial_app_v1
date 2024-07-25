@@ -52,9 +52,11 @@ $(document).ready(function() {
                     var editUrl = "<?= url_to('BIRForms\\BIRFormController::edit', ':id') ?>".replace(':id', row.id);
                     var deleteUrl = "<?= url_to('BIRForms\\BIRFormController::delete', ':id') ?>".replace(':id', row.id);
                     return `
-                        <a href="${showUrl}" class="btn btn-sm btn-primary">View</a>
-                        <a href="${editUrl}" class="btn btn-sm btn-warning">Edit</a>
-                        <a href="#" class="btn btn-sm btn-danger" onclick="confirmDelete('${deleteUrl}')">Delete</a>
+                        <div class="d-flex justify-content-start">
+                            <a href="${showUrl}" class="btn btn-sm btn-primary me-2">View</a>
+                            <a href="${editUrl}" class="btn btn-sm btn-warning me-2">Edit</a>
+                            <a href="#" class="btn btn-sm btn-danger" onclick="confirmDelete('${deleteUrl}')">Delete</a>
+                        </div>
                     `;
                 }
             }
@@ -70,7 +72,8 @@ function confirmDelete(deleteUrl) {
         showCancelButton: true,
         confirmButtonColor: '#3085d6',
         cancelButtonColor: '#d33',
-        confirmButtonText: 'Yes, delete it!'
+        confirmButtonText: 'Yes, delete it!',
+        reverseButtons: true,
     }).then((result) => {
         if (result.isConfirmed) {
             fetch(deleteUrl, {
