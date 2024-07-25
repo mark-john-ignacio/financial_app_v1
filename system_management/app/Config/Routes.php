@@ -71,6 +71,7 @@ $routes->group('', ['filter' => 'pin_verified'], function ($routes) {
         $routes->get('load', $con_path . '::load');
         $routes->get('upload_form', $con_path . '::upload_form');
         $routes->post('upload', $con_path . '::upload');
+        $routes->post('insert-customers', $con_path . '::insertCustomers');
     });
 });
 
