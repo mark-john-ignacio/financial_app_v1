@@ -6,7 +6,7 @@
     <h1>Customers</h1>
     <div class="mb-3 d-flex justify-content-between">
         <!-- <a href="<?= site_url('bir-forms/form/new') ?>" class="btn btn-primary">Add New</a> -->
-        <a class="btn btn-secondary" data-bs-toggle="modal" data-bs-target="#massUploadModal">Mass Upload</a>
+        <a class="btn btn-secondary" href="<?= url_to("Customers\\Customers::upload_form") ?>">Mass Upload</a>
     </div>
     <div class="table-responsive">
         <table id="formsTable" class="display responsive" style="width:100%">
@@ -32,7 +32,7 @@
 $(document).ready(function() {
     var formsDatatable = $('#formsTable').DataTable({
         ajax: {
-            url: '<?= site_url('customers/load') ?>',
+            url: '<?= url_to("Customers\\Customers::load") ?>',
             dataSrc: '',
             error: function (xhr, error, thrown) {
                 console.error("Error occurred during AJAX request:", error, thrown);

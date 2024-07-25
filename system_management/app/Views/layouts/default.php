@@ -100,6 +100,19 @@
 
 
 <?= $this->renderSection("scripts") ?>
+
+<?php if (isset($_SESSION["swal"]) && !empty($_SESSION["swal"])): 
+    list($title, $description, $type) = explode(',', $_SESSION["swal"]); 
+    $_SESSION["swal"] = ''; ?>
+    <script>
+        Swal.fire({
+            title: '<?= htmlspecialchars($title, ENT_QUOTES, 'UTF-8') ?>',
+            text: '<?= htmlspecialchars($description, ENT_QUOTES, 'UTF-8') ?>',
+            icon: '<?= htmlspecialchars($type, ENT_QUOTES, 'UTF-8') ?>',
+        });
+    </script>
+<?php endif; ?>
+
 </body>
 </html>
 
