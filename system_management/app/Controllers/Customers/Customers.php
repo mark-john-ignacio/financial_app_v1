@@ -41,7 +41,38 @@ class Customers extends BaseController
 
     public function upload()
     {
-        $validationRule = [
+        $validationRule = $this->getValidationRules();
+
+        if (!$this->validateData([], $validationRule)) {
+            $data = ['errors' => $this->validator->getErrors()];
+            $this->swal('error', 'Please check the form for errors.');
+            return view($this->view . 'upload_form', $data);
+        }
+    
+        $file = $this->request->getFile('userfile');
+        $errors = $this->processUploadedFile($file);
+    
+        if (!empty($errors)) {
+            $data = ['errors' => $errors];
+            return view($this->view . 'upload_form', $data);
+        }
+
+        if (! $file->hasMoved()) {
+            $filepath = WRITEPATH . 'uploads/' . $file->store();
+
+            $data = ['uploaded_fileinfo' => new File($filepath)];
+
+            return view($this->view.'upload_success', $data);
+        }
+
+        $data = ['errors' => 'The file has already been moved.'];
+
+        return view($this->view.'upload_form', $data);
+    }
+
+    private function getValidationRules()
+    {
+        return [
             'userfile' => [
                 'label' => 'Excel File',
                 'rules' => [
@@ -52,24 +83,65 @@ class Customers extends BaseController
                 ],
             ],
         ];
-        if (! $this->validateData([], $validationRule)) {
-            $data = ['errors' => $this->validator->getErrors()];
+    }
 
-            return view($this->view.'upload_form', $data);
+    private function processUploadedFile($file)
+    {
+        try {
+            $uploadedSpreadsheet = $this->loadSpreadsheet($file->getTempName());
+            $templatePath = WRITEPATH . 'templates/customertemplate.xlsx';
+            $templateSpreadsheet = $this->loadSpreadsheet($templatePath);
+
+            if (!$this->compareExcelStructure($templateSpreadsheet, $uploadedSpreadsheet)) {
+                return ['The uploaded file does not match the template.'];
+            }
+
+            // Proceed with further processing of the spreadsheet
+            return [];
+        } catch (\Exception $e) {
+            return [$e->getMessage()];
+        }
+    }
+
+    private function loadSpreadsheet($filePath)
+    {
+        return IOFactory::load($filePath);
+    }
+
+    private function compareExcelStructure($templateSpreadsheet, $uploadedSpreadsheet)
+    {
+        // Get sheet names
+        $templateSheetNames = $templateSpreadsheet->getSheetNames();
+        $uploadedSheetNames = $uploadedSpreadsheet->getSheetNames();
+
+        // Check if the number of sheets is the same
+        if (count($templateSheetNames) !== count($uploadedSheetNames)) {
+            return false;
         }
 
-        $img = $this->request->getFile('userfile');
+        // Check if sheet names match
+        foreach ($templateSheetNames as $index => $templateSheetName) {
+            if ($templateSheetName !== $uploadedSheetNames[$index]) {
+                return false;
+            }
 
-        if (! $img->hasMoved()) {
-            $filepath = WRITEPATH . 'uploads/' . $img->store();
+            // Compare the data of each sheet
+            $templateSheet = $templateSpreadsheet->getSheet($index)->toArray();
+            $uploadedSheet = $uploadedSpreadsheet->getSheet($index)->toArray();
 
-            $data = ['uploaded_fileinfo' => new File($filepath)];
+            // Check if the number of columns is the same
+            if (count($templateSheet[0]) !== count($uploadedSheet[0])) {
+                return false;
+            }
 
-            return view($this->view.'upload_success', $data);
+            // Check if column headers match
+            for ($i = 0; $i < count($templateSheet[0]); $i++) {
+                if ($templateSheet[0][$i] !== $uploadedSheet[0][$i]) {
+                    return false;
+                }
+            }
         }
 
-        $data = ['errors' => 'The file has already been moved.'];
-
-        return view($this->view.'upload_form', $data);
+        return true;
     }
 }

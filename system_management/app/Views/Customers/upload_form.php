@@ -8,7 +8,7 @@
     <div class="card-header">
       <h1 class="card-title fs-5">Mass Upload Customers</h1>
     </div>
-    <?php if (!empty($errors)): ?>
+    <?php if (isset($errors) && is_array($errors) && count($errors) > 0): ?>
     <div class="alert alert-danger">
       <h5 class="alert-heading">Error(s) occurred:</h5>
       <ul class="mb-0">

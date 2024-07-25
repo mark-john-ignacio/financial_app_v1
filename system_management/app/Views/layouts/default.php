@@ -101,9 +101,13 @@
 
 <?= $this->renderSection("scripts") ?>
 
-<?php if (isset($_SESSION["swal"]) && !empty($_SESSION["swal"])): 
-    list($title, $description, $type) = explode(',', $_SESSION["swal"]); 
-    $_SESSION["swal"] = ''; ?>
+<?php 
+$session = \Config\Services::session();
+
+if ($session->has('swal') && !empty($session->get('swal'))): 
+    list($title, $description, $type) = explode(',', $session->get('swal')); 
+    $session->remove('swal'); 
+?>
     <script>
         Swal.fire({
             title: '<?= htmlspecialchars($title, ENT_QUOTES, 'UTF-8') ?>',
