@@ -49,7 +49,7 @@
                 } else {
                     echo !$isValid ? 'disabled' : '';
                 }
-            ?>" 
+            ?>
             type="submit" form="dataForm">
             Insert Data
         </button>
@@ -282,6 +282,7 @@
                     });
                     tableData.push(row);
                 });
+                console.log(tableData);
 
                 var tableData2 = [];
                 $('#myTable2 tbody tr').each(function () {

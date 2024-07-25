@@ -559,7 +559,8 @@ class Customers extends BaseController
 
     public function insertCustomers()
     {
-        $data = $this->request->getPost('data');
+        $data = json_decode($this->request->getPost('tableData'))->table1;
+        //$data = $this->request->getPost('data');
         $data2 = $this->request->getPost('data2');
         $data3 = $this->request->getPost('data3');
         $data4 = $this->request->getPost('data4');
@@ -584,17 +585,16 @@ class Customers extends BaseController
 
         if ($success && $success2 && $success3 && $success4) {
             $this->swal('success', 'Successfully Inserted');
-            return view($this->view . 'index');
+            return redirect()->to(base_url() . '/customers');
         } else {
             $this->swal('error', 'Insertion Failed');
-            return view($this->view . 'index');
+            return redirect()->to(base_url() . '/customers');
         }
     }
 
 
     private function inserttblDataCustomers($data)
     {  
-    
         // Define the mapping of keywords to database fields
         $fieldMappings = [
             'cempid' => 'Customer Code',
@@ -661,14 +661,14 @@ class Customers extends BaseController
             );
            
             if (!empty($rowData['cempid']) && !empty($rowData['cname'])) {
-                // TODO: Decide if we want logtrail but for now, we will not use it
                 //$this->db->table('logfile_customer_masterfile')->insert($logfile);
-                $rowDataBatch[] = $rowData;
+                $saveSuccess = $this->customerModel->insert($rowData);
+
+                if (!$saveSuccess) {
+                    $success = false;
+                }
             } else {
                 $success = false;}
-            }
-            if ($success) {
-                $this->customerModel->insertBatch($rowDataBatch);
             }
         return $success;
     }
@@ -686,7 +686,6 @@ class Customers extends BaseController
         ];
     
         $success = true;
-    
         foreach ($data as $row) {
             $rowData = [];
     

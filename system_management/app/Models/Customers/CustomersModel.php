@@ -17,6 +17,8 @@ class CustomersModel extends Model
         "cempid",
         "cname",
         "ctradename",
+        "ctin",
+        'cacctcodetype',
         "chouseno",
         "ccity",
         "cstate",
