@@ -76,11 +76,12 @@ $spreadsheet->getProperties()->setCreator('Myx Financials')
         $spreadsheet->setActiveSheetIndex(0) 
         ->setCellValue('A7', 'DATE')
         ->setCellValue('B7', 'REFERENCE')
-        ->setCellValue('C7', 'CUSTOMER NAME')
-        ->setCellValue('D7', 'ACCOUNT NO')
-        ->setCellValue('E7', 'ACCOUNT TITLE ')
-        ->setCellValue('F7', 'DEBIT')
-        ->setCellValue('G7', 'CREDIT');
+        ->setCellValue('C7', 'PARTICULARS')
+        ->setCellValue('D7', 'CUSTOMER NAME')
+        ->setCellValue('E7', 'ACCOUNT NO')
+        ->setCellValue('F7', 'ACCOUNT TITLE ')
+        ->setCellValue('G7', 'DEBIT')
+        ->setCellValue('H7', 'CREDIT');
 
         // $spreadsheet->getActiveSheet()
         // ->getStyle("A7:F7")->getFill()
@@ -102,24 +103,25 @@ $spreadsheet->getProperties()->setCreator('Myx Financials')
         $spreadsheet->setActiveSheetIndex(0)
             ->setCellValue('A'.$cnt, $row['dapvdate'])
             ->setCellValue('B'.$cnt, $row['ctranno'])
-            ->setCellValue('C'.$cnt, $row['cname'])
-            ->setCellValue('D'.$cnt, $row['cacctno'])
-            ->setCellValue('E'.$cnt, $row['ctitle'])
-            ->setCellValue('F'.$cnt, $row['ndebit'])
-            ->setCellValue('G'.$cnt, $row['ncredit'])
-            ->setCellValue('H'.$cnt, ($row['lapproved'] == 0 ? 'Unposted' : ''));
+            ->setCellValue('C'.$cnt, $row['cpaymentfor'])
+            ->setCellValue('D'.$cnt, $row['cname'])
+            ->setCellValue('E'.$cnt, $row['cacctno'])
+            ->setCellValue('F'.$cnt, $row['ctitle'])
+            ->setCellValue('G'.$cnt, $row['ndebit'])
+            ->setCellValue('H'.$cnt, $row['ncredit'])
+            ->setCellValue('I'.$cnt, ($row['lapproved'] == 0 ? 'Unposted' : ''));
 
-            $spreadsheet->setActiveSheetIndex(0)->getStyle('F'.$cnt)->getNumberFormat()->setFormatCode("_(* #,##0.00_);_(* \(#,##0.00\);_(* \"-\"??_);_(@_)");
             $spreadsheet->setActiveSheetIndex(0)->getStyle('G'.$cnt)->getNumberFormat()->setFormatCode("_(* #,##0.00_);_(* \(#,##0.00\);_(* \"-\"??_);_(@_)");
+            $spreadsheet->setActiveSheetIndex(0)->getStyle('H'.$cnt)->getNumberFormat()->setFormatCode("_(* #,##0.00_);_(* \(#,##0.00\);_(* \"-\"??_);_(@_)");
         
             $tranno = $row['ctranno'];
 	}
     $cnt += 2;
     $spreadsheet->setActiveSheetIndex(0) 
-            ->setCellValue('E'.$cnt, 'Total: ')
-            ->setCellValue('F'.$cnt, floatval($ntotdebit))
-            ->setCellValue('G'.$cnt, floatval($ntotcredit));
-    $spreadsheet->getActiveSheet()->getStyle("A$cnt:F$cnt")->getFont()->setBold(true);
+            ->setCellValue('F'.$cnt, 'Total: ')
+            ->setCellValue('G'.$cnt, floatval($ntotdebit))
+            ->setCellValue('H'.$cnt, floatval($ntotcredit));
+    $spreadsheet->getActiveSheet()->getStyle("A$cnt:H$cnt")->getFont()->setBold(true);
 
 	// Rename worksheet
 	$spreadsheet->getActiveSheet()->setTitle('Accounts Payable Jorunal ');
