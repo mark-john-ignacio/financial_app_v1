@@ -3,8 +3,9 @@
 namespace App\Models\Customers;
 
 use CodeIgniter\Model;
+use App\Models\BaseModel;
 
-class CustomersModel extends Model
+class CustomersModel extends BaseModel
 {
     protected $table            = 'customers';
     protected $primaryKey       = 'id';
@@ -45,15 +46,4 @@ class CustomersModel extends Model
     protected $validationMessages   = [];
     protected $skipValidation       = false;
     protected $cleanValidationRules = true;
-
-    // Callbacks
-    protected $allowCallbacks = true;
-    protected $beforeInsert   = [];
-    protected $afterInsert    = [];
-    protected $beforeUpdate   = [];
-    protected $afterUpdate    = [];
-    protected $beforeFind     = [];
-    protected $afterFind      = [];
-    protected $beforeDelete   = [];
-    protected $afterDelete    = [];
 }

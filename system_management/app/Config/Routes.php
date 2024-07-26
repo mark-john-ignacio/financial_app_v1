@@ -74,6 +74,16 @@ $routes->group('', ['filter' => 'pin_verified'], function ($routes) {
         $routes->post('insert-customers', $con_path . '::insertCustomers');
         $routes->get('download-template', $con_path . '::downloadTemplate');
     });
+
+    $routes->group('items', function ($routes) {
+        $con_path = 'Items\\ItemsController';
+        $routes->resource('', ['controller' => $con_path]);
+        $routes->get('load', $con_path . '::load');
+        $routes->get('upload_form', $con_path . '::upload_form');
+        $routes->post('upload', $con_path . '::upload');
+        $routes->post('insert-items', $con_path . '::insertItems');
+        $routes->get('download-template', $con_path . '::downloadTemplate');
+    });
 });
 
 

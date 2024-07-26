@@ -19,7 +19,7 @@ class Customers extends BaseController
     {
         $this->customerModel = new CustomersModel();
         $this->view = 'Customers/';
-        $this->company_code = isset(session()->company_code) ? session()->company_code : '001';
+        $this->company_code = session()->get('current_company')->company_code;
         $this->user_id = isset(session()->user_id) ? session()->user_id : '1';
     }
 
