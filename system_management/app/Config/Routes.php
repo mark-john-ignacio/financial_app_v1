@@ -84,6 +84,16 @@ $routes->group('', ['filter' => 'pin_verified'], function ($routes) {
         $routes->post('insert-items', $con_path . '::insertItems', ['as' => 'items-insert-items']);
         $routes->get('download-template', $con_path . '::downloadTemplate', ['as' => 'items-download-template']);
     });
+
+    $routes->group('suppliers', function ($routes) {
+        $con_path = 'Suppliers\\SuppliersController';
+        $routes->resource('', ['controller' => $con_path]);
+        $routes->get('load', $con_path . '::load', ['as' => 'suppliers-load']);
+        $routes->get('upload_form', $con_path . '::upload_form', ['as' => 'suppliers-upload-form']);
+        $routes->post('upload', $con_path . '::upload', ['as' => 'suppliers-upload']);
+        $routes->post('insert-suppliers', $con_path . '::insertSuppliers', ['as' => 'suppliers-insert-suppliers']);
+        $routes->get('download-template', $con_path . '::downloadTemplate', ['as' => 'suppliers-download-template']);
+    });
 });
 
 
