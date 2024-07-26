@@ -25,9 +25,12 @@
         <input class="form-control" type="file" id="formFile" name="userfile" accept=".xlsx, .xls">
       </div>
     </div>
-    <div class="card-footer d-flex justify-content-end">
-      <a type="button" href= "<?= site_url("customers") ?>" class="btn btn-secondary me-2">Cancel</a>
-      <button type="submit" class="btn btn-primary me-2">Upload</button>
+    <div class="card-footer d-flex justify-content-between">
+      <a type="button" href= "<?= url_to("Customers\\Customers::downloadTemplate")?>" class="btn btn-info me-2">Download Template</a>
+      <div>
+      <a type="button" href= "<?= site_url("customers") ?>" class="btn btn-secondary">Cancel</a>
+      <button type="submit" class="btn btn-primary">Upload</button>
+      </div>
     </div>
     <?= form_close() ?>
   </div>

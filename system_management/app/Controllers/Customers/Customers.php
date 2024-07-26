@@ -866,4 +866,10 @@ class Customers extends BaseController
         return $success;
     }
 
+    public function downloadTemplate()
+    {
+        $filePath = WRITEPATH . 'templates/customertemplate.xlsx'; // Path to your file in the writable directory
+        return $this->response->download($filePath, null);
+    }
+
 }
