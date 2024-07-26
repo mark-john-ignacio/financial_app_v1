@@ -13,13 +13,13 @@ class ItemsModel extends BaseModel
     protected $useSoftDeletes   = false;
     protected $protectFields    = true;
     protected $allowedFields    = [
-        'item_code',
-        'item_description',
-        'unit_of_measure',
-        'notes',
-        'class',
-        'type',
-        'sku',
+        'cpartno',
+        'citemdesc',
+        'cunit',
+        'cnotes',
+        'cclass',
+        'ctype',
+        'cskucode',
     ];
 
     protected bool $allowEmptyInserts = false;

@@ -9,6 +9,7 @@ use PhpOffice\PhpSpreadsheet\Spreadsheet;
 use PhpOffice\PhpSpreadsheet\Writer\Xlsx;
 use CodeIgniter\Files\File;
 use App\Models\Items\ItemsModel;
+use App\Entities\Items\ItemsEntity;
 
 class ItemsController extends BaseController
 {
@@ -16,6 +17,7 @@ class ItemsController extends BaseController
     protected $view;
     protected $company_code;
     protected $user_id;
+    private ItemsEntity $itemsEntity;
 
     public function __construct()
     {
@@ -24,6 +26,7 @@ class ItemsController extends BaseController
         $this->company_code = session()->get('current_company')->company_code;
         $this->user_id = session()->get('user_id');
         $this->db = \Config\Database::connect();
+        $this->itemsEntity = new ItemsEntity();
 
     }
     public function index()
@@ -572,11 +575,11 @@ class ItemsController extends BaseController
             $success3 = $this->inserttblFactor($data3);
         }
         if ($success && $success2 && $success3) {
-            $this->swal('s', 'Successfully Inserted');
-            return redirect()->to(base_url() . '/admin/masterlist');
+            $this->swal('success', 'Successfully Inserted');
+            return redirect()->to(site_url('items'));
         } else {
-            $this->swal('e', 'Insertion Failed');
-            return redirect()->to(base_url() . '/admin/masterlist');
+            $this->swal('error', 'Insertion Failed');
+            return redirect()->to(site_url('items'));
         }
 
     }
@@ -651,7 +654,9 @@ class ItemsController extends BaseController
     
             if (!empty($rowData['cpartno'])) {
                 //$this->db->table('logfile_items_masterfile')->insert($logfile); 
-                $saveSuccess = $itemsModel->save($rowData);
+                $item = new ItemsEntity($rowData);
+
+                $saveSuccess = $itemsModel->insert($item);
 
                 if (!$saveSuccess) {
                     $success = false;
