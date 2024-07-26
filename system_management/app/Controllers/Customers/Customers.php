@@ -21,6 +21,7 @@ class Customers extends BaseController
         $this->view = 'Customers/';
         $this->company_code = session()->get('current_company')->company_code;
         $this->user_id = isset(session()->user_id) ? session()->user_id : '1';
+        $this->db = \Config\Database::connect();
     }
 
     public function index()

@@ -12,7 +12,15 @@ class ItemsModel extends BaseModel
     protected $returnType       = 'App\Entities\Items\ItemsEntity';
     protected $useSoftDeletes   = false;
     protected $protectFields    = true;
-    protected $allowedFields    = [];
+    protected $allowedFields    = [
+        'item_code',
+        'item_description',
+        'unit_of_measure',
+        'notes',
+        'class',
+        'type',
+        'sku',
+    ];
 
     protected bool $allowEmptyInserts = false;
     protected bool $updateOnlyChanged = true;

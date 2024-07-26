@@ -10,7 +10,11 @@ class ItemsEntity extends Entity
         "id" => "nid",
         "item_code" => "cpartno",
         "item_description" => "citemdesc",
-        "unit_of_measure" => "cunit"
+        "unit_of_measure" => "cunit",
+        "notes" => "cnotes",
+        "class" => "cclass",
+        "type" => "ctype",
+        "sku" => "cskucode",
     ];
     protected $dates   = ['created_at', 'updated_at', 'deleted_at'];
     protected $casts   = [];

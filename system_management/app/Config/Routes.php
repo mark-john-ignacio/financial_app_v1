@@ -69,7 +69,7 @@ $routes->group('', ['filter' => 'pin_verified'], function ($routes) {
         $con_path = 'Customers\\Customers';
         $routes->resource('', ['controller' => $con_path]);
         $routes->get('load', $con_path . '::load');
-        $routes->get('upload_form', $con_path . '::upload_form');
+        $routes->get('upload_form', $con_path . '::upload_form', ['as' => 'customers-upload-form']);
         $routes->post('upload', $con_path . '::upload');
         $routes->post('insert-customers', $con_path . '::insertCustomers');
         $routes->get('download-template', $con_path . '::downloadTemplate');
@@ -80,8 +80,8 @@ $routes->group('', ['filter' => 'pin_verified'], function ($routes) {
         $routes->resource('', ['controller' => $con_path]);
         $routes->get('load', $con_path . '::load', ['as' => 'items-load']);
         $routes->get('upload_form', $con_path . '::upload_form', ['as' => 'items-upload-form']);
-        $routes->post('upload', $con_path . '::upload');
-        $routes->post('insert-items', $con_path . '::insertItems');
+        $routes->post('upload', $con_path . '::upload', ['as' => 'items-upload']);
+        $routes->post('insert-items', $con_path . '::insertItems', ['as' => 'items-insert-items']);
         $routes->get('download-template', $con_path . '::downloadTemplate', ['as' => 'items-download-template']);
     });
 });
