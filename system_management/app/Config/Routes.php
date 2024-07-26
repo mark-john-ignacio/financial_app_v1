@@ -12,17 +12,6 @@ $routes->post('/verify-pin', 'PinController::verifyPin');
 
 $routes->post('/receive-order', 'WooCommerceOrderSync\OrderController::receiveOrder');
 
-//TODO: Remove this route
-$routes->group('testing', function ($routes) {
-    $con_path = 'Testing\\AddId';
-    $routes->get('add-id-to-so-table', $con_path . '::AddIdToSOTable');
-    $routes->get('remove-id-from-so-table', $con_path . '::RemoveIdFromSOTable');
-    $routes->get('add-id-to-so-t-table', $con_path . '::AddIdToSOTTableMigration');
-    $routes->get('remove-id-from-so-t-table', $con_path . '::RemoveIdFromSOTTableMigration');
-    $routes->get('run-migration', $con_path . '::runMigration');
-    $routes->get('rollback-migration', $con_path . '::rollbackMigration');
-});
-
 $routes->group('', ['filter' => 'pin_verified'], function ($routes) {
 
     $routes->get('/change-pin', 'PinController::changePin');
@@ -63,6 +52,37 @@ $routes->group('', ['filter' => 'pin_verified'], function ($routes) {
         $con_path = 'Testing\\Upload';
         $routes->get('upload', $con_path . '::index');
         $routes->post('upload/upload', $con_path . '::upload');
+    });
+
+    //TODO: Remove this route
+    $routes->group('testing', function ($routes) {
+        $con_path = 'Testing\\AddId';
+        $routes->get('add-id-to-so-table', $con_path . '::AddIdToSOTable');
+        $routes->get('remove-id-from-so-table', $con_path . '::RemoveIdFromSOTable');
+        $routes->get('add-id-to-so-t-table', $con_path . '::AddIdToSOTTableMigration');
+        $routes->get('remove-id-from-so-t-table', $con_path . '::RemoveIdFromSOTTableMigration');
+        $routes->get('run-migration', $con_path . '::runMigration');
+        $routes->get('rollback-migration', $con_path . '::rollbackMigration');
+    });
+
+    $routes->group('customers', function ($routes) {
+        $con_path = 'Customers\\Customers';
+        $routes->resource('', ['controller' => $con_path]);
+        $routes->get('load', $con_path . '::load');
+        $routes->get('upload_form', $con_path . '::upload_form');
+        $routes->post('upload', $con_path . '::upload');
+        $routes->post('insert-customers', $con_path . '::insertCustomers');
+        $routes->get('download-template', $con_path . '::downloadTemplate');
+    });
+
+    $routes->group('items', function ($routes) {
+        $con_path = 'Items\\ItemsController';
+        $routes->resource('', ['controller' => $con_path]);
+        $routes->get('load', $con_path . '::load', ['as' => 'items-load']);
+        $routes->get('upload_form', $con_path . '::upload_form', ['as' => 'items-upload-form']);
+        $routes->post('upload', $con_path . '::upload');
+        $routes->post('insert-items', $con_path . '::insertItems');
+        $routes->get('download-template', $con_path . '::downloadTemplate', ['as' => 'items-download-template']);
     });
 });
 

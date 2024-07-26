@@ -9,17 +9,6 @@
                 <div class="card-body">
                     <div class="text-center">
                         <p class="h3 card-title">Enter Pin to Access</p>
-                        <?php if (session()->has("message")): ?>
-                            <div class="alert alert-success" role="alert">
-                                <?= session("message") ?>
-                            </div>
-                        <?php endif; ?>
-
-                        <?php if (session()->has("error")): ?>
-                            <div class="alert alert-danger" role="alert">
-                                <?= session("error") ?>
-                            </div>
-                        <?php endif; ?>
                         <?= form_open(site_url("verify-pin"), ['class' => '']) ?>
                             <div class="mb-3">
                                 <label for="pin" class="form-label">Pin Code:</label>

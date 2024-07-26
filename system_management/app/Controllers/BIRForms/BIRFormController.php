@@ -5,6 +5,8 @@ namespace App\Controllers\BIRForms;
 use App\Controllers\BaseController;
 use CodeIgniter\HTTP\ResponseInterface;
 use App\Models\BIRForms\BIRFormModel;
+use App\Entities\BIRForms\FormEntity;
+use CodeIgniter\Exceptions\PageNotFoundException;
 
 class BIRFormController extends BaseController
 {
@@ -29,13 +31,17 @@ class BIRFormController extends BaseController
 
     public function new()
     {
-        return view($this->view.'new');
+        return view($this->view.'new', ['form' => new FormEntity]);
     }
 
     public function create()
     {
-        $data = $this->request->getPost();
-        $this->formModel->save($data);
+        $form = new FormEntity($this->request->getPost());
+        $id = $this->formModel->insert($form);
+        if ($id===false){
+            return redirect()->back()->with('errors', $this->formModel->errors());
+        }
+
         return redirect()->to(site_url('bir-forms/form'));
     }
 
@@ -47,9 +53,22 @@ class BIRFormController extends BaseController
 
     public function update($id)
     {
-        $data = $this->request->getPost();
-        $this->formModel->update($id, $data);
-        return redirect()->to(site_url('bir-forms/form'));
+        $form = $this->getEntryOr404($id);
+
+        $form->fill($this->request->getPost());
+
+        $form->__unset('_method');
+        
+        if (!$form->hasChanged()){
+            return redirect()->back()
+            ->with('error', 'Nothing to update');
+        }
+        
+        if (!$this->formModel->save($form)){
+            return redirect()->back()->with('errors', $this->formModel->errors());
+        }
+
+        return redirect()->to(site_url('bir-forms/form/'.$id))->with('message', 'Form updated');
     }
 
     public function delete($id)
@@ -61,6 +80,16 @@ class BIRFormController extends BaseController
     public function show($id)
     {
         $data = ['form' => $this->formModel->find($id)];
-        //return view($this->view.'show', $data);
+        return view($this->view.'show', $data);
+    }
+
+    private function getEntryOr404($id): FormEntity
+    {
+        $entry = $this->formModel->find($id);
+        if ($entry === null){
+            throw new PageNotFoundException("Form with $id id not found");
+        }
+
+        return $entry;
     }
 }

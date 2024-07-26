@@ -8,7 +8,7 @@
     <a href="<?= site_url('bir-forms/form/new') ?>" class="btn btn-primary">Add New</a>
     </div>
     <div class="table-responsive">
-        <table id="formsTable" class="display" style="width:100%">
+        <table id="formsTable" class="display responsive" style="width:100%">
             <thead>
                 <tr>
                     <th>Form Code</th>
@@ -25,9 +25,12 @@
     </div>
 </div>
 
+<?= $this->endSection() ?>
+
+<?= $this->section("scripts")?>
 <script>
 $(document).ready(function() {
-    $('#formsTable').DataTable({
+    var formsDatatable = $('#formsTable').DataTable({
         ajax: {
             url: '<?= site_url('bir-forms/form/load') ?>',
             dataSrc: '',
@@ -45,14 +48,68 @@ $(document).ready(function() {
             {
                 data: null,
                 render: function(data, type, row) {
+                    var showUrl = "<?= url_to('BIRForms\\BIRFormController::show', ':id') ?>".replace(':id', row.id);
+                    var editUrl = "<?= url_to('BIRForms\\BIRFormController::edit', ':id') ?>".replace(':id', row.id);
+                    var deleteUrl = "<?= url_to('BIRForms\\BIRFormController::delete', ':id') ?>".replace(':id', row.id);
                     return `
-                        <a href="<?= site_url('bir-forms/form/edit') ?>/${row.id}" class="btn btn-sm btn-warning">Edit</a>
-                        <a href="<?= site_url('bir-forms/form/delete') ?>/${row.id}" class="btn btn-sm btn-danger">Delete</a>
+                        <div class="d-flex justify-content-start">
+                            <a href="${showUrl}" class="btn btn-sm btn-primary me-2">View</a>
+                            <a href="${editUrl}" class="btn btn-sm btn-warning me-2">Edit</a>
+                            <a href="#" class="btn btn-sm btn-danger" onclick="confirmDelete('${deleteUrl}')">Delete</a>
+                        </div>
                     `;
                 }
             }
         ]
     });
 });
+
+function confirmDelete(deleteUrl) {
+    Swal.fire({
+        title: 'Are you sure?',
+        text: "You won't be able to revert this!",
+        icon: 'warning',
+        showCancelButton: true,
+        confirmButtonColor: '#3085d6',
+        cancelButtonColor: '#d33',
+        confirmButtonText: 'Yes, delete it!',
+        reverseButtons: true,
+    }).then((result) => {
+        if (result.isConfirmed) {
+            fetch(deleteUrl, {
+                method: 'DELETE',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'X-Requested-With': 'XMLHttpRequest'
+                }
+            })
+            .then(response => {
+                if (response.ok) {
+                    Swal.fire(
+                        'Deleted!',
+                        'Your file has been deleted.',
+                        'success'
+                    ).then(() => {
+                        // Optionally, reload the page or remove the deleted item from the DOM
+                        $('#formsTable').DataTable().ajax.reload();
+                    });
+                } else {
+                    Swal.fire(
+                        'Error!',
+                        'There was a problem deleting your file.',
+                        'error'
+                    );
+                }
+            })
+            .catch(error => {
+                Swal.fire(
+                    'Error!',
+                    'There was a problem deleting your file.',
+                    'error'
+                );
+            });
+        }
+    });
+}
 </script>
 <?= $this->endSection() ?>
