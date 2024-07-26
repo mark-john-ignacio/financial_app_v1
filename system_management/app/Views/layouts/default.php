@@ -57,6 +57,9 @@
             <li class="nav-item">
                 <a href="<?= site_url("nav-menus")?>" class="nav-link">Nav Menus</a>
             </li>
+            <li class="nav-item">
+                <a href="<?= site_url("customers")?>" class="nav-link">Customers</a>
+            </li>
             </ul>
             <div class="d-flex">
                 <ul class="navbar-nav me-auto mb-2 mb-lg-0">

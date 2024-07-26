@@ -68,25 +68,19 @@
                             <table class="table table-bordered table-hover table-striped table-sm small w-100 display pb-30" id="myTable">
                                 <thead>
                                     <tr>
+                                        <th>Errors</th>
                                         <th>Cell Number</th>
                                         <?php foreach ($data[0] as $key => $value): ?>
                                             <?php if ($key != 'Cell Number' && $key != 'errors'): ?>
                                                 <th><?= esc($key) ?></th>
                                             <?php endif; ?>
                                         <?php endforeach; ?>
-                                        <th>Errors</th>
+                                        
                                     </tr>
                                 </thead>
                                 <tbody>
                                     <?php foreach ($data as $index => $row): ?>
                                         <tr <?php if (!empty($row['errors'])) echo 'class="error"'; ?>>
-                                            <td><?= esc($row['Cell Number']) ?></td>
-                                            <?php foreach ($row as $key => $value): ?>
-                                                <?php if ($key != 'errors' && $key != 'Cell Number'): ?>
-                                                    <td><?= esc($value) ?></td>
-                                                    <input type="hidden" name="data[<?= $index ?>][<?= esc($key) ?>]" value="<?= esc($value) ?>">
-                                                <?php endif; ?>
-                                            <?php endforeach; ?>
                                             <td>
                                                 <?php if (!empty($row['errors'])): ?>
                                                     <ul>
@@ -97,6 +91,13 @@
                                                     <input type="hidden" name="data[<?= $index ?>][errors]" value='<?= json_encode($row['errors']) ?>'>
                                                 <?php endif; ?>
                                             </td>
+                                            <td><?= esc($row['Cell Number']) ?></td>
+                                            <?php foreach ($row as $key => $value): ?>
+                                                <?php if ($key != 'errors' && $key != 'Cell Number'): ?>
+                                                    <td><?= esc($value) ?></td>
+                                                    <input type="hidden" name="data[<?= $index ?>][<?= esc($key) ?>]" value="<?= esc($value) ?>">
+                                                <?php endif; ?>
+                                            <?php endforeach; ?>
                                             <input type="hidden" name="data[<?= $index ?>][Cell Number]" value="<?= esc($row['Cell Number']) ?>">
                                         </tr>
                                     <?php endforeach; ?>
@@ -259,7 +260,9 @@
 
     <script>
         $(document).ready(function () {
-            var table = $('#myTable').DataTable();
+            var table = $('#myTable').DataTable({
+                "order": [[0,"desc"]],
+            });
             $('#myTable2').DataTable();
             $('#myTable3').DataTable();
             $('#myTable4').DataTable();
