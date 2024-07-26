@@ -79,10 +79,10 @@ $routes->group('', ['filter' => 'pin_verified'], function ($routes) {
         $con_path = 'Items\\ItemsController';
         $routes->resource('', ['controller' => $con_path]);
         $routes->get('load', $con_path . '::load', ['as' => 'items-load']);
-        $routes->get('upload_form', $con_path . '::upload_form');
+        $routes->get('upload_form', $con_path . '::upload_form', ['as' => 'items-upload-form']);
         $routes->post('upload', $con_path . '::upload');
         $routes->post('insert-items', $con_path . '::insertItems');
-        $routes->get('download-template', $con_path . '::downloadTemplate');
+        $routes->get('download-template', $con_path . '::downloadTemplate', ['as' => 'items-download-template']);
     });
 });
 

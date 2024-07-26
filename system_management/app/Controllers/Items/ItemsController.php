@@ -27,12 +27,24 @@ class ItemsController extends BaseController
     }
     public function index()
     {
-        return view($this->view . 'index');
+        $data = [
+            'title' => 'Items'
+        ];
+        return view($this->view . 'index', $data);
     }
 
     public function load()
     {
         $items = $this->itemsModel->findAll();
         return $this->response->setJSON($items);
+    }
+
+    public function upload_form()
+    {
+        $data = [
+            'errors' => [],
+            'title' => 'Upload Items'
+        ];
+        return view($this->view . 'upload_form', $data);
     }
 }
