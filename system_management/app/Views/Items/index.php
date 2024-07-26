@@ -32,7 +32,7 @@
 $(document).ready(function() {
     var formsDatatable = $('#formsTable').DataTable({
         ajax: {
-            url: '<?= url_to("Customers\\Customers::load") ?>',
+            url: '<?= url_to("items-load") ?>',
             dataSrc: '',
             error: function (xhr, error, thrown) {
                 console.error("Error occurred during AJAX request:", error, thrown);
@@ -41,9 +41,9 @@ $(document).ready(function() {
            }
         },
         columns: [
-            { data: 'customer_code' },
-            { data: 'customer_name' },
-            { data: 'tin' },
+            { data: 'item_code' },
+            { data: 'item_description' },
+            { data: 'unit_of_measure' },
             { data: 'cstatus' },
         ]
     });

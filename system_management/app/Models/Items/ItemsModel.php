@@ -2,12 +2,12 @@
 
 namespace App\Models\Items;
 
-use CodeIgniter\Model;
+use App\Models\BaseModel;
 
-class ItemsModel extends Model
+class ItemsModel extends BaseModel
 {
     protected $table            = 'items';
-    protected $primaryKey       = 'nid';
+    protected $primaryKey       = 'id';
     protected $useAutoIncrement = true;
     protected $returnType       = 'App\Entities\Items\ItemsEntity';
     protected $useSoftDeletes   = false;
@@ -33,14 +33,4 @@ class ItemsModel extends Model
     protected $skipValidation       = false;
     protected $cleanValidationRules = true;
 
-    // Callbacks
-    protected $allowCallbacks = true;
-    protected $beforeInsert   = [];
-    protected $afterInsert    = [];
-    protected $beforeUpdate   = [];
-    protected $afterUpdate    = [];
-    protected $beforeFind     = [];
-    protected $afterFind      = [];
-    protected $beforeDelete   = [];
-    protected $afterDelete    = [];
 }

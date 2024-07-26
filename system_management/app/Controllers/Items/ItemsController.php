@@ -21,12 +21,18 @@ class ItemsController extends BaseController
     {
         $this->itemsModel = new ItemsModel();
         $this->view = 'Items/';
-        $this->company_code = session()->get('company_code');
+        $this->company_code = session()->get('current_company')->company_code;
         $this->user_id = session()->get('user_id');
 
     }
     public function index()
     {
         return view($this->view . 'index');
+    }
+
+    public function load()
+    {
+        $items = $this->itemsModel->findAll();
+        return $this->response->setJSON($items);
     }
 }
