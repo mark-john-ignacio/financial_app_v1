@@ -262,6 +262,11 @@
         $(document).ready(function () {
             var table = $('#myTable').DataTable({
                 "order": [[0,"desc"]],
+                "createdRow": function (row, data, dataIndex) {
+                    if (data[0] === null || data[0] === '') {
+                        $('td', row).eq(0).css('background-color', 'green');
+                    }
+                }
             });
             $('#myTable2').DataTable();
             $('#myTable3').DataTable();
