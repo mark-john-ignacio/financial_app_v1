@@ -83,11 +83,12 @@ function confirmDelete(deleteUrl) {
                     'X-Requested-With': 'XMLHttpRequest'
                 }
             })
-            .then(response => {
-                if (response.ok) {
+            .then(response => response.json())
+            .then(data => {
+                if (data.status === 'success') {
                     Swal.fire(
                         'Deleted!',
-                        'Your file has been deleted.',
+                        data.message,
                         'success'
                     ).then(() => {
                         // Optionally, reload the page or remove the deleted item from the DOM
@@ -96,7 +97,7 @@ function confirmDelete(deleteUrl) {
                 } else {
                     Swal.fire(
                         'Error!',
-                        'There was a problem deleting your file.',
+                        data.message,
                         'error'
                     );
                 }

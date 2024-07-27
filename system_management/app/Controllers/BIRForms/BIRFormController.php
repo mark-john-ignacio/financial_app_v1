@@ -5,16 +5,19 @@ namespace App\Controllers\BIRForms;
 use App\Controllers\BaseController;
 use CodeIgniter\HTTP\ResponseInterface;
 use App\Models\BIRForms\BIRFormModel;
+use App\Models\BIRForms\BIRYearFormModel;
 use App\Entities\BIRForms\FormEntity;
 use CodeIgniter\Exceptions\PageNotFoundException;
 
 class BIRFormController extends BaseController
 {
     protected $formModel;
+    private BIRYearFormModel $yearFormModel;
     
     public function __construct()
     {
         $this->formModel = new BIRFormModel();
+        $this->yearFormModel = new BIRYearFormModel();
         $this->view = 'BIRForms/Form/';
     }
 
@@ -73,8 +76,19 @@ class BIRFormController extends BaseController
 
     public function delete($id)
     {
+        $formRegistration = $this->yearFormModel->where('form_id', $id)->findAll();
+        if (!empty($formRegistration)) {
+            return $this->response->setJSON([
+                'status' => 'error',
+                'message' => 'Cannot delete the form because it is referenced in Year-Form.'
+            ])->setStatusCode(400);
+        }
+    
         $this->formModel->delete($id);
-        return redirect()->to(site_url('bir-forms/form'));
+        return $this->response->setJSON([
+            'status' => 'success',
+            'message' => 'Form deleted successfully'
+        ])->setStatusCode(200);
     }
 
     public function show($id)
