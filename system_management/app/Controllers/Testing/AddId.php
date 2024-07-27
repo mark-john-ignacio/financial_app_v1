@@ -120,16 +120,27 @@ class AddId extends BaseController
         }
     }
 
-    public function runMigration(){
-        $migrations =  service('migrations');
+    public function runMigration() {
+        $migrations = service('migrations');
         try {
             // Run all available migrations
             $migrations->setNamespace(null)->latest('default');
-
+    
             return $this->response->setStatusCode(200)->setBody('Migration ran successfully.');
         } catch (\Exception $e) {
-            // Handle exceptions, such as when no migrations are found to run
-            return $this->response->setStatusCode(500)->setBody('Failed to run migration: ' . $e->getMessage());
+            // Log the error for debugging purposes
+            log_message('error', 'Migration failed: ' . $e->getMessage());
+            log_message('error', 'Stack trace: ' . $e->getTraceAsString());
+    
+            // Provide a detailed error message in the response
+            $errorMessage = 'Failed to run migration: ' . $e->getMessage();
+            $errorDetails = 'File: ' . $e->getFile() . ' Line: ' . $e->getLine();
+            $errorStackTrace = 'Stack trace: ' . $e->getTraceAsString();
+    
+            // JavaScript code to log the error to the browser's console
+            $consoleLogScript = "<script>console.error('Migration Error: " . addslashes($errorMessage) . "\\n" . addslashes($errorDetails) . "\\n" . addslashes($errorStackTrace) . "');</script>";
+    
+            return $this->response->setStatusCode(500)->setBody($errorMessage . "\n" . $errorDetails . "\n" . $errorStackTrace . $consoleLogScript);
         }
     }
 

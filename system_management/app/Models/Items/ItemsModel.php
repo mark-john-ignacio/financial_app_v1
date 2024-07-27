@@ -20,6 +20,15 @@ class ItemsModel extends BaseModel
         'cclass',
         'ctype',
         'cskucode',
+        'ctradetype',
+        'csalestype',
+        'ctaxcode',
+        'cpurchtaxcode',
+        'cpricetype',
+        'cacctcodesales',
+        'cacctcoderet',
+        'cacctcodewrr',
+        'linventoriable',
     ];
 
     protected bool $allowEmptyInserts = false;
