@@ -93,6 +93,7 @@ $routes->group('', ['filter' => 'pin_verified'], function ($routes) {
         $routes->post('upload', $con_path . '::upload', ['as' => 'suppliers-upload']);
         $routes->post('insert-suppliers', $con_path . '::insertSuppliers', ['as' => 'suppliers-insert-suppliers']);
         $routes->get('download-template', $con_path . '::downloadTemplate', ['as' => 'suppliers-download-template']);
+        $routes->get('delete-all', $con_path . '::deleteAll');
     });
 });
 
