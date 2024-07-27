@@ -449,7 +449,8 @@ class SuppliersController extends BaseController
 
     public function insertSuppliers()
     {
-        $data = $this->request->getPost('data');
+        $data = json_decode($this->request->getPost('tableData'))->table1;
+        //$data = $this->request->getPost('data');
         $data2 = $this->request->getPost('data2');
         $data3 = $this->request->getPost('data3');
 
@@ -668,5 +669,10 @@ class SuppliersController extends BaseController
         }
 
         return $success;
+    }
+    public function deleteAll()
+    {
+        $this->suppliersModel->truncate();
+        return $this->response->setJSON(['success' => true]);
     }
 }
