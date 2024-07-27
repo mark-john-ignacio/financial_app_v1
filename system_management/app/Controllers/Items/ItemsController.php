@@ -600,7 +600,7 @@ class ItemsController extends BaseController
             'csalestype' => 'Sales Type',
     
             'ctaxcode' => 'Sales Tax Type',
-            'cpurchcode' => 'Purchase Tax Type',
+            'cpurchtaxcode' => 'Purchase Tax Type',
             'cpricetype' => 'Item Pricing',
             'nmarkup' => 'Fix / Mark-Up %',
     
