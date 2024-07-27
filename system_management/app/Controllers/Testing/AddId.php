@@ -146,5 +146,27 @@ class AddId extends BaseController
             return $this->response->setStatusCode(500)->setBody('Failed to roll back migration: ' . $e->getMessage());
         }
     }
+    function toggleEnvironment() {
+        $envFile = ROOTPATH . '.env';
+    
+        // Read the .env file
+        $envContent = file_get_contents($envFile);
+    
+        // Check the current environment
+        if (strpos($envContent, 'CI_ENVIRONMENT=production') !== false) {
+            // Switch to development
+            $newEnvContent = str_replace('CI_ENVIRONMENT=production', 'CI_ENVIRONMENT=development', $envContent);
+            $newEnvironment = 'development';
+        } else {
+            // Switch to production
+            $newEnvContent = str_replace('CI_ENVIRONMENT=development', 'CI_ENVIRONMENT=production', $envContent);
+            $newEnvironment = 'production';
+        }
+    
+        // Write the new environment back to the .env file
+        file_put_contents($envFile, $newEnvContent);
+    
+        return $newEnvironment;
+    }
     
 }

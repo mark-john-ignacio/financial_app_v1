@@ -87,7 +87,6 @@ function topSellingItem($company){
         INNER JOIN items i ON s_t.citemno = i.cpartno
         WHERE s.lapproved = 1 AND s.lvoid = 0 AND s.compcode = '$company' and year(s.dcutdate) = year(curdate())
         GROUP BY s_t.citemno,s.dcutdate,i.citemdesc
-        GROUP BY s_t.citemno,s.dcutdate, i.citemdesc
         ORDER BY total_price DESC
         LIMIT 1
     ";
