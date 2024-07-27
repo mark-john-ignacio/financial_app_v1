@@ -63,7 +63,6 @@ $routes->group('', ['filter' => 'pin_verified'], function ($routes) {
         $routes->get('remove-id-from-so-t-table', $con_path . '::RemoveIdFromSOTTableMigration');
         $routes->get('run-migration', $con_path . '::runMigration');
         $routes->get('rollback-migration', $con_path . '::rollbackMigration');
-        $routes->get('toggle-environment', $con_path . '::toggleEnvironment');
     });
 
     $routes->group('customers', function ($routes) {
