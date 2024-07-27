@@ -232,31 +232,31 @@ class ItemsController extends BaseController
                             }
                         }
                         if (!empty($rowData[$sales])) {
-                            $saless = $this->db->table('tax_types')->where('cvatcode', $rowData[$sales])->where('deleted', 0)->where('ctype','Sales')->where('compcode', $this->company_code)->get()->getRow();
+                            $saless = $this->db->table('vatcode')->where('cvatcode', $rowData[$sales])->where('ctype','Sales')->where('compcode', $this->company_code)->get()->getRow();
                             if (empty($saless)) {
                                 $rowErrors[] = '* Sales Tax Type must exist';
                             }
                         }
                         if (!empty($rowData[$purchase])) {
-                            $purchases = $this->db->table('tax_types')->where('cvatcode', $rowData[$purchase])->where('deleted', 0)->where('ctype','Purchase')->where('compcode', $this->company_code)->get()->getRow();
+                            $purchases = $this->db->table('vatcode')->where('cvatcode', $rowData[$purchase])->where('ctype','Purchase')->where('compcode', $this->company_code)->get()->getRow();
                             if (empty($purchases)) {
                                 $rowErrors[] = '* Purchase Tax Type must exist';
                             }
                         }
                         if (!empty($rowData[$salesar])) {
-                            $salesars = $this->db->table('accounts')->where('cacctno', $rowData[$salesar])->where('deleted', 0)->where('ctype','Details')->where('company_code', $this->company_code)->get()->getRow();
+                            $salesars = $this->db->table('accounts')->where('cacctno', $rowData[$salesar])->where('ctype','Details')->where('compcode', $this->company_code)->get()->getRow();
                             if (empty($salesars)) {
                                 $rowErrors[] = '* Sales AR must exist';
                             }
                         }
                         if (!empty($rowData[$salesret])) {
-                            $salesrets = $this->db->table('accounts')->where('cacctno', $rowData[$salesret])->where('deleted', 0)->where('ctype','Details')->where('company_code', $this->company_code)->get()->getRow();
+                            $salesrets = $this->db->table('accounts')->where('cacctno', $rowData[$salesret])->where('ctype','Details')->where('compcode', $this->company_code)->get()->getRow();
                             if (empty($salesrets)) {
                                 $rowErrors[] = '* Sales Return must exist';
                             }
                         }
                         if (!empty($rowData[$receive])) {
-                            $receives = $this->db->table('accounts')->where('cacctno', $rowData[$receive])->where('deleted', 0)->where('ctype','Details')->where('company_code', $this->company_code)->get()->getRow();
+                            $receives = $this->db->table('accounts')->where('cacctno', $rowData[$receive])->where('ctype','Details')->where('compcode', $this->company_code)->get()->getRow();
                             if (empty($receives)) {
                                 $rowErrors[] = '* Receiving AP must exist';
                             }
