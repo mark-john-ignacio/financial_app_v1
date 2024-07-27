@@ -1,5 +1,5 @@
 <?= $this->extend("layouts/default")?>
-<?= $this->section("title")?>Forms<?= $this->endSection() ?>
+<?= $this->section("title")?>Items Preview<?= $this->endSection() ?>
 
 <?= $this->section("content")?>
 <style>
@@ -31,9 +31,9 @@
 
 <br>
 <div class="d-flex justify-content-between align-items-center">
-    <h5 class="title"><?=$clang[$l="Mass Upload Customers"] ?? $l?></h5>
+    <h5 class="title"><?=$clang[$l="Mass Upload Items"] ?? $l?></h5>
     <div class="d-flex">
-        <a class="btn btn-secondary me-2" href="<?= url_to("customers-upload-form")?>">
+        <a class="btn btn-secondary me-2" href="<?= url_to("items-upload-form")?>">
             Reupload
         </a>
         <button id="save_button" class="btn btn-primary"  
@@ -59,7 +59,7 @@
 <body>
     <div class="row">
         <div class="col-12">
-            <form id="dataForm" action="<?= url_to("Customers\\Customers::insertCustomers") ?>" method="POST">
+            <form id="dataForm" action="<?= url_to("items-insert-items") ?>" method="POST">
                 <!-- First Table for Sheet 1 -->
                 <div class="card">
                     <div class="card-body">

@@ -1,25 +1,32 @@
 <?php
 
-namespace App\Models\Items;
+namespace App\Models\Suppliers;
 
 use App\Models\BaseModel;
 
-class ItemsModel extends BaseModel
+class SuppliersModel extends BaseModel
 {
-    protected $table            = 'items';
-    protected $primaryKey       = 'id';
+    protected $table            = 'suppliers';
+    protected $primaryKey       = 'nid';
     protected $useAutoIncrement = true;
-    protected $returnType       = 'App\Entities\Items\ItemsEntity';
+    protected $returnType       = 'App\Entities\Suppliers\SuppliersEntity';
     protected $useSoftDeletes   = false;
     protected $protectFields    = true;
     protected $allowedFields    = [
-        'cpartno',
-        'citemdesc',
-        'cunit',
-        'cnotes',
-        'cclass',
-        'ctype',
-        'cskucode',
+        "compcode",
+        "ccode",
+        "cname",
+        "ctradename",
+        "ctin",
+        "chouseno",
+        "ccity",
+        "cstate",
+        "ccountry",
+        "czip",
+        "csuppliertype",
+        "csupplierclass",
+        "cacctcode",
+
     ];
 
     protected bool $allowEmptyInserts = false;

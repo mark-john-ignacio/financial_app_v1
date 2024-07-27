@@ -63,6 +63,9 @@
             <li class="nav-item">
                 <a href="<?= site_url("items")?>" class="nav-link">Items</a>
             </li>
+            <li class="nav-item">
+                <a href="<?= site_url("suppliers")?>" class="nav-link">Suppliers</a>
+            </li>
             </ul>
             <div class="d-flex">
                 <ul class="navbar-nav me-auto mb-2 mb-lg-0">

@@ -1,5 +1,5 @@
 <?= $this->extend("layouts/default")?>
-<?= $this->section("title")?>Forms<?= $this->endSection() ?>
+<?= $this->section("title")?>Items Preview<?= $this->endSection() ?>
 
 <?= $this->section("content")?>
 <style>
@@ -30,10 +30,11 @@
 </style>
 
 <br>
+
 <div class="d-flex justify-content-between align-items-center">
-    <h5 class="title"><?=$clang[$l="Mass Upload Customers"] ?? $l?></h5>
+    <h5 class="title"><?=$clang[$l="Mass Upload Suppliers"] ?? $l?></h5>
     <div class="d-flex">
-        <a class="btn btn-secondary me-2" href="<?= url_to("customers-upload-form")?>">
+        <a class="btn btn-secondary me-2" href="<?= url_to("suppliers-upload-form")?>">
             Reupload
         </a>
         <button id="save_button" class="btn btn-primary"  
@@ -55,11 +56,12 @@
         </button>
     </div>
 </div>
+
 <br>
 <body>
     <div class="row">
         <div class="col-12">
-            <form id="dataForm" action="<?= url_to("Customers\\Customers::insertCustomers") ?>" method="POST">
+            <form id="dataForm" action="<?= url_to("suppliers-insert-suppliers") ?>" method="POST">
                 <!-- First Table for Sheet 1 -->
                 <div class="card">
                     <div class="card-body">
@@ -75,7 +77,6 @@
                                                 <th><?= esc($key) ?></th>
                                             <?php endif; ?>
                                         <?php endforeach; ?>
-                                        
                                     </tr>
                                 </thead>
                                 <tbody>
@@ -203,54 +204,6 @@
                     </div>
                 <?php endif; ?>
 
-                <!-- Fourth Table for Sheet 4 -->
-                <?php if (!empty($data4)): ?>
-                    <div class="card">
-                        <div class="card-body">
-                            <div class="table-responsive">
-                                <h5><?= esc($sheetName4) ?></h5>
-                                <table class="table table-bordered table-hover table-striped table-sm small w-100 display pb-30" id="myTable4">
-                                    <thead>
-                                        <tr>
-                                            <th>Cell Number</th>
-                                            <?php foreach ($data4[0] as $key => $value): ?>
-                                                <?php if ($key != 'Cell Number' && $key != 'errors4'): ?>
-                                                    <th><?= esc($key) ?></th>
-                                                <?php endif; ?>
-                                            <?php endforeach; ?>
-                                            <th>Errors</th>
-                                        </tr>
-                                    </thead>
-                                    <tbody>
-                                        <?php foreach ($data4 as $index => $row): ?>
-                                            <tr <?php if (!empty($row['errors4'])) echo 'class="error"'; ?>>
-                                                <td><?= esc($row['Cell Number']) ?></td>
-                                                <?php foreach ($row as $key => $value): ?>
-                                                    <?php if ($key != 'errors4' && $key != 'Cell Number'): ?>
-                                                        <td><?= esc($value) ?></td>
-                                                        <input type="hidden" name="data4[<?= $index ?>][<?= esc($key) ?>]" value="<?= esc($value) ?>">
-                                                    <?php endif; ?>
-                                                <?php endforeach; ?>
-                                                <td>
-                                                    <?php if (!empty($row['errors4'])): ?>
-                                                        <ul>
-                                                            <?php foreach ($row['errors4'] as $error): ?>
-                                                                <li><?= esc($error) ?></li>
-                                                            <?php endforeach; ?>
-                                                        </ul>
-                                                        <input type="hidden" name="data4[<?= $index ?>][errors4]" value='<?= json_encode($row['errors4']) ?>'>
-                                                    <?php endif; ?>
-                                                </td>
-                                                <input type="hidden" name="data4[<?= $index ?>][Cell Number]" value="<?= esc($row['Cell Number']) ?>">
-                                            </tr>
-                                        <?php endforeach; ?>
-                                    </tbody>
-                                </table>
-                            </div>
-                        </div>
-                    </div>
-                <?php endif; ?>
-
                 <input type="hidden" name="tableData" id="tableData">
 
                 <br><br>
@@ -314,19 +267,8 @@
                     tableData3.push(row);
                 });
 
-                var tableData4 = [];
-                $('#myTable4 tbody tr').each(function () {
-                    var row = {};
-                    $(this).find('td').each(function (index) {
-                        var key = $('#myTable4 thead th').eq(index).text();
-                        var value = $(this).text();
-                        row[key] = value;
-                    });
-                    tableData4.push(row);
-                });
-
                 // Set the hidden input value
-                $('#tableData').val(JSON.stringify({table1: tableData, table2: tableData2, table3: tableData3, table4: tableData4}));
+                $('#tableData').val(JSON.stringify({table1: tableData, table2: tableData2, table3: tableData3}));
 
                 // Submit the form
                 this.submit();
