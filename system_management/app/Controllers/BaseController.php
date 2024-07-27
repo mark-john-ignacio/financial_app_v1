@@ -55,4 +55,30 @@ abstract class BaseController extends Controller
 
         // E.g.: $this->session = \Config\Services::session();
     }
+
+    public function swal($type, $customMessage = '')
+    {
+        $session = \Config\Services::session();
+        $validation = \Config\Services::validation();
+    
+        if ($customMessage) {
+            if ($type == 'error') {
+                $message = 'Error,' . $customMessage . ',error';
+            } elseif ($type == 'success') {
+                $message = 'Success,' . $customMessage . ',success';
+            }
+        } else {
+            if ($type == 'success') {
+                $message = 'Success,Successfully Saved,success';
+            } elseif ($type == 'form') {
+                $message = 'Error,Form Input Error,error';
+            } else {
+                $message = 'Error,Error while saving,error';
+            }
+        }
+    
+        $session->setFlashdata('swal', $message);
+        $session->setFlashdata('form_error', $validation->listErrors());
+        $session->setFlashdata('check_form_error', $validation->getErrors());
+    }
 }

@@ -191,15 +191,21 @@ class Database extends Config
     {
         parent::__construct();
 
-        // // Load connection details from external file
+        // Load connection details from external file
         require '../../Connection/connection_string.php'; // Adjust the path as necessary
-
-        // // Extracted details with corrected typo
-        $hostname = $hostname;
-        $dbname = $dbanme; // Corrected typo here
-        $username = $usn;
-        $password = $pwd;
-
+        
+        // Correctly use the variables from connection_string.php
+        $hostname = $hostname ?? null;
+        $dbname = $dbanme ?? null; // Note: This uses the variable name as defined in connection_string.php
+        $username = $usn ?? null;
+        $password = $pwd ?? null;
+        
+        // Check if any of the variables are null and handle accordingly
+        if (is_null($hostname) || is_null($dbname) || is_null($username) || is_null($password)) {
+            // Handle error: variables not set
+            throw new Exception("Database connection details are missing.");
+        }
+        
         // Set the database connection details
         $this->default['hostname'] = $hostname;
         $this->default['database'] = $dbname;

@@ -70,7 +70,6 @@ class BIRYearFormController extends BaseController
         $form_ids = $this->request->getPost('forms');
         $this->birYearFormModel->where(['year_id' => $yearId]);
         $this->birYearFormModel->delete();
-
         if(!empty($form_ids)){
             $data = [];
             foreach($form_ids as $form_id){
