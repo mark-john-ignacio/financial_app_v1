@@ -18,7 +18,7 @@
       </ul>
     </div>
     <?php endif ?>
-    <?= form_open_multipart('items/upload', ['id' => 'uploadForm']) ?>
+    <?= form_open_multipart('customers/upload', ['id' => 'uploadForm']) ?>
     <div class="card-body">
       <div class="mb-3">
         <label for="formFile" class="form-label">Upload Excel File</label>
