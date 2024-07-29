@@ -787,4 +787,11 @@ class ItemsController extends BaseController
     
         return $success;
     }
+
+    public function deleteAll()
+    {
+        $this->itemsModel->where('compcode', $this->company_code)->delete();
+        $this->swal('success', 'Successfully Deleted');
+        return redirect()->to(site_url('items'));
+    }
 }
