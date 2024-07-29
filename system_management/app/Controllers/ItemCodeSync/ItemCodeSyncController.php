@@ -19,8 +19,15 @@ class ItemCodeSyncController extends BaseController
         $this->itemsModel = new ItemsModel();
         $this->itemsCopyModel = new ItemsCopyModel();
         $this->purchaseReceivingItemsModel = new PurchaseReceivingItemsModel();
+        $this->view = "ItemCodeSync/";
     }
 
+    public function index(){
+        $data = [
+            'title' => 'Item Code Sync'
+        ];
+        return view($this->view . 'index', $data);
+    }
     public function mapItemCodes()
     {
         $itemsCopies = $this->itemsCopyModel->findAll();
@@ -28,35 +35,37 @@ class ItemCodeSyncController extends BaseController
 
         //For exact matches
         foreach ($itemsCopies as $oldItem){
-            $newItem = $this->itemsModel->where('cpartno', $oldItem->cpartno)->first();
+            $newItem = $this->itemsModel->where('citemdesc', $oldItem->citemdesc)->first();
             if($newItem){
-                $mapping[] = [
-                    'old_code' => $oldItem->cpartno,
-                    'item_desc' => $oldItem->citemdesc,
-                    'new_code' => $newItem->cpartno,
-                    'new_item_desc' => $newItem->citemdesc,
-                    'match_type' => 'exact',
-                ];
+                $this->_addMapping($mapping, $oldItem, $newItem, 'exact');
             }
         }
 
-        // Partial matches (e.g., ADOLPHII B to ADOLPHII XL)
+        // Partial matches (e.g., ADOLPHII with SKU:SMALL to ADOLPHII S)
         foreach ($itemsCopies as $oldItem){
             if(!isset($mapping[$oldItem->cpartno])){
-                $newItem = $this->itemsModel->like('cpartno', $oldItem->cpartno)->first();
+                $newItem = $this->itemsModel->like('citemdesc', $oldItem->citemdesc)
+                ->where('cskucode', 'SMALL')
+                ->first();
                 if($newItem){
-                    $mapping[] = [
-                        'old_code' => $oldItem->cpartno,
-                        'item_desc' => $oldItem->citemdesc,
-                        'new_code' => $newItem->cpartno,
-                        'new_item_desc' => $newItem->citemdesc,
-                        'match_type' => 'partial'
-                    ];
+                    $this->_addMapping($mapping, $oldItem, $newItem, 'partial');
                 }
             }
         }
 
         return $this->response->setJSON($mapping);
 
+    }
+
+    private function _addMapping(&$mapping, $oldItem, $newItem, $matchType)
+    {
+        $mapping[] = [
+            'old_code' => $oldItem->cpartno,
+            'old_item_desc' => $oldItem->citemdesc,
+            'sku_code' => $oldItem->cskucode,
+            'new_code' => $newItem->cpartno,
+            'new_item_desc' => $newItem->citemdesc,
+            'match_type' => $matchType
+        ];
     }
 }

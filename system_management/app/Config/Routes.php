@@ -101,7 +101,7 @@ $routes->group('', ['filter' => 'pin_verified'], function ($routes) {
         $con_path = 'ItemCodeSync\\ItemCodeSyncController';
         $routes->get('', $con_path . '::index');
         $routes->get('load', $con_path . '::load');
-        $routes->get('item-mapping', $con_path . '::mapItemCodes');
+        $routes->get('item-mapping', $con_path . '::mapItemCodes', ['as' => 'item-mapping']);
     });
 });
 

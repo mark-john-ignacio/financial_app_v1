@@ -4,20 +4,19 @@
 <?= $this->section("content")?>
 
 <div class="container mt-5">
-    <h1>Items</h1>
+    <h1><?= $title ?></h1>
     <div class="mb-3 d-flex justify-content-between">
-        <!-- <a href="<?= site_url('bir-forms/form/new') ?>" class="btn btn-primary">Add New</a> -->
-        <a class="btn btn-secondary" href="<?= url_to("items-upload-form") ?>">Mass Upload</a>
     </div>
     <div class="table-responsive">
         <table id="formsTable" class="display responsive" style="width:100%">
             <thead>
                 <tr>
-                    <th>Item Code</th>
-                    <th>Description</th>
-                    <th>Main UOM</th>
-                    <th>Status</th>
-                    <!-- <th>Action</th> -->
+                    <th>Old Code</th>
+                    <th>Old Description</th>
+                    <th>SKU Code</th>
+                    <th>New Code</th>
+                    <th>New Description</th>
+                    <th>Match Type</th>
                 </tr>
             </thead>
             <tbody>
@@ -33,7 +32,7 @@
 $(document).ready(function() {
     var formsDatatable = $('#formsTable').DataTable({
         ajax: {
-            url: '<?= url_to("items-load") ?>',
+            url: '<?= url_to("item-mapping") ?>',
             dataSrc: '',
             error: function (xhr, error, thrown) {
                 console.error("Error occurred during AJAX request:", error, thrown);
@@ -42,10 +41,12 @@ $(document).ready(function() {
            }
         },
         columns: [
-            { data: 'item_code' },
-            { data: 'item_description' },
-            { data: 'unit_of_measure' },
-            { data: 'cstatus' },
+            { data: 'old_code' },
+            { data: 'old_item_desc' },
+            { data: 'sku_code' },
+            { data: 'new_code' },
+            { data: 'new_item_desc' },
+            { data: 'match_type' }
         ]
     });
 });
