@@ -50,13 +50,37 @@ class ItemCodeSyncController extends BaseController
         ];
 
         foreach ($itemsCopies as $oldItem){
-            if (!isset($mapping[$oldItem->cpartno])){
+            $exists = false;
+            foreach ($mapping as $map){
+                if ($map['old_code'] == $oldItem->cpartno){
+                    $exists = true;
+                    break;
+                }
+            }
+            if (!$exists){
                 $suffix = isset($skuMapping[$oldItem->cskucode]) ? $skuMapping[$oldItem->cskucode] : '';
                 if ($suffix) {
                     $newItem = $this->itemsModel->where('citemdesc', $oldItem->citemdesc . ' ' . $suffix)->first();
                     if ($newItem) {
-                        $this->_addMapping($mapping, $oldItem, $newItem, 'partial');
+                        $this->_addMapping($mapping, $oldItem, $newItem, 'partial using sku code');
                     }
+                }
+            }
+        }
+
+        // remaining unmatched items
+        foreach ($itemsCopies as $oldItem){
+            $exists = false;
+            foreach ($mapping as $map){
+                if ($map['old_code'] == $oldItem->cpartno){
+                    $exists = true;
+                    break;
+                }
+            }
+            if (!$exists){
+                $newItem = $this->itemsModel->first();
+                if ($newItem){
+                    $this->_addMapping($mapping, $oldItem, $newItem, 'unmatched');
                 }
             }
         }
