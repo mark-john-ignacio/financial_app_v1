@@ -791,6 +791,7 @@ class ItemsController extends BaseController
     public function deleteAll()
     {
         $this->itemsModel->where('compcode', $this->company_code)->delete();
+        $this->db->query("ALTER TABLE items AUTO_INCREMENT = 1");
         $this->swal('success', 'Successfully Deleted');
         return redirect()->to(site_url('items'));
     }

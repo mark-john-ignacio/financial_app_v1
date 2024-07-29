@@ -68,6 +68,28 @@ class ItemCodeSyncController extends BaseController
             }
         }
 
+        foreach ($itemsCopies as $oldItem) {
+            $exists = false;
+            foreach ($mapping as $map) {
+                if ($map['old_code'] == $oldItem->cpartno) {
+                    $exists = true;
+                    break;
+                }
+            }
+
+            if (!$exists) {
+                $suffix = isset($skuMapping[$oldItem->cskucode]) ? $skuMapping[$oldItem->cskucode] : '';
+                if ($suffix) {
+                    $cleanedOldItemDesc = $this->removeSuffix($oldItem->citemdesc);
+                    //dd($cleanedOldItemDesc);
+                    $newItem = $this->itemsModel->where('citemdesc', $cleanedOldItemDesc . ' ' . $suffix)->first();
+                    if ($newItem) {
+                        $this->_addMapping($mapping, $oldItem, $newItem, 'partial using sku code and remove suffix');
+                    }
+                }
+            }
+        }
+
         // remaining unmatched items
         foreach ($itemsCopies as $oldItem){
             $exists = false;
@@ -99,5 +121,10 @@ class ItemCodeSyncController extends BaseController
             'new_item_desc' => $newItem->citemdesc,
             'match_type' => $matchType
         ];
+    }
+
+    private function removeSuffix($itemDesc)
+    {
+        return preg_replace('/\s(S|M|L|B)$/', '', $itemDesc);
     }
 }
