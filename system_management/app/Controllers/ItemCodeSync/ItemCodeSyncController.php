@@ -42,13 +42,21 @@ class ItemCodeSyncController extends BaseController
         }
 
         // Partial matches (e.g., ADOLPHII with SKU:SMALL to ADOLPHII S)
+        $skuMapping = [
+            'SMALL' => 'S',
+            'MEDIUM' => 'M',
+            'LARGE' => 'L',
+            'BIG' => 'XL',
+        ];
+
         foreach ($itemsCopies as $oldItem){
-            if(!isset($mapping[$oldItem->cpartno])){
-                $newItem = $this->itemsModel->like('citemdesc', $oldItem->citemdesc)
-                ->where('cskucode', 'SMALL')
-                ->first();
-                if($newItem){
-                    $this->_addMapping($mapping, $oldItem, $newItem, 'partial');
+            if (!isset($mapping[$oldItem->cpartno])){
+                $suffix = isset($skuMapping[$oldItem->cskucode]) ? $skuMapping[$oldItem->cskucode] : '';
+                if ($suffix) {
+                    $newItem = $this->itemsModel->where('citemdesc', $oldItem->citemdesc . ' ' . $suffix)->first();
+                    if ($newItem) {
+                        $this->_addMapping($mapping, $oldItem, $newItem, 'partial');
+                    }
                 }
             }
         }
