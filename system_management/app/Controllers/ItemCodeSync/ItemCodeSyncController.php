@@ -134,6 +134,9 @@ class ItemCodeSyncController extends BaseController
         $mapping = $this->request->getJSON();
         $updated = 0;
         foreach ($mapping as $map){
+            if ($map->match_type === 'unmatched') {
+                continue;
+            }
             $oldItem = $this->itemsCopyModel->where('cpartno', $map->old_code)->first();
             $newItem = $this->itemsModel->where('cpartno', $map->new_code)->first();
             if ($oldItem && $newItem){
