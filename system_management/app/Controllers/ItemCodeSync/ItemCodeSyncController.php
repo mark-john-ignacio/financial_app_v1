@@ -137,12 +137,14 @@ class ItemCodeSyncController extends BaseController
             $oldItem = $this->itemsCopyModel->where('cpartno', $map->old_code)->first();
             $newItem = $this->itemsModel->where('cpartno', $map->new_code)->first();
             if ($oldItem && $newItem){
-                // $this->purchaseReceivingItemsModel->where('citemno', $oldItem->cpartno)
-                // ->set([
-                //     'citemno' => $newItem->cpartno,
-                //     'creference' => $oldItem->cpartno . ' -> ' . $newItem->cpartno
-                // ])
-                // ->update();
+                //TODO Add id to receive_t table to properly document how many are updated
+                //TODO Removed unmatch items
+                $this->purchaseReceivingItemsModel->where('citemno', $oldItem->cpartno)
+                ->set([
+                    'citemno' => $newItem->cpartno,
+                    'creference' => $oldItem->cpartno . ' -> ' . $newItem->cpartno
+                ])
+                ->update();
                 $updated++;
             }
         }

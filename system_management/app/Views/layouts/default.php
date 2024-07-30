@@ -57,14 +57,24 @@
             <li class="nav-item">
                 <a href="<?= site_url("nav-menus")?>" class="nav-link">Nav Menus</a>
             </li>
-            <li class="nav-item">
-                <a href="<?= site_url("customers")?>" class="nav-link">Customers</a>
+            <li class="nav-item dropdown">
+                <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                    Mass Upload
+                </a>
+                <ul class="dropdown-menu" aria-labelledby="navbarDropdown">
+                    <li class="nav-item">
+                        <a href="<?= site_url("customers")?>" class="nav-link">Customers</a>
+                    </li>
+                    <li class="nav-item">
+                        <a href="<?= site_url("items")?>" class="nav-link">Items</a>
+                    </li>
+                    <li class="nav-item">
+                        <a href="<?= site_url("suppliers")?>" class="nav-link">Suppliers</a>
+                    </li>
+                </ul>
             </li>
             <li class="nav-item">
-                <a href="<?= site_url("items")?>" class="nav-link">Items</a>
-            </li>
-            <li class="nav-item">
-                <a href="<?= site_url("suppliers")?>" class="nav-link">Suppliers</a>
+                <a href="<?= site_url("item-code-sync")?>" class="nav-link">Item Code Sync</a>
             </li>
             </ul>
             <div class="d-flex">
