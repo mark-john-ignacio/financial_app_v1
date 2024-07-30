@@ -127,4 +127,25 @@ class ItemCodeSyncController extends BaseController
     {
         return preg_replace('/\s(S|M|L|B)$/', '', $itemDesc);
     }
+
+    //replace item codes on receiving items(receive_t)
+    public function replaceItemCodes()
+    {
+        $mapping = $this->request->getJSON();
+        $updated = 0;
+        foreach ($mapping as $map){
+            $oldItem = $this->itemsCopyModel->where('cpartno', $map->old_code)->first();
+            $newItem = $this->itemsModel->where('cpartno', $map->new_code)->first();
+            if ($oldItem && $newItem){
+                // $this->purchaseReceivingItemsModel->where('citemno', $oldItem->cpartno)
+                // ->set([
+                //     'citemno' => $newItem->cpartno,
+                //     'creference' => $oldItem->cpartno . ' -> ' . $newItem->cpartno
+                // ])
+                // ->update();
+                $updated++;
+            }
+        }
+        return $this->response->setJSON(['updated' => $updated]);
+    }
 }

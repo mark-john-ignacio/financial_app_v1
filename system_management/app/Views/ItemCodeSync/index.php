@@ -5,7 +5,8 @@
 
 <div class="container mt-5">
     <h1><?= $title ?></h1>
-    <div class="mb-3 d-flex justify-content-between">
+    <div class="mb-3 d-flex justify-content-end">
+    <button id="fetchButton" class="btn btn-primary">Replace Item Codes</button>
     </div>
     <div class="table-responsive">
         <table id="formsTable" class="display responsive" style="width:100%">
@@ -30,6 +31,10 @@
 <?= $this->section("scripts")?>
 <script>
 $(document).ready(function() {
+    $('#fetchButton').on('click', function() {
+        fetchAndReplaceItemCodes();
+    });
+
     var formsDatatable = $('#formsTable').DataTable({
         ajax: {
             url: '<?= url_to("item-mapping") ?>',
@@ -49,6 +54,30 @@ $(document).ready(function() {
             { data: 'match_type' }
         ]
     });
+
+    function fetchAndReplaceItemCodes() {
+        fetch('<?= url_to("item-mapping") ?>')
+            .then(response => response.json())
+            .then(data => {
+                return fetch('<?= url_to("replace-item-codes") ?>', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify(data)
+                });
+            })
+            .then(response => response.json())
+            .then(result => {
+                console.log(result);
+            })
+            .catch(error => {
+                console.error("Error occurred during fetch:", error);
+            });
+    }
+    
 });
+
+
 </script>
 <?= $this->endSection() ?>
