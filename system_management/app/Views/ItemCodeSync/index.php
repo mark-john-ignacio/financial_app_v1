@@ -36,17 +36,19 @@ $(document).ready(function() {
             title: "Please wait...",
             html: "Fetching and replacing item codes...",
             allowOutsideClick: false,
-            onBeforeOpen: () => {
+            didOpen: () => {
                 Swal.showLoading();
             },
         })
         fetchAndReplaceItemCodes()
             .then(result => {
+                const updatedCount = result.updated;
                 Swal.fire({
                     title: "Success",
-                    text: "Item codes have been replaced.",
+                    text: `Item codes have been replaced. Updated: ${updatedCount}`,
                     icon: "success"
                 });
+                console.log(`Updated: ${updatedCount}`); 
             })
             .catch(error => {
                 Swal.fire({
