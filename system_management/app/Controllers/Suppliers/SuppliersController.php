@@ -670,4 +670,9 @@ class SuppliersController extends BaseController
 
         return $success;
     }
+    public function deleteAll()
+    {
+        $this->suppliersModel->truncate();
+        return $this->response->setJSON(['success' => true]);
+    }
 }

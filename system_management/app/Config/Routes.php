@@ -83,6 +83,7 @@ $routes->group('', ['filter' => 'pin_verified'], function ($routes) {
         $routes->post('upload', $con_path . '::upload', ['as' => 'items-upload']);
         $routes->post('insert-items', $con_path . '::insertItems', ['as' => 'items-insert-items']);
         $routes->get('download-template', $con_path . '::downloadTemplate', ['as' => 'items-download-template']);
+        //$routes->get('delete-all', $con_path . '::deleteAll');
     });
 
     $routes->group('suppliers', function ($routes) {
@@ -93,6 +94,15 @@ $routes->group('', ['filter' => 'pin_verified'], function ($routes) {
         $routes->post('upload', $con_path . '::upload', ['as' => 'suppliers-upload']);
         $routes->post('insert-suppliers', $con_path . '::insertSuppliers', ['as' => 'suppliers-insert-suppliers']);
         $routes->get('download-template', $con_path . '::downloadTemplate', ['as' => 'suppliers-download-template']);
+        //$routes->get('delete-all', $con_path . '::deleteAll');
+    });
+
+    $routes->group('item-code-sync', function ($routes) {
+        $con_path = 'ItemCodeSync\\ItemCodeSyncController';
+        $routes->get('', $con_path . '::index');
+        $routes->get('load', $con_path . '::load');
+        $routes->get('item-mapping', $con_path . '::mapItemCodes', ['as' => 'item-mapping']);
+        $routes->post('replace-item-codes', $con_path . '::replaceItemCodes', ['as' => 'replace-item-codes']);
     });
 });
 
