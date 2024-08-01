@@ -240,9 +240,9 @@
 					</div>
 					<div class="col-xs-2 nopadding">
 						<select class="form-control input-sm" name="selcntyp" id="selcntyp">			
-							<option value="request" <?=($seltype=="request") ? "selected" : ""?> data-prt="<?=$prntnme['INVTRANS_REQUEST']?>">Request</option>		
-							<option value="transfer" <?=($seltype=="transfer") ? "selected" : ""?> data-prt="<?=$prntnme['INVTRANS_ISSUANCE']?>">Transfer</option>		
-							<option value="fg_transfer" <?=($seltype=="fg_transfer") ? "selected" : ""?> data-prt="<?=$prntnme['INVTRANS_FGISS']?>">FG Transfer</option>				
+							<option value="request" <?=($seltype=="request") ? "selected" : ""?> data-prt="<?=$prntnme['INVTRANS_REQUEST']?>">MRS - Material Requisition Slip</option>		
+							<option value="fg_transfer" <?=($seltype=="fg_transfer") ? "selected" : ""?> data-prt="<?=$prntnme['INVTRANS_FGISS']?>">SIS - Stock In Slip</option>
+							<option value="transfer" <?=($seltype=="transfer") ? "selected" : ""?> data-prt="<?=$prntnme['INVTRANS_ISSUANCE']?>">IRS - Item Return Slip</option>													
 						</select>
 					</div>
 
