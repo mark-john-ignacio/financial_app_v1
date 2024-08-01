@@ -166,6 +166,7 @@ class OrderController extends BaseController
             $transformedName = $this->transformProductName($item['name']);
             $product = $this->itemsModel->where('compcode', $this->company_code)->where('citemdesc', $transformedName)->first();
             if (!$product){
+                // Insert the new product into the database
                 $data = [
                     'compcode' => $this->company_code,
                     'cpartno' => $this->generateItemPartNo(),
@@ -185,12 +186,9 @@ class OrderController extends BaseController
                 ];
                 $this->itemsModel->insert($data);
                 $product = $this->itemsModel->find($this->itemsModel->insertID());
-                $this->formatSalesOrderItems($salesOrderId, $item, $product);
-                $this->salesOrderItemsModel->insert($data);
-            }else{
-                $data = $this->formatSalesOrderItems($salesOrderId, $item, $product);
-                $this->salesOrderItemsModel->insert($data);
             }
+            $data = $this->formatSalesOrderItems($salesOrderId, $item, $product);
+            $this->salesOrderItemsModel->insert($data);
         }
     }
 
@@ -337,10 +335,9 @@ class OrderController extends BaseController
         if ($order) {
             $jsonData = json_decode($order['json_data'], true);
             $orderData = $this->formatOrder($jsonData);
-            $orderItemsData = $this->formatSalesOrderItems($jsonData);
             $data = [
                 'orderData' => $orderData,
-                'orderItemsData' => $orderItemsData,
+                'orderItemsData' => '',
             ];
             return $this->response->setJSON($data);
         } else {
