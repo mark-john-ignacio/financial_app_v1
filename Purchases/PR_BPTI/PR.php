@@ -106,10 +106,11 @@
 
         <div class="row">
 			<div class="col-xs-12" style="padding-top: 5px !important">
-				<div class="col-xs-2 text-right nopadding">
+				<div class="col-xs-3 text-right nopadding">
 					<select class="form-control" name="selstypes" id="selstypes"> 	
 					<option value="0" <?=(isset($_REQUEST['stype'])) ? (($_REQUEST['stype']=="0") ? "selected" : "" ) : "";?>> Search BY PR No. </option>
-					<option value="1" <?=(isset($_REQUEST['stype'])) ? (($_REQUEST['stype']=="1") ? "selected" : "" ) : "";?>> Search By Item </option>									
+					<option value="1" <?=(isset($_REQUEST['stype'])) ? (($_REQUEST['stype']=="1") ? "selected" : "" ) : "";?>> Search By Item </option>		
+					<option value="2" <?=(isset($_REQUEST['stype'])) ? (($_REQUEST['stype']=="2") ? "selected" : "" ) : "";?>> Search By PR Item Description </option>							
 					</select>
 				</div>
 				<div class="col-xs-2 text-right nopadwleft" id="srchcode" style="display: none">
@@ -363,13 +364,20 @@
 			});
 
 			$("#selstypes").change(function(){
-				if($(this).val()=="1"){  
+				if($(this).val()=="1"){ 
 					$("#searchByName").addClass("typeahead");
+					$("#searchByName").attr("placeholder", "Search Item Code/Name");
 					$("#srchcode").show();
+				}
+				else if($(this).val()=="2"){  
+					$("#searchByName").removeClass("typeahead");
+					$("#searchByName").attr("placeholder", "Search PR Item Description");
+					$("#srchcode").hide();
 				}
 				else{
 					$("#searchByName").removeClass("typeahead");
-					$("#srchcode").hidden();
+					$("#searchByName").attr("placeholder", "Search PR No.");
+					$("#srchcode").hide();
 				}
 
 				filter_check();

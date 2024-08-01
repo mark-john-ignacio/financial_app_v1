@@ -27,6 +27,8 @@
 
 		if($_POST['searchByType']=="1"){
 			$filters .= " and ctranno in (Select ctranno from purchrequest_t where compcode='".$_SESSION['companyid']."' and citemno='".$_POST['searchByName']."')";
+		}elseif($_POST['searchByType']=="2"){
+			$filters .= " and ctranno in (Select ctranno from purchrequest_t where compcode='".$_SESSION['companyid']."' and LOWER(citemdesc) like LOWER('%".$_POST['searchByName']."%')";
 		}else{
 			$filters .= " and LOWER(A.ctranno) like LOWER('%".$_POST['searchByName']."%')";
 		}
