@@ -64,9 +64,18 @@ class OrderController extends BaseController
     }
     private function processOrder($jsonData)
     {
-        // Log the webhook data
-        $this->logWebhookData($jsonData);
+        $data = $this->formatOrder($jsonData);
+        $result = $this->salesOrderModel->insert($data);
+        if ($result) {
+            $this->insertSalesOrderItems($jsonData, $data['ctranno']);
+            return $this->response->setJSON(['message' => 'Order received']);
+        } else {
+            $error = $result;
+            return $this->response->setJSON(['message' => $error]);
+        }
+    }
 
+    private function formatOrder($jsonData){
         // Insert the order data into the database
         $customerCode = $this->getCustomerCode($jsonData);
         $ctranno = $this->salesOrderModel->generateSONumber($this->company_code);
@@ -94,14 +103,7 @@ class OrderController extends BaseController
             'cdeladdcountry' => $jsonData['shipping']['country'],
             'cdeladdzip' => $jsonData['shipping']['postcode'],
         ];
-        $result = $this->salesOrderModel->insert($data);
-        if ($result) {
-            $this->insertSalesOrderItems($jsonData, $ctranno);
-            return $this->response->setJSON(['message' => 'Order received']);
-        } else {
-            $error = $result;
-            return $this->response->setJSON(['message' => $error]);
-        }
+        return $data;
     }
 
     private function getCustomerCode($jsonData){
@@ -185,7 +187,8 @@ class OrderController extends BaseController
                 $this->prepareAndInsertIntoSalesOrderItems($salesOrderId, $item, $product);
 
             }else{
-                $this->prepareAndInsertIntoSalesOrderItems($salesOrderId, $item, $product);
+                $data = $this->prepareAndInsertIntoSalesOrderItems($salesOrderId, $item, $product);
+                $this->salesOrderItemsModel->insert($data);
             }
         }
     }
@@ -260,7 +263,7 @@ class OrderController extends BaseController
             'ctaxcode' => 'NT',
             'nrate' => 0,
         ];
-        $this->salesOrderItemsModel->insert($data);
+        return $data;
     }
 
     private function generateSOTCidentity($salesOrderId){
@@ -296,6 +299,36 @@ class OrderController extends BaseController
         } else {
             // Optionally, handle the error in case the log file is not writable or cannot be created.
             error_log('Failed to write webhook data to log file.');
+        }
+    }
+
+    public function getPendingOrders()
+    {
+        $pendingOrders = $this->landingOrderModel->where('status', 'pending')->findAll();
+        return $this->response->setJSON($pendingOrders);
+    }
+
+    public function approveOrder($id)
+    {
+        $order = $this->landingOrderModel->find($id);
+        if ($order) {
+            $jsonData = json_decode($order['json_data'], true);
+            $this->processOrder($jsonData);
+            $this->landingOrderModel->update($id, ['status' => 'approved']);
+            return $this->response->setJSON(['message' => 'Order approved and processed']);
+        } else {
+            return $this->response->setJSON(['message' => 'Order not found'], 404);
+        }
+    }
+
+    public function rejectOrder($id)
+    {
+        $order = $this->landingOrderModel->find($id);
+        if ($order) {
+            $this->landingOrderModel->update($id, ['status' => 'rejected']);
+            return $this->response->setJSON(['message' => 'Order rejected']);
+        } else {
+            return $this->response->setJSON(['message' => 'Order not found'], 404);
         }
     }
 }
