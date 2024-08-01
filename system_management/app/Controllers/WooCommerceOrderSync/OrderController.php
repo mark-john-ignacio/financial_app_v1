@@ -139,7 +139,8 @@ class OrderController extends BaseController
     private function insertSalesOrderItems($jsonData, $salesOrderId){
         $items = $jsonData['line_items'];
         foreach ($items as $item){
-            $product = $this->itemsModel->where('compcode', $this->company_code)->where('citemdesc', $item['name'])->first();
+            $transformedName = $this->transformProductName($item['name']);
+            $product = $this->itemsModel->where('compcode', $this->company_code)->where('citemdesc', $transformedName)->first();
             if (!$product){
                 $data = [
                     'compcode' => $this->company_code,
@@ -166,6 +167,16 @@ class OrderController extends BaseController
                 $this->prepareAndInsertIntoSalesOrderItems($salesOrderId, $item, $product);
             }
         }
+    }
+
+    private function transformProductName($name){
+        $name = strtoupper($name);
+        $name = str_replace(' - SMALL', ' S', $name);
+        $name = str_replace(' - MEDIUM', ' M', $name);
+        $name = str_replace(' - LARGE', ' L', $name);
+        $name = str_replace(' - EXTRA LARGE', ' XL', $name);
+
+        return $name;
     }
 
     private function generateItemPartNo(){
