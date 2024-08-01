@@ -43,7 +43,27 @@ class OrderController extends BaseController
 
         // Log the webhook data
         $this->logWebhookData($jsonData);
+        $confirmFirst = getenv('CONFIRM_FIRST');
         
+        if ($confirmFirst) {
+            // Save JSON data to the landing table
+            $this->landingOrderModel->insert([
+                'json_data' => json_encode($jsonData),
+                'status' => 'pending',
+                'created_at' => date('Y-m-d H:i:s'),
+                'updated_at' => date('Y-m-d H:i:s')
+            ]);
+            return $this->response->setJSON(['message' => 'Order received and pending approval']);
+        } else {
+            // Proceed with the existing process
+            return $this->processOrder($jsonData);
+        }
+    }
+    private function processOrder($jsonData)
+    {
+        // Log the webhook data
+        $this->logWebhookData($jsonData);
+
         // Insert the order data into the database
         $customerCode = $this->getCustomerCode($jsonData);
         $ctranno = $this->salesOrderModel->generateSONumber($this->company_code);
@@ -71,13 +91,11 @@ class OrderController extends BaseController
             'cdeladdcountry' => $jsonData['shipping']['country'],
             'cdeladdzip' => $jsonData['shipping']['postcode'],
         ];
-
         $result = $this->salesOrderModel->insert($data);
-
-        if($result){
+        if ($result) {
             $this->insertSalesOrderItems($jsonData, $ctranno);
             return $this->response->setJSON(['message' => 'Order received']);
-        }else{
+        } else {
             $error = $result;
             return $this->response->setJSON(['message' => $error]);
         }
