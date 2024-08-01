@@ -24,6 +24,7 @@ class OrderController extends BaseController
         $this->itemsModel = new ItemsModel();
         $this->landingOrderModel = new LandingOrderTable();
         $this->company_code = "001";
+        $this->view = "WooCommerceOrderSync";
     }
     public function receiveOrder(){
 
@@ -184,10 +185,10 @@ class OrderController extends BaseController
                 ];
                 $this->itemsModel->insert($data);
                 $product = $this->itemsModel->find($this->itemsModel->insertID());
-                $this->prepareAndInsertIntoSalesOrderItems($salesOrderId, $item, $product);
-
+                $this->formatSalesOrderItems($salesOrderId, $item, $product);
+                $this->salesOrderItemsModel->insert($data);
             }else{
-                $data = $this->prepareAndInsertIntoSalesOrderItems($salesOrderId, $item, $product);
+                $data = $this->formatSalesOrderItems($salesOrderId, $item, $product);
                 $this->salesOrderItemsModel->insert($data);
             }
         }
@@ -238,7 +239,7 @@ class OrderController extends BaseController
 
     }
 
-    private function prepareAndInsertIntoSalesOrderItems($salesOrderId, $item, $product){
+    private function formatSalesOrderItems($salesOrderId, $item, $product){
         $cidentity = $this->generateSOTCidentity($salesOrderId);
         $nident = intval(substr($cidentity, strrpos($cidentity, 'P') + 1));
 
@@ -302,11 +303,51 @@ class OrderController extends BaseController
         }
     }
 
+    public function index()
+    {
+        $data = [
+            'title' => 'WooCommerce Order Sync',
+        ];
+        return view($this->view . '/index', $data);
+    }
+
     public function getPendingOrders()
     {
         $pendingOrders = $this->landingOrderModel->where('status', 'pending')->findAll();
         return $this->response->setJSON($pendingOrders);
     }
+
+    public function edit($id)
+    {
+        $data = [
+            'title' => 'Edit Order',
+            'id' => $id,
+        ];
+                // TODO these formatting below will be done when a landing order is viewed and it will show on a view page
+        // TODO format orderData
+        // TODO format orderItemsData
+        // TODO format customerData if ever creating a new customer
+        // TODO format itemData if ever creating a new item
+        return view($this->view . '/edit', $data);
+    }
+
+    public function loadOrder($id)
+    {
+        $order = $this->landingOrderModel->find($id);
+        if ($order) {
+            $jsonData = json_decode($order['json_data'], true);
+            $orderData = $this->formatOrder($jsonData);
+            $orderItemsData = $this->formatSalesOrderItems($jsonData);
+            $data = [
+                'orderData' => $orderData,
+                'orderItemsData' => $orderItemsData,
+            ];
+            return $this->response->setJSON($data);
+        } else {
+            return $this->response->setJSON(['message' => 'Order not found'], 404);
+        }
+    }
+
 
     public function approveOrder($id)
     {
