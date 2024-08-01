@@ -100,7 +100,7 @@
 
 			<input type="hidden" name="hdnmyxfin" value="<?= $_SESSION['myxtoken'] ?? '' ?>">
 			<input type="hidden" name="hdnposted" id="hdnposted" value="<?php echo $lPosted;?>">
-    	<input type="hidden" name="hdncancel" id="hdncancel" value="<?php echo $lCancelled;?>">
+    		<input type="hidden" name="hdncancel" id="hdncancel" value="<?php echo $lCancelled;?>">
 
 			<fieldset>
 				<legend><div class="col-xs-6 nopadding">Inventory Transfer Details</div>
@@ -227,46 +227,61 @@
 				</div>
 		
 			</fieldset>	
-<br><br>												
-									<table name='MyTbl' id='MyTbl' class="table table-scroll table-striped table-condensed">
-										<thead>
-											<tr>
-												<th width="50">&nbsp;<input type="hidden" name="rowcnt" id="rowcnt" value=""></th>
-												<th width="150">Item Code</th>
-												<th>Item Description</th>
-												<th width="70">Unit</th>
-												<th width="100" class="text-center" id="qty1desc"><?=($seltype=="request") ? "Requested Qty" : "Issued Qty"?></th>
-												<th width="100" class="text-center" id="qty2desc"><?=($seltype=="request") ? "Issued Qty" : "Received Qty"?></th>
-											</tr>
-										</thead>
-										<tbody>
-											<?php
-												$sqlhead = mysqli_query($con,"Select A.*, B.citemdesc from invtransfer_t A left join items B on A.compcode=B.compcode and A.citemno=B.cpartno where A.compcode='$company' and A.ctranno='".$_REQUEST['id']."'");
-												if (mysqli_num_rows($sqlhead)!=0) {
-										
-													$cnt = 0;
-													while($row = mysqli_fetch_array($sqlhead, MYSQLI_ASSOC)){
-														$cnt++;
-											?>
-												<tr>				
-													<td><?=$cnt?></td>
-													<td><input type='hidden' value='<?=$row['cidentity']?>' name="txtcidentity" id="txtcidentity<?=$cnt?>"><?=$row['citemno']?></td>
-													<td><?=$row['citemdesc']?></td>
-													<td><?=$row['cunit']?></td>
-													<td>
-														<input type='text' class="numeric form-control input-xs text-center" name="txtnqty1" id="txtnqty1<?=$cnt?>" value="<?=number_format($row['nqty1'],2)?>" readonly>
-													</td>
-													<td>
-														<input type='text' class="numeric2 form-control input-xs text-center" name="txtnqty2" id="txtnqty2<?=$cnt?>" value="<?=number_format($row['nqty2'],2)?>">
-													</td>
-												</tr>
-											<?php
-													}
-												}
-											?>
-										</tbody>
-									</table>
+			<br><br>	
+			
+			<ul class="nav nav-tabs">
+				<li class="active" id="lidet"><a href="#1Det" data-toggle="tab">Items List</a></li>
+				<li id="liacct"><a href="#2Acct" data-toggle="tab">Pick List</a></li>
+			</ul>
 
+			<div class="tab-content nopadwtop2x">
+				<div class="tab-pane active" id="1Det" style="padding-left:5px; padding-top:10px">
+
+					<table name='MyTbl' id='MyTbl' class="table table-scroll table-striped table-condensed">
+						<thead>
+							<tr>
+								<th width="50">&nbsp;<input type="hidden" name="rowcnt" id="rowcnt" value=""></th>
+								<th width="150">Item Code</th>
+								<th>Item Description</th>
+								<th width="70">Unit</th>
+								<th width="100" class="text-center" id="qty1desc"><?=($seltype=="request") ? "Requested Qty" : "Issued Qty"?></th>
+								<th width="100" class="text-center" id="qty2desc"><?=($seltype=="request") ? "Issued Qty" : "Received Qty"?></th>
+							</tr>
+						</thead>
+						<tbody>
+							<?php
+								$sqlhead = mysqli_query($con,"Select A.*, B.citemdesc from invtransfer_t A left join items B on A.compcode=B.compcode and A.citemno=B.cpartno where A.compcode='$company' and A.ctranno='".$_REQUEST['id']."'");
+								if (mysqli_num_rows($sqlhead)!=0) {
+						
+									$cnt = 0;
+									while($row = mysqli_fetch_array($sqlhead, MYSQLI_ASSOC)){
+										$cnt++;
+							?>
+								<tr>				
+									<td><?=$cnt?></td>
+									<td><input type='hidden' value='<?=$row['cidentity']?>' name="txtcidentity" id="txtcidentity<?=$cnt?>"><?=$row['citemno']?> <input type='hidden' value='<?=$row['citemno']?>' name="txtcitemno"></td>
+									<td><?=$row['citemdesc']?></td>
+									<td><?=$row['cunit']?></td>
+									<td>
+										<input type='text' class="numeric form-control input-xs text-center" name="txtnqty1" id="txtnqty1<?=$cnt?>" value="<?=number_format($row['nqty1'],2)?>" readonly>
+									</td>
+									<td>
+										<input type='text' class="numeric2 form-control input-xs text-center" name="txtnqty2" id="txtnqty2<?=$cnt?>" value="<?=number_format($row['nqty2'],2)?>">
+									</td>
+								</tr>
+							<?php
+									}
+								}
+							?>
+						</tbody>
+					</table>
+				</div>
+
+				<div class="tab-pane fade in" id="2Acct" style="padding-left:5px; padding-top:10px">
+
+				</div>
+
+			</div>
 
 			<br>
 
@@ -435,7 +450,7 @@
 		});
 
 		$(".datepick").datetimepicker({
-      format: 'MM/DD/YYYY',
+     		format: 'MM/DD/YYYY',
 			useCurrent: false,
 			//minDate: moment(),
 			defaultDate: moment(),
@@ -555,7 +570,8 @@
 		$("#btnMain").attr("disabled", false);
 		$("#btnPrint").attr("disabled", false);
 		$("#btnNew").attr("disabled", false);
-		$("#btnEdit").attr("disabled", false); 
+		$("#btnEdit").attr("disabled", false);  
+		//$("#btngenpick").attr("disabled", false); 
 
 	}
 
@@ -581,6 +597,7 @@
 				$("#btnPrint").attr("disabled", true);
 				$("#btnNew").attr("disabled", true);
 				$("#btnEdit").attr("disabled", true);
+				//$("#btngenpick").attr("disabled", true); 
 						
 
 		}
@@ -591,6 +608,20 @@
 			document.getElementById(frm).action = "InvCnt_Edit.php";
 			document.getElementById(frm).submit();
 		}
+	}
+
+	function GenPick(){
+		$("#MyTbl > tbody > tr").each(function(index) {	 
+			var citmno = $(this).find('input[type="hidden"][name="txtcitemno"]').val();
+			$.ajax({
+				url: "th_genpicklist.php",
+				dataType: "json",
+				data: { citmno: citmno, sout: "<?=$selwhto ?>" },
+				success: function (data) {
+					response(data);
+				}
+			});
+		});
 	}
 
 
