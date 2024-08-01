@@ -2,9 +2,9 @@
 
 namespace App\Models\WooCommerceOrderSync;
 
-use App\Models\BaseModel;
+use CodeIgniter\Model;
 
-class LandingOrderTable extends BaseModel
+class LandingOrderTable extends Model
 {
     protected $table            = 'woocommerce_landing_orders';
     protected $primaryKey       = 'id';
@@ -26,7 +26,7 @@ class LandingOrderTable extends BaseModel
     protected $createdField  = 'created_at';
     protected $updatedField  = 'updated_at';
     protected $deletedField  = 'deleted_at';
-    
+
     // Validation
     protected $validationRules      = [];
     protected $validationMessages   = [];

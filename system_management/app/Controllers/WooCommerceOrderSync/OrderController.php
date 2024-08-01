@@ -8,11 +8,13 @@ use App\Models\WooCommerceOrderSync\SalesOrderModel;
 use App\Models\WooCommerceOrderSync\CustomersModel;
 use App\Models\WooCommerceOrderSync\SalesOrderItemsModel;
 use App\Models\WooCommerceOrderSync\ItemsModel;
+use App\Models\WooCommerceOrderSync\LandingOrderTable;
 use CodeIgniter\RESTful\ResourceController;
 
 class OrderController extends BaseController
 {
     protected $salesOrderModel;
+    private LandingOrderTable $landingOrderModel;
 
     public function __construct()
     {
@@ -20,6 +22,7 @@ class OrderController extends BaseController
         $this->customersModel = new CustomersModel();
         $this->salesOrderItemsModel = new SalesOrderItemsModel();
         $this->itemsModel = new ItemsModel();
+        $this->landingOrderModel = new LandingOrderTable();
         $this->company_code = "001";
     }
     public function receiveOrder(){
