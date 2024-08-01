@@ -170,7 +170,15 @@ if (mysqli_num_rows($sqlhead)!=0) {
 		$lSent = $row['lsent'];
 	}
 ?>
-	<form action="PR_editsave.php?hdnsrchval=<?=(isset($_REQUEST['hdnsrchval'])) ? $_REQUEST['hdnsrchval'] : ""?>" name="frmpos" id="frmpos" method="post"  enctype="multipart/form-data">
+	<form action="PR_editsave.php" name="frmpos" id="frmpos" method="post"  enctype="multipart/form-data">
+
+		<input type="hidden" name="hdnsrchstype" id="hdnsrchstype" value="<?=isset($_REQUEST['hdnsrchstype']) ? $_REQUEST['hdnsrchstype'] : ""?>" />
+		<input type="hidden" name="hdnsrchval" id="hdnsrchval" value="<?=isset($_REQUEST['hdnsrchval']) ? $_REQUEST['hdnsrchval'] : ""?>" />
+		<input type="hidden" name="hdnsrchsta" id="hdnsrchsta" value="<?=isset($_REQUEST['hdnsrchsta']) ? $_REQUEST['hdnsrchsta'] : ""?>" />
+		<input type="hidden" name="hdnsrchsec" id="hdnsrchsec" value="<?=isset($_REQUEST['hdnsrchsec']) ? $_REQUEST['hdnsrchsec'] : ""?>" />
+		<input type="hidden" name="hdnsrchdte" id="hdnsrchdte" value="<?=isset($_REQUEST['hdnsrchdte']) ? $_REQUEST['hdnsrchdte'] : ""?>" />
+		<input type="hidden" name="hdnsrchdtef" id="hdnsrchdtef" value="<?=isset($_REQUEST['hdnsrchdtef']) ? $_REQUEST['hdnsrchdtef'] : ""?>" />
+		<input type="hidden" name="hdnsrchdtet" id="hdnsrchdtet" value="<?=isset($_REQUEST['hdnsrchdtet']) ? $_REQUEST['hdnsrchdtet'] : ""?>" />
 
 		<div class="portlet">
 			<div class="portlet-title">
@@ -409,7 +417,7 @@ if (mysqli_num_rows($sqlhead)!=0) {
 									if($postedit=="True"){
 								?>
 
-								<button type="button" class="btn btn-primary btn-sm" tabindex="6" onClick="window.location.href='PR.php?ix=<?=isset($_REQUEST['hdnsrchval']) ? $_REQUEST['hdnsrchval'] : ""?>&loc=<?=isset($_REQUEST['hdnsrchsec']) ? $_REQUEST['hdnsrchsec'] : ""?>&st=<?=isset($_REQUEST['hdnsrchsta']) ? $_REQUEST['hdnsrchsta'] : ""?>';" id="btnMain" name="btnMain">
+								<button type="button" class="btn btn-primary btn-sm" tabindex="6" onClick="window.location.href='PR.php?ix=<?=isset($_REQUEST['hdnsrchval']) ? $_REQUEST['hdnsrchval'] : ""?>&st=<?=isset($_REQUEST['hdnsrchsta']) ? $_REQUEST['hdnsrchsta'] : ""?>&swh=<?=isset($_REQUEST['hdnsrchsec']) ? $_REQUEST['hdnsrchsec'] : ""?>&sdtf=<?=isset($_REQUEST['hdnsrchdte']) ? $_REQUEST['hdnsrchdte'] : ""?>&dtfr=<?=isset($_REQUEST['hdnsrchdtef']) ? $_REQUEST['hdnsrchdtef'] : ""?>&dtto=<?=isset($_REQUEST['hdnsrchdtet']) ? $_REQUEST['hdnsrchdtet'] : ""?>&stype=<?=isset($_REQUEST['hdnsrchstype']) ? $_REQUEST['hdnsrchstype'] : ""?>';" id="btnMain" name="btnMain">
 									Back to Main<br>(ESC)
 								</button>
 							

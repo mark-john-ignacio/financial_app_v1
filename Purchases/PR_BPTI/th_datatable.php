@@ -5,41 +5,65 @@
 
 	include('../../Connection/connection_string.php');
 
-	$column = array('A.ctranno', 'CONCAT(B.Lname,", ",B.Fname)', 'D.cdesc', 'C.cdesc', 'A.dneeded', 'A.ddate', 'CASE WHEN a.lapproved=1 THEN CASE WHEN a.lvoid=1 THEN "Voided" ELSE "Posted" END WHEN a.lcancelled=1 THEN "Cancelled" ELSE CASE WHEN a.lsent=0 THEN "For Sending" ELSE "For Approval" END END');
+	$company = $_SESSION['companyid'];
+	$employeeid = $_SESSION['employeeid'];
 
-	$query = "SELECT A.ctranno, B.Lname, B.Fname, C.cdesc, A.dneeded, A.ddate, A.lapproved, A.lcancelled, A.lsent, A.lvoid, D.cdesc as cReqName FROM `purchrequest` A LEFT JOIN `users` B ON A.`cpreparedby` = B.`Userid` LEFT JOIN `locations` C ON A.`locations_id` = C.`nid` left join `mrp_operators` D on A.compcode=D.compcode and A.crequestedby=D.nid where A.compcode='".$_SESSION['companyid']."' ";
+	$chkapprovals = array();
+	$sqlappx = mysqli_query($con,"Select A.* FROM purchrequest_trans_approvals A left join (Select cprno, MIN(nlevel) as nlevel from purchrequest_trans_approvals where compcode='$company' and lapproved=0 and lreject=0 Group By cprno Order By cprno, nlevel) B on A.cprno=B.cprno where A.compcode='$company' and A.lapproved=0 and A.lreject=0 and A.nlevel=B.nlevel");
+	if (mysqli_num_rows($sqlappx)!=0) {
+		while($rows = mysqli_fetch_array($sqlappx, MYSQLI_ASSOC)){
+			@$chkapprovals[] = $rows; 
+		}
+	}
+
+	$column = array('A.ddate', 'CONCAT(B.Lname,", ",B.Fname)', 'C.cdesc', 'A.dneeded', 'A.ddate', 'CASE WHEN A.lapproved=1 THEN CASE WHEN A.lvoid=1 THEN "Voided" ELSE "Posted" END WHEN A.lcancelled=1 THEN "Cancelled" ELSE CASE WHEN A.lsent=0 THEN "For Sending" ELSE "For Approval" END END');
+
+	$query = "SELECT A.ctranno, B.Lname, B.Fname, C.cdesc, A.dneeded, A.ddate, A.lapproved, A.lcancelled, A.lsent, A.lvoid FROM `purchrequest` A LEFT JOIN `users` B ON A.`cpreparedby` = B.`Userid` LEFT JOIN `locations` C ON A.`locations_id` = C.`nid` where A.compcode='".$_SESSION['companyid']."' ";
+
+	$filters = "";
 
 	if(isset($_POST['searchByName']) && $_POST['searchByName'] != '')
 	{
-		$query .= "and LOWER(A.ctranno) like LOWER('%".$_POST['searchByName']."%')";
+
+		if($_POST['searchByType']=="1"){
+			$filters .= " and ctranno in (Select ctranno from purchrequest_t where compcode='".$_SESSION['companyid']."' and citemno='".$_POST['searchByName']."')";
+		}else{
+			$filters .= " and LOWER(A.ctranno) like LOWER('%".$_POST['searchByName']."%')";
+		}
+		
 	}
 
 	if(isset($_POST['searchBySec']) && $_POST['searchBySec'] != '')
 	{
-		$query .= "and A.locations_id = ".$_POST['searchBySec']."";
-	}else{
-		$query .= "and A.locations_id = ''";
+		$filters .= " and A.locations_id = ".$_POST['searchBySec']."";
 	}
 
 	if(isset($_POST['searchBystat']) && $_POST['searchBystat'] != '')
 	{
 		if($_POST['searchBystat']=="post"){
-			$query .= " and (A.lapproved=1 and A.lvoid=0)";
+			$filters .= " and (A.lapproved=1 and A.lvoid=0)";
 		}
 
 		if($_POST['searchBystat']=="void"){
-			$query .= " and A.lvoid=1";
+			$filters .= " and A.lvoid=1";
 		}
 
 		if($_POST['searchBystat']=="cancel"){
-			$query .= " and A.lcancelled=1";
+			$filters .= " and A.lcancelled=1";
 		}
 
-		if($_POST['searchBystat']=="pending"){
-			$query .= " and (A.lapproved=0 and A.lcancelled=0)";
+		if($_POST['searchBystat']=="pending" || $_POST['searchBystat']=="approve"){
+			$filters .= " and (A.lapproved=0 and A.lcancelled=0)";
 		}
 				
 	}
+
+	if(isset($_POST['searchBydtfr']) && $_POST['searchBydtfr'] != '' && isset($_POST['searchBydtto']) && $_POST['searchBydtto'] != '')
+	{
+		$filters .= " and DATE(".$_POST['searchBydtfil'].") >= '".$_POST['searchBydtfr']."' AND DATE(".$_POST['searchBydtfil'].") <=  '".$_POST['searchBydtto']."'";
+	}
+
+	$query .= $filters;
 
 	if(isset($_POST['order']))
 	{
@@ -55,9 +79,13 @@
 	
 	if($_POST["length"] != -1)
 	{
-		$query1 = 'LIMIT ' . $_POST['start'] . ', ' . $_POST['length'];
+		if($filters != ''){
+			$query1 = 'LIMIT 0, ' . $_POST['length'];
+		}else{
+			$query1 = 'LIMIT ' . $_POST['start'] . ', ' . $_POST['length'];
+		}
 	}
-	
+
 	$statement = $connect->prepare($query);
 
 	$statement->execute();
@@ -83,9 +111,33 @@
 		$sub_array[] = $row['lapproved'];
 		$sub_array[] = $row['lcancelled'];
 		$sub_array[] = $row['lsent'];
-		$sub_array[] = $row['lvoid']; 
-		$sub_array[] = $row['cReqName'];
-		$data[] = $sub_array;
+		$sub_array[] = $row['lvoid'];
+		
+		$xcstat = "False";
+		foreach($chkapprovals as $rocx){
+			if($rocx['cprno']==$row['ctranno'] && $rocx['userid']==$employeeid){
+				$xcstat = "True";
+			}
+		}
+
+		$sub_array[] = $xcstat;
+
+		if(isset($_POST['searchBystat']) && $_POST['searchBystat'] != '')
+
+			if($_POST['searchBystat']=="pending"){
+				if($xcstat == "False"){
+					$data[] = $sub_array;
+				}				
+			}elseif($_POST['searchBystat']=="approve"){
+				if($xcstat == "True"){
+					$data[] = $sub_array;
+				}
+			}else{
+				$data[] = $sub_array;
+			}
+		else{
+			$data[] = $sub_array;
+		}
 	}
 
 	function count_all_data($connect)
