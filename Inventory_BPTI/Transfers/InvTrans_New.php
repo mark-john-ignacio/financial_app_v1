@@ -412,13 +412,13 @@
 
 			
 			$("<tr>").append( 
-				$("<td>").html(sornum), 
+				$("<td id=\"tdx"+sornum+"\">").html(sornum), 
 				$("<td>").html("<input type='hidden' value='"+itmid+"' name=\"txtitmcode\" id=\"txtitmcode"+sornum+"\">"+itmid),  
 				$("<td>").html("<input type='hidden' value='"+itmdesc+"' name=\"txtitmdesc\" id=\"txtitmdesc"+sornum+"\">"+itmdesc),
 				$("<td>").html("<input type='hidden' value='"+itmunit+"' name=\"txtcunit\" id=\"txtcunit"+sornum+"\">"+itmunit),
 				$("<td>").html("<input type='text' class=\"numeric form-control input-xs text-center\" name=\"txtnqty\" id=\"txtnqty"+sornum+"\" value=\"0\">"),
 				$("<td>").html("<input type='text' class=\"form-control input-xs text-center\" name=\"txtcrems\" id=\"txtcrems"+sornum+"\" value=\"\">"),
-				$("<td align=\"center\">").html("<button type=\"button\" class=\"btn btn-danger btn-xs\" id=\"btnDel\" id=\"btnDel"+sornum+"\"><i class=\"fa fa-times\"></i></button>")
+				$("<td align=\"center\">").html("<button type=\"button\" class=\"btn btn-danger btn-xs\" id=\"btnDel"+sornum+"\"><i class=\"fa fa-times\"></i></button>")
 			).appendTo("#MyTbl tbody");
 
 			$("#btnDel"+sornum).on('click', function() {
@@ -439,11 +439,15 @@
 		$("#MyTbl > tbody > tr").each(function(index) {
 				$newval = index+1;
 
+				$(this).find('td').attr('id','tdx'+$newval);
+
 				$(this).find('input:hidden[name="txtitmcode"]').attr('id','txtitmcode'+$newval);
 				$(this).find('input:hidden[name="txtitmdesc"]').attr('id','txtitmdesc'+$newval);
 				$(this).find('input:hidden[name="txtcunit"]').attr('id','txtcunit'+$newval); 
 				$(this).find('input[name="txtnqty"]').attr('id','txtnqty'+$newval);  
 				$(this).find('input[name="txtcrems"]').attr('id','txtcrems'+$newval); 
+
+				$('#tdx'+$newval).html($newval);
 			});
 	}
 
