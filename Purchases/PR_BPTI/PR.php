@@ -127,7 +127,7 @@
 			<div class="col-xs-12" style="padding-top: 5px !important">
 				<div class="col-xs-3 text-right nopadding">
 					<select class="form-control" name="selwhfrom" id="selwhfrom"> 
-						<option value="">All Sections</option>	
+						<!--<option value="">All Sections</option>	-->
 						<?php
 							foreach($rowdetloc as $localocs){			
 								if(in_array($localocs['nid'],$arrseclist)){					
