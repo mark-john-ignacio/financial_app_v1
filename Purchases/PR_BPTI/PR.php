@@ -129,10 +129,12 @@
 					<select class="form-control" name="selwhfrom" id="selwhfrom"> 
 						<option value="">All Sections</option>	
 						<?php
-							foreach($rowdetloc as $localocs){									
+							foreach($rowdetloc as $localocs){			
+								if(in_array($localocs['nid'],$arrseclist)){					
 						?>
 							<option value="<?php echo $localocs['nid'];?>" <?=(isset($_REQUEST['swh'])) ? (($_REQUEST['swh']==$localocs['nid']) ? "selected" : "" ) : "";?>><?php echo $localocs['cdesc'];?></option>										
 						<?php	
+								}
 							}						
 						?>
 					</select>
