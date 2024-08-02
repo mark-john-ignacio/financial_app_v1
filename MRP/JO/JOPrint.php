@@ -133,7 +133,7 @@
 			</tr>
 
 			<tr>
-				<td align="center"> <font size="+1"><b>'.$arrmrpjo[0]['citemdesc'].'</b></font> </td>
+				<td align="center"> <b>'.$arrmrpjo[0]['citemdesc'].'<br>'.$arrmrpjo[0]['citemno'].'</b></td>
 				<td align="center"> '.number_format($arrmrpjo[0]['nqty']).' </td>
 				<td align="center"> '.number_format($arrmrpjo[0]['nworkhrs'],2).' </td>
 				<td align="center"> '.number_format($arrmrpjo[0]['nsetuptime'],2).' </td>
@@ -316,7 +316,7 @@
 				</tr>
 
 				<tr>
-					<td align="center"> <font size="+1"><b>'.$rsc['citemdesc'].'</b></font> </td>
+					<td align="center"> <b>'.$rsc['citemdesc'].'<br>'.$rsc['citemno'].'</b></td>
 					<td align="center"> '.number_format($rsc['nqty']).' </td>
 					<td align="center"> '.number_format($rsc['nworkhrs'],2).' </td>
 					<td align="center"> '.number_format($rsc['nsetuptime'],2).' </td>
