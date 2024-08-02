@@ -855,7 +855,7 @@
 			$(".chklimit").show();
 		}
 
-		if($("#incmracct").val()=="custom"){
+		if($("#incmracct").val()=="item"){
 			$(".chkinctype").show();
 		}else{
 			$(".chkinctype").hide();
@@ -1662,7 +1662,7 @@
 
 		var tditmamount = "<td nowrap> <input type='text' value='"+baseprice+"' class='numeric form-control input-xs' style='text-align:right' name=\"txtnamount\" id='txtnamount"+lastRow+"' readonly> </td>";
 
-		if($("#incmracct").val()=="custom"){
+		if($("#incmracct").val()=="item"){
 			var tdglaccount = "<td nowrap><input type='text' value='"+itmacctid+"' class='form-control input-xs' name=\"txtacctcode\" id='txtacctcode"+lastRow+"' readonly> <input type='hidden' value='"+itmacctno+"' name=\"txtacctno\" id='txtacctno"+lastRow+"'> </td>";
 
 			var tdgltitle = "<td nowrap><input type='text' value='"+itmacctnm+"' class='cacctdesc form-control input-xs' name=\"txtacctname\" id='txtacctname"+lastRow+"'></td>";
@@ -2751,7 +2751,7 @@
 						var mainunit = $(this).find('input[type="hidden"][name="hdnmainuom"]').val();
 						var nfactor = $(this).find('input[type="hidden"][name="hdnfactor"]').val();
 
-						if($("#incmracct").val()=="custom"){
+						if($("#incmracct").val()=="item"){
 							var acctcode = $(this).find('input[name="txtacctcode"]').val();
 							var acctid = $(this).find('input[name="txtacctno"]').val();
 							var acctname = $(this).find('input[name="txtacctname"]').val();
