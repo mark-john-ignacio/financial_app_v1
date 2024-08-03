@@ -34,7 +34,7 @@ include('../../include/denied.php');
 	}
 	
 	$csalesno = $_REQUEST['x'];
-	$sqlhead = mysqli_query($con,"select a.*,b.cname,b.chouseno,b.ccity,b.cstate,b.ctin, c.cdesc as ctermdesc from sales a 
+	$sqlhead = mysqli_query($con,"select a.*,b.cname,b.chouseno,b.ccity,b.cstate,b.ctin, c.cdesc as ctermdesc,b.ctradename from sales a 
   left join customers b on a.compcode=b.compcode and a.ccode=b.cempid 
   left join groupings c on a.compcode=c.compcode and a.cterms=c.ccode 
   where a.compcode='$company' and a.ctranno = '$csalesno'");
@@ -43,6 +43,8 @@ if (mysqli_num_rows($sqlhead)!=0) {
 	while($row = mysqli_fetch_array($sqlhead, MYSQLI_ASSOC)){
 		$CustCode = $row['ccode'];
 		$CustName = $row['cname'];
+    $CustBusName = $row['ctradename'];
+
 		$Remarks = $row['cremarks'];
 		$Date = $row['dcutdate'];
     $Adds = $row['chouseno']." ". $row['ccity']." ". $row['cstate'];
@@ -123,6 +125,18 @@ if (mysqli_num_rows($sqlhead)!=0) {
     .address{
       position: absolute;
       top: 146px;
+      left: 140px;
+      width: 400px;
+      height:  15px;  
+      text-align: left; 
+      /* border: 1px solid #000; 
+      letter-spacing: 11px;
+      border: 1px solid #000;*/
+    }
+
+    .custbus{
+      position: absolute;
+      top: 161px;
       left: 140px;
       width: 400px;
       height:  15px;  
@@ -335,8 +349,8 @@ if (mysqli_num_rows($sqlhead)!=0) {
 
     <div class="delTo"><?=$CustName?></div>
     <div class="tin"><?=$cTin?></div>
-    <div class="address"><?=$Adds?></div>
-
+    <div class="address"><?=$Adds?></div> 
+    <div class="custbus"><?=$CustBusName?></div>
     <div class="date"><?=date_format(date_create($Date), "M d, Y")?></div>   
     <div class="terms"><?=$cTermsDesc?></div>    
 
