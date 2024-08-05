@@ -279,10 +279,12 @@
 				$('#dtefilter').daterangepicker({
 					"autoApply": true,
 					"opens": 'left',
-					"format": 'MM/DD/YYYY',
-					"startDate": moment($('#dtefilterfrom').val()).format('MM/DD/YYYY'),
-					"endDate": moment($('#dtefilterto').val()).format('MM/DD/YYYY')
+					"format": 'MM/DD/YYYY'
 				});  
+
+				$('#dtefilter').val('');
+				$('#dtefilterfrom').val('');
+				$('#dtefilterto').val('');
 			<?php
 				}
 			?>
