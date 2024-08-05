@@ -165,8 +165,10 @@
 						<span class="input-group-addon" style="cursor: pointer" id="cleardate">	 
 							<i class="fa fa-times"></i>								
 						</span>
-						<input type="hidden" id="dtefilterfrom" value="<?=(isset($_REQUEST['dtfr'])) ? $_REQUEST['dtfr'] : date('Y-m-d', strtotime('-7 days')) ;?>">
-						<input type="hidden" id="dtefilterto" value="<?=(isset($_REQUEST['dtto'])) ? $_REQUEST['dtto'] : date("Y-m-d");?>">
+						<?//=(isset($_REQUEST['dtfr'])) ? $_REQUEST['dtfr'] : date('Y-m-d', strtotime('-7 days')) ;?>
+						<?//=(isset($_REQUEST['dtto'])) ? $_REQUEST['dtto'] : date("Y-m-d");?>
+						<input type="hidden" id="dtefilterfrom" value="">
+						<input type="hidden" id="dtefilterto" value="">
 					</div>
 				</div>
 			</div>
@@ -321,10 +323,12 @@
 				$('#dtefilter').daterangepicker({
 					"autoApply": true,
 					"opens": 'left',
-					"format": 'MM/DD/YYYY',
-					"startDate": moment($('#dtefilterfrom').val()).format('MM/DD/YYYY'),
-					"endDate": moment($('#dtefilterto').val()).format('MM/DD/YYYY')
+					"format": 'MM/DD/YYYY'
 				});  
+
+				$('#dtefilter').val('');
+				$('#dtefilterfrom').val('');
+				$('#dtefilterto').val('');
 			<?php
 				}
 			?> 
