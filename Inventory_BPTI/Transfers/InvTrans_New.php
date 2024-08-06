@@ -215,17 +215,17 @@
 		<table width="100%" border="0" cellpadding="3">
 			<tr>
 				<td>
-				<button type="button" class="btn btn-primary btn-sm" tabindex="6" onClick="window.location.href='Inv.php';" id="btnMain" name="btnMain">
+				<button type="button" class="btn btn-primary btn-sm" tabindex="6" onClick="window.location.href='Inv.php';" id="btnMain">
 					Back to Main<br>(ESC)
 				</button>
 
-				<!--
-				<button type="button" class="btn btn-info btn-sm" tabindex="6" onClick="loadItms();" id="btnMain" name="btnMain">
-					Load Template<br>(Insert)
+				
+				<button type="button" class="btn btn-info btn-sm" tabindex="6" id="btnJO">
+					Pick JO<br>(Insert)
 				</button>
-				-->
+				
 
-				<button type="button" class="btn btn-success btn-sm" tabindex="6" onClick="return chkform();" id="btnSave" name="btnSave">SAVE<br> (CTRL+S)</button></td>
+				<button type="button" class="btn btn-success btn-sm" tabindex="6" onClick="return chkform();" id="btnSave">SAVE<br> (CTRL+S)</button></td>
 
 				</tr>
 		</table>
@@ -262,16 +262,16 @@
 	$(document).keydown(function(e) {	 
 
 	  if(e.keyCode == 83 && e.ctrlKey){//CTRL S
-			if($("#btnSave").is(":disabled")==false){
-				e.preventDefault();
-				return chkform();
-			}
+		if($("#btnSave").is(":disabled")==false){
+			e.preventDefault();
+			return chkform();
+		}
 	  }
 	  else if(e.keyCode == 27){//ESC
-			if($("#btnMain").is(":disabled")==false){
-				e.preventDefault();
-				window.location.href='Inv.php';
-			}
+		if($("#btnMain").is(":disabled")==false){
+			e.preventDefault();
+			window.location.href='Inv.php';
+		}
 	  }
 
 	});
@@ -322,6 +322,10 @@
 				}else{
 					$("#secfrom").html("<b>Issuing Section</b>");
 					$("#secto").html("<b>Receiving Section</b>");
+
+					if($(this).val()=="fg_transfer"){
+
+					}
 				}
 			});
 		
