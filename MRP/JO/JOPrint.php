@@ -130,6 +130,7 @@
 				<th> Setup Time</th>
 				<th> Cycle Time</th>
 				<th> Total Time</th>
+				<th> LOT No.</th>
 			</tr>
 
 			<tr>
@@ -139,6 +140,7 @@
 				<td align="center"> '.number_format($arrmrpjo[0]['nsetuptime'],2).' </td>
 				<td align="center"> '.number_format($arrmrpjo[0]['ncycletime'],2).' </td>
 				<td align="center"> '.number_format($arrmrpjo[0]['ntottime'],2).' </td>
+				<td align="center"> &nbsp; </td>
 			</tr>
 		</table>
 		<hr>
@@ -313,6 +315,7 @@
 					<th> Setup Time</th>
 					<th> Cycle Time</th>
 					<th> Total Time</th>
+					<th> LOT No.</th>
 				</tr>
 
 				<tr>
@@ -322,6 +325,7 @@
 					<td align="center"> '.number_format($rsc['nsetuptime'],2).' </td>
 					<td align="center"> '.number_format($rsc['ncycletime'],2).' </td>
 					<td align="center"> '.number_format($rsc['ntottime'],2).' </td>
+					<td align="center"> &nbsp; </td>
 				</tr>
 			</table>
 			<hr>
