@@ -116,7 +116,7 @@
 		}
 	?>
 
-		<form id="frmCount" name="frmCount" method="post" action="<?="http://".$_SERVER['SERVER_NAME']?>/Inventory_BPTI/Transfers/InvTrans_EditSave.php">
+		<form id="frmCount" name="frmCount" method="post" action="<?="https://".$_SERVER['SERVER_NAME']?>/Inventory_BPTI/Transfers/InvTrans_EditSave.php">
 
 			<input type="hidden" name="hdnmyxfin" value="<?= $_SESSION['myxtoken'] ?? '' ?>">
 			<input type="hidden" name="hdnposted" id="hdnposted" value="<?php echo $lPosted;?>">
