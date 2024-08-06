@@ -2218,17 +2218,42 @@ function chkform(){
 		//data: { ccode: ccode, crem: crem, ddate: ddate, ngross: ngross, selsityp: csitype, custpono:custpono, salesman:salesman, delcodes:delcodes, delhousno:delhousno, delcity:delcity, delstate:delstate, delcountry:delcountry, delzip:delzip, specins:specins, ncurrcode:ncurrcode, ncurrdesc:ncurrdesc, ncurrrate:ncurrrate, nbasegross:nbasegross },  frmpos
 
 		//var myform = $("#frmpos").serialize();
-		var formdata = new FormData($("#frmpos")[0]);
+		var input_data = [
+			{	key: 'txtcustid', input: $("#txtcustid").val()	},
+			{	key: 'date_delivery', input: $("#date_delivery").val()	},
+			{	key: 'date_PO', input: $("#date_PO").val()	},
+			{	key: 'txtremarks', input: $("#txtremarks").val()	},
+			{	key: 'txtnGross', input: $("#txtnGross").val()	},
+			{	key: 'selsityp', input: $("#selsityp").val()	},
+			{	key: 'txtcPONo', input: $("#txtcPONo").val()	},
+			{	key: 'txtdelcustid', input: $("#txtdelcustid").val()	},
+			{	key: 'txtchouseno', input: $("#txtchouseno").val()	},
+			{	key: 'txtcCity', input: $("#txtcCity").val()	},
+			{	key: 'txtcState', input: $("#txtcState").val()	},
+			{	key: 'txtcCountry', input: $("#txtcCountry").val()	},
+			{	key: 'txtcZip', input: $("#txtcZip").val()	},
+			{	key: 'txtSpecIns', input: $("#txtSpecIns").val()	},
+			{	key: 'selbasecurr', input: $("#selbasecurr").val()	},
+			{	key: 'hidcurrvaldesc', input: $("#hidcurrvaldesc").val()	},
+			{	key: 'basecurrval', input: $("#basecurrval").val()	},
+			{	key: 'txtnBaseGross', input: $("#txtnBaseGross").val()	},
+			{	key: 'txtsalesmanid', input: $("#txtsalesmanid").val()	}
+		];
+
 		/**
 		 * @property JQuery formulate every file to compose to formdata 
 		 * @property formdata.delete('#upload') delete an upload key without values
 		 */
+		var formdata = new FormData();
+		jQuery.each(input_data, function(i, { key, input }){
+			formdata.append(key, input)
+		});
 		formdata.delete('upload[]');
 		jQuery.each(jQuery('#file-0')[0].files, function(i, file) {
 			formdata.append('file-'+i, file);
 		});
 
-		console.log(formdata);
+		//console.log(formdata);
 
 		$.ajax ({
 			url: "SO_newsavehdr.php",
