@@ -343,7 +343,7 @@
 						</div>
 					</div>
 					<div class="portlet-body" style="overflow: auto">
-						<div style="min-height: 30vh; width: 1500px;">
+						<div style="height: 250px; width: 1500px; overflow-y:auto;" id="div1det">
 							<table id="MyTable" class="MyTable table-sm table-bordered" border="1">
 								<thead>
 									<tr>
@@ -1467,73 +1467,75 @@ function myFunctionadd(qty,pricex,curramt,amtx,factr,cref,nrefident){
 
 	$('#MyTable > tbody:last-child').append('<tr>'+tditmcode + tditmdesc + tditmavail + tditmvats + tditmunit + tditmfactor + tditmqty + tditmprice + tditmbaseamount + tditmrempo + tddneed + tditmremx + tditmdel + '</tr>');
 
-									$("#del"+lastRow).on('click', function() {
-										$(this).closest('tr').remove();
+	$("#div1det").animate({ scrollTop: $('#div1det').prop("scrollHeight")}, 1000);
 
-										Reindex();
-										ComputeGross();
-									});
+	$("#del"+lastRow).on('click', function() {
+		$(this).closest('tr').remove();
 
-									$("input.numeric2").autoNumeric('init',{mDec:4});
-									$("input.numeric").autoNumeric('init',{mDec:2});
+		Reindex();
+		ComputeGross();
+	});
 
-									$("#selitmvatyp"+lastRow).on("change", function() {
-										ComputeGross();
-									});
+	$("input.numeric2").autoNumeric('init',{mDec:4});
+	$("input.numeric").autoNumeric('init',{mDec:2});
 
-									//$("input.numeric").numeric(
-									//	{negative: false}
-									//);
+	$("#selitmvatyp"+lastRow).on("change", function() {
+		ComputeGross();
+	});
 
-								//	$("input.numericdec").numeric(
-									//	{
-								//			negative: false,
-								//			decimalPlaces: 4
-								//		}
-								//	);
+	//$("input.numeric").numeric(
+	//	{negative: false}
+	//);
 
-									$("input.numeric, input.numeric2").on("click", function () {
-									   $(this).select();
-									});
-									
-									$("input.numeric, input.numeric2").on("keyup", function () {
-									   ComputeAmt($(this).attr('id'));
-									   ComputeGross();
-									}); 
-									
-									$("#seluom"+lastRow).on('change', function() {
+//	$("input.numericdec").numeric(
+	//	{
+//			negative: false,
+//			decimalPlaces: 4
+//		}
+//	);
 
-										var xyz = chkprice(itmcode,$(this).val(),itmccode,xtoday);
-										var mainuomdata = $(this).data("main");
-										var fact = $(this).find(':selected').data('factor');
-										
-										if(fact!=0){
-											$('#hdnfactor'+lastRow).val(fact);
-										}
+	$("input.numeric, input.numeric2").on("click", function () {
+		$(this).select();
+	});
+	
+	$("input.numeric, input.numeric2").on("keyup", function () {
+		ComputeAmt($(this).attr('id'));
+		ComputeGross();
+	}); 
+	
+	$("#seluom"+lastRow).on('change', function() {
 
-										if(mainuomdata!==$(this).val()){
-											$('#hdnfactor'+lastRow).attr("readonly", false);
-										}else{
-											$('#hdnfactor'+lastRow).attr("readonly", true);
-										}
-										
-										$('#txtnprice'+lastRow).val(xyz.trim());
-										//alert($(this).attr('id'));
-										ComputeAmt($(this).attr('id'));
-										ComputeGross();
-										
-									});
-									
-									$('#txtcitmdneed'+lastRow).datetimepicker({
-										format: 'MM/DD/YYYY',
-										useCurrent: false,
-										//minDate: moment().format('L'),
-										defaultDate: moment().format('L'),
-										widgetPositioning: {
-												horizontal: 'right',
-												vertical: 'bottom'
-										}
-									});
+		var xyz = chkprice(itmcode,$(this).val(),itmccode,xtoday);
+		var mainuomdata = $(this).data("main");
+		var fact = $(this).find(':selected').data('factor');
+		
+		if(fact!=0){
+			$('#hdnfactor'+lastRow).val(fact);
+		}
+
+		if(mainuomdata!==$(this).val()){
+			$('#hdnfactor'+lastRow).attr("readonly", false);
+		}else{
+			$('#hdnfactor'+lastRow).attr("readonly", true);
+		}
+		
+		$('#txtnprice'+lastRow).val(xyz.trim());
+		//alert($(this).attr('id'));
+		ComputeAmt($(this).attr('id'));
+		ComputeGross();
+		
+	});
+	
+	$('#txtcitmdneed'+lastRow).datetimepicker({
+		format: 'MM/DD/YYYY',
+		useCurrent: false,
+		//minDate: moment().format('L'),
+		defaultDate: moment().format('L'),
+		widgetPositioning: {
+				horizontal: 'right',
+				vertical: 'bottom'
+		}
+	});
 									
 																		
 }
