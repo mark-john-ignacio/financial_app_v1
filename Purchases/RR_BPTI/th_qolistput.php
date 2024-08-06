@@ -36,7 +36,7 @@ require_once "../../Connection/connection_string.php";
 	}
 
 	@$receiveds = array();
-	$received = mysqli_query ($con, "Select x.nrefidentity, x.creference,x.citemno,sum(x.nqty) as nqty From receive_t x left join receive y on x.compcode=y.compcode and x.ctranno=y.ctranno Where x.compcode='$company' and  x.creference='".$_REQUEST['id']."' and y.lcancelled=0 group by x.nrefidentity, x.creference,x.citemno");
+	$received = mysqli_query ($con, "Select x.nrefidentity, x.creference,x.citemno,sum(x.nqty) as nqty From receive_t x left join receive y on x.compcode=y.compcode and x.ctranno=y.ctranno Where x.compcode='$company' and  x.creference='".$_REQUEST['id']."' and y.lcancelled=0 and lvoid=0 group by x.nrefidentity, x.creference,x.citemno");
 	if (mysqli_num_rows($received)!=0){
 		while($row = mysqli_fetch_array($received, MYSQLI_ASSOC)){
 			@$receiveds[]=$row;
