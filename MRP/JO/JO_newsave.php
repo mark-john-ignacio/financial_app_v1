@@ -137,7 +137,7 @@
 
 <script type="text/javascript">
 
-	var count = 5;
+	var count = 1;
 
 	$(document).ready(function() {
 		counter();
