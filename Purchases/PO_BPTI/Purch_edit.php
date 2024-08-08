@@ -1186,9 +1186,11 @@ else{
 			
 			//convertCurrency($(this).val());
 	
-			var dval = $(this).find(':selected').attr('data-val');
+			var dval = $(this).find(':selected').data('val');
 	
 			$("#basecurrval").val(dval);
+			$("#hidcurrvaldesc").val($( "#selbasecurr option:selected" ).text());
+
 			$("#statgetrate").html("");
 			recomputeCurr();
 		
@@ -1223,7 +1225,7 @@ else{
 				$("#txtcustid").val(item.id);
 
 				$("#selbasecurr").val(item.cdefaultcurrency).change(); //val
-				$("#basecurrvalmain").val($("#selbasecurr").data("val"));
+				//$("#basecurrvalmain").val($("#selbasecurr").data("val"));
 
 				$("#selterms").val(item.cterms).change();
 			}
