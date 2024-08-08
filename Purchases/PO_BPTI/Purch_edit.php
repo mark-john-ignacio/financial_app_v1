@@ -58,7 +58,7 @@
 		}
 	}
 
-	$sqlhead = mysqli_query($con,"select a.cpono, a.ccode, a.cremarks, DATE_FORMAT(a.ddate,'%m/%d/%Y') as ddate, DATE_FORMAT(a.dneeded,'%m/%d/%Y') as dneeded, a.ngross, a.cpreparedby, a.nbasegross, a.ccurrencycode, a.ccurrencydesc, a.nexchangerate, a.lcancelled, a.lapproved, a.lprintposted, a.lvoid, a.ccustacctcode, b.cname, a.ccontact, a.ccontactemail, a.ccontactphone, a.ccontactfax, a.ladvancepay, a.cterms, a.cdelto, a.ddeladd, a.ddelemail, a.ddelphone, a.ddelfax, a.ddelinfo, a.cbillto, a.cewtcode, a.cemailto, a.cemailcc, a.cemailbcc, a.cemailsubject, a.cemailbody, a.cemailsentby, a.demailsent, a.capprovedby, a.ccheckedby, a.cprepby from purchase a left join suppliers b on a.compcode=b.compcode and a.ccode=b.ccode where a.compcode='$company' and a.cpono = '$cpono'");
+	$sqlhead = mysqli_query($con,"select a.cpono, a.ccode, a.cremarks, DATE_FORMAT(a.ddate,'%m/%d/%Y') as ddate, DATE_FORMAT(a.dpodate,'%m/%d/%Y') as dpodate, DATE_FORMAT(a.dneeded,'%m/%d/%Y') as dneeded, a.ngross, a.cpreparedby, a.nbasegross, a.ccurrencycode, a.ccurrencydesc, a.nexchangerate, a.lcancelled, a.lapproved, a.lprintposted, a.lvoid, a.ccustacctcode, b.cname, a.ccontact, a.ccontactemail, a.ccontactphone, a.ccontactfax, a.ladvancepay, a.cterms, a.cdelto, a.ddeladd, a.ddelemail, a.ddelphone, a.ddelfax, a.ddelinfo, a.cbillto, a.cewtcode, a.cemailto, a.cemailcc, a.cemailbcc, a.cemailsubject, a.cemailbody, a.cemailsentby, a.demailsent, a.capprovedby, a.ccheckedby, a.cprepby from purchase a left join suppliers b on a.compcode=b.compcode and a.ccode=b.ccode where a.compcode='$company' and a.cpono = '$cpono'");
 
 
 	@$arrname = array();
@@ -140,7 +140,7 @@ if (mysqli_num_rows($sqlhead)!=0) {
 		$CustCode = $row['ccode'];
 		$CustName = $row['cname'];
 		$Remarks = ($row['cremarks']!="" && $row['cremarks']!=null) ? $row['cremarks'] : "";
-		$Date = $row['ddate'];
+		$Date = $row['dpodate'];
 		$DateNeeded = $row['dneeded'];
 		$Gross = $row['ngross'];
 

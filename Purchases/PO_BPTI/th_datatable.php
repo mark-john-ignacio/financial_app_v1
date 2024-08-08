@@ -104,13 +104,13 @@
 		$sub_array[] = $row['cpono'];
 		$sub_array[] = $row['ccode'];
 		$sub_array[] = $row['cname'];
-		$sub_array[] = date_format(date_create($row['ddate']), "m/d/Y");
+		$sub_array[] = $row['dpodate']; //date_format(date_create($row['ddate']), "m/d/Y");
 		$sub_array[] = $row['lapproved'];
 		$sub_array[] = $row['lcancelled'];
 		$sub_array[] = str_replace(",","<br>",$row['cref']);
 		$sub_array[] = $row['lsent'];
 		$sub_array[] = $row['lvoid'];
-		$sub_array[] = number_format($row['ngross'],2);
+		$sub_array[] = number_format($row['nbasegross'],2)." ".$row['ccurrencycode'];
 
 		$xcstat = "False";
 		foreach($chkapprovals as $rocx){
