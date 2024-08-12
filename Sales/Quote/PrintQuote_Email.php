@@ -381,13 +381,13 @@
 	$mail->SMTPSecure = $getcred['csecure'];
 	$mail->Port = $getcred['cport'];
 	$mail->IsHTML(true);
+	$mail->ClearReplyTos();
+	$mail->addReplyTo($getcred['useremail'], $_SESSION['employeefull']);
 	$mail->From = $getcred['useremail'];
 	$mail->FromName = $companame;
 	$mail->Sender = $getcred['cusnme']; // indicates ReturnPath header
 	$mail->Subject = $subject;
 	$mail->Body = $body;
-
-	$mail->addReplyTo($getcred['useremail'], $_SESSION['employeefull']);
 
 	$array = explode(',', $cemailstoo);
 	foreach($array as $value){
