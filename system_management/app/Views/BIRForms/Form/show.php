@@ -11,7 +11,7 @@
         <div class="col-md-6">
             <?= form_open(site_url('bir-forms/form')) ?>
 
-            <?= $this->include("birforms/form/form") ?>
+            <?= $this->include("BIRForms/Form/form") ?>
 
             </form>
         </div>
