@@ -8,11 +8,13 @@ use App\Models\WooCommerceOrderSync\SalesOrderModel;
 use App\Models\WooCommerceOrderSync\CustomersModel;
 use App\Models\WooCommerceOrderSync\SalesOrderItemsModel;
 use App\Models\WooCommerceOrderSync\ItemsModel;
+use App\Models\WooCommerceOrderSync\LandingOrderTable;
 use CodeIgniter\RESTful\ResourceController;
 
 class OrderController extends BaseController
 {
     protected $salesOrderModel;
+    private LandingOrderTable $landingOrderModel;
 
     public function __construct()
     {
@@ -20,7 +22,9 @@ class OrderController extends BaseController
         $this->customersModel = new CustomersModel();
         $this->salesOrderItemsModel = new SalesOrderItemsModel();
         $this->itemsModel = new ItemsModel();
+        $this->landingOrderModel = new LandingOrderTable();
         $this->company_code = "001";
+        $this->view = "WooCommerceOrderSync";
     }
     public function receiveOrder(){
 
@@ -43,7 +47,36 @@ class OrderController extends BaseController
 
         // Log the webhook data
         $this->logWebhookData($jsonData);
+        $confirmFirst = getenv('CONFIRM_FIRST');
         
+        if ($confirmFirst) {
+            // Save JSON data to the landing table
+            $this->landingOrderModel->insert([
+                'json_data' => json_encode($jsonData),
+                'status' => 'pending',
+                'created_at' => date('Y-m-d H:i:s'),
+                'updated_at' => date('Y-m-d H:i:s')
+            ]);
+            return $this->response->setJSON(['message' => 'Order received and pending approval']);
+        } else {
+            // Proceed with the existing process
+            return $this->processOrder($jsonData);
+        }
+    }
+    private function processOrder($jsonData)
+    {
+        $data = $this->formatOrder($jsonData);
+        $result = $this->salesOrderModel->insert($data);
+        if ($result) {
+            $this->insertSalesOrderItems($jsonData, $data['ctranno']);
+            return $this->response->setJSON(['message' => 'Order received']);
+        } else {
+            $error = $result;
+            return $this->response->setJSON(['message' => $error]);
+        }
+    }
+
+    private function formatOrder($jsonData){
         // Insert the order data into the database
         $customerCode = $this->getCustomerCode($jsonData);
         $ctranno = $this->salesOrderModel->generateSONumber($this->company_code);
@@ -71,16 +104,7 @@ class OrderController extends BaseController
             'cdeladdcountry' => $jsonData['shipping']['country'],
             'cdeladdzip' => $jsonData['shipping']['postcode'],
         ];
-
-        $result = $this->salesOrderModel->insert($data);
-
-        if($result){
-            $this->insertSalesOrderItems($jsonData, $ctranno);
-            return $this->response->setJSON(['message' => 'Order received']);
-        }else{
-            $error = $result;
-            return $this->response->setJSON(['message' => $error]);
-        }
+        return $data;
     }
 
     private function getCustomerCode($jsonData){
@@ -139,8 +163,10 @@ class OrderController extends BaseController
     private function insertSalesOrderItems($jsonData, $salesOrderId){
         $items = $jsonData['line_items'];
         foreach ($items as $item){
-            $product = $this->itemsModel->where('compcode', $this->company_code)->where('citemdesc', $item['name'])->first();
+            $transformedName = $this->transformProductName($item['name']);
+            $product = $this->itemsModel->where('compcode', $this->company_code)->where('citemdesc', $transformedName)->first();
             if (!$product){
+                // Insert the new product into the database
                 $data = [
                     'compcode' => $this->company_code,
                     'cpartno' => $this->generateItemPartNo(),
@@ -160,12 +186,20 @@ class OrderController extends BaseController
                 ];
                 $this->itemsModel->insert($data);
                 $product = $this->itemsModel->find($this->itemsModel->insertID());
-                $this->prepareAndInsertIntoSalesOrderItems($salesOrderId, $item, $product);
-
-            }else{
-                $this->prepareAndInsertIntoSalesOrderItems($salesOrderId, $item, $product);
             }
+            $data = $this->formatSalesOrderItems($salesOrderId, $item, $product);
+            $this->salesOrderItemsModel->insert($data);
         }
+    }
+
+    private function transformProductName($name){
+        $name = strtoupper($name);
+        $name = str_replace(' - SMALL', ' S', $name);
+        $name = str_replace(' - MEDIUM', ' M', $name);
+        $name = str_replace(' - LARGE', ' L', $name);
+        $name = str_replace(' - EXTRA LARGE', ' XL', $name);
+
+        return $name;
     }
 
     private function generateItemPartNo(){
@@ -203,7 +237,7 @@ class OrderController extends BaseController
 
     }
 
-    private function prepareAndInsertIntoSalesOrderItems($salesOrderId, $item, $product){
+    private function formatSalesOrderItems($salesOrderId, $item, $product){
         $cidentity = $this->generateSOTCidentity($salesOrderId);
         $nident = intval(substr($cidentity, strrpos($cidentity, 'P') + 1));
 
@@ -228,7 +262,7 @@ class OrderController extends BaseController
             'ctaxcode' => 'NT',
             'nrate' => 0,
         ];
-        $this->salesOrderItemsModel->insert($data);
+        return $data;
     }
 
     private function generateSOTCidentity($salesOrderId){
@@ -264,6 +298,75 @@ class OrderController extends BaseController
         } else {
             // Optionally, handle the error in case the log file is not writable or cannot be created.
             error_log('Failed to write webhook data to log file.');
+        }
+    }
+
+    public function index()
+    {
+        $data = [
+            'title' => 'WooCommerce Order Sync',
+        ];
+        return view($this->view . '/index', $data);
+    }
+
+    public function getPendingOrders()
+    {
+        $pendingOrders = $this->landingOrderModel->where('status', 'pending')->findAll();
+        return $this->response->setJSON($pendingOrders);
+    }
+
+    public function edit($id)
+    {
+        $data = [
+            'title' => 'Edit Order',
+            'id' => $id,
+        ];
+                // TODO these formatting below will be done when a landing order is viewed and it will show on a view page
+        // TODO format orderData
+        // TODO format orderItemsData
+        // TODO format customerData if ever creating a new customer
+        // TODO format itemData if ever creating a new item
+        return view($this->view . '/edit', $data);
+    }
+
+    public function loadOrder($id)
+    {
+        $order = $this->landingOrderModel->find($id);
+        if ($order) {
+            $jsonData = json_decode($order['json_data'], true);
+            $orderData = $this->formatOrder($jsonData);
+            $data = [
+                'orderData' => $orderData,
+                'orderItemsData' => '',
+            ];
+            return $this->response->setJSON($data);
+        } else {
+            return $this->response->setJSON(['message' => 'Order not found'], 404);
+        }
+    }
+
+
+    public function approveOrder($id)
+    {
+        $order = $this->landingOrderModel->find($id);
+        if ($order) {
+            $jsonData = json_decode($order['json_data'], true);
+            $this->processOrder($jsonData);
+            $this->landingOrderModel->update($id, ['status' => 'approved']);
+            return $this->response->setJSON(['message' => 'Order approved and processed']);
+        } else {
+            return $this->response->setJSON(['message' => 'Order not found'], 404);
+        }
+    }
+
+    public function rejectOrder($id)
+    {
+        $order = $this->landingOrderModel->find($id);
+        if ($order) {
+            $this->landingOrderModel->update($id, ['status' => 'rejected']);
+            return $this->response->setJSON(['message' => 'Order rejected']);
+        } else {
+            return $this->response->setJSON(['message' => 'Order not found'], 404);
         }
     }
 }

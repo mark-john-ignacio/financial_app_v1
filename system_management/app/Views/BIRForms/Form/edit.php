@@ -11,7 +11,7 @@
         <div class="col-md-6">
         <?= form_open(url_to("BIRForms\\BIRFormController::update", $form->id)) ?>
             <input type="hidden" name="_method" value="PUT">
-            <?= $this->include("birforms/form/form") ?>
+            <?= $this->include("BIRForms/Form/form") ?>
             <button class="btn btn-primary">Save</button>
         <?= form_close() ?>
         </div>
