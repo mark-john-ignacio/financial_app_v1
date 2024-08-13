@@ -356,7 +356,7 @@
 			});
 
 			$("#searchByName").keyup(function(){
-				if($("#selstypes").val()=="0"){  
+				if($("#selstypes").val()=="0" || $("#selstypes").val()=="2"){  
 					filter_check();
 				}
 			});
