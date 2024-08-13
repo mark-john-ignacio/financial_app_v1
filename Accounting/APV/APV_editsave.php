@@ -182,11 +182,11 @@
 	values('$company','$cPVNo','$preparedby',NOW(),'UPDATED','APV','$compname','Update Record')");
 
 	$xurl = "";
-	//if($cAPtype=="Others" || $cAPtype=="PettyCash"){
+	if($cAPtype=="Others" || $cAPtype=="PettyCash"){
 		$xurl = "APV_edit.php";
-	//}else{
-	//	$xurl = "th_acctentry2.php";
-	//}
+	}else{
+		$xurl = "th_acctentry2.php";
+	}
 ?>
 <form action="<?=$xurl?>" name="frmpos" id="frmpos" method="post">
 	<input type="hidden" name="txtctranno" id="txtctranno" value="<?=$cPVNo;?>" />
