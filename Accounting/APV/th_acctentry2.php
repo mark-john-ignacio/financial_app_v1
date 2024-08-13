@@ -90,15 +90,12 @@ require_once "../../Connection/connection_string.php";
 		}
 	}elseif($captypes=="PurchAdv"){
 
-		$sql = "Select A.cacctcode, A.cacctdesc, Sum(A.nVat) as nNetVat
+		$sql = "Select Sum(A.nVat) as nNetVat
 		From (
-			Select D.cacctid as cacctcode, D.cacctdesc, 
-			CASE WHEN A.nrate>0 THEN A.nbaseamount / (1 + (A.nrate/100)) ELSE A.nbaseamount END AS nVat
-			From purchase_t A
-			left join items C on A.compcode=C.compcode and A.citemno=C.cpartno 
-			left join accounts D on C.compcode=D.compcode and C.cacctcodewrr=D.cacctno 
-			where A.compcode='$company' and A.cpono in (Select crefno from apv_d where ctranno='$tran')
-		) A group by A.cacctcode,A.cacctdesc HAVING Sum(A.nVat) <> 0";
+			Select A.nnet AS nVat
+			From purchase A
+			where A.compcode='$company' and A.cpono in (Select crefno from apv_d where compcode='$company' and ctranno='$tran')
+		) A HAVING Sum(A.nVat) <> 0";
 
 		$resultNET = mysqli_query ($con, $sql); 
 
@@ -129,7 +126,7 @@ require_once "../../Connection/connection_string.php";
 			From suppinv_t A 
 			left join items C on A.compcode=C.compcode and A.citemno=C.cpartno 
 			left join accounts D on C.compcode=D.compcode and C.cacctcodewrr=D.cacctno				  
-			where A.compcode='$company' and A.ctranno in (Select crefno from apv_d where ctranno='$tran')
+			where A.compcode='$company' and A.ctranno in (Select crefno from apv_d where compcode='$company' and ctranno='$tran')
 		) A Group By  A.cvatcode, A.nrate HAVING Sum(A.nVat) <> 0";
 	}elseif($captypes=="PurchAdv"){
 		$sqlvat = "Select A.cvatcode, A.nrate as nvatrate, Sum(A.nVat) as nVat
@@ -139,7 +136,7 @@ require_once "../../Connection/connection_string.php";
 			From purchase_t A 
 			left join items C on A.compcode=C.compcode and A.citemno=C.cpartno 
 			left join accounts D on C.compcode=D.compcode and C.cacctcodewrr=D.cacctno 					  
-			where A.compcode='$company' and A.cpono in (Select crefno from apv_d where ctranno='$tran')
+			where A.compcode='$company' and A.cpono in (Select crefno from apv_d where compcode='$company' and ctranno='$tran')
 		) A Group By  A.cvatcode, A.nrate HAVING Sum(A.nVat) <> 0";
 	}
 	
@@ -205,9 +202,9 @@ require_once "../../Connection/connection_string.php";
 		
 		//EWT		
 		if($captypes=="Purchases"){
-			$result =  mysqli_query ($con, "Select A.cewtcode, A.nrate, Sum(A.nVat) as nVat From (Select A.cewtcode, B.nrate, A.newt AS nVat From suppinv A left join wtaxcodes B on A.compcode=B.compcode and A.cewtcode=B.ctaxcode where A.compcode='$company' and A.ctranno in (Select crefno from apv_d where ctranno='$tran')) A HAVING Sum(A.nVat) <> 0");
+			$result =  mysqli_query ($con, "Select A.cewtcode, A.nrate, Sum(A.nVat) as nVat From (Select A.cewtcode, B.nrate, A.newt AS nVat From suppinv A left join wtaxcodes B on A.compcode=B.compcode and A.cewtcode=B.ctaxcode where A.compcode='$company' and A.ctranno in (Select crefno from apv_d where compcode='$company' and ctranno='$tran')) A HAVING Sum(A.nVat) <> 0");
 		}elseif($captypes=="PurchAdv"){
-			$result =  mysqli_query ($con, "Select A.cewtcode, A.nrate, Sum(A.nVat) as nVat From (Select A.cewtcode, B.nrate, A.newt AS nVat From purchase A left join wtaxcodes B on A.compcode=B.compcode and A.cewtcode=B.ctaxcode where A.compcode='$company' and A.cpono in (Select crefno from apv_d where ctranno='$tran')) A HAVING Sum(A.nVat) <> 0");
+			$result =  mysqli_query ($con, "Select A.cewtcode, A.nrate, Sum(A.nVat) as nVat From (Select A.cewtcode, B.nrate, A.newt AS nVat From purchase A left join wtaxcodes B on A.compcode=B.compcode and A.cewtcode=B.ctaxcode where A.compcode='$company' and A.cpono in (Select crefno from apv_d where compcode='$company' and ctranno='$tran')) A HAVING Sum(A.nVat) <> 0");
 		}
 
 		if(mysqli_num_rows($result)!=0){
