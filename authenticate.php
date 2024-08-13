@@ -118,7 +118,7 @@
         if($GOYes=="True"){
 
             $stmtlog = $con->prepare("UPDATE users set `session_ID` = ?, `date_last_log` = ?, `machine_last_log` = ?, `mac_last_log` = ? WHERE `userid` = ?");
-            $stmtlog->bind_param("ssss", $xsessionid, $dateNow, $hashedIP, $hashedMAC, $username);
+            $stmtlog->bind_param("sssss", $xsessionid, $dateNow, $hashedIP, $hashedMAC, $username);
             $stmtlog->execute();
             $stmtlog->close();
 
