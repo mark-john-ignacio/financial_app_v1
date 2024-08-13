@@ -16,6 +16,16 @@
 		$poststat = "False";
 	}
 
+	$cvalcracct = "";
+  	$result = mysqli_query($con,"SELECT * FROM `parameters` WHERE compcode='$company' and ccode='INCOME_ACCOUNT'");
+	if (mysqli_num_rows($result)!=0) {
+		$all_course_data = mysqli_fetch_array($result, MYSQLI_ASSOC);																				
+		$cvalcracct = $all_course_data['cvalue']; 																					
+	}
+	else{
+		$cvalcracct = "";
+	}
+
 	if(isset($_REQUEST["txtcitemno"])){
 		$citemno = $_REQUEST['txtcitemno'];
 	}else{
@@ -23,7 +33,7 @@
 	}
 								
 	if($citemno <> ""){					
-		$sql = "select A.*, A1.cacctdesc as salescode, B.cname as cparentname, C.cname as csmaname, A1.cacctid from customers A LEFT JOIN accounts A1 ON A.compcode=A1.compcode and (A.cacctcodesales = A1.cacctno) LEFT JOIN customers B ON (A.cparentcode = B.cempid)  LEFT JOIN salesman C ON (A.csman = C.ccode) where A.compcode='$company' and A.cempid='$citemno'";
+		$sql = "select A.*, A1.cacctdesc as salescode, A1.cacctid, A2.cacctdesc as salescodeex, A2.cacctid as cacctidex, A3.cacctdesc as salescodecr, A3.cacctid as cacctidcr, A4.cacctdesc as salescodecreturn, A4.cacctid as cacctidcreturn, B.cname as cparentname, C.cname as csmaname from customers A LEFT JOIN accounts A1 ON A.compcode=A1.compcode and (A.cacctcodesales = A1.cacctno) LEFT JOIN accounts A2 ON A.compcode=A2.compcode and (A.cacctcodesalesex = A2.cacctno) LEFT JOIN accounts A3 ON A.compcode=A3.compcode and (A.cacctcodesalescr = A3.cacctno) LEFT JOIN accounts A4 ON A.compcode=A4.compcode and (A.cacctcodesalescreturn = A4.cacctno) LEFT JOIN customers B ON (A.cparentcode = B.cempid) LEFT JOIN salesman C ON (A.csman = C.ccode) where A.compcode='$company' and A.cempid='$citemno'";
 	}else{
 		header('Customers.php');
 		die();
@@ -66,6 +76,18 @@
 			$GroceryID = $row['cacctcodesales']; 
 			$GroceryIDCode = $row['cacctid'];
 			$GroceryDesc = $row['salescode'];
+
+			$ARExID = $row['cacctcodesalesex']; 
+			$ARExIDCode = $row['cacctidex'];
+			$ARExDesc = $row['salescodeex'];
+
+			$SalesCrID = $row['cacctcodesalescr']; 
+			$SalesCrIDCode = $row['cacctidcr'];
+			$SalesCrDesc = $row['salescodecr'];
+
+			$SalesCRetID = $row['cacctcodesalescreturn']; 
+			$SalesCRetIDCode = $row['cacctidcreturn'];
+			$SalesCRetDesc = $row['salescodecreturn'];
 
 			$SelCurr = $row['cdefaultcurrency'];
 				
@@ -560,21 +582,15 @@
 
 						<div class="row nopadwtop">
 							<div class="col-xs-2 nopadding">
-								<b>AR Code</b>
+								<b>AR Code (Dr)</b>
 							</div>      
-							<div class="col-xs-3 nopadwleft">      
-								<select name="selaccttyp" id="selaccttyp" class="form-control input-sm" tabindex="22">
-									<option value="single" <?php if ($AcctCodeType=="single") { echo "selected"; } ?>>Single Account</option>
-									<option value="multiple" <?php if ($AcctCodeType=="multiple") { echo "selected"; } ?>>Per Item Type</option>
-								</select>      
-							</div>     
-						</div>
-
-						<div class="row nopadwtop">
-							<div class="col-xs-2 nopadding">&nbsp; </div>  
-							<div class="col-xs-10 nopadwleft" id="accttypsingle" <?php if ($AcctCodeType=="multiple") { echo "style='display:none'"; } ?>>
+							<div class="col-xs-10 nopadwleft">      
+								<!--<select name="selaccttyp" id="selaccttyp" class="form-control input-sm" tabindex="22">
+									<option value="single" <?//php if ($AcctCodeType=="single") { echo "selected"; } ?>>Single Account</option>
+									<option value="multiple" <?//php if ($AcctCodeType=="multiple") { echo "selected"; } ?>>Per Item Type</option>
+								</select>-->
 								<div class="row nopadding">
-									<div class="col-xs-3 nopadding">
+									<div class="col-xs-4 nopadding">
 										<input type="text" class="required form-control input-sm" id="txtsalesacct" name="txtsalesacct" tabindex="23" placeholder="Search Acct Title.." autocomplete="off" required  value="<?php echo $GroceryDesc;?>"/>
 									</div>          
 									<div class="col-xs-2 nopadwleft">
@@ -582,15 +598,80 @@
 										<input type="hidden" id="txtsalesacctDID" name="txtsalesacctDID" value="<?php echo $GroceryID;?>">
 									</div>	
 								</div>
+							</div>     
+						</div>
+
+						<div class="row nopadwtop">
+							<div class="col-xs-2 nopadding">
+								<b>AR Code Exchange Rate (Dr)</b>
+								<input type="hidden" id="selaccttyp" name="selaccttyp" value="single">
+							</div>                    
+							<div class="col-xs-10 nopadwleft">                 
+							<div class="row nopadding">
+								<div class="col-xs-4 nopadding">
+									<input type="text" class="form-control input-sm" id="txtsalesacctEX" name="txtsalesacctEX" tabindex="23" placeholder="Search Acct Title.." value="<?php echo $ARExDesc;?>" autocomplete="off"/>
+								</div>          
+								<div class="col-xs-2 nopadwleft">
+									<input type="text" id="txtsalesacctEXD" name="txtsalesacctEXD" class="form-control input-sm" value="<?php echo $ARExIDCode;?>" readonly>
+									<input type="hidden" id="txtsalesacctEXDID" name="txtsalesacctEXDID" value="<?php echo $ARExID;?>">
+								</div>	
+							</div>
+							</div>                   
+						</div>
+
+						<?php
+							if($cvalcracct=="customer"){
+						?>
+						<div class="row nopadwtop">
+							<div class="col-xs-2 nopadding">
+							<b>Sales Code</b>
+							</div>
+
+							<div class="col-xs-10 nopadwleft" id="accttypsingle">
+							<div class="col-xs-4 nopadding">
+								<input type="text" class="form-control input-sm border-danger" id="txtsalesacctCR" name="txtsalesacctCR" tabindex="23" placeholder="Search Acct Title.." autocomplete="off" required value="<?=$SalesCrDesc?>"/>
+							</div>
+											
+							<div class="col-xs-2 nopadwleft">
+								<input type="text" id="txtsalesacctCRD" name="txtsalesacctCRD" class="form-control input-sm" readonly value="<?=$SalesCrIDCode?>">
+								<input type="hidden" id="txtsalesacctDIDCR" name="txtsalesacctDIDCR" value="<?=$SalesCrID?>">
+							</div>                                                                          
+							</div>
+						</div>
+						
+						<div class="row nopadwtop">
+							<div class="col-xs-2 nopadding">
+							<b>Sales Return Code</b>
+							</div>
+
+							<div class="col-xs-10 nopadwleft" id="accttypsingle">
+							<div class="col-xs-4 nopadding">
+								<input type="text" class="form-control input-sm border-danger" id="txtsalesacctRetCR" name="txtsalesacctRetCR" tabindex="23" placeholder="Search Acct Title.." autocomplete="off" required value="<?=$SalesCRetDesc?>"/>
+							</div>
+											 
+							<div class="col-xs-2 nopadwleft"> 
+								<input type="text" id="txtsalesacctRetCRD" name="txtsalesacctRetCRD" class="form-control input-sm" readonly value="<?=$SalesCRetIDCode?>">
+								<input type="hidden" id="txtsalesacctRetDIDCR" name="txtsalesacctRetDIDCR" value="<?=$SalesCRetID?>"> 
+							</div>                                                                          
+							</div>
+						</div>
+						<?php
+							}
+						?>
+
+						<!--<div class="row nopadwtop">
+							<div class="col-xs-2 nopadding">&nbsp; </div>  
+							<div class="col-xs-10 nopadwleft" id="accttypsingle" <?//php if ($AcctCodeType=="multiple") { echo "style='display:none'"; } ?>>
+								
 							</div>   
-							<div class="col-xs-7 nopadwleft" id="accttypmulti" <?php if ($AcctCodeType=="single") { echo "style='display:none'"; } ?>>
+							<div class="col-xs-7 nopadwleft" id="accttypmulti" <?//php if ($AcctCodeType=="single") { echo "style='display:none'"; } ?>>
 								<table class="table table-condensed table-hover">
 									<tr>
 										<th width="200">Item Type</th>
 										<th>Account</th>
 									</tr>
 									<?php
-										$sql = "select A.ccode, A.cdesc, ifnull(B.ccode,'') as custcode, B.cacctno, C.cacctdesc, C.cacctid from groupings A left join customers_accts B on A.compcode=B.compcode and A.ccode=B.citemtype and B.ccode='$cCustCode' left join accounts C on B.compcode=C.compcode and B.cacctno=C.cacctid where A.compcode='$company' and A.ctype='ITEMTYP' and A.cstatus='ACTIVE' order by A.cdesc";
+										/*$sql = "select A.ccode, A.cdesc, ifnull(B.ccode,'') as custcode, B.cacctno, C.cacctdesc, C.cacctid from groupings A left join customers_accts B on A.compcode=B.compcode and A.ccode=B.citemtype and B.ccode='$cCustCode' left join accounts C on B.compcode=C.compcode and B.cacctno=C.cacctid where A.compcode='$company' and A.ctype='ITEMTYP' and A.cstatus='ACTIVE' order by A.cdesc";
 										$result=mysqli_query($con,$sql);
 										if (!mysqli_query($con, $sql)) {
 											printf("Errormessage: %s\n", mysqli_error($con));
@@ -613,11 +694,11 @@
 									</tr>
 
 									<?php
-										}
+										}*/
 									?> 								   
 								</table>
 							</div>   
-						</div>
+						</div>-->
 											
 						<div class="row nopadwtop">
 							<div class="col-xs-2 nopadding">
@@ -930,17 +1011,54 @@
 			}
 		});
 
-		$("#txtsalesacctCR").typeahead({						 
+		
+		$("#txtsalesacctEX").typeahead({						 
 			autoSelect: true,
 			source: function(request, response) {							
 				$.ajax({
-					url: "../th_accounts.php",
-					dataType: "json",
-					data: { query: request },
-					success: function (data) {
-						response(data);
-					}
+				url: "../th_accounts.php",
+				dataType: "json",
+				data: { query: request, typ: "ASSETS" },
+				success: function (data) {
+					response(data);
+				}
 				});
+			},
+			displayText: function (item) {
+				return item.id + " : " + item.name;
+			},
+			highlighter: Object,
+			afterSelect: function(item) { 					
+				$('#txtsalesacctEX').val(item.name).change(); 
+				$('#txtsalesacctEXD').val(item.id); 
+				$('#txtsalesacctEXDID').val(item.idcode);
+				
+			}
+		});
+		
+		$("#txtsalesacctEX").on("blur", function() {
+			if($('#txtsalesacctEXD').val()==""){
+				$('#txtsalesacctEX').val("").change();
+				$('#txtsalesacctEXDID').val()==""
+				$('#txtsalesacctEX').focus();
+			}
+		});
+
+		<?php
+			if($cvalcracct=="customer"){
+		?>
+
+			$("#txtsalesacctCR").typeahead({						 
+				autoSelect: true,
+				source: function(request, response) {							
+					$.ajax({
+						url: "../th_accounts.php",
+						dataType: "json",
+						data: { query: request },
+						success: function (data) {
+							response(data);
+						}
+					});
 				},
 				displayText: function (item) {
 					return item.id + " : " + item.name;
@@ -949,18 +1067,54 @@
 				afterSelect: function(item) { 					
 					$('#txtsalesacctCR').val(item.name).change(); 
 					$('#txtsalesacctCRD').val(item.id); 
-          $('#txtsalesacctDIDCR').val(item.idcode);
+					$('#txtsalesacctDIDCR').val(item.idcode);
 							
 				}
-		});
-		
-		$("#txtsalesacctCR").on("blur", function() {
-			if($('#txtsalesacctCRD').val()==""){
-				$('#txtsalesacctCR').val("").change();
-        $('#txtsalesacctDIDCR').val()==""
-				$('#txtsalesacctCR').focus();
+			});
+			
+			$("#txtsalesacctCR").on("blur", function() {
+				if($('#txtsalesacctCRD').val()==""){
+					$('#txtsalesacctCR').val("").change();
+					$('#txtsalesacctDIDCR').val()==""
+					$('#txtsalesacctCR').focus();
+				}
+			});   
+
+			$("#txtsalesacctRetCR").typeahead({						 
+				autoSelect: true,
+				source: function(request, response) {							
+					$.ajax({
+						url: "../th_accounts.php",
+						dataType: "json",
+						data: { query: request },
+						success: function (data) {
+							response(data);
+						}
+					});
+				},
+				displayText: function (item) {
+					return item.id + " : " + item.name;
+				},
+				highlighter: Object,
+				afterSelect: function(item) { 					
+					$('#txtsalesacctRetCR').val(item.name).change(); 
+					$('#txtsalesacctRetCRD').val(item.id); 
+					$('#txtsalesacctRetDIDCR').val(item.idcode);
+							
+				}
+			});
+			
+			$("#txtsalesacctRetCR").on("blur", function() {
+				if($('#txtsalesacctRetCRD').val()==""){
+					$('#txtsalesacctRetCR').val("").change();
+					$('#txtsalesacctRetDIDCR').val()==""
+					$('#txtsalesacctRetCR').focus();
+				}
+			});
+
+		<?php
 			}
-		});
+		?>
 		
 		$("#txtcparent").typeahead({						 
 			autoSelect: true,
