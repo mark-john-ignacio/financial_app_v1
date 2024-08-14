@@ -18,83 +18,83 @@
 	}
 
 
-$sqlhead=mysqli_query($con,"Select * from groupings where ctype='ITEMTYP' and cstatus='ACTIVE' and compcode='".$_SESSION['companyid']."'");
-if (mysqli_num_rows($sqlhead)!=0) {
-	while($row = mysqli_fetch_array($sqlhead, MYSQLI_ASSOC)){
-		@$itmtype[] = array("ccode" => $row['ccode'], "cdesc" => $row['cdesc']);
+	$sqlhead=mysqli_query($con,"Select * from groupings where ctype='ITEMTYP' and cstatus='ACTIVE' and compcode='".$_SESSION['companyid']."'");
+	if (mysqli_num_rows($sqlhead)!=0) {
+		while($row = mysqli_fetch_array($sqlhead, MYSQLI_ASSOC)){
+			@$itmtype[] = array("ccode" => $row['ccode'], "cdesc" => $row['cdesc']);
+		}
+	} 
+
+	$sqlhead=mysqli_query($con,"Select * from groupings where ctype='SUPTYP' and cstatus='ACTIVE' and compcode='".$_SESSION['companyid']."'");
+	if (mysqli_num_rows($sqlhead)!=0) {
+		while($row = mysqli_fetch_array($sqlhead, MYSQLI_ASSOC)){
+			@$suptype[] = array("ccode" => $row['ccode'], "cdesc" => $row['cdesc']); 
+		}
+	} 
+
+	@$arsecs = array();
+	$sqlhead=mysqli_query($con,"Select * from locations where cstatus='ACTIVE' and compcode='".$_SESSION['companyid']."'");
+	if (mysqli_num_rows($sqlhead)!=0) {
+		while($row = mysqli_fetch_array($sqlhead, MYSQLI_ASSOC)){
+			@$arsecs[] = array("ccode" => $row['nid'], "cdesc" => $row['cdesc']); 
+		}
 	}
-} 
 
-$sqlhead=mysqli_query($con,"Select * from groupings where ctype='SUPTYP' and cstatus='ACTIVE' and compcode='".$_SESSION['companyid']."'");
-if (mysqli_num_rows($sqlhead)!=0) {
-	while($row = mysqli_fetch_array($sqlhead, MYSQLI_ASSOC)){
-		@$suptype[] = array("ccode" => $row['ccode'], "cdesc" => $row['cdesc']); 
+	$sqlhead=mysqli_query($con,"Select * From users where cstatus='Active' and Userid<>'Admin'");
+	if (mysqli_num_rows($sqlhead)!=0) {
+		while($row = mysqli_fetch_array($sqlhead, MYSQLI_ASSOC)){
+			@$ursnmse[] = array("userid" => $row['Userid'], "name" => $row['Fname'].(($row['Minit']!=="" && $row['Minit']!=="") ? " ": "").$row['Minit']." ".$row['Lname']);
+		}
 	}
-} 
 
-@$arsecs = array();
-$sqlhead=mysqli_query($con,"Select * from locations where cstatus='ACTIVE' and compcode='".$_SESSION['companyid']."'");
-if (mysqli_num_rows($sqlhead)!=0) {
-	while($row = mysqli_fetch_array($sqlhead, MYSQLI_ASSOC)){
-		@$arsecs[] = array("ccode" => $row['nid'], "cdesc" => $row['cdesc']); 
+	@$rdocodes = array();
+	$sqlhead=mysqli_query($con,"Select * from rdocodes");
+	if (mysqli_num_rows($sqlhead)!=0) {
+		while($row = mysqli_fetch_array($sqlhead, MYSQLI_ASSOC)){
+			@$rdocodes[] = array("ccode" => $row['ccode'], "cdesc" => $row['cdesc']); 
+		}
 	}
-}
 
-$sqlhead=mysqli_query($con,"Select * From users where cstatus='Active' and Userid<>'Admin'");
-if (mysqli_num_rows($sqlhead)!=0) {
-	while($row = mysqli_fetch_array($sqlhead, MYSQLI_ASSOC)){
-		@$ursnmse[] = array("userid" => $row['Userid'], "name" => $row['Fname'].(($row['Minit']!=="" && $row['Minit']!=="") ? " ": "").$row['Minit']." ".$row['Lname']);
+	$isCheck = 0;
+	$service = "";
+	$sql = mysqli_query($con, "SELECT * FROM parameters WHERE compcode = '$company' AND ccode = 'SERVICE_FEE'");
+	if(mysqli_num_rows($sql) != 0){
+		while($row = $sql -> fetch_assoc()){
+			$isCheck = $row['nallow'];
+			$service = $row['cvalue'];
+		}
 	}
-}
 
-@$rdocodes = array();
-$sqlhead=mysqli_query($con,"Select * from rdocodes");
-if (mysqli_num_rows($sqlhead)!=0) {
-	while($row = mysqli_fetch_array($sqlhead, MYSQLI_ASSOC)){
-		@$rdocodes[] = array("ccode" => $row['ccode'], "cdesc" => $row['cdesc']); 
+	$account = "";
+	$accountDesc = "";
+	$sql = mysqli_query($con, "SELECT A.cvalue, B.cacctdesc FROM parameters A left join accounts B on A.compcode=B.compcode and A.cvalue=B.cacctid WHERE A.compcode = '$company' AND A.ccode = 'ACCOUNT_ENTRY'");
+	if(mysqli_num_rows($sql) != 0){
+		while($row = $sql -> fetch_assoc()){
+			$account = $row['cvalue'];
+			$accountDesc = $row['cacctdesc'];
+		}
 	}
-}
 
-$isCheck = 0;
-$service = "";
-$sql = mysqli_query($con, "SELECT * FROM parameters WHERE compcode = '$company' AND ccode = 'SERVICE_FEE'");
-if(mysqli_num_rows($sql) != 0){
-	while($row = $sql -> fetch_assoc()){
-		$isCheck = $row['nallow'];
-		$service = $row['cvalue'];
-	}
-}
+	////function listcurrencies(){ //API for currency list
+	//	global $con;
+	//	$apikey = $_SESSION['currapikey'];
 
-$account = "";
-$accountDesc = "";
-$sql = mysqli_query($con, "SELECT A.cvalue, B.cacctdesc FROM parameters A left join accounts B on A.compcode=B.compcode and A.cvalue=B.cacctid WHERE A.compcode = '$company' AND A.ccode = 'ACCOUNT_ENTRY'");
-if(mysqli_num_rows($sql) != 0){
-	while($row = $sql -> fetch_assoc()){
-		$account = $row['cvalue'];
-		$accountDesc = $row['cacctdesc'];
-	}
-}
+	//	try  
+	//	{  
+	//		$json = @file_get_contents("https://free.currconv.com/api/v7/currencies?&apiKey={$apikey}", true); //getting the file content
+	//		if($json==false)
+	//		{
+	//			return "False";
+	//		}
+	////	}  
+	//	catch (Exception $e)  
+	//	{  
+			//echo $e->getMessage();  
+	//		return "False";
+	////	}
+	//}
 
-////function listcurrencies(){ //API for currency list
-//	global $con;
-//	$apikey = $_SESSION['currapikey'];
-
-//	try  
-//	{  
-//		$json = @file_get_contents("https://free.currconv.com/api/v7/currencies?&apiKey={$apikey}", true); //getting the file content
-//		if($json==false)
-//		{
-//			return "False";
-//		}
-////	}  
-//	catch (Exception $e)  
-//	{  
-		//echo $e->getMessage();  
-//		return "False";
-////	}
-//}
-
-@$qortype = array(array('ccode' => 'quote', 'cdesc' => 'Quotation'),array('ccode' => 'billing', 'cdesc' => 'Billing'));
+	@$qortype = array(array('ccode' => 'quote', 'cdesc' => 'Quotation'),array('ccode' => 'billing', 'cdesc' => 'Billing'));
 
 ?>
 <html>
@@ -797,7 +797,7 @@ if(mysqli_num_rows($sql) != 0){
 
 						</div>	
 
-					<p data-toggle="collapse" data-target="#custermscollapse"> <i class="fa fa-caret-down" style="cursor: pointer"></i>&nbsp;&nbsp;<u><b>Customers Terms</b></u></p>
+					<p data-toggle="collapse" data-target="#custermscollapse"> <i class="fa fa-caret-down" style="cursor: pointer"></i>&nbsp;&nbsp;<u><b>Customers/Suppliers Terms</b></u></p>
 						
 						<div class="collapse" id="custermscollapse">
 
@@ -827,7 +827,7 @@ if(mysqli_num_rows($sql) != 0){
 								</div>                      
 							</div>
 
-							<div style="height:20vh; border:1px solid #CCC" class="col-lg-12 nopadding pre-scrollable" id="TblTerms">
+							<div style="height:40vh; border:1px solid #CCC" class="col-lg-12 nopadding pre-scrollable" id="TblTerms">
 										
 							</div>
 									
@@ -1024,7 +1024,7 @@ if(mysqli_num_rows($sql) != 0){
 									
 						</div> 
 					-->
-						<p data-toggle="collapse" data-target="#contypescollapse"> <i class="fa fa-caret-down" style="cursor: pointer"></i>&nbsp;&nbsp;<u><b>Contacts Details</b></u></p>
+						<p data-toggle="collapse" data-target="#contypescollapse"> <i class="fa fa-caret-down" style="cursor: pointer"></i>&nbsp;&nbsp;<u><b>Contacts Details Custom Fields</b></u></p>
 						
 						<div class="collapse" id="contypescollapse">
 							<div class="col-xs-12 nopadwdown">   
@@ -3710,11 +3710,10 @@ if(mysqli_num_rows($sql) != 0){
 							</form>
 
 					</div>
-					
 
 					<div class="col-xs-12">
-						<div class="col-xs-2 nopadwtop">
-							<b>Income Account</b>
+						<div class="col-xs-2 nopadwtop2x">
+							<b>Income Account (Sales Cr.)</b>
 							<!--<div id="divInvChecking" style="display:inline; padding-left:5px">
 							</div>-->
 						</div>                    
