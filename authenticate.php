@@ -45,8 +45,8 @@
 
                     //check if user is currently logged sa ibang PC
                     if($row['session_ID']!="0"){
-                        //check if sa same PC nakalogin (or naiwan ang login)
-                        if($row['machine_last_log']==$hashedIP || $row['mac_last_log']==$hashedMAC){ // pag same PC go with login
+                        //check if sa same PC nakalogin (or naiwan ang login) 
+                        if($row['machine_last_log']==$hashedIP){ // pag same PC go with login || $row['mac_last_log']==$hashedMAC
                             $GOYes="True";
                             $xmessage = "";
                         }else{ // pag nde check if more than 2hrs na ung last log... pag 24hrs or more na go with log na

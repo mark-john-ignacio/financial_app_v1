@@ -41,6 +41,7 @@
 		$all_course_data = mysqli_fetch_array($result, MYSQLI_ASSOC);						 
 		$tawkchat = $all_course_data['cvalue']; 							
 	}
+
 ?>
   
 
