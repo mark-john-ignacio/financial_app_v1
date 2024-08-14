@@ -147,9 +147,9 @@
 			$cnt++;
 
 			if(floor( $rowdtls['nqty'] ) != $rowdtls['nqty']){
-				$xsqty = number_format($rowdtls['nqty']);
-			}else{
 				$xsqty = number_format($rowdtls['nqty'],2);
+			}else{
+				$xsqty = number_format($rowdtls['nqty']);
 			}
 
 			$html = $html.'<tr>

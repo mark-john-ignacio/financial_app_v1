@@ -149,9 +149,9 @@ if (mysqli_num_rows($sqlhead)!=0) {
 						<td align="center" class="tdpadx tddetz">
 							<?php 
 								if(floor( $rowdtls['nqty'] ) != $rowdtls['nqty']){
-									echo number_format($rowdtls['nqty']);
+									echo number_format($rowdtls['nqty'],2); 
 								}else{
-									echo number_format($rowdtls['nqty'],2);
+									echo number_format($rowdtls['nqty']);
 								}
 							?>
 						</td>
