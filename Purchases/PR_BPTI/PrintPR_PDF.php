@@ -146,12 +146,18 @@
 		foreach($PRDet as $rowdtls){
 			$cnt++;
 
+			if(floor( $rowdtls['nqty'] ) != $rowdtls['nqty']){
+				$xsqty = number_format($rowdtls['nqty']);
+			}else{
+				$xsqty = number_format($rowdtls['nqty'],2);
+			}
+
 			$html = $html.'<tr>
 				<td align="center" class="tdpadx tddetz">'.$cnt.'</td>
 				<td align="center" class="tdpadx tddetz">'.$rowdtls['cpartdesc'].'</td>
 				<td align="center" class="tdpadx tddetz">'.$rowdtls['citemdesc'].'</td>
 				<td align="center" class="tdpadx tddetz">'.$rowdtls['citemno'].'</td>
-				<td align="center" class="tdpadx tddetz">'.intval($rowdtls['nqty']).'</td>
+				<td align="center" class="tdpadx tddetz">'.$xsqty.'</td>
 				<td align="center" class="tdpadx tddetz">'.$rowdtls['cunit'].'</td>					
 				<td align="center" class="tdpadx tddetz">'.$rowdtls['cremarks']. (($rowdtls['cremarks']!="" && $rowdtls['locdesc']!="") ? "<br>" : ""). (($rowdtls['locdesc']!="") ? $rowdtls['locdesc'] : "").'</td>			
 			</tr>';

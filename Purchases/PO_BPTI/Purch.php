@@ -584,12 +584,34 @@
 					{ "data": 9 },
 					{ "data": 3 },
 					{ "data": null,
-							"render": function (data, type, full, row) {
-	
-								if(full[7] == 0 && full[5]==0){
-									return "For Sending";
+						"render": function (data, type, full, row) {
+
+							if(full[7] == 0 && full[5]==0){
+								return "For Sending";
+							}else{
+								if (full[4] == 0 && (full[5] == 0)) {
+									var chkrejstat = "Pending";
+									var xcz = '<?=json_encode(@$chkapprovals)?>';
+									if(xcz!=""){
+										$.each( JSON.parse(xcz), function( key, val ) {
+											if(val.cpono==full[0] && val.userid=='<?=$employeeid?>'){
+												chkrejstat = "For Approval";
+											}
+											
+										});
+									}
+									return chkrejstat;
 								}else{
-									if (full[4] == 0 && (full[5] == 0)) {
+									if (full[4] == 1) {		
+										if(full[8] == 1){
+											return '<a href="#" class="canceltool" data-id="'+full[0]+'" data-stat="VOID" style="color: red !important"><b>Voided</b></a>';
+										}else{
+											return 'Posted';
+										}			
+																				
+									}else if (full[5] == 1) { //12 sent 13 void 4 apprve 5 cancel
+										return '<a href="#" class="canceltool" data-id="'+full[0]+'" data-stat="CANCELLED" style="color: red !important"><b>Cancelled</b></a>';
+									}else{
 										var chkrejstat = "Pending";
 										var xcz = '<?=json_encode(@$chkapprovals)?>';
 										if(xcz!=""){
@@ -600,86 +622,64 @@
 												
 											});
 										}
+
+
 										return chkrejstat;
-									}else{
-										if (full[4] == 1) {		
-											if(full[8] == 1){
-												return '<a href="#" class="canceltool" data-id="'+full[0]+'" data-stat="VOID" style="color: red !important"><b>Voided</b></a>';
-											}else{
-												return 'Posted';
-											}			
-																					
-										}else if (full[5] == 1) { //12 sent 13 void 4 apprve 5 cancel
-											return '<a href="#" class="canceltool" data-id="'+full[0]+'" data-stat="CANCELLED" style="color: red !important"><b>Cancelled</b></a>';
-										}else{
-											var chkrejstat = "Pending";
-											var xcz = '<?=json_encode(@$chkapprovals)?>';
-											if(xcz!=""){
-												$.each( JSON.parse(xcz), function( key, val ) {
-													if(val.cpono==full[0] && val.userid=='<?=$employeeid?>'){
-														chkrejstat = "For Approval";
-													}
-													
-												});
-											}
-
-
-											return chkrejstat;
-										}
 									}
 								}
-								
 							}
-						},
-						{ "data": null,		
-								"render": function (data, type, full, row) {
+							
+						}
+					},
+					{ "data": null,		
+							"render": function (data, type, full, row) {
 
-									$msgx = "";
-									if(full[7] == 0 && full[5]==0){
+								$msgx = "";
+								if(full[7] == 0 && full[5]==0){
 
-										$msgx = "<a href=\"javascript:;\" onClick=\"trans('SEND','"+full[0]+"')\" class=\"btn btn-icon-only white\"> <i class=\"fa fa-share\" style=\"font-size:20px;color: #ffb533;\" title=\"Send transaction\"></i></a> <a href=\"javascript:;\" onClick=\"trans('CANCEL1','"+full[0]+"')\" class=\"btn btn-icon-only white<?=($cancstat!="True") ? " disabled" : ""?>\"><i class=\"fa fa-thumbs-down\" style=\"font-size:20px;color:Red ;\" title=\"Cancel transaction\"></i></a>";
+									$msgx = "<a href=\"javascript:;\" onClick=\"trans('SEND','"+full[0]+"')\" class=\"btn btn-icon-only white\"> <i class=\"fa fa-share\" style=\"font-size:20px;color: #ffb533;\" title=\"Send transaction\"></i></a> <a href=\"javascript:;\" onClick=\"trans('CANCEL1','"+full[0]+"')\" class=\"btn btn-icon-only white<?=($cancstat!="True") ? " disabled" : ""?>\"><i class=\"fa fa-thumbs-down\" style=\"font-size:20px;color:Red ;\" title=\"Cancel transaction\"></i></a>";
 
-									}else{
+								}else{
 
-										if(full[4] == 0 && full[5]==0){
+									if(full[4] == 0 && full[5]==0){
 
-											var chkrejstat1 = "disabled";
-											var chkrejstat2 = "disabled";
-											var xcz = '<?=json_encode(@$chkapprovals)?>';
-											if(xcz!=""){
-												$.each( JSON.parse(xcz), function( key, val ) {
-													if(val.cpono==full[0] && val.userid=='<?=$employeeid?>'){
-														chkrejstat1 = "";
-														chkrejstat2 = "";
-													}
-													//console.log(key,val);
-												});
-											}
-
-											if(chkrejstat1==""){
-												chkrejstat1 = "<?=($poststat!="True") ? " disabled" : ""?>";
-											}
-
-											if(chkrejstat2==""){
-												chkrejstat2 = "<?=($cancstat!="True") ? " disabled" : ""?>";
-											}
-
-											$msgx =	"<button type=\"button\"  onClick=\"trans('POST','"+full[0]+"')\" class=\"btn btn-icon-only white\" "+chkrejstat1+"><i class=\"fa fa-thumbs-up\" style=\"font-size:20px;color:Green ;\" title=\"Approve transaction\"></i></button> <button type=\"button\"  onClick=\"trans('CANCEL','"+full[0]+"')\" class=\"btn btn-icon-only white\" "+chkrejstat2+"><i class=\"fa fa-thumbs-down\" style=\"font-size:20px;color:Red ;\" title=\"Cancel transaction\"></i></button>";
+										var chkrejstat1 = "disabled";
+										var chkrejstat2 = "disabled";
+										var xcz = '<?=json_encode(@$chkapprovals)?>';
+										if(xcz!=""){
+											$.each( JSON.parse(xcz), function( key, val ) {
+												if(val.cpono==full[0] && val.userid=='<?=$employeeid?>'){
+													chkrejstat1 = "";
+													chkrejstat2 = "";
+												}
+												//console.log(key,val);
+											});
 										}
 
-									}
-
-									if(full[7] == 1) {
-										return "<div id=\"msg"+full[0]+"\"> "+ $msgx +" <button type=\"button\" onClick=\"track('"+full[0]+"')\" class=\"btn btn-icon-only white\"> <i class=\"fa fa-file-text-o\" style=\"font-size:20px;color: #3374ff;\" title=\"Track transaction\"></i></button> </div>"
-									}else{
-										if($msgx==""){
-											$msgx = "-";
+										if(chkrejstat1==""){
+											chkrejstat1 = "<?=($poststat!="True") ? " disabled" : ""?>";
 										}
-										return "<div id=\"msg"+full[0]+"\"> "+ $msgx +" </div>";
+
+										if(chkrejstat2==""){
+											chkrejstat2 = "<?=($cancstat!="True") ? " disabled" : ""?>";
+										}
+
+										$msgx =	"<button type=\"button\"  onClick=\"trans('POST','"+full[0]+"')\" class=\"btn btn-icon-only white\" "+chkrejstat1+"><i class=\"fa fa-thumbs-up\" style=\"font-size:20px;color:Green ;\" title=\"Approve transaction\"></i></button> <button type=\"button\"  onClick=\"trans('CANCEL','"+full[0]+"')\" class=\"btn btn-icon-only white\" "+chkrejstat2+"><i class=\"fa fa-thumbs-down\" style=\"font-size:20px;color:Red ;\" title=\"Cancel transaction\"></i></button>";
 									}
 
 								}
-						},
+
+								if(full[7] == 1) {
+									return "<div id=\"msg"+full[0]+"\"> "+ $msgx +" <button type=\"button\" onClick=\"track('"+full[0]+"')\" class=\"btn btn-icon-only white\"> <i class=\"fa fa-file-text-o\" style=\"font-size:20px;color: #3374ff;\" title=\"Track transaction\"></i></button> </div>"
+								}else{
+									if($msgx==""){
+										$msgx = "-";
+									}
+									return "<div id=\"msg"+full[0]+"\"> "+ $msgx +" </div>";
+								}
+
+							}
+					},
 		
 				],
 				"columnDefs": [

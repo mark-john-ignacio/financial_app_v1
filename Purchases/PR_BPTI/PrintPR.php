@@ -146,10 +146,18 @@ if (mysqli_num_rows($sqlhead)!=0) {
 						<td align="center" class="tdpadx tddetz"><?=$rowdtls['cpartdesc']?></td>
 						<td align="center" class="tdpadx tddetz"><?=$rowdtls['citemdesc']?></td>
 						<td align="center" class="tdpadx tddetz"><?=$rowdtls['citemno']?></td>
-						<td align="center" class="tdpadx tddetz"><?php echo intval($rowdtls['nqty']);?></td>
+						<td align="center" class="tdpadx tddetz">
+							<?php 
+								if(floor( $rowdtls['nqty'] ) != $rowdtls['nqty']){
+									echo number_format($rowdtls['nqty']);
+								}else{
+									echo number_format($rowdtls['nqty'],2);
+								}
+							?>
+						</td>
 						<td align="center" class="tdpadx tddetz"><?php echo $rowdtls['cunit'];?></td>					
 						<td align="center" class="tdpadx tddetz">
-							<?=$rowdtls['cremarks']?>
+							<?=$rowdtls['cremarks']?> 
 							<?=($rowdtls['cremarks']!="" && $rowdtls['locdesc']!="") ? "<br>" : ""?>
 							<?=($rowdtls['locdesc']!="") ? $rowdtls['locdesc'] : ""?>
 						</td>
