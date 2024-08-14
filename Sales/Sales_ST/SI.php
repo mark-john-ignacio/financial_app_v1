@@ -180,7 +180,7 @@
 					//generate GL ENtry muna
 					$.ajax ({
 						dataType: "text",
-						url: "../../include/th_toAcc.php",
+						url: "../../include/th_toAcc_ST.php",
 						data: { tran: num, type: "SI" },
 						async: false,
 						success: function( data ) {

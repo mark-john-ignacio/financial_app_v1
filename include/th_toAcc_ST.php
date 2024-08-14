@@ -157,14 +157,8 @@ function getSetAcct($id){
 	
 	else if($typ=="SI"){
 
-		//get Item entry
-		global $con;
-		global $compcode;
-		global $xcomp;	
-		global $xsicpaytype;	
-
-		
-		$qrySI = "INSERT INTO `glactivity`(`compcode`, `cmodule`, `ctranno`, `ddate`, `acctno`, `ctitle`, `ndebit`, `ncredit`, `lposted`, `dpostdate`) Select '$company','SI','$tran',A.dcutdate,B.cacctid,B.cacctdesc,A.ngross,0,0,NOW() From sales A left join accounts B on A.compcode=B.compcode and A.cacctcode=B.cacctno where A.compcode='$company' and A.ctranno='$tran'";
+		//get Item entry		
+		$qrySI = "INSERT INTO `glactivity`(`compcode`, `cmodule`, `ctranno`, `ddate`, `acctno`, `ctitle`, `ndebit`, `ncredit`, `lposted`, `dpostdate`, `ctaxcode`) Select compcode, cmodule, ctranno, ddate, acctno, ctitle, ndebit, ncredit, lposted, dpostdate, ctaxcode From sales_glactivity where compcode='$company' and ctranno='$tran'";
 
 		if (!mysqli_query($con,$qrySI)){
 			
@@ -172,153 +166,8 @@ function getSetAcct($id){
 		}
 		else{
 
-			//if may gross sales discount
-			$Sales_Disc = getDefAcct("GROSS_SALES_DISCOUNT");
-			$SID = $Sales_Disc["id"];
-			$SNM = $Sales_Disc["name"];
-
-			$qrySIDSC = "Select IFNULL(B.ngrossdisc,0) as namount, B.dcutdate
-			From sales B where B.compcode='$company' and B.ctranno='$tran'";
-
-			$resdsc= mysqli_query($con,$qrySIDSC);
-			$isok = "True";
-			if (mysqli_num_rows($resdsc)!=0) {
-				while($rowdsc = mysqli_fetch_array($resdsc, MYSQLI_ASSOC)){
-
-					if(floatval($rowdsc["namount"]) != 0){
-					
-						if (!mysqli_query($con,"INSERT INTO `glactivity`(`compcode`, `cmodule`, `ctranno`, `ddate`, `acctno`, `ctitle`, `ndebit`, `ncredit`, `lposted`, `dpostdate`) values ('$company','SI','$tran','".$rowdsc["dcutdate"]."','$SID','$SNM',".$rowdsc["namount"].",0,0, NOW())")){
-							echo "False";
-							//echo mysqli_error($con);
-							$isok = "False";
-						}
-
-					}
-				
-				}
+			echo "True";
 			
-			}
-
-			//EWT ENTRY - ALSO DEBIT SIDE
-			$Sales_Ewt = getDefAcct("EWTREC");
-
-			$SID = $Sales_Ewt["id"];
-			$SNM = $Sales_Ewt["name"];
-
-			$qrySIEWT = "Select B.dcutdate,C.cacctid,C.cacctdesc,B.cewtcode,sum(B.newt) as newtgross
-			From sales B
-			left join accounts C on B.compcode=C.compcode and B.cacctcode=C.cacctno 
-			left join wtaxcodes D on B.compcode=D.compcode and B.cewtcode=D.ctaxcode 
-			where B.compcode='$company' and B.ctranno='$tran'";
-
-			$resewt = mysqli_query($con,$qrySIEWT);
-			$isok = "True";
-			if (mysqli_num_rows($resewt)!=0) {
-				while($rowewt = mysqli_fetch_array($resewt, MYSQLI_ASSOC)){
-
-					if(floatval($rowewt["newtgross"]) != 0){
-					
-						if (!mysqli_query($con,"INSERT INTO `glactivity`(`compcode`, `cmodule`, `ctranno`, `ddate`, `acctno`, `ctitle`, `ndebit`, `ncredit`, `lposted`, `dpostdate`, `ctaxcode`) values ('$company','SI','$tran','".$rowewt["dcutdate"]."','$SID','$SNM',".$rowewt["newtgross"].",0,0, NOW(),'".$rowewt["cewtcode"]."')")){
-							echo "False";
-							//echo mysqli_error($con);
-							$isok = "False";
-						}
-
-					}
-				
-				}
-			
-			}
-
-		//Items Entry	
-		
-		 if($xcomp==1){ // Pag ung mismo may ari system ay Vatable
-
-			/*$nicomeaccount = "";
-			$result = mysqli_query($con,"SELECT * FROM `parameters` WHERE compcode='$company' and ccode='INCOME_ACCOUNT'"); 								
-			if (mysqli_num_rows($result)!=0) {
-				$all_course_data = mysqli_fetch_array($result, MYSQLI_ASSOC);						 
-				$nicomeaccount = $all_course_data['cvalue']; 							
-			}
-
-			if($nicomeaccount=="customer"){
-
-				
-			
-			}elseif($nicomeaccount=="si"){
-
-				$qrySI = "INSERT INTO `glactivity`(`compcode`, `cmodule`, `ctranno`, `ddate`, `acctno`, `ctitle`, `ndebit`, `ncredit`, `lposted`, `dpostdate`) Select '$company','SI','$tran',A.dcutdate,B.cacctno,C.cacctdesc,A.ngross,0,0,NOW() From sales A left join accounts_default B on A.compcode=B.compcode and A.cpaytype=B.cdescription left join accounts C on A.compcode=C.compcode and B.cacctno=C.cacctid where A.compcode='$company' and A.ctranno='$tran'";
-				
-			}elseif($nicomeaccount=="item"){*/
-
-			
-			if (!mysqli_query($con,"INSERT INTO `glactivity`(`compcode`, `cmodule`, `ctranno`, `ddate`, `acctno`, `ctitle`, `ndebit`, `ncredit`, `lposted`, `dpostdate`) Select '$company','SI','$tran',A.dcutdate,A.cacctcode,A.cacctdesc,0,Sum(A.cCredit),0,NOW() 
-			From (
-				Select B.dcutdate, A.citemno, C.cacctid as cacctcode, C.cacctdesc, CASE WHEN D.nrate<>0 Then ROUND(SUM(A.namount)/(1 + (D.nrate/100)) ,2) Else SUM(A.namount) END as cCredit
-				From sales_t A 
-				left join sales B on A.compcode=B.compcode and A.ctranno=B.ctranno 
-				left join accounts C on A.compcode=C.compcode and A.cacctcode=C.cacctno 
-				left join taxcode D on A.compcode=D.compcode and A.ctaxcode=D.ctaxcode 
-				left join vatcode E on B.compcode=E.compcode and B.cvatcode=E.cvatcode 
-				where A.compcode='$company' and A.ctranno='$tran' 
-				group by B.dcutdate,C.cacctid,C.cacctdesc,A.citemno
-			) A Group By A.cacctcode"))
-			{			
-				echo "False";
-			}
-			else{
-				//VAT Entry
-				//get Default SALES_VAT Code
-				$Sales_Vat = getDefAcct("SALES_VAT");
-
-				$SID = $Sales_Vat["id"];
-				$SNM = $Sales_Vat["name"];
-				
-				$sqlvat = "Select A.ctaxcode, Sum(A.nVat) as nVat
-				From (
-					Select A.ctaxcode, ROUND((SUM(A.namount)/(1 + (D.nrate/100))) * ((D.nrate/100)), 2) AS nVat
-					From sales_t A 
-					left join sales B on A.compcode=B.compcode and A.ctranno=B.ctranno 
-					left join accounts C on B.compcode=C.compcode and B.cacctcode=C.cacctno 
-					left join taxcode D on A.compcode=D.compcode and A.ctaxcode=D.ctaxcode 
-					left join vatcode E on B.compcode=E.compcode and B.cvatcode=E.cvatcode 
-					where A.compcode='$company' and A.ctranno='$tran'
-					group by A.ctaxcode
-				) A HAVING Sum(A.nVat) <> 0";
-				
-				
-				$resvat = mysqli_query($con,$sqlvat);
-				$isok = "True";
-				if (mysqli_num_rows($resvat)!=0) {
-					while($rowvat = mysqli_fetch_array($resvat, MYSQLI_ASSOC)){
-						
-						if (!mysqli_query($con,"INSERT INTO `glactivity`(`compcode`, `cmodule`, `ctranno`, `ddate`, `acctno`, `ctitle`, `ndebit`, `ncredit`, `lposted`, `dpostdate`, `ctaxcode`) values ('$company','SI','$tran','".$rowvat["dcutdate"]."','$SID','$SNM',0,".$rowvat["nVat"].",0, NOW(),'".$rowvat["ctaxcode"]."')")){
-							echo "False";
-							//echo mysqli_error($con);
-							$isok = "False";
-						}
-					
-					}
-					
-					echo $isok;
-				}else{
-					echo "True";
-				}
-			
-			}
-		 }		
-			
-		 else{ // pag nde vatable no VAT dapat
-			
-			if (!mysqli_query($con,"INSERT INTO `glactivity`(`compcode`, `cmodule`, `ctranno`, `ddate`, `acctno`, `ctitle`, `ndebit`, `ncredit`, `lposted`, `dpostdate`) Select '$company','SI','$tran',B.dcutdate,C.cacctid as cacctcode,C.cacctdesc,0,ROUND(SUM(A.namount),2),0,NOW() From sales_t A left join sales B on A.compcode=B.compcode and A.ctranno=B.ctranno left join accounts C on A.compcode=C.compcode and A.cacctcode=C.cacctno left join taxcode D on A.compcode=D.compcode and A.ctaxcode=D.ctaxcode left join vatcode E on B.compcode=E.compcode and B.cvatcode=E.cvatcode where A.compcode='$company' and A.ctranno='$tran' group by B.dcutdate,C.cacctid,C.cacctdesc")){
-				echo "False";
-			}
-			else{
-				echo "True";
-			}
-		
-		 }
-
 		}
 
 
