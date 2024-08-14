@@ -591,11 +591,7 @@ if (mysqli_num_rows($sqlhead)!=0) {
 		
 		</div>
 	</div>
-
-		
-</fieldset>
     
-   
 	<!-- Add Info -->
     <div class="modal fade" id="MyDetModal" role="dialog">
     	<div class="modal-dialog modal-lg">
@@ -693,6 +689,10 @@ if (mysqli_num_rows($sqlhead)!=0) {
 	</div><!-- /.modal -->
 	<!-- End FULL INVOICE LIST -->
 
+</form>
+
+<form action="SO_edit.php" name="frmedit" id="frmedit" method="post">
+	<input type="hidden" name="txtctranno" value="">
 </form>
 
 <?php
@@ -2614,11 +2614,11 @@ else{
 					$("#alertbtnOK").hide();
 
 						setTimeout(function() {
-							$("#AlertMsg").html("");
-							$('#AlertModal').modal('hide');
-				
-							$("#txtcsalesno").val(trancode);
-							$("#frmpos").submit();
+						$("#AlertMsg").html("");
+						$('#AlertModal').modal('hide');
+						
+						$("#frmedit input[name=txtctranno]").val(trancode);
+						$("#frmedit").submit();
 				
 						}, 3000); // milliseconds = 3seconds
 
