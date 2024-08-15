@@ -234,76 +234,74 @@
     </div>
 </div>
 
-			<!-- FULL SALES RETURN LIST REFERENCES-->
-				<div class="modal fade" id="mySIRef" role="dialog" data-keyboard="false" data-backdrop="static">
-    			<div class="modal-dialog modal-md">
-        		<div class="modal-content">
-            	<div class="modal-header">
+<!-- FULL SALES RETURN LIST REFERENCES-->
+<div class="modal fade" id="mySIRef" role="dialog" data-keyboard="false" data-backdrop="static">
+	<div class="modal-dialog modal-md">
+		<div class="modal-content">
+			<div class="modal-header">
                 <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-                <h3 class="modal-title" id="InvListHdr">Sales Return List</h3>
-            	</div>
+				<h3 class="modal-title" id="InvListHdr">Sales Return List</h3>
+			</div>
             
-            	<div class="modal-body" style="height:40vh">
-            
+			<div class="modal-body" style="height:40vh">          
                 <div class="col-xs-12 nopadding pre-scrollable" style="height:37vh">
-                  <table name='MyInvTbl' id='MyInvTbl' class="table table-condensed">
-                    <thead>
-                      <tr>
-												<th>Sales Return No.</th>
-												<th>Reference Invoice</th>
-												<th>Date</th>
-											</tr>
-										</thead>
-                    <tbody>
-                    </tbody>
-                  </table>
-                </div>
-         	            
-							</div>
+					<table name='MyInvTbl' id='MyInvTbl' class="table table-condensed">
+						<thead>
+							<tr>
+								<th>Sales Return No.</th>
+								<th>Reference Invoice</th>
+								<th>Date</th>
+							</tr>
+						</thead>
+						<tbody>
+						</tbody>
+					</table>
+                </div>        	            
+			</div>
 			
-            	<div class="modal-footer">
+			<div class="modal-footer">
                 <button type="button" class="btn btn-danger" data-dismiss="modal">Cancel</button>
-            	</div>
-        		</div><!-- /.modal-content -->
-    			</div><!-- /.modal-dialog -->
-				</div><!-- /.modal -->
-			<!-- End FULL INVOICE LIST -->
+			</div>
+		</div><!-- /.modal-content -->
+	</div><!-- /.modal-dialog -->
+</div><!-- /.modal -->
+<!-- End FULL INVOICE LIST -->
 
-			<!-- FULL SALES INVOICE LIST REFERENCES-->
-				<div class="modal fade" id="myInvoiceRef" role="dialog" data-keyboard="false" data-backdrop="static">
-    			<div class="modal-dialog modal-lg">
-        		<div class="modal-content">
-            	<div class="modal-header">
+<!-- FULL SALES INVOICE LIST REFERENCES-->
+<div class="modal fade" id="myInvoiceRef" role="dialog" data-keyboard="false" data-backdrop="static">
+	<div class="modal-dialog modal-lg">
+		<div class="modal-content">
+			<div class="modal-header">
                 <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
                 <h3 class="modal-title" id="InvListHdr">Sales Invoice List</h3>
-            	</div>
+			</div>
             
-            	<div class="modal-body" style="height:40vh">
+			<div class="modal-body" style="height:40vh">
             
                 <div class="col-xs-12 nopadding pre-scrollable" style="height:37vh">
-                  <table name='MyInvoiceTbl' id='MyInvoiceTbl' class="table table-condensed">
-                    <thead>
-                      <tr>
-												<th>Invoice No.</th>
-												<th>Print No.</th>
-												<th>Remarks</th>
-												<th>Date</th>
-											</tr>
-										</thead>
-                    <tbody>
-                    </tbody>
-                  </table>
+					<table name='MyInvoiceTbl' id='MyInvoiceTbl' class="table table-condensed">
+						<thead>
+							<tr>
+								<th>Invoice No.</th>
+								<th>Print No.</th>
+								<th>Remarks</th>
+								<th>Date</th>
+							</tr>
+						</thead>
+						<tbody>
+						</tbody>
+                  	</table>
                 </div>
-         	            
-							</div>
+        	            
+			</div>
 			
-            	<div class="modal-footer">
+			<div class="modal-footer">
                 <button type="button" class="btn btn-danger" data-dismiss="modal">Cancel</button>
-            	</div>
-        		</div><!-- /.modal-content -->
-    			</div><!-- /.modal-dialog -->
-				</div><!-- /.modal -->
-			<!-- End FULL INVOICE LIST -->
+			</div>
+		</div><!-- /.modal-content -->
+	</div><!-- /.modal-dialog -->
+</div><!-- /.modal -->
+<!-- End FULL INVOICE LIST -->
 
 </body>
 </html>
