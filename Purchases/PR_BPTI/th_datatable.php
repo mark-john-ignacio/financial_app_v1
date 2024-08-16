@@ -16,9 +16,9 @@
 		}
 	}
 
-	$column = array('A.ddate', 'CONCAT(B.Lname,", ",B.Fname)', 'C.cdesc', 'A.dneeded', 'A.ddate', 'CASE WHEN A.lapproved=1 THEN CASE WHEN A.lvoid=1 THEN "Voided" ELSE "Posted" END WHEN A.lcancelled=1 THEN "Cancelled" ELSE CASE WHEN A.lsent=0 THEN "For Sending" ELSE "For Approval" END END');
+	$column = array('A.ddate', 'D.cdesc', 'C.cdesc', 'A.dneeded', 'A.ddate', 'CASE WHEN A.lapproved=1 THEN CASE WHEN A.lvoid=1 THEN "Voided" ELSE "Posted" END WHEN A.lcancelled=1 THEN "Cancelled" ELSE CASE WHEN A.lsent=0 THEN "For Sending" ELSE "For Approval" END END');
 
-	$query = "SELECT A.ctranno, B.Lname, B.Fname, C.cdesc, A.dneeded, A.ddate, A.lapproved, A.lcancelled, A.lsent, A.lvoid FROM `purchrequest` A LEFT JOIN `users` B ON A.`cpreparedby` = B.`Userid` LEFT JOIN `locations` C ON A.`locations_id` = C.`nid` where A.compcode='".$_SESSION['companyid']."' ";
+	$query = "SELECT A.ctranno, B.Lname, B.Fname, C.cdesc, A.dneeded, A.ddate, A.lapproved, A.lcancelled, A.lsent, A.lvoid, D.cdesc as creqby FROM `purchrequest` A LEFT JOIN `users` B ON A.`cpreparedby` = B.`Userid` LEFT JOIN `locations` C ON A.`compcode` = C.`compcode` and A.`locations_id` = C.`nid` LEFT JOIN `mrp_operators` D ON A.`crequestedby` = D.`nid` and A.`locations_id` = C.`nid` where A.compcode='".$_SESSION['companyid']."' ";
 
 	$filters = "";
 
@@ -106,7 +106,8 @@
 	{
 		$sub_array = array();
 		$sub_array[] = $row['ctranno'];
-		$sub_array[] = $row['Lname'].", ".$row['Fname'];
+		//$sub_array[] = $row['Lname'].", ".$row['Fname']; D.cdesc
+		$sub_array[] = $row['creqby'];
 		$sub_array[] = $row['cdesc'];
 		$sub_array[] = $row['dneeded'];
 		$sub_array[] = $row['ddate'];
