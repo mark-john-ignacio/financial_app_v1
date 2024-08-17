@@ -1467,7 +1467,9 @@ function myFunctionadd(qty,pricex,curramt,amtx,factr,cref,nrefident){
 
 	$('#MyTable > tbody:last-child').append('<tr>'+tditmcode + tditmdesc + tditmavail + tditmvats + tditmunit + tditmfactor + tditmqty + tditmprice + tditmbaseamount + tditmrempo + tddneed + tditmremx + tditmdel + '</tr>');
 
-	$("#div1det").animate({ scrollTop: $('#div1det').prop("scrollHeight")}, 1000);
+	//$("#div1det").animate({ scrollTop: $('#div1det').prop("scrollHeight")}, 1000);
+	var offTop = $('#div1det').prop("scrollHeight");
+	$("#div1det").scrollTop(offTop);
 
 	$("#del"+lastRow).on('click', function() {
 		$(this).closest('tr').remove();
