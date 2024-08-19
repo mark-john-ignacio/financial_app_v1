@@ -104,6 +104,7 @@
 					<tr>
 						<th>DR No</th>
 						<th>DR Series No</th>
+						<th>DR Reference</th>
 						<th>Reference</th>
 						<th>Delivered To</th>
 						<th>Delivery Date</th>
