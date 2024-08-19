@@ -434,6 +434,7 @@
 					},
 					{ "data": 1 },
 					{ "data": 8 },
+					{ "data": 10 },
 					{ "data": null,
 							"render": function (data, type, full, row) {
 
