@@ -2,6 +2,8 @@
     if(!isset($_SESSION)) {
         session_start();
     }
+    // print_r($_POST);
+    // print_r($_SESSION);
 
     $_SESSION['pageid'] = "BIRForms";
 
@@ -132,8 +134,8 @@
                 <div class="col-12" style="padding-top: 5px; padding-bottom: 0px">
                     <table class="table table-sm table-bordered" style="margin: 0px !important">
                         <tr>
-                            <td align="center" width="150px"> BIR FORM No.<h3 class="nopadding">1601-EQ</h3>January 2019 (ENCS)<br>Page 1</td>
-                            <td align="center" style="vertical-align: middle !important;"><h3 class="nopadding">Quarterly Remittance Return</h3><h4 class="nopadding">of Creditable Income Taxes Withheld (Expanded)</h4></td>
+                            <td align="center" width="150px"> BIR FORM No.<h3 class="nopadding">0619-E</h3>January 2018 (ENCS)<br>Page 1</td>
+                            <td align="center" style="vertical-align: middle !important;"><h3 class="nopadding">Monthy Remittance Form</h3><h4 class="nopadding">of Creditable Income Taxes Withheld (Expanded)</h4></td>
                             <td align="center" width="200px" style="vertical-align: middle !important;"><img src="../../bir_forms/hdr1601eq.jpg" width="100%"> </td>
                         </tr>
                     </table>
@@ -141,8 +143,9 @@
                 <div class="col-12" style="margin-top: 0px !important">
                     <table class="table table-sm table-bordered" style="margin: 0px !important">
                         <tr>
-                            <td align="center" width="100px">
-                                <b>1.</b> For the Year
+                            <td align="center" width="200px">
+                                <b>1.</b> For the Month of
+                                <input type="text" class="form-control input-sm" name="txt1601eq_yr" id="txt1601eq_yr" value="<?=$year?>" readonly>
                                 <input type="text" class="form-control input-sm" name="txt1601eq_yr" id="txt1601eq_yr" value="<?=$year?>" readonly>
                             </td>
                             <td align="center">
