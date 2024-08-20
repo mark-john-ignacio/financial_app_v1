@@ -17,6 +17,8 @@ class BIRFormModel extends Model
         'form_name',
         'filter',
         'cstatus',
+        'form_link',
+        'param'
     ];
 
     protected bool $allowEmptyInserts = false;
