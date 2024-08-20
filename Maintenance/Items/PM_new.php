@@ -258,6 +258,7 @@ $(function() {
 						query: $("#txtcitmdesc").val()
 					},
 					success: function (data) {
+                        console.log(data);
 						response(data);
 					}
 				});

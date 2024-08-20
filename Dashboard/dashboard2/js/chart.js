@@ -369,6 +369,9 @@ function renderSalesPerItemBarChart(data) {
             },
             yaxis: {
                 labels: {
+                    formatter: function(value) {
+                        return '₱' + value.toLocaleString();
+                    },
                     style: {
                         colors: gray500,
                         fontSize: "12px"
