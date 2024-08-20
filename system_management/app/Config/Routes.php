@@ -120,3 +120,11 @@ $routes->group('', ['filter' => 'pin_verified'], function ($routes) {
 });
 
 
+$routes->group('api', ['namespace' => 'App\Controllers\API\BIRForms'], function($routes) {
+    $routes->get('birforms/getCompanyInfo', 'BirFormsApi::getCompanyInfo');
+    $routes->get('birforms/getApvData', 'BirFormsApi::getApvData');
+    $routes->get('birforms/getDefaultAccounts', 'BirFormsApi::getDefaultAccounts');
+});
+
+$routes->get('bir-forms/1601eq', 'BirForms::form1601eq');
+$routes->post('bir-forms/submit-1601eq', 'BirForms::submit1601eq');
