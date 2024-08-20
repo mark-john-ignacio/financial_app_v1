@@ -47,7 +47,7 @@
 
 
 	$arrmrpjo_pt = array();
-	$sql = "select * from mrp_jo_process_t X where X.compcode='$company' and X.ctranno in (Select ctranno from mrp_jo_process where compcode='$company' and mrp_jo_ctranno  = '$tranno')";
+	$sql = "select X.nid, X.ctranno, X.mrp_process_id, X.mrp_process_desc, X.nmachineid, IFNULL(X.ddatestart,'') as ddatestart, IFNULL(ddateend,'') as ddateend, X.nactualoutput, X.operator_id, X.nrejectqty, X.nscrapqty, IFNULL(Y.cdesc,'') as cmachinedesc, IFNULL(Z.cdesc,'') as operator_name, IFNULL(ZY.cdesc,'') as qc_name, X.lpause, IFNULL(X.cremarks,'') as cremarks from mrp_jo_process_t X left join mrp_machines Y on X.compcode=Y.compcode and X.nmachineid=Y.nid left join mrp_operators Z on X.compcode=Z.compcode and X.operator_id=Z.nid left join mrp_operators ZY on X.compcode=ZY.compcode and X.cqcpostedby=ZY.nid where X.compcode='$company' and (X.ctranno in (Select ctranno from mrp_jo_process where X.compcode='$company' and mrp_jo_ctranno  = '$tranno') OR X.ctranno='$tranno')";
 	$resultmain = mysqli_query ($con, $sql); 
 	while($row2 = mysqli_fetch_array($resultmain, MYSQLI_ASSOC)){
 		$arrmrpjo_pt[] = $row2;				
@@ -57,6 +57,33 @@
 	$directory = "../../Components/assets/JOR/{$company}_{$tranno}/";
 	if(file_exists($directory)){
 		@$arrname = file_checker($directory);
+	}
+
+	$arrmrpjo = array();
+	$sql = "select X.*, A.citemdesc, C.cname from mrp_jo X left join items A on X.compcode=A.compcode and X.citemno=A.cpartno left join customers C on X.compcode=C.compcode and X.ccode=C.cempid  where X.compcode='$company' and X.ctranno = '$tranno'";
+	$resultmain = mysqli_query ($con, $sql); 
+	while($row2 = mysqli_fetch_array($resultmain, MYSQLI_ASSOC)){
+		$arrmrpjo[] = $row2;				
+	}
+
+	$arrinvv = array();
+	$sql = "select citemno, sum(nqtyin) - sum(nqtyout) as nbal From tblinventory where compcode='$company' group by citemno";
+	$resultmain = mysqli_query ($con, $sql); 
+	while($row2 = mysqli_fetch_array($resultmain, MYSQLI_ASSOC)){
+		$arrinvv[$row2['citemno']] = $row2['nbal'];				
+	}
+
+	$prntnme = array();
+	$sqltempname = mysqli_query($con,"select * from nav_menu_prints where compcode='$company'");
+	$rowdettempname= $sqltempname->fetch_all(MYSQLI_ASSOC);
+	foreach($rowdettempname as $row0){
+		$prntnme[$row0['code']] = $row0['filename'];
+	}
+
+	$btnlabelmrs = "Generate<br>MRS";
+	$sqlempsec = mysqli_query($con,"Select * from invtransfer Where compcode='$company' and mrp_jo_ctranno='".$tranno."' and lcancelled1=0");
+	if(mysqli_num_rows($sqlempsec) > 0){
+		$btnlabelmrs = "View<br>MRS";
 	}
 
 ?>
@@ -70,9 +97,9 @@
 	<title>Myx Financials</title>
     
 	<link rel="stylesheet" type="text/css" href="../../Bootstrap/css/bootstrap.css?x=<?php echo time();?>">
-  <link rel="stylesheet" type="text/css" href="../../global/plugins/font-awesome/css/font-awesome.min.css?h=<?php echo time();?>"/>
+  	<link rel="stylesheet" type="text/css" href="../../global/plugins/font-awesome/css/font-awesome.min.css?h=<?php echo time();?>"/>
 	<link rel="stylesheet" type="text/css" href="../../Bootstrap/bs-icons/font/bootstrap-icons.css?h=<?php echo time();?>"/>
-  <link rel="stylesheet" type="text/css" href="../../Bootstrap/css/alert-modal.css">
+  	<link rel="stylesheet" type="text/css" href="../../Bootstrap/css/alert-modal.css">
 	<link rel="stylesheet" type="text/css" href="../../Bootstrap/css/bootstrap-datetimepicker.css">
 
 	<link href="../../Bootstrap/bs-file-input/css/fileinput.css" media="all" rel="stylesheet" type="text/css"/>
@@ -131,9 +158,9 @@
 
 					<ul class="nav nav-tabs">
 						<li class="active"><a href="#apv">JO Details</a></li>
-						<li><a href="#attc">Attachments</a></li>
-						<li><a href="#subjo">Sub-Job Orders</a></li>
+						<li><a href="#subjo">Process Monitoring</a></li>
 						<li><a href="#mats">Materials Request</a></li>
+						<li><a href="#attc">Attachments</a></li>
 					</ul>
 
 					<div class="tab-content" style="overflow: inherit !important">  
@@ -207,9 +234,10 @@
 										<div class="col-xs-12" style="padding-left:2px; padding-bottom:2px">
 											<div class="col-xs-8 nopadding">
 												<select id="selpriority" name="selpriority" class="form-control input-sm selectpicker">
-													<option value="Low" <?=($arrmrpjo[0]['cpriority']=="Low") ? "selected" : "" ?>>Low</option>
+													<option value="SP" <?=($arrmrpjo[0]['cpriority']=="SP") ? "selected" : "" ?>>SP</option>
+													<option value="Urgent" <?=($arrmrpjo[0]['cpriority']=="Urgent") ? "selected" : ""?>>Urgent</option>
 													<option value="Normal" <?=($arrmrpjo[0]['cpriority']=="Normal") ? "selected" : ""?>>Normal</option>
-													<option value="High" <?=($arrmrpjo[0]['cpriority']=="High") ? "selected" : ""?>>High</option>
+													
 												</select>
 											</div>
 									</td>		
@@ -218,11 +246,35 @@
 
 								<tr>									
 									<td valign="top" style="padding-top:8px;"><span style="padding:2px;"><b>Remarks</b></span></td>
-									<td>
+									<td rowspan="3" style="vertical-align: top">
 										<div class="col-xs-12"  style="padding-left:2px; padding-bottom:2px">
 											<textarea class="form-control input-sm" id="txtcremarks" name="txtcremarks" rows="3"><?=$arrmrpjo[0]['cremarks']?></textarea>
 										</div>
 									</td>
+									<td valign="top" style="padding-top:8px;"><span style="padding:2px"><b>Product Type:</b></span></td>
+									<td valign="top">
+										<div class="col-xs-12" style="padding-left:2px; padding-bottom:2px">
+											<div class="col-xs-8 nopadding">
+												<select id="selprodtyp" name="selprodtyp" class="form-control input-sm selectpicker">
+													<option value="Individual" <?=($arrmrpjo[0]['cproductype']=="Individual") ? "selected" : "" ?>>Individual</option>		
+													<option value="RACK" <?=($arrmrpjo[0]['cproductype']=="RACK") ? "selected" : "" ?>>RACK</option>								
+												</select>
+											</div>
+									</td>											
+								</tr>
+
+								<tr>	
+									<td valign="top">&nbsp;</td>
+									<td valign="top" style="padding-top:8px;"><span style="padding:2px"><b>Narration:</b></span></td>
+									<td valign="top">
+										<div class="col-xs-12" style="padding-left:2px; padding-bottom:2px">
+											<div class="col-xs-8 nopadding">
+												<input type="text" class="form-control input-sm" id="txtnarration" name="txtnarration" width="20px" placeholder="" required autocomplete="off" tabindex="4" value="<?=$arrmrpjo[0]['cnarration']?>">
+											</div>
+									</td>
+								</tr>
+								<tr>	
+									<td valign="top">&nbsp;</td>
 									<td valign="top" style="padding-top:8px;"><span style="padding:2px"><b>Department:</b></span></td>
 									<td valign="top">
 										<div class="col-xs-12" style="padding-left:2px; padding-bottom:2px">
@@ -237,7 +289,7 @@
 													?>
 												</select>
 											</div>
-									</td>											
+									</td>
 								</tr>
 
 							</table>
@@ -264,23 +316,13 @@
 								<div class="col-xs-1 nopadwleft"><input type="text" id="txtcycletime" name="txtcycletime" class="form-control input-sm required text-right numeric" required placeholder="0.00"  value="<?=$arrmrpjo[0]['ncycletime']?>"></div>
 								<div class="col-xs-1 nopadwleft"><input type="text" id="txtntotal" name="txtntotal" class="form-control input-sm required text-right numeric" required placeholder="0.00" readonly  value="<?=$arrmrpjo[0]['ntottime']?>"></div>
 							</div>
-						
-							
-						</div>	
 
-						<div id="attc" class="tab-pane fade in" style="padding-left:5px; padding-top:10px;">
 
-							<div class="col-xs-12 nopadwdown"><b>Attachments:</b></div>
-							<div class="col-sm-12 nopadwdown"><i>Can attach a file according to the ff: file type: (jpg,png,gif,jpeg,pdf,txt,csv,xls,xlsx,doc,docx,ppt,pptx)</i></div> <br><br><br>
-							<input type="file" name="upload[]" id="file-0" multiple />
-
-						</div>
-
-						<div id="subjo" class="tab-pane fade in" style="padding-left:5px; padding-top:10px;">
+							<div class="row"><div class="col-xs-12"><br><br><b>Sub-JO Details</b></div></div>
 							<table id="TblJO" class="MyTable table table-condensed" width="100%">
 								<thead>
 									<tr>
-										<th style="border-bottom:1px solid #999">Sub JO No.</th>
+										<th style="border-bottom:1px solid #999">JO Nos.</th>
 										<th style="border-bottom:1px solid #999">Item</th>
 										<th style="border-bottom:1px solid #999">UOM</th>
 										<th style="border-bottom:1px solid #999; text-align: right">Qty</th>
@@ -297,7 +339,8 @@
 										while($row2 = mysqli_fetch_array($resultmain, MYSQLI_ASSOC)){
 									?>
 										<tr id="tr<?=$row2['nid']?>">
-											<td><a href="javascript:;" onclick="getprocess('<?=$row2['ctranno']?>','<?=$row2['citemdesc']?>','tr<?=$row2['nid']?>')"><?=$row2['ctranno']?></a></td>
+											<!--<td><a href="javascript:;" onclick="getprocess('<?//=$row2['ctranno']?>','<?//=$row2['citemdesc']?>','tr<?//=$row2['nid']?>')"><?//=$row2['ctranno']?></a></td>-->
+											<td><?=$row2['ctranno']?></td>
 											<td><?=$row2['citemdesc']?></td>
 											<td><?=$row2['cunit']?></td>
 											<td style="text-align: right"><?=number_format($row2['nqty'])?></td>
@@ -310,19 +353,30 @@
 										}
 									?>
 								</tbody>                    
-							</table>			
+							</table>
+					
 							
-							<hr>
-							<div class="col-xs-12 nopadwdown" id="subjodets"><h5>Sub-JO Details</h5></div>
+						</div>	
+
+						<div id="attc" class="tab-pane fade in" style="padding-left:5px; padding-top:10px;">
+
+							<div class="col-xs-12 nopadwdown"><b>Attachments:</b></div>
+							<div class="col-sm-12 nopadwdown"><i>Can attach a file according to the ff: file type: (jpg,png,gif,jpeg,pdf,txt,csv,xls,xlsx,doc,docx,ppt,pptx)</i></div> <br><br><br>
+							<input type="file" name="upload[]" id="file-0" multiple />
+
+						</div>
+
+						<div id="subjo" class="tab-pane fade in" style="padding-left:5px; padding-top:10px;">
 
 							<table id="MyJOSubs" class="MyTable table table-condensed" width="100%">
 								<thead>
 									<tr>
+										<th style="border-bottom:1px solid #999">Action</th>
 										<th style="border-bottom:1px solid #999">Machine</th>
 										<th style="border-bottom:1px solid #999">Process</th>
 										<th style="border-bottom:1px solid #999">Date Started</th>
 										<th style="border-bottom:1px solid #999">Date Ended</th>
-										<th style="border-bottom:1px solid #999">Actual Output</th>
+										<th style="border-bottom:1px solid #999; text-align: right">Actual Output</th>
 										<th style="border-bottom:1px solid #999">Operator</th>
 										<th style="border-bottom:1px solid #999; text-align: right">Reject Qty</th>
 										<th style="border-bottom:1px solid #999; text-align: right">Scrap Qty</th>
@@ -331,7 +385,47 @@
 									</tr>
 								</thead>
 								<tbody class="tbody">
+									<?php
+										$xctranx = "";
+										foreach($arrmrpjo_pt as $row){
+											if($xctranx!=$row['ctranno']){
+												$xctranx = $row['ctranno'];
+												echo "<tr><td colspan='12'>".$row['ctranno']."</td</tr>";
+											}
+									?>
+										<tr> 
+											<td id="tspause<?=$row['nid']?>"> 
+												<?php
+													if($row['lpause']==0){
+														echo "<button type=\"button\" class=\"nbtnpaused btn btn-warning btn-xs btn-block\" id=\"btnUpActual".$row['nid']."\" data-val=\"".$row['nid']."\">Pause</button>";
+													}else{
+														echo "<button type=\"button\" class=\"nbtnresume btn btn-success btn-xs btn-block\" id=\"btnUpResume".$row['nid']."\" data-val=\"".$row['nid']."\">Resume</button>";
+													}
+												?>
+											</td>
+											<td> <?=$row['cmachinedesc']?> </td>
+											<td> <?=$row['mrp_process_desc']?> </td>
+											<td> <?=$row['ddatestart']?> </td>
+											<td id="txpause<?=$row['nid']?>"> 											
+											<?php
+													if($row['lpause']==0){
+														echo $row['ddateend'];
+													}else{
+														echo "<span class='text-danger'> ON PAUSE</span>";
+													}
+											?>
+											</td>
+											<td align="right"> <?=($row['nactualoutput']>0) ? $row['nactualoutput'] : ""?></td>
+											<td> <?=$row['operator_name']?> </td> 
+											<td align="right"> <?=($row['nrejectqty']>0) ? $row['nactualoutput'] : ""?></td>
+											<td align="right"> <?=($row['nscrapqty']>0) ? $row['nactualoutput'] : ""?></td>
+											<td> <?=$row['qc_name']?> </td>
+											<td> <?=$row['cremarks']?> </td>
+										</tr>
 
+									<?php
+										}
+									?>
 								</tbody>
 							</table>
 
@@ -346,20 +440,53 @@
 										<th style="border-bottom:1px solid #999">Material Code</th>
 										<th style="border-bottom:1px solid #999">Material Description</th>
 										<th style="border-bottom:1px solid #999">UOM</th>
-										<th style="border-bottom:1px solid #999; text-align: right">Qty</th>
+										<th style="border-bottom:1px solid #999; text-align: right">Qty Needed</th>
+										<th style="border-bottom:1px solid #999;">Remarks</th>
+										<th style="border-bottom:1px solid #999; text-align: right">Available Inv.</th>
+										<th style="border-bottom:1px solid #999; text-align: right">Buildable Qty</th>
 									</tr>
 								</thead>
 								<tbody class="tbody">
 									<?php
-										$sql = "select X.*, A.citemdesc from mrp_jo_process_m X left join items A on X.compcode=A.compcode and X.citemno=A.cpartno where X.compcode='$company' and X.mrp_jo_ctranno = '$tranno' Order By X.nid";
+										$sql = "select X.*, A.citemdesc, B.citemdesc as crefitmdesc from mrp_jo_process_mrs X left join items A on X.compcode=A.compcode and X.citemno=A.cpartno left join items B on X.compcode=B.compcode and X.crefitem=B.cpartno where X.compcode='$company' and X.mrp_jo_ctranno = '$tranno' Order By X.mrp_jo_sub, X.nreference_id";
 										$resultmain = mysqli_query ($con, $sql); 
+
+										$xcitm = "";
 										while($row2 = mysqli_fetch_array($resultmain, MYSQLI_ASSOC)){
+
+											if($xcitm!=$row2['crefitem']){
+												$xcitm=$row2['crefitem'];
+												echo "<tr style=\"background-color: #eee\"><td><b>".$row2['mrp_jo_sub']."</b></td><td colspan=\"6\"><b>".$row2['crefitem']." - ".$row2['crefitmdesc']."</b></td></tr>";
+											}
 									?>
 										<tr>
 											<td><?=$row2['citemno']?></td>
 											<td><?=$row2['citemdesc']?></td>
 											<td><?=$row2['cunit']?></td>
 											<td style="text-align: right"><?=number_format($row2['nqty'])?></td>
+											<td><?=$row2['cremarks']?></td>
+											<td style="text-align: right">
+												<?php
+													if(isset($arrinvv[$row2['citemno']])){
+														echo number_format($arrinvv[$row2['citemno']],2);
+													}else{
+														echo 0;
+													}
+												?>
+											</td>
+											<td style="text-align: right">
+												<?php
+													if(isset($arrinvv[$row2['citemno']])){
+														$dtotal = $arrmrpjo[0]['nqty'];
+														$qtyperpc = floatval($row2['nqty']) / floatval($dtotal);
+
+														$qtubuild = floatval($arrinvv[$row2['citemno']]) / floatval($qtyperpc);
+														echo number_format($qtubuild,2);
+													}else{
+														echo 0;
+													}
+												?>
+											</td>
 										</tr>
 									<?php
 										}
@@ -379,9 +506,6 @@
 								<button type="button" class="btn btn-primary btn-sm" tabindex="6" onClick="window.location.href='JO.php';" id="btnMain" name="btnMain">
 									Back to Main<br>(ESC)
 								</button>		
-								<button type="button" class="btn btn-info btn-sm" tabindex="6" onClick="printchk('<?=$tranno;?>','Print');" id="btnPrint" name="btnPrint">
-									Print<br>(CTRL+P)
-								</button>	
 								<?php
 									if($newstat == "True"){
 								?>
@@ -396,9 +520,12 @@
 								?>									
 								<button type="button" class="btn btn-danger btn-sm" tabindex="6" onClick="chkSIEnter(13,'frmpos');" id="btnUndo" name="btnUndo">
 									Undo Edit<br>(CTRL+Z)
-								</button>				
-								<button type="button" class="btn btn-info btn-sm" tabindex="6" onClick="printchk('<?=$tranno?>','Print');" id="btnPrint" name="btnPrint">
+								</button>
+								<button type="button" class="btn btn-info btn-sm" tabindex="6" onClick="printchk('<?=$tranno;?>','Print');" id="btnPrint" name="btnPrint">
 									Print<br>(CTRL+P)
+								</button>					
+								<button type="button" class="btn btn-success btn-sm" tabindex="6" onClick="genMRS('<?=$tranno?>');" id="btnGen" name="btnGen">
+									<?=$btnlabelmrs?>
 								</button>
 								<button type="button" class="btn btn-warning btn-sm" tabindex="6" onClick="enabled();" id="btnEdit" name="btnEdit">
 									Edit<br>(CTRL+E)    
@@ -418,78 +545,87 @@
 
 	</form>
 
-			<!-- DETAILS ONLY -->
-			<div class="modal fade" id="mySIRef" role="dialog" data-keyboard="false" data-backdrop="static">
-				<div class="modal-dialog modal-lg">
+	<!-- DETAILS ONLY -->
+	<div class="modal fade" id="mySIRef" role="dialog" data-keyboard="false" data-backdrop="static">
+		<div class="modal-dialog modal-lg">
+			<div class="modal-content">
+				<div class="modal-header">
+					<button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+					<h3 class="modal-title" id="InvListHdr">SO List</h3>
+				</div>
+							
+				<div class="modal-body" style="height:40vh">
+
+					<div class="col-xs-12 nopadding">
+						<div class="form-group">
+							<div class="col-xs-4 nopadding pre-scrollable" style="height:37vh">
+								<table name='MyInvTbl' id='MyInvTbl' class="table table-small table-highlight">
+									<thead>
+										<tr>
+											<th>SO No</th>
+											<th>Delivery Date</th>
+										</tr>
+									</thead>
+									<tbody>
+									</tbody>
+								</table>
+							</div>
+
+							<div class="col-xs-8 nopadwleft pre-scrollable" style="height:37vh">
+								<table name='MyInvDetList' id='MyInvDetList' class="table table-small">
+									<thead>
+										<tr>
+											<th>Item No</th>
+											<th>Description</th>
+											<th>UOM</th>
+											<th>Qty</th>
+										</tr>
+									</thead>
+									<tbody>
+															
+									</tbody>
+								</table>
+							</div>
+						</div>
+					</div>														
+				</div>
+				
+				<div class="modal-footer">
+					<button type="button" class="btn btn-danger" data-dismiss="modal">Cancel</button>
+				</div>
+			</div><!-- /.modal-content -->
+		</div><!-- /.modal-dialog -->
+	</div><!-- /.modal -->
+	<!-- End Bootstrap modal -->
+
+	<!-- 1) Alert Modal -->
+		<div class="modal fade" id="AlertModal" tabindex="-1" role="dialog" data-keyboard="false" data-backdrop="static" aria-hidden="true">
+			<div class="vertical-alignment-helper">
+				<div class="modal-dialog vertical-align-top">
 					<div class="modal-content">
-						<div class="modal-header">
-							<button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-								<h3 class="modal-title" id="InvListHdr">SO List</h3>
-							</div>
-									
-							<div class="modal-body" style="height:40vh">
-
-								<div class="col-xs-12 nopadding">
-									<div class="form-group">
-										<div class="col-xs-4 nopadding pre-scrollable" style="height:37vh">
-											<table name='MyInvTbl' id='MyInvTbl' class="table table-small table-highlight">
-												<thead>
-													<tr>
-														<th>SO No</th>
-														<th>Delivery Date</th>
-													</tr>
-												</thead>
-												<tbody>
-												</tbody>
-											</table>
-										</div>
-
-										<div class="col-xs-8 nopadwleft pre-scrollable" style="height:37vh">
-											<table name='MyInvDetList' id='MyInvDetList' class="table table-small">
-												<thead>
-													<tr>
-														<th>Item No</th>
-														<th>Description</th>
-														<th>UOM</th>
-														<th>Qty</th>
-													</tr>
-												</thead>
-												<tbody>
-																		
-												</tbody>
-											</table>
-										</div>
-									</div>
-							</div>														
-						</div>
-						
-						<div class="modal-footer">
-							<button type="button" class="btn btn-danger" data-dismiss="modal">Cancel</button>
-						</div>
-					</div><!-- /.modal-content -->
-				</div><!-- /.modal-dialog -->
-			</div><!-- /.modal -->
-			<!-- End Bootstrap modal -->
-
-			<!-- 1) Alert Modal -->
-				<div class="modal fade" id="AlertModal" tabindex="-1" role="dialog" data-keyboard="false" data-backdrop="static" aria-hidden="true">
-					<div class="vertical-alignment-helper">
-						<div class="modal-dialog vertical-align-top">
-							<div class="modal-content">
-								<div class="alert-modal-danger">
-									<p id="AlertMsg"></p>
-									<p><center>
-										<button type="button" class="btn btn-primary btn-sm" data-dismiss="modal" id="alertbtnOK">Ok</button>
-									</center></p>
-								</div>
-							</div>
+						<div class="alert-modal-danger">
+							<p id="AlertMsg"></p>
+							<p><center>
+								<button type="button" class="btn btn-primary btn-sm" data-dismiss="modal" id="alertbtnOK">Ok</button>
+							</center></p>
 						</div>
 					</div>
 				</div>
-			<!-- End Alert modal -->
+			</div>
+		</div>
+	<!-- End Alert modal -->
 
 	<form action="" method="post" name="frmQPrint" id="frmQprint" target="_blank">
 		<input type="hidden" name="hdntransid" id="hdntransid" value="<?php echo $tranno; ?>">
+	</form>
+
+	<form action="JO_edit.php" method="post" name="frmUndo" id="frmUndo">
+		<input type="hidden" name="txtctranno" id="txtctranno" value="<?php echo $tranno; ?>">
+	</form>
+
+	<form action="JO_MRS.php" method="post" name="frmMrs" id="frmMrs" target="_blank">
+		<input type="hidden" name="txtx" id="txtx" value="<?php echo $tranno; ?>">
+		<input type="hidden" name="n" id="n" value="1">
 	</form>
 
 </body>
@@ -497,6 +633,7 @@
 
 <link rel="stylesheet" type="text/css" href="../../Bootstrap/DataTable/DataTable.css"> 
 <script type="text/javascript" language="javascript" src="../../Bootstrap/DataTable/jquery.dataTables.min.js"></script>
+<script type="text/javascript" src="../../global/plugins/bootbox/bootbox.min.js"></script>
 
 <script type="text/javascript">
 
@@ -696,6 +833,112 @@
 
 	});
 
+	$(document).on('click', 'button.nbtnpaused', function(e) {
+		let yx = $(this).data("val");
+
+		$xmsg = "";
+		$mstat = "";		
+
+		bootbox.prompt({
+			title: 'Enter reason for pause.',
+			inputType: 'text',
+			centerVertical: true,
+			callback: function (result) {
+				if(result==""){		
+					bootbox.alert({
+						message: "Reason for pause is required!",
+						size: "small",
+						className: "bootalert"
+					});
+				}else if(result!="" && result !=null){
+					$.ajax ({
+						url: "th_setpause.php",
+						data: { processid: yx, pausemsg: result },
+						async: false,
+						dataType: "json",
+						success: function( data ) {
+							console.log(data);
+							
+							$.each(data, function(index, element) {
+								$xmsg = data.msg;
+								$mstat = data.stat;					
+							});
+							
+							if($mstat!=""){
+								if($mstat=="True"){
+									$("#txpause"+yx).html("ON PAUSE");
+									$("#txpause"+yx).addClass("text-danger");
+
+									$("#tspause"+yx).html("<button type=\"button\" class=\"nbtnresume btn btn-success btn-xs btn-block\" id=\"btnUpResume"+yx+"\" data-val=\""+yx+"\">Resume</button>");
+								}
+								
+								bootbox.alert({
+									message: $xmsg,
+									size: "small",
+									className: "bootalert"
+								});
+							}
+						}			
+					});
+				}
+
+			}
+		});
+	});
+
+	$(document).on('click', 'button.nbtnresume', function(e) {
+		let yx = $(this).data("val");
+
+		$xmsg = "";
+		$mstat = "";		
+
+		bootbox.prompt({
+			title: 'Enter reason to resume.',
+			inputType: 'text',
+			centerVertical: true,
+			callback: function (result) {
+				if(result==""){		
+					bootbox.alert({
+						message: "Reason to resume is required!",
+						size: "small",
+						className: "bootalert"
+					});
+				}else if(result!="" && result !=null){
+					$.ajax ({
+						url: "th_setresume.php",
+						data: { processid: yx, pausemsg: result },
+						async: false,
+						dataType: "json",
+						success: function( data ) {
+							console.log(data);
+							
+							$.each(data, function(index, element) {
+								$xmsg = data.msg;
+								$mstat = data.stat;					
+							});
+							
+							if($mstat!=""){
+								if($mstat=="True"){
+									$("#txpause"+yx).html("");
+									$("#txpause"+yx).removeClass("text-danger");
+
+									$("#tspause"+yx).html("<button type=\"button\" class=\"nbtnpaused btn btn-warning btn-xs btn-block\" id=\"btnUpActual"+yx+"\" data-val=\""+yx+"\">Pause</button>");
+								}
+								
+								bootbox.alert({
+									message: $xmsg,
+									size: "small",
+									className: "bootalert"
+								});
+							}
+						}			
+					});
+				}
+
+			}
+		});
+	});
+
 	function getSO(){
 		$xcus = $('#txtcustid').val();
 
@@ -711,15 +954,15 @@
 			xstat = "YES";
 
 			$.ajax({
-        url: 'th_solist.php',
+				url: 'th_solist.php',
 				data: 'x='+$xcus,
-        dataType: 'json',
-        method: 'post',
-        success: function (data) {
-					   
-          console.log(data);
-          $.each(data,function(index,item){
-								
+				dataType: 'json',
+				method: 'post',
+				success: function (data) {
+							
+					console.log(data);
+					$.each(data,function(index,item){
+									
 						if(item.cpono=="NONE"){
 							$("#AlertMsg").html("No Sales Order Available");
 							$("#alertbtnOK").show();
@@ -741,22 +984,22 @@
 							$("#td"+item.csono).on("mouseover", function(){
 								$(this).css('cursor','pointer');
 							});
-					  }
+						}
 
-          });
-					   
+					});
+						
 					if(xstat=="YES"){
 						$("#mySIRef").modal("show");
 					}
 
-        },
-        error: function (req, status, err) {
-						console.log('Something went wrong', status, err);
-						$("#AlertMsg").html("Something went wrong<br>Status: "+status +"<br>Error: "+err);
-						$("#alertbtnOK").show();
-						$("#AlertModal").modal('show');
+				},
+				error: function (req, status, err) {
+					console.log('Something went wrong', status, err);
+					$("#AlertMsg").html("Something went wrong<br>Status: "+status +"<br>Error: "+err);
+					$("#alertbtnOK").show();
+					$("#AlertModal").modal('show');
 				}
-      });
+			});
 
 		}
 
@@ -774,39 +1017,39 @@
 			
 		$('#loadimg').show();
 		
-			var salesnos = "";
-			var cnt = 0;
+		var salesnos = "";
+		var cnt = 0;
 
-			$.ajax({
-        url: 'th_solistdet.php',
-				data: 'x='+drno,
-        dataType: 'json',
-        method: 'post',
-        success: function (data) {
+		$.ajax({
+        	url: 'th_solistdet.php',
+			data: 'x='+drno,
+			dataType: 'json',
+			method: 'post',
+			success: function (data) {
 					   
-          console.log(data);
-					$.each(data,function(index,item){
-											  
-						if (item.nqty>=1){
-							$("<tr>").append(
-								$("<td>").html("<a href='javascript:;' onclick='savedet(this);' data-itemno='"+item.citemno+"' data-desc='"+item.cdesc+"' data-ident='"+item.nident+"' data-unit='"+item.cunit+"' data-qty='"+item.nqty+"' data-workhrs='"+item.nworkhrs+"' data-setup='"+item.nsetuptime+"' data-cycle='"+item.ncycletime+"' data-csono='"+drno+"'>"+item.citemno+"</a>"),
-								$("<td>").text(item.cdesc),
-								$("<td>").text(item.cunit),
-								$("<td>").text(item.nqty)
-							).appendTo("#MyInvDetList tbody");
-					 	}
-					 });
-        },
-				complete: function(){
-					$('#loadimg').hide();
-				},
-        error: function (req, status, err) {
-					console.log('Something went wrong', status, err);
- 					$("#AlertMsg").html("Something went wrong<br>Status: "+status +"<br>Error: "+err);
-					$("#alertbtnOK").show();
-					$("#AlertModal").modal('show');
-         }
-      });
+          		console.log(data);
+				$.each(data,function(index,item){
+											
+					if (item.nqty>=1){
+						$("<tr>").append(
+							$("<td>").html("<a href='javascript:;' onclick='savedet(this);' data-itemno='"+item.citemno+"' data-desc='"+item.cdesc+"' data-ident='"+item.nident+"' data-unit='"+item.cunit+"' data-qty='"+item.nqty+"' data-workhrs='"+item.nworkhrs+"' data-setup='"+item.nsetuptime+"' data-cycle='"+item.ncycletime+"' data-csono='"+drno+"'>"+item.citemno+"</a>"),
+							$("<td>").text(item.cdesc),
+							$("<td>").text(item.cunit),
+							$("<td>").text(item.nqty)
+						).appendTo("#MyInvDetList tbody");
+					}
+				});
+       		},
+			complete: function(){
+				$('#loadimg').hide();
+			},
+        	error: function (req, status, err) {
+				console.log('Something went wrong', status, err);
+				$("#AlertMsg").html("Something went wrong<br>Status: "+status +"<br>Error: "+err);
+				$("#alertbtnOK").show();
+				$("#AlertModal").modal('show');
+         	}
+      	});
 	}
 
 	function savedet(xz){
@@ -849,8 +1092,8 @@
 
 	}
 
-	function getprocess($xtran,$xitms,$trid){
-		var file_name = '<?= json_encode($arrmrpjo_pt) ?>';
+	/*function getprocess($xtran,$xitms,$trid){
+		var file_name = '<?//= json_encode($arrmrpjo_pt) ?>';
 
 		$('tr').removeClass("selectedJO");
 
@@ -864,12 +1107,25 @@
 			if(value.ctranno == $xtran){
 				//alert(value.mrp_process_desc);
 
-				var tdmachine = "<td>&nbsp;</td>";
+				if(value.lpause == 0){					
+					var tdpause = "<td id=\"tspause"+value.nid+"\"><button type=\"button\" class=\"nbtnpaused btn btn-warning btn-xs btn-block\" id=\"btnUpActual"+value.nid+"\" data-val=\""+value.nid+"\">Pause</button></td>";
+				}else{
+					var tdpause = "<td id=\"tspause"+value.nid+"\"><button type=\"button\" class=\"nbtnresume btn btn-success btn-xs btn-block\" id=\"btnUpResume"+value.nid+"\" data-val=\""+value.nid+"\">Resume</button></td>";
+				}
+
+				var tdmachine = "<td>"+value.cmachinedesc+"</td>";
 				var tdprocess = "<td>"+value.mrp_process_desc+"</td>";
-				var tddatest = "<td>&nbsp;</td>";
-				var tddateen = "<td>&nbsp;</td>";
-				var tdactual = "<td>&nbsp;</td>";
-				var tdoperator = "<td>&nbsp;</td>";
+				var tddatest = "<td>"+value.ddatestart+"</td>";				
+
+				if(value.lpause == 0){					
+					var tddateen = "<td id=\"txpause"+value.nid+"\">"+value.ddateend+"</td>";
+				}else{
+					var tddateen = "<td id=\"txpause"+value.nid+"\" class=\"text-danger\">ON PAUSE</td>";
+				}
+
+
+				var tdactual = "<td>"+value.nactualoutput+"</td>";
+				var tdoperator = "<td>"+value.operator_name+"</td>";
 				var tdreject = "<td>&nbsp;</td>";
 				var tdscrap = "<td>&nbsp;</td>";
 				var tdqc = "<td>&nbsp;</td>";
@@ -877,11 +1133,11 @@
 
 				//alert(tdinfocode + "\n" + tdinfodesc + "\n" + tdinfofld + "\n" + tdinfoval + "\n" + tdinfodel);
 				
-				$('#MyJOSubs > tbody:last-child').append('<tr>'+tdmachine + tdprocess + tddatest + tddateen + tdactual + tdoperator + tdreject + tdscrap + tdqc + tdrems + '</tr>');
+				$('#MyJOSubs > tbody:last-child').append('<tr>'+tdpause+tdmachine + tdprocess + tddatest + tddateen + tdactual + tdoperator + tdreject + tdscrap + tdqc + tdrems + '</tr>');
 
 			}
 		}); 
-	}
+	}*/
 
 	function disabled(){
 		$("#frmpos :input").attr("disabled", true);
@@ -892,6 +1148,7 @@
 		$("#btnNew").attr("disabled", false);
 		$("#btnPrint").attr("disabled", false);
 		$("#btnEdit").attr("disabled", false);
+		$("#btnGen").attr("disabled", false);
 	}
 
 	function enabled(){
@@ -920,7 +1177,8 @@
 				$("#btnMain").attr("disabled", true);
 				$("#btnNew").attr("disabled", true);
 				$("#btnPrint").attr("disabled", true);
-				$("#btnEdit").attr("disabled", true);			
+				$("#btnEdit").attr("disabled", true);	
+				$("#btnGen").attr("disabled", true);		
 		
 		}
 	}
@@ -932,18 +1190,58 @@
 		}
 		else{
 
-				if(typx=="Print"){
-					$("#hdntransid").val(x);
-					$("#frmQprint").attr("action","JOPrint.php");
-				}
-				
-				$("#frmQprint").submit();
-
-
-
+			if(typx=="Print"){
+				$("#hdntransid").val(x);
+				$("#frmQprint").attr("action","JOPrint.php");
+			}
 			
+			$("#frmQprint").submit();			
 
 		}
+	}
+
+	function chkSIEnter(keyCode,frm){
+		if(keyCode==13){
+			document.getElementById("frmUndo").submit();
+		}
+	}
+
+	function genMRS($x){
+
+		$.ajax ({
+			url: "generate_mrs.php",
+			data: { id: "<?=$tranno?>", itm: "<?=$arrmrpjo[0]['citemdesc']?>" },
+			type: 'post',
+			async: false,
+			beforeSend: function(){
+				$("#AlertMsg").html("&nbsp;&nbsp;<b>Generating MRS: </b> Please wait a moment...");
+				$("#alertbtnOK").hide();
+				$("#AlertModal").modal('show');
+			},
+			success: function( data ) {
+				if(data.trim()=="False"){
+					$("#AlertMsg").html("<b>Error: </b> There's a problem generating your MRS!");
+					$("#alertbtnOK").show();
+					$("#AlertModal").modal('show');
+				}else if(data.trim()==0){
+					$("#AlertMsg").html("<b>Error: </b> There's no materials to generate MRS!");
+					$("#alertbtnOK").show();
+					$("#AlertModal").modal('show');
+				}else{
+
+					$("#AlertMsg").html("");
+					$("#AlertModal").modal('hide');
+
+					$("#frmMrs").submit();
+					
+					//$("#myprintframe").attr("src","../../Inventory/Transfers/<?//=$prntnme['INVTRANS_REQUEST']?>?id="+data.trim()+"&n=1");
+					//$("#PrintModal").modal('show');
+					
+				}
+			}
+		});
+
+		
 	}
 
 </script>

@@ -18,7 +18,7 @@
     },
     "require": {
         "phpmailer/phpmailer": "^6.1",
-        "mpdf/mpdf": "^8.0",
+        "mpdf/mpdf": "*",
         "php": ">=5.5",
         "ext-simplexml": "*",
         "ext-zlib": "*",

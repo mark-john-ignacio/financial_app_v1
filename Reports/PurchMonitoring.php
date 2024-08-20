@@ -1,13 +1,12 @@
 <?php
-if(!isset($_SESSION)){
-session_start();
-}
-$_SESSION['pageid'] = "PurchMonitoring.php";
+  if(!isset($_SESSION)){
+    session_start();
+  }
+  $_SESSION['pageid'] = "PurchMonitoring";
 
-include('../Connection/connection_string.php');
-include('../include/denied.php');
-include('../include/access.php');
-
+  include('../Connection/connection_string.php');
+  include('../include/denied.php');
+  include('../include/access.php');
 ?>
 
 <html>
@@ -48,20 +47,18 @@ include('../include/access.php');
 
     <td style="padding-left:10px"><b>Date Range: </b></td>
     <td style="padding:2px">
-      <div class="col-xs-12 nopadding">
-        <div class="col-xs-3 nopadding">
-		      <input type='text' class="datepick form-control input-sm" id="date1" name="date1" value="<?php echo date("m/d/Y"); ?>" />
-		    </div>
-        
-        <div class="col-xs-2 nopadding" style="vertical-align:bottom;" align="center">
-        	<label style="padding:1px;">TO</label>
-        </div>
- 
-         <div class="col-xs-3 nopadding">
-          <input type='text' class="datepick form-control input-sm" id="date2" name="date2" value="<?php echo date("m/d/Y"); ?>" />
+      <div class="col-xs-12 nopadding" id="datezpick">
+        <div class="form-group nopadding">
+            <div class="col-xs-8 nopadding">
+              <div class="input-group input-large date-picker input-daterange">
+                  <input type="text" class="datepick form-control input-sm" id="date1" name="date1" value="<?php echo date("m/d/Y"); ?>">
+                  <span class="input-group-addon">to </span>
+                  <input type="text" class="datepick form-control input-sm" id="date2" name="date2" value="<?php echo date("m/d/Y"); ?>">
+              </div>
+            </div>	
         </div>
 
-       </div>   
+      </div>   
     </td>
 
   </tr>
@@ -78,20 +75,16 @@ include('../include/access.php');
           <option value="ddate">Transaction Date</options>
           <option value="dneeded">Date Needed</options>
         </select>
-
-    </td>
-  </tr>
-  <tr>
-    <td style="padding-left:10px">&nbsp;</td>
-    <td style="padding:2px">
-      <div class="col-xs-4 nopadding">
-    		<select id="selpost" name="selpost" class="form-control input-sm selectpicker"  tabindex="4">
+      </div>
+      <div class="col-xs-4 nopadwleft">
+      <select id="selpost" name="selpost" class="form-control input-sm selectpicker"  tabindex="4">
           <option value="0">All Transactions</options>
           <option value="1">Posted Only</options>
         </select>
-
+      </div>
     </td>
   </tr>
+  
 </table>
 </form>
 </body>

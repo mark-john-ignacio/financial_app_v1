@@ -21,7 +21,7 @@ function chkgrp($valz) {
 
 $chkSales = mysqli_query($con,"select * from sales where compcode='$company' and YEAR(ddate) = YEAR(CURDATE()) Order By ddate desc LIMIT 1");
 if (mysqli_num_rows($chkSales)==0) {
-	$cSINo = "SI".$dmonth.$dyear."00000";
+	$cSINo = "SI".$dyear."000000001";
 }
 else {
 	while($row = mysqli_fetch_array($chkSales, MYSQLI_ASSOC)){
@@ -29,12 +29,12 @@ else {
 	}
 	
 	
-	if(substr($lastSI,2,2) <> $dmonth){
-		$cSINo = "SI".$dmonth.$dyear."00000";
+	if(substr($lastSI,2,2) <> $dyear){
+		$cSINo = "SI".$dyear."000000001";
 	}
 	else{
-		$baseno = intval(substr($lastSI,6,5)) + 1;
-		$zeros = 5 - strlen($baseno);
+		$baseno = intval(substr($lastSI,4,9)) + 1;
+		$zeros = 9 - strlen($baseno);
 		$zeroadd = "";
 		
 		for($x = 1; $x <= $zeros; $x++){
@@ -42,14 +42,14 @@ else {
 		}
 		
 		$baseno = $zeroadd.$baseno;
-		$cSINo = "SI".$dmonth.$dyear.$baseno;
+		$cSINo = "SI".$dyear.$baseno;
 	}
 }
 
 	$cCustID = $_REQUEST['txtcustid'];
 	$dDelDate = $_REQUEST['date_delivery'];
 	$cRemarks = chkgrp($_REQUEST['txtremarks']); 
-	$nGross = str_replace(",","",$_REQUEST['txtnGross']); 
+
 	//$selreinv = $_REQUEST['selreinv'];	
 	$selsitypz = $_REQUEST['selsityp']; 
 	$selpaytyp = $_REQUEST['selpaytyp']; 
@@ -63,14 +63,29 @@ else {
 	$CurrCode = $_REQUEST['selbasecurr']; 
 	$CurrDesc = $_REQUEST['hidcurrvaldesc'];  
 	$CurrRate= $_REQUEST['basecurrval']; 
-	$BaseGross= str_replace(",","",$_REQUEST['txtnBaseGross']);
+
+	$nnetvat = $_REQUEST['txtnNetVAT']; //VATABLE SALES   nnet
+	$nexempt = $_REQUEST['txtnExemptVAT']; //VAT EXEMPT SALES   nexempt
+	$nzeror = $_REQUEST['txtnZeroVAT']; // ZERO RATED SALES  nzerorated
+	$nvat = $_REQUEST['txtnVAT']; //VAT   nvat
+	$nGrossBefore = $_REQUEST['txtnGrossBef']; //TOTAL GROSS  BEFORE DISCOUNT ngrossbefore
+
+	if(isset($_REQUEST['txtnEWT'])){
+		$nLessEWT = $_REQUEST['txtnEWT']; //EWT
+	}else{
+		$nLessEWT = ""; //EWT
+	}
+	
+	$nGrossDisc = str_replace(",","",$_REQUEST['txtnGrossDisc']);  //GROSS DISCOUNT  ngrossdisc
+	$nGross = $_REQUEST['txtnGross']; //TOTAL AMOUNT ngross
+	$BaseGross= $_REQUEST['txtnBaseGross']; //TOTAL AMOUNT * currency rate    nbasegross
 
 	if(isset($_REQUEST['selewt'])){
 		$cewtcode = implode(",",$_REQUEST['selewt']);
 	}else{
 		$cewtcode = "";
 	}
-	
+
 	$RefMods= $_REQUEST['txtrefmod']; 
 	$RefModsNo= $_REQUEST['txtrefmodnos']; 
 
@@ -90,7 +105,7 @@ else {
 	
 	//INSERT HEADER
 
-	if (!mysqli_query($con, "INSERT INTO sales(`compcode`, `ctranno`, `ccode`, `cterms`, `cremarks`, `ddate`, `dcutdate`, `ngross`, `nbasegross`, `ccurrencycode`, `ccurrencydesc`, `nexchangerate`, `nnet`, `nvat`, `cpreparedby`, `cacctcode`, `cvatcode`, `csalestype`, `cpaytype`, `csiprintno`, `crefmodule`, `crefmoduletran`, `cewtcode`, `coracleinv`, `cdoctype`) values('$company', '$cSINo', '$cCustID', '$cterms', $cRemarks, NOW(), STR_TO_DATE('$dDelDate', '%m/%d/%Y'), '$nGross', '$BaseGross', '$CurrCode', '$CurrDesc', '$CurrRate', '$nnetvat', '$nvat', '$preparedby', $cacctcode, $cvatcode, '$selsitypz', '$selpaytyp', $selsiseries, '$RefMods', '$RefModsNo', '$cewtcode', $coraclesi, '$cDocType')")) {
+	if (!mysqli_query($con, "INSERT INTO sales(`compcode`, `ctranno`, `ccode`, `cterms`, `cremarks`, `ddate`, `dcutdate`, `ngross`, `nbasegross`, `ccurrencycode`, `ccurrencydesc`, `nexchangerate`, `nnet`, `nvat`, `cpreparedby`, `cacctcode`, `cvatcode`, `csalestype`, `cpaytype`, `csiprintno`, `crefmodule`, `crefmoduletran`, `cewtcode`, `nexempt`, `nzerorated`, `ngrossbefore`, `ngrossdisc`, `newt`, `coracleinv`, `cdoctype`) values('$company', '$cSINo', '$cCustID', '$cterms', $cRemarks, NOW(), STR_TO_DATE('$dDelDate', '%m/%d/%Y'), '$nGross', '$BaseGross', '$CurrCode', '$CurrDesc', '$CurrRate', '$nnetvat', '$nvat', '$preparedby', $cacctcode, $cvatcode, '$selsitypz', '$selpaytyp', $selsiseries, '$RefMods', '$RefModsNo', '$cewtcode', '$nexempt', '$nzeror', '$nGrossBefore', '$nGrossDisc', '$nLessEWT', $coraclesi, '$cDocType')")) {
 		echo "False";
 		echo mysqli_error($con);
 	} 

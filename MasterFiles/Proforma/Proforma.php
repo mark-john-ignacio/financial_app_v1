@@ -11,13 +11,13 @@
 	$employeeid = $_SESSION['employeeid'];
 	
 	$posnew = "True";
-	$sql = mysqli_query($con,"select * from users_access where userid = '$employeeid' and pageid = 'TaxType_New.php'");
+	$sql = mysqli_query($con,"select * from users_access where userid = '$employeeid' and pageid = 'Proforma_New'");
 	if(mysqli_num_rows($sql) == 0){
 		$posnew = "False";
 	}
 
 	$posedit = "True";
-	$sql = mysqli_query($con,"select * from users_access where userid = '$employeeid' and pageid = 'TaxType_Edit.php'");
+	$sql = mysqli_query($con,"select * from users_access where userid = '$employeeid' and pageid = 'Proforma_Edit'");
 	if(mysqli_num_rows($sql) == 0){
 		$posedit = "False";
 	}
@@ -44,7 +44,8 @@
 	<head>
 
 	<link rel="stylesheet" type="text/css" href="../../Bootstrap/css/bootstrap.css"> 
-	<link href="../../global/plugins/font-awesome/css/font-awesome.min.css" rel="stylesheet" type="text/css"/>   
+	<link href="../../global/plugins/font-awesome/css/font-awesome.min.css" rel="stylesheet" type="text/css"/> 
+	<link rel="stylesheet" type="text/css" href="../../Bootstrap/css/alert-modal.css">  
 	<link rel="stylesheet" type="text/css" href="../../Bootstrap/select2/css/select2.css?h=<?php echo time();?>">
 
 	<script src="../../Bootstrap/js/jquery-3.2.1.min.js"></script>
@@ -158,7 +159,7 @@
 				</tbody>
 			</table>
 
-			<input type="hidden" id="posnew" value="<?=$posnew;?>">
+			<input type="hidden" id="posnew" value="">
 			<input type="hidden" id="posedit" value="<?=$posedit;?>">
 
 		</section>
@@ -644,7 +645,7 @@ mysqli_close($con);
 			
 			// Adding new user
 			$("#btnadd").on("click", function() {
-				var $xyz = chkAccess('Proforma_add');
+				var $xyz = chkAccess('Proforma_New');
 
 				if($xyz.trim()=="True"){
 					$("#btnbtn").html('Save');
@@ -732,7 +733,7 @@ mysqli_close($con);
 		});
 
 	function editgrp(id){
-		var x = chkAccess('Proforma_edit');
+		var x = chkAccess('Proforma_Edit');
 		
 		if(x.trim()=="True"){
 			$("#btnbtn").html('Update');
@@ -840,32 +841,39 @@ mysqli_close($con);
 	}
 
 	function setStat(code, stat){
-		$.ajax ({
-			url: "th_setstat.php",
-			data: { code: code,  stat: stat },
-			async: false,
-			success: function( data ) {
-				if(data.trim()!="True"){
-					$("#itm"+code).html("<b>Error: </b>"+ data);
-					$("#itm"+code).attr("class", "itmalert alert alert-danger nopadding")
-					$("#itm"+code).show();
-				}
-				else{
-					if(stat=="ACTIVE"){
-					$("#itmstat"+code).html("<span class='label label-success'>Active</span>&nbsp;&nbsp;<a id=\"popoverData1\" href=\"#\" data-content=\"Set as Inactive\" rel=\"popover\" data-placement=\"bottom\" data-trigger=\"hover\" onClick=\"setStat('"+code+"','INACTIVE')\" ><i class=\"fa fa-refresh\" style=\"color: #f0ad4e\"></i></a>");
-					}else{
-						$("#itmstat"+code).html("<span class='label label-warning'>Inactive</span>&nbsp;&nbsp;<a id=\"popoverData2\" href=\"#\" data-content=\"Set as Active\" rel=\"popover\" data-placement=\"bottom\" data-trigger=\"hover\" onClick=\"setStat('"+code+"','ACTIVE')\"><i class=\"fa fa-refresh\" style=\"color: #5cb85c\"></i></a>");
-					}
-					
-					$("#itm"+code).html("<br><b>SUCCESS: </b> Status changed to "+stat);
-					$("#itm"+code).attr("class", "itmalert alert alert-success nopadding")
-					$("#itm"+code).show();
-
-				}
-			}
+		var x = chkAccess('Proforma_Edit');
 		
-		});
+		if(x.trim()=="True"){
+			$.ajax ({
+				url: "th_setstat.php",
+				data: { code: code,  stat: stat },
+				async: false,
+				success: function( data ) {
+					if(data.trim()!="True"){
+						$("#itm"+code).html("<b>Error: </b>"+ data);
+						$("#itm"+code).attr("class", "itmalert alert alert-danger nopadding")
+						$("#itm"+code).show();
+					}
+					else{
+						if(stat=="ACTIVE"){
+						$("#itmstat"+code).html("<span class='label label-success'>Active</span>&nbsp;&nbsp;<a id=\"popoverData1\" href=\"#\" data-content=\"Set as Inactive\" rel=\"popover\" data-placement=\"bottom\" data-trigger=\"hover\" onClick=\"setStat('"+code+"','INACTIVE')\" ><i class=\"fa fa-refresh\" style=\"color: #f0ad4e\"></i></a>");
+						}else{
+							$("#itmstat"+code).html("<span class='label label-warning'>Inactive</span>&nbsp;&nbsp;<a id=\"popoverData2\" href=\"#\" data-content=\"Set as Active\" rel=\"popover\" data-placement=\"bottom\" data-trigger=\"hover\" onClick=\"setStat('"+code+"','ACTIVE')\"><i class=\"fa fa-refresh\" style=\"color: #5cb85c\"></i></a>");
+						}
+						
+						$("#itm"+code).html("<br><b>SUCCESS: </b> Status changed to "+stat);
+						$("#itm"+code).attr("class", "itmalert alert alert-success nopadding")
+						$("#itm"+code).show();
 
+					}
+				}
+			
+			});
+		} else {
+			$("#AlertMsg").html("<center><b>ACCESS DENIED!</b></center>");
+			$("#AlertModal").modal('show');
+
+		}
 	}
 
 	function chkAccess(id){

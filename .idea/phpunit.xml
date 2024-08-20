@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="PHPUnit">
+    <option name="directories">
+      <list>
+        <option value="$PROJECT_DIR$/vendor2/markbaker/complex/tests" />
+        <option value="$PROJECT_DIR$/vendor2/maennchen/zipstream-php/test" />
+        <option value="$PROJECT_DIR$/vendor2/phpoffice/phpspreadsheet/tests" />
+        <option value="$PROJECT_DIR$/vendor2/myclabs/php-enum/tests" />
+        <option value="$PROJECT_DIR$/vendor2/markbaker/matrix/unitTests/classes/src" />
+      </list>
+    </option>
+  </component>
+</project>

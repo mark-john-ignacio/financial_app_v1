@@ -17,6 +17,15 @@ include('../../include/denied.php');
 		}
 	}
 
+  $siformname = "";
+  $sqlauto = mysqli_query($con,"select filename from nav_menu_prints where compcode='$company' and code='SI_PRINT'");
+	if(mysqli_num_rows($sqlauto) != 0){
+		while($rowauto = mysqli_fetch_array($sqlauto, MYSQLI_ASSOC))
+		{
+			$siformname = $rowauto['filename'];
+		}
+	}
+
 	
 	$sqlcomp = mysqli_query($con,"select * from company where compcode='$company'");
 
@@ -44,6 +53,9 @@ if (mysqli_num_rows($sqlhead)!=0) {
 		$Date = $row['dcutdate'];
 		//$SalesType = $row['csalestype'];
 		$Gross = $row['ngross'];
+
+    $TotVatInc = $row['ngrossbefore'];
+    $TotVatEWT = $row['newt'];
 
     $TotVatable = $row['nnet'];
     $TotZero = $row['nzerorated'];
@@ -116,7 +128,7 @@ function PrintRed(x, version){
   if(version == 1){
     location.href = "SI_printv1.php?tranno=" +x;
   } else {
-    location.href = "SI_print.php?x="+x;
+    location.href = "<?=$siformname?>?x="+x;
   }
   
 }
@@ -136,7 +148,7 @@ function PrintRed(x, version){
     <!--<td><font size="2"><b><?php //echo $companydesc;?></b></font></td>-->
     <td><font size="2"><b><?=$companyadd;?></b></font></td>
     <td width="100">Number:</td>
-    <td width="150"><?=$csalesno;?></td>
+    <td width="150"><font size="3"><b><?=$csalesno;?></b></font></td>
   </tr>
   <tr>
     <td><font size="2"><b>TIN #<?=$companytin;?></b></font></td>
@@ -194,56 +206,64 @@ function PrintRed(x, version){
       <tr>
         <td style="border-right:1px dashed;"><?=$rowbody['citemno'];?></td>
         <td style="border-right:1px dashed;"><?=$rowbody['citemdesc'];?></td>
-        <td style="border-right:1px dashed;" align="right"><?=$rowbody['nqty'];?> <?=$rowbody['cunit'];?></td>
+        <td style="border-right:1px dashed;" align="right"><?=$rowbody['nqty'];?></td>
         <td style="border-right:1px dashed;" align="right"><?=number_format($rowbody['nprice'],2);?></td>
         <td align="right"><?=number_format($rowbody['namount'],2);?></td>
         
       </tr>
-      
+    <?php
+     }
+    ?>    
       <tr>
         <td colspan="5" style="border-top:1px dashed;"><?php //echo $cvatcode.":".(float)$totvatxmpt." : ".$printVEGross;?></td>
       </tr>
 
         <tr>
           <?php
-            $xtotvatincxzs = floatval($TotVatable) + floatval($TotVat) + floatval($TotZero) + floatval($TotVEx);
+            $xtotvatincxzs = floatval($TotVatable) + floatval($TotZero) + floatval($TotVEx);
           ?>
         <td colspan="4" style="border-top:1px dashed;" align="right"  valign="bottom"><b>Total Sales (VAT INCLUSIVE) </b></td>
-        <td style="border-top:1px dashed;"  valign="bottom" align="right"><b><?=number_format($xtotvatincxzs,2)?></b></td>
+        <td style="border-top:1px dashed;"  valign="bottom" align="right"><b><?=number_format($TotVatInc,2)?></b></td>
         </tr>
         <tr>
           <td style="border-top:1px dashed;" align="right" valign="bottom"><b>Vatable Sales</b></td>
-          <td style="border-top:1px dashed;" valign="bottom"><div style="text-align:right; width:50%"><b><?=($TotVatable!=="") ? number_format((floatval($TotVatable) + floatval($TotVat)),2) : "";?></b></div></td>
-          <td colspan="2" style="border-top:1px dashed;" valign="bottom" align="right"><b>Amt. Net of VAT</b></td>
-          <td style="border-top:1px dashed;"  valign="bottom" align="right"><b><?=($TotVatable!=="") ? number_format($TotVatable,2) : "";?></b></td>
+          <td style="border-top:1px dashed;" valign="bottom"><div style="text-align:right; width:50%"><b><?=($TotVatable!=="") ? number_format((floatval($TotVatable)),2) : "";?></b></div></td>
+
+          <td colspan="2" style="border-top:1px dashed;" valign="bottom" align="right"><b>LESS: VAT</b></td>
+          <td style="border-top:1px dashed;"  valign="bottom" align="right"><b><?=($TotVat!=="") ? number_format($TotVat,2) : "";?></b></td>
+
+         
         </tr>
         <tr>
           <td style="border-top:1px dashed;" align="right" valign="bottom"><b>Vat-Exempt Sales</b></td>
           <td style="border-top:1px dashed;" valign="bottom"><div style="text-align:right; width:50%"><b><?=($TotVEx!=="") ? number_format($TotVEx,2) : "";?></b></div></td>
-          <td colspan="2" style="border-top:1px dashed;" valign="bottom" align="right"><b>LESS: VAT</b></td>
-          <td style="border-top:1px dashed;"  valign="bottom" align="right"><b><?=($TotVat!=="") ? number_format($TotVat,2) : "";?></b></td>
+          <td colspan="2" style="border-top:1px dashed;" valign="bottom" align="right"><b>Amt. Net of VAT</b></td>
+          <td style="border-top:1px dashed;"  valign="bottom" align="right"><b><?=($xtotvatincxzs!=="") ? number_format($xtotvatincxzs,2) : "";?></b></td>
+        </tr>
+        <tr>
+         
+         
         </tr>
         <tr>
           <td style="border-top:1px dashed;" align="right" valign="bottom"><b>Zero-Rated Sales</b></td>
           <td style="border-top:1px dashed;" valign="bottom"><div style="text-align:right; width:50%"><b><?=($TotZero!=="") ? number_format($TotZero,2) : "";?></b></div></td>
-          <td colspan="2" style="border-top:1px dashed;" valign="bottom" align="right"><b>LESS: SC/PWD DISC.</b></td>
-          <td style="border-top:1px dashed;"  valign="bottom" align="right">&nbsp;</td>
+          <td colspan="2" style="border-top:1px dashed;" valign="bottom" align="right"><b>Less: Witholding Tax</b></td>
+          <td style="border-top:1px dashed;"  valign="bottom" align="right"><b><?=($TotVatEWT!=="") ? number_format($TotVatEWT,2) : "";?></b></td> 
+          
         </tr>
+        <?php
+          $xdue1 = floatval($xtotvatincxzs) - floatval($TotVatEWT);
+        ?>
         <tr>
           <td style="border-top:1px dashed;" align="right" valign="bottom"><b>Vat Amt</b></td>
-          <td style="border-top:1px dashed;" valign="bottom"><div style="text-align:right; width:50%">&nbsp;</div></td>
+          <td style="border-top:1px dashed;" valign="bottom"><div style="text-align:right; width:50%"><b><?=($TotVat!=="") ? number_format($TotVat,2) : "";?></b></div></td>
           <td colspan="2" style="border-top:1px dashed;" valign="bottom" align="right"><b>Amt. Due</b></td>
-          <td style="border-top:1px dashed;"  valign="bottom" align="right"><b><?=($totnetvat!=="") ? $totnetvat: "";?></b></td>
-        </tr>
-        <tr>
-          <td colspan="2" style="border-top:1px dashed;" valign="bottom">&nbsp;</td>
-          <td colspan="2" style="border-top:1px dashed;" valign="bottom" align="right"><b>Less: Witholding Tax</b></td>
-          <td style="border-top:1px dashed;"  valign="bottom" align="right">&nbsp;</td>
+          <td style="border-top:1px dashed;"  valign="bottom" align="right"><b><?=($xdue1!=="") ? number_format($xdue1,2) : "";?></b></td>
         </tr>
         <tr>
           <td colspan="2" style="border-top:1px dashed;" valign="bottom">&nbsp;</td>
           <td colspan="2" style="border-top:1px dashed;" valign="bottom" align="right"><b>ADD VAT</b></td>
-          <td style="border-top:1px dashed;"  valign="bottom" align="right"><b><?=($totlessvat!=="") ? $totlessvat : "";?></b></td>
+          <td style="border-top:1px dashed;"  valign="bottom" align="right"><b><?=($TotVat!=="") ? number_format($TotVat,2) : "";?></b></td>
         </tr>
         <tr>
           <td colspan="2" style="border-top:1px dashed;" valign="bottom">&nbsp;</td>
@@ -252,9 +272,29 @@ function PrintRed(x, version){
         </tr>
 <?php
 
-    }}
+    }
 ?>
     </table></td>
+  </tr>
+  <tr>
+    <td colspan="3">
+
+    <table width="100%" border="0" cellpadding="3" cellspacing="5">
+      <tr>
+        <td height="60" valign="top" style="border:1px solid; border-style:dashed;"><font size="2"><b>Released by:</b></font><br></td>
+        <td width="50%" height="60" valign="top" style="border:1px solid; border-style:dashed;"><font size="2"><b>Received by:</b></font><br></td>
+      </tr>
+      <tr>
+        <td style="border:1px solid; border-style:dashed;" align="center">
+          Signature Over Printed Name         
+        </td>
+        <td style="border:1px solid; border-style:dashed;" align="center">
+          Signature Over Printed Name
+        </td>
+      </tr>
+    </table>
+
+    </td>
   </tr>
 </table>
 

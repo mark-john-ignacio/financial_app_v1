@@ -25,13 +25,14 @@
 			$logosrc = $rowcomp['clogoname'];
 			$logoaddrs = $rowcomp['compadd'];
 			$logonamz = $rowcomp['compname'];
+			$deltotin = $rowcomp['comptin'];
 		}
 
 	}
 	
 	$csalesno = $_REQUEST['hdntransid'];
 
-	$sqlhead = mysqli_query($con,"select a.*, b.cname, b.chouseno, b.ccity, b.cstate, b.ccountry, c.Fname, c.Minit, c.Lname, IFNULL(c.cusersign,'') as cusersign, d.cdesc as termsdesc from purchase a left join suppliers b on a.compcode=b.compcode and a.ccode=b.ccode left join users c on a.cpreparedby=c.Userid left join groupings d on a.compcode=b.compcode and a.cterms=d.ccode and d.ctype='TERMS' where a.compcode='$company' and a.cpono = '$csalesno'");
+	$sqlhead = mysqli_query($con,"select a.*, b.cname, b.chouseno, b.ccity, b.cstate, b.ccountry, c.Fname, c.Minit, c.Lname, IFNULL(c.cusersign,'') as cusersign, d.cdesc as termsdesc, IFNULL(b.ctin,'') as ctin from purchase a left join suppliers b on a.compcode=b.compcode and a.ccode=b.ccode left join users c on a.cpreparedby=c.Userid left join groupings d on a.compcode=b.compcode and a.cterms=d.ccode and d.ctype='TERMS' where a.compcode='$company' and a.cpono = '$csalesno'");
 
 	if (mysqli_num_rows($sqlhead)!=0) {
 		while($row = mysqli_fetch_array($sqlhead, MYSQLI_ASSOC)){
@@ -45,7 +46,9 @@
 			$Remarks = $row['cremarks'];
 			$Date = $row['ddate'];
 			$DateNeeded = $row['dneeded'];
-			$Gross = $row['ngross'];
+			$Gross = $row['ngrossbefore'];
+
+			$cTin = $row['ctin']; 
 
 			$delto = $row['cdelto'];  
 			$deladd = $row['ddeladd']; 
@@ -141,6 +144,8 @@ $sqldtlss = mysqli_query($con,"select A.*, B.citemdesc, B.cuserpic From quote_t 
 											<?=$CustName?>
 											<br>
 											<?=$CustAdd?>
+											<br>
+											<?=$cTin?>
 									</td>
 									<td width="100px" style="padding: 10px;" align="right">
 											<b>TERMS</b>
@@ -164,6 +169,8 @@ $sqldtlss = mysqli_query($con,"select A.*, B.citemdesc, B.cuserpic From quote_t 
 										<?=$delto?>
 										<br>
 										<?=$deladd?>
+										<br>
+										<?=$deltotin?>
 									</td>
 									
 								</tr>
@@ -207,6 +214,7 @@ $sqldtlss = mysqli_query($con,"select A.*, B.citemdesc, B.cuserpic From quote_t 
 			<table border="0" align="center" width="100%" style="border-collapse: collapse;">
 	
 				<tr>
+					<th style="border: 1px solid" class="tdpadx">Reference</th>
 					<th style="border: 1px solid" class="tdpadx">Qty</th>
 					<th style="border: 1px solid" class="tdpadx">Unit</th>
 					<th style="border: 1px solid" class="tdpadx">Product Description/s</th>
@@ -218,30 +226,36 @@ $sqldtlss = mysqli_query($con,"select A.*, B.citemdesc, B.cuserpic From quote_t 
 				$sqlbody = mysqli_query($con,"select a.*,b.citemdesc, a.citemdesc as newdesc from purchase_t a left join items b on a.compcode=b.compcode and a.citemno=b.cpartno where a.compcode='$company' and a.cpono = '$csalesno' Order by a.nident");
 
 				if (mysqli_num_rows($sqlbody)!=0) {
-
+					$xref = "";
+					$xrefP = "";
 					while($rowdtls = mysqli_fetch_array($sqlbody, MYSQLI_ASSOC)){ 
 						if(floatval($rowdtls['nrate']) > 0){
 							$xwithvat = 1;
 						}
+						if($xref != $rowdtls['creference']){
+							$xref = $rowdtls['creference'];
+							$xrefP = $rowdtls['creference'];
+						}
 				?>
 
 				<tr>
+					<td align="center" class="tdpadx tddetz"><?=$xrefP;?></td>
 					<td align="center" class="tdpadx tddetz"><?php echo intval($rowdtls['nqty']);?></td>
 					<td align="center" class="tdpadx tddetz"><?php echo $rowdtls['cunit'];?></td>					
 					<td align="center" class="tdpadx tddetz"><?php echo $rowdtls['citemdesc'];?></td>
-					<td align="right" class="tdpadx tddetz tdright"><?php echo number_format($rowdtls['nprice'],2);?></td>
-					<td align="right" class="tdpadx tddetz tdright"><?php echo number_format($rowdtls['namount'],2);?></td>
+					<td align="right" nowrap class="tdpadx tddetz tdright"><?php echo $CurrCode." ".number_format($rowdtls['nprice'],2);?></td>
+					<td align="right" nowrap class="tdpadx tddetz tdright"><?php echo $CurrCode." ".number_format($rowdtls['nbaseamount'],2);?></td>
 					
 				</tr>
 
 				<?php 
+						$xrefP = "";
 					} 
-
 				}
 				?>
 
 				<tr>
-					<td colspan="3" class="tdpadx" style="border-top: 1px solid; border-left: 1px solid; border-bottom: 1px solid; padding-right: 10px">
+					<td colspan="4" class="tdpadx" style="border-top: 1px solid; border-left: 1px solid; border-bottom: 1px solid; padding-right: 10px">
 						<?php
 							if($xwithvat==1){
 								echo "<b><i>Note: Price inclusive of VAT</i></b>";
@@ -251,7 +265,7 @@ $sqldtlss = mysqli_query($con,"select A.*, B.citemdesc, B.cuserpic From quote_t 
 						?>
 					</td>
 					<td align="right" class="tdpadx" style="border: 1px solid;padding-right: 10px"><b>TOTAL</b></td>
-					<td align="right"  class="tdpadx" style="border: 1px solid;padding-right: 10px"><?php echo number_format($Gross,2);?></td>
+					<td align="right"  class="tdpadx" style="border: 1px solid;padding-right: 10px"><?php echo $CurrCode." ".number_format($Gross,2);?></td>
 					
 				</tr>
 

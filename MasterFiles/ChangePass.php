@@ -91,20 +91,20 @@ session_start();
         <table width="50%" border="0" cellspacing="0" cellpadding="0" align="center">
           <tr>
             <td style="padding:2px" align="center">
-              <input type="password" class="form-control" placeholder="Old Password" name="OldPass" id="OldPass" size="50" required maxlength="15">
+              <input type="password" class="form-control" placeholder="Old Password" name="OldPass" id="OldPass" size="50" required maxlength="20">
               <span class="text-danger" id="oldpassWarn"></span>
             </td>
           </tr>
           <tr>
             <td style="padding:2px" align="center">
-             <input type="password" class="form-control" placeholder="New Password" name="NewPass" id="NewPass" size="50" required maxlength="15"> 
+             <input type="password" class="form-control" placeholder="New Password (20 characters max)" name="NewPass" id="NewPass" size="50" required maxlength="20"> 
              <span class="text-danger" id="newpassWarn"></span>
             </td>
           </tr>
 
           <tr>
             <td style="padding:2px" align="center">
-              <input type="password" class="form-control" placeholder="Confirm New Password" name="passT" id="passT" size="50" required maxlength="15">
+              <input type="password" class="form-control" placeholder="Confirm New Password (20 characters max)" name="passT" id="passT" size="50" required maxlength="20">
               
             </td>
           </tr>

@@ -2,8 +2,14 @@
 if(!isset($_SESSION)){
     session_start();
 }
+
+$_SESSION['pageid'] = "PurchaseDat";
+
 require_once  "../../vendor2/autoload.php";
 require_once "../../Connection/connection_string.php";
+include('../../include/denied.php');
+include('../../include/access2.php');
+
 require_once "../../Model/helper.php";
 
 //use PhpOffice\PhpSpreadsheet\Helper\Sample;
@@ -23,10 +29,32 @@ $sql = "SELECT * FROM company WHERE compcode='$company'";
 $result = mysqli_query($con, $sql);
 $comp = mysqli_fetch_array($result, MYSQLI_ASSOC);
 
-$sql = "SELECT a.cacctno FROM accounts_default a WHERE a.compcode = '$company_code' AND a.ccode = 'PURCH_VAT' ORDER BY a.cacctno DESC LIMIT 1";
+$sql = "SELECT a.cacctno FROM accounts_default a WHERE a.compcode = '$company' AND a.ccode = 'PURCH_VAT' ORDER BY a.cacctno DESC LIMIT 1";
 $query = mysqli_query($con, $sql);
 $account = $query -> fetch_array(MYSQLI_ASSOC);
 $vat_code = $account['cacctno'];
+
+//getallapv with input tax
+$allapvno = array();
+$apventry = array();
+$sql = "SELECT A.cmodule, A.ctranno, A.ctaxcode, B.nrate, A.ndebit, A.ncredit FROM glactivity A left join vatcode B on A.compcode=B.compcode and A.ctaxcode=B.cvatcode WHERE A.compcode = '$company' AND A.acctno = '$vat_code' and MONTH(A.ddate)=$monthcut and YEAR(A.ddate)=$yearcut";
+$query = mysqli_query($con, $sql);
+if(mysqli_num_rows($query) != 0){
+    while($row = $query -> fetch_assoc()){
+        $allapvno[] = $row['ctranno'];
+        $apventry[$row['ctranno']] = $row;
+    }
+}
+
+//getall apv with payment
+/*$allapvpaid = array();
+$sql = "SELECT A.ctranno, A.capvno FROM paybill_t A left join paybill B on A.compcode=B.compcode and A.ctranno=B.ctranno WHERE A.compcode = '$company' AND A.capvno in ('".implode("','",$allapvno)."') AND (B.lapproved = 1 AND B.lvoid = 0)";
+$query = mysqli_query($con, $sql);
+if(mysqli_num_rows($query) != 0){
+    while($row = $query -> fetch_assoc()){
+        $allapvpaid[] = $row['capvno'];
+    }
+}*/
 
 // Set document properties
 $spreadsheet->getProperties()->setCreator('Myx Financials')
@@ -101,102 +129,142 @@ $spreadsheet->getProperties()->setCreator('Myx Financials')
         ->setCellValue('M14', trim("'(13)"))
         ->setCellValue('N14', trim("'(14)"));
 
-    if($code == 'VT'){
-        $sql = "SELECT a.*, b.* FROM paybill a
-        LEFT JOIN suppliers b on a.compcode = b.compcode AND a.ccode = b.ccode
-        WHERE a.compcode = '$company'
-        AND MONTH(STR_TO_DATE(a.dcheckdate, '%Y-%m-%d')) = $monthcut
-        AND YEAR(STR_TO_DATE(a.dcheckdate, '%Y-%m-%d')) = $yearcut
-        AND b.cvattype = '$code'
-        AND ctranno in (
-            SELECT a.ctranno FROM paybill_t a 
-            LEFT JOIN apv_t b on a.compcode = b.compcode AND a.capvno = b.ctranno
-            WHERE a.compcode = '$company' AND b.cacctno = '$vat_code'
-        )
-        AND a.lapproved = 1 AND (a.lcancelled != 1 OR a.lvoid != 1)";
-    } else {
-        $sql = "SELECT a.*, b.* FROM paybill a
-        LEFT JOIN suppliers b on a.compcode = b.compcode AND a.ccode = b.ccode
-        WHERE a.compcode = '$company'
-        AND MONTH(STR_TO_DATE(a.dcheckdate, '%Y-%m-%d')) = $monthcut
-        AND YEAR(STR_TO_DATE(a.dcheckdate, '%Y-%m-%d')) = $yearcut
-        AND b.cvattype = '$code'
-        AND ctranno in (
-            SELECT a.ctranno FROM paybill_t a 
-            WHERE a.compcode = '$company' 
-        )
-        AND a.lapproved = 1 AND (a.lcancelled != 1 OR a.lvoid != 1)";
-    }
-
-    
-    $query = mysqli_query($con, $sql);
-    if(mysqli_num_rows($query) != 0){
         $index = 14;
-        $TOTAL_GROSS =0; $TOTAL_EXEMPT = 0; $TOTAL_ZERO_RATED = 0; $TOTAL_TAXABLE = 0; $TOTAL_VAT = 0; $TOTAl_TAX_GROSS = 0;
-        while($row = $query -> fetch_array(MYSQLI_ASSOC)){
-            $computation = ComputePaybills($row);
-            $index++;
-            $fullAddress = stringValidation($row['chouseno']);
-            if(trim($row['ccity']) != ""){
-                $fullAddress .= " ". stringValidation($row['ccity']);
-            }
-            if(trim($row['ccountry']) != ""){
-                $fullAddress .= " ". stringValidation($row['ccountry']);
-            }
-            if(trim($row['cstate']) != ""){
-                $fullAddress .= " ". stringValidation($row['cstate']);
-            }
+
+        $sql = "SELECT A.ctranno, A.ngross, A.ccode, A.chouseno, A.ccity, A.cstate, A.ccountry, A.ctin, A.cname, A.dapvdate
+        From
+        (
+        SELECT A.ctranno, A.ngross, A.ccode, B.chouseno, B.ccity, B.cstate, B.ccountry, B.ctin, B.cname, A.dapvdate as dapvdate
+        FROM apv A 
+        left join suppliers B on A.compcode=B.compcode and A.ccode=B.ccode 
+        WHERE A.compcode = '$company' AND A.ctranno in ('".implode("','",$allapvno)."') AND (A.lapproved = 1 AND A.lvoid = 0) 
+        
+        UNION ALL
+        
+        SELECT A.ctranno, A.ntotdebit as ngross, A.ccode, B.chouseno, B.ccity, B.cstate, B.ccountry, B.ctin, B.cname, A.djdate as dapvdate 
+        FROM journal A 
+        left join suppliers B on A.compcode=B.compcode and A.ccode=B.ccode 
+        WHERE A.compcode = '$company' AND A.ctranno in ('".implode("','",$allapvno)."') AND (A.lapproved = 1 AND A.lvoid = 0) 
+        ) A
+        Order by A.dapvdate, A.cname";
+
+        $query = mysqli_query($con, $sql);
+        if(mysqli_num_rows($query) != 0){
             
-            if(trim($row['czip']) != ""){
-                $fullAddress .= " ". stringValidation( $row['czip']);
+            while($row = $query -> fetch_assoc()){
+
+                $fullAddress = str_replace(",", "", $row['chouseno']);
+                if(trim($row['ccity']) != ""){
+                    $fullAddress .= " ". str_replace(",", "", $row['ccity']);
+                }
+                if(trim($row['cstate']) != ""){
+                    $fullAddress .= " ". str_replace(",", "", $row['cstate']);
+                }
+                if(trim($row['ccountry']) != ""){
+                    $fullAddress .= " ". str_replace(",", "", $row['ccountry']);
+                }
+            
+                $xcnet = 0;
+                $xcvat = 0;
+                $xczerotot = 0;
+                $xcexmpt = 0;
+                $xservc = 0;
+                $xsgoods = 0;
+                $xsgoodsother = 0;
+                $rowgros = 0;
+
+                if($apventry[$row['ctranno']]['nrate']>0){
+                   if(floatval($apventry[$row['ctranno']]['ndebit'])>0) {
+                        $xcvbam = floatval($apventry[$row['ctranno']]['ndebit']);
+                        $rowgros = $row['ngross'];
+                    }else{
+                        $xcvbam = 0-floatval($apventry[$row['ctranno']]['ncredit']);
+                        $rowgros = 0-$row['ngross'];
+                    }
+
+                    $xcnet = $xcvbam / (floatval($apventry[$row['ctranno']]['nrate'])/100);
+                    $xcvat = $xcvbam;
+
+                    if($apventry[$row['ctranno']]['ctaxcode']=="VTSDOM" || $apventry[$row['ctranno']]['ctaxcode'] == "VTSNR"){
+                        $xservc = $xcnet;
+                    }
+
+                    if($apventry[$row['ctranno']]['ctaxcode']=="VTGE1M" || $apventry[$row['ctranno']]['ctaxcode'] == "VTGNE1M"){
+                        $xsgoods = $xcnet;
+                    }
+
+                    if($apventry[$row['ctranno']]['ctaxcode']=="VTGIMOCG" || $apventry[$row['ctranno']]['ctaxcode'] == "VTGOCG"){
+                        $xsgoodsother = $xcnet;
+                    }
+                }
+
+                if($apventry[$row['ctranno']]['ctaxcode']=="VTZERO"){
+                    $xczerotot = floatval($row['ngross']);
+                }
+
+                if($apventry[$row['ctranno']]['ctaxcode']=="VTNOTQ"){
+                    $xcexmpt = floatval($row['ngross']);
+                }
+
+                /*$TOTAL_GROSS += floatval($row['ngross']);
+                $TOTAL_NET += floatval($xcnet);
+                $TOTAL_VAT += floatval($xcvat);
+                $TOTAL_EXEMPT += floatval($xcexmpt);
+                $TOTAL_ZERO_RATED += floatval($xczerotot);
+                $TOTAL_GOODS += floatval($xsgoods);
+                $TOTAL_SERVICE += floatval($xservc);
+                $TOTAL_CAPITAL += floatval($xsgoodsother);
+                $TOTAL_TAX_GROSS += floatval($xcnet) + floatval($xcvat);*/
+
+
+                $index++;
+                $spreadsheet->getActiveSheet()->getStyle("F$index:N$index")->getNumberFormat()->setFormatCode('###,###,###,##0.00');
+                $spreadsheet->setActiveSheetIndex(0)
+                ->setCellValue("A$index", $row['dapvdate'])
+                ->setCellValue("B$index", TinValidation($row['ctin']))
+                ->setCellValue("C$index", $row['cname'])
+                ->setCellValue("E$index", $fullAddress)
+                ->setCellValue("F$index",  round((float)$rowgros,2))
+                ->setCellValue("G$index",  round((float)$xcexmpt,2))
+                ->setCellValue("H$index",  round((float)$xczerotot,2))
+                ->setCellValue("I$index",  round((float)$xcnet,2))
+                ->setCellValue("J$index",  round((float)$xservc,2))
+                ->setCellValue("K$index",  round((float)$xsgoods,2))
+                ->setCellValue("L$index",  round((float)$xsgoodsother,2))
+                ->setCellValue("M$index",  round((float)$xcvat,2))
+                ->setCellValue("N$index",  round((float)(floatval($xcnet) + floatval($xcvat)),2));
+
+                // $TOTAL_GROSS += floatval($computation['gross']); 
+                // $TOTAL_EXEMPT += floatval($computation['exempt']); 
+                // $TOTAL_ZERO_RATED += floatval($computation['zero']); 
+                // $TOTAL_TAXABLE += floatval($computation['net']); 
+                // $TOTAL_VAT += floatval($computation['vat']);
+                // $TOTAl_TAX_GROSS += floatval($computation['gross_vat']);
             }
-            $spreadsheet->getActiveSheet()->getStyle("F$index:K$index")->getNumberFormat()->setFormatCode('###,###,###,##0.00');
+            $lastindex = $index;
+            $index += 2;
+
+            $spreadsheet->getActiveSheet()->getStyle("A$index:N$index")->getFont()->setBold(true);
+            $spreadsheet->getActiveSheet()->getStyle("F$index:N$index")->getNumberFormat()->setFormatCode('###,###,###,##0.00');
             $spreadsheet->setActiveSheetIndex(0)
-            ->setCellValue("A$index", $row['dcheckdate'])
-            ->setCellValue("B$index", TinValidation($row['ctin']))
-            ->setCellValue("C$index", $row['cname'])
-            ->setCellValue("E$index", $fullAddress)
-            ->setCellValue("F$index", $computation['gross'])
-            ->setCellValue("G$index", $computation['exempt'],2)
-            ->setCellValue("H$index", $computation['zero'],2)
-            ->setCellValue("I$index", $computation['net'],2)
-            ->setCellValue("J$index", $computation['service'],2)
-            ->setCellValue("K$index", $computation['capital'],2)
-            ->setCellValue("L$index", $computation['goods'],2)
-            ->setCellValue("M$index", $computation['vat'],2)
-            ->setCellValue("N$index", $computation['gross_vat'],2);
+            ->setCellValue("A$index", "GRAND TOTAL")
+            ->setCellValue("F$index", "=SUM(F15:F$lastindex)")
+            ->setCellValue("G$index", "=SUM(G15:G$lastindex)")
+            ->setCellValue("H$index", "=SUM(H15:H$lastindex)")
+            ->setCellValue("I$index", "=SUM(I15:I$lastindex)")
+            ->setCellValue("J$index", "=SUM(J15:J$lastindex)")
+            ->setCellValue("K$index", "=SUM(K15:K$lastindex)")
+            ->setCellValue("L$index", "=SUM(L15:L$lastindex)")
+            ->setCellValue("M$index", "=SUM(M15:M$lastindex)")
+            ->setCellValue("N$index", "=SUM(N15:N$lastindex)");
 
-            // $TOTAL_GROSS += floatval($computation['gross']); 
-            // $TOTAL_EXEMPT += floatval($computation['exempt']); 
-            // $TOTAL_ZERO_RATED += floatval($computation['zero']); 
-            // $TOTAL_TAXABLE += floatval($computation['net']); 
-            // $TOTAL_VAT += floatval($computation['vat']);
-            // $TOTAl_TAX_GROSS += floatval($computation['gross_vat']);
+            $index += 2;
+            $spreadsheet->setActiveSheetIndex(0)
+            ->setCellValue("A$index","END OF REPORT");
+        } else {
+            $spreadsheet->setActiveSheetIndex(0)
+            -> setCellValue("A15", "NO RECORD");
         }
-        $lastindex = $index;
-        $index += 2;
-
-        $spreadsheet->getActiveSheet()->getStyle("A$index:N$index")->getFont()->setBold(true);
-        $spreadsheet->getActiveSheet()->getStyle("F$index:N$index")->getNumberFormat()->setFormatCode('###,###,###,##0.00');
-        $spreadsheet->setActiveSheetIndex(0)
-        ->setCellValue("A$index", "GRAND TOTAL")
-        ->setCellValue("F$index", "=SUM(F15:F$lastindex)")
-        ->setCellValue("G$index", "=SUM(G15:G$lastindex)")
-        ->setCellValue("H$index", "=SUM(H15:H$lastindex)")
-        ->setCellValue("I$index", "=SUM(I15:I$lastindex)")
-        ->setCellValue("J$index", "=SUM(J15:J$lastindex)")
-        ->setCellValue("K$index", "=SUM(K15:K$lastindex)")
-        ->setCellValue("L$index", "=SUM(L15:L$lastindex)")
-        ->setCellValue("M$index", "=SUM(M15:M$lastindex)")
-        ->setCellValue("N$index", "=SUM(N15:N$lastindex)");
-
-        $index += 2;
-        $spreadsheet->setActiveSheetIndex(0)
-        ->setCellValue("A$index","END OF REPORT");
-    } else {
-        $spreadsheet->setActiveSheetIndex(0)
-        -> setCellValue("A15", "NO RECORD");
-    }
 
 
 	// Rename worksheet
@@ -212,7 +280,7 @@ $spreadsheet->getProperties()->setCreator('Myx Financials')
 
 	// Redirect output to a client’s web browser (Xlsx)
 	header('Content-Type: application/vnd.openxmlformats-officedocument.spreadsheetml.sheet');
-	header('Content-Disposition: attachment;filename="Sales_Transaction.xlsx"');
+	header('Content-Disposition: attachment;filename="Purchase_Relief.xlsx"');
 	header('Cache-Control: max-age=0');
 	// If you're serving to IE 9, then the following may be needed
 	header('Cache-Control: max-age=1');

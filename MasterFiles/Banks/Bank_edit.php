@@ -1,63 +1,68 @@
 <?php
-if(!isset($_SESSION)){
-session_start();
-}
-$_SESSION['pageid'] = "Bank_new.php";
+	if(!isset($_SESSION)){
+		session_start();
+	}
+	$_SESSION['pageid'] = "Bank";
 
-include('../../Connection/connection_string.php');
-include('../../include/denied.php');
-include('../../include/access.php');
+	include('../../Connection/connection_string.php');
+	include('../../include/denied.php');
+	include('../../include/access.php');
 
-				$company = $_SESSION['companyid'];
+	$company = $_SESSION['companyid'];
 
+	$poststat = "True";
+	$sql = mysqli_query($con,"select * from users_access where userid = '$employeeid' and pageid = 'Bank_Edit'");
+	if(mysqli_num_rows($sql) == 0){
+		$poststat = "False";
+	}
 
-			if(isset($_REQUEST['txtcitemno'])){
-					$citemno = $_REQUEST['txtcitemno'];
-			}
-			else{
-					$citemno = $_REQUEST['txtccode'];
-				}
+	if(isset($_REQUEST['txtcitemno'])){
+			$citemno = $_REQUEST['txtcitemno'];
+	}
+	else{
+		$citemno = $_REQUEST['txtccode'];
+	}
 				
-				if($citemno <> ""){
-					
-					$sql = "select A.*, B. cacctdesc from bank A left join accounts B on A.compcode=B.compcode and A.cacctno=B.cacctid where A.compcode='$company' and A.ccode='$citemno'";
-				}else{
-					header('Bank.php');
-					die();
-				}
-				
-				$sqlhead=mysqli_query($con,$sql);
-				
-					if (!mysqli_query($con, $sql)) {
-						printf("Errormessage: %s\n", mysqli_error($con));
-					} 
-					
-				if (mysqli_num_rows($sqlhead)!=0) {
-					while($row = mysqli_fetch_array($sqlhead, MYSQLI_ASSOC)){
+	if($citemno <> ""){
+		
+		$sql = "select A.*, B. cacctdesc from bank A left join accounts B on A.compcode=B.compcode and A.cacctno=B.cacctid where A.compcode='$company' and A.ccode='$citemno'";
+	}else{
+		header('Bank.php');
+		die();
+	}
+	
+	$sqlhead=mysqli_query($con,$sql);
+	
+	if (!mysqli_query($con, $sql)) {
+		printf("Errormessage: %s\n", mysqli_error($con));
+	} 
+		
+	if (mysqli_num_rows($sqlhead)!=0) {
+		while($row = mysqli_fetch_array($sqlhead, MYSQLI_ASSOC)){
 
-						$cCustCode = $row['ccode'];
-						$cCustName = $row['cname'];
-						$cCOANo = $row['cacctno'];
-						$cCOA = $row['cacctdesc'];
-						$cBankNo = $row['cbankacctno'];
-						$cBank = $row['caccountname'];
+			$cCustCode = $row['ccode'];
+			$cCustName = $row['cname'];
+			$cCOANo = $row['cacctno'];
+			$cCOA = $row['cacctdesc'];
+			$cBankNo = $row['cbankacctno'];
+			$cBank = $row['caccountname'];
 
-						$cDoctype = $row['cdoctype'];
-												
-						$HouseNo = $row['caddress'];
-						$City = $row['ccity'];
-						$State = $row['cstate'];
-						$Country = $row['ccountry'];
-						$ZIP = $row['czip'];
-					
-						$Contact = $row['ccontact'];
-						$Desig = $row['cdesignation'];
-						$Email = $row['cemail'];
-						$PhoneNo = $row['cphoneno'];
-						$Mobile = $row['cmobile'];
+			$cDoctype = $row['cdoctype'];
+									
+			$HouseNo = $row['caddress'];
+			$City = $row['ccity'];
+			$State = $row['cstate'];
+			$Country = $row['ccountry'];
+			$ZIP = $row['czip'];
+		
+			$Contact = $row['ccontact'];
+			$Desig = $row['cdesignation'];
+			$Email = $row['cemail'];
+			$PhoneNo = $row['cphoneno'];
+			$Mobile = $row['cmobile'];
 
-					}
-				}
+		}
+	}
 
 ?>
 <!DOCTYPE html>
@@ -237,17 +242,21 @@ include('../../include/access.php');
 
     </div>
 </div>
-   
+
+<?php
+	if($poststat == "True"){
+?>
 <br>       
 <table width="100%" border="0" cellpadding="3">
   <tr>
-    <td  style="padding-top:20px">		<button type="button" class="btn btn-primary btn-sm" onClick="window.location.href='Bank.php';" id="btnMain" name="btnMain">Back to Main<br>(ESC)</button>
+    <td  style="padding-top:20px">		
+		<button type="button" class="btn btn-primary btn-sm" onClick="window.location.href='Bank.php';" id="btnMain" name="btnMain">Back to Main<br>(ESC)</button>
 
     	<button type="button" class="btn btn-default btn-sm" onClick="window.location.href='Bank_new.php';" id="btnNew" name="btnNew">New<br>(F1)</button>
  
-     <button type="button" class="btn btn-danger btn-sm" onClick="chkSIEnter(13,'frmedit');" id="btnUndo" name="btnUndo">
-Undo Edit<br>(CTRL+Z)
-    </button>
+    	<button type="button" class="btn btn-danger btn-sm" onClick="chkSIEnter(13,'frmedit');" id="btnUndo" name="btnUndo">
+			Undo Edit<br>(CTRL+Z)
+    	</button>
    
         <button type="button" class="btn btn-warning btn-sm" onClick="enabled();" id="btnEdit" name="btnEdit"> Edit<br>(CTRL+E) </button>
 
@@ -255,6 +264,9 @@ Undo Edit<br>(CTRL+Z)
 </td>
   </tr>
 </table>
+<?php
+	}
+?>
 </fieldset>
 </form>
 

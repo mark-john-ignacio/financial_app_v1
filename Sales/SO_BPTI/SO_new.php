@@ -1,35 +1,35 @@
 <?php
-if(!isset($_SESSION)){
-session_start();
-}
-$_SESSION['pageid'] = "SO_new.php";
+	if(!isset($_SESSION)){
+		session_start();
+	}
+	$_SESSION['pageid'] = "SO_new";
 
-include('../../Connection/connection_string.php');
-include('../../include/denied.php');
-include('../../include/access2.php');
+	include('../../Connection/connection_string.php');
+	include('../../include/denied.php');
+	include('../../include/access2.php');
 
-$company = $_SESSION['companyid'];
+	$company = $_SESSION['companyid'];
 
-//echo $_SESSION['chkitmbal']."<br>";
-//echo $_SESSION['chkcompvat'];
+	//echo $_SESSION['chkitmbal']."<br>";
+	//echo $_SESSION['chkcompvat'];
 
-$ddeldate = date("m/d/Y");
-$ddeldate = date("m/d/Y", strtotime($ddeldate . "+1 day"));
+	$ddeldate = date("m/d/Y");
+	$ddeldate = date("m/d/Y", strtotime($ddeldate . "+1 day"));
 
-//echo $ddeldate;
+	//echo $ddeldate;
 
-/*
-function listcurrencies(){ //API for currency list
-	$apikey = $_SESSION['currapikey'];
-  
-	//$json = file_get_contents("https://free.currconv.com/api/v7/currencies?&apiKey={$apikey}");
-	$json = file_get_contents("https://api.currencyfreaks.com/supported-currencies");
-	//$obj = json_decode($json, true);
-  
-	return $json;
-}
+	/*
+	function listcurrencies(){ //API for currency list
+		$apikey = $_SESSION['currapikey'];
+	
+		//$json = file_get_contents("https://free.currconv.com/api/v7/currencies?&apiKey={$apikey}");
+		$json = file_get_contents("https://api.currencyfreaks.com/supported-currencies");
+		//$obj = json_decode($json, true);
+	
+		return $json;
+	}
 
-*/
+	*/
 
 	$gettaxcd = mysqli_query($con,"SELECT * FROM `vatcode` where compcode='$company' and ctype = 'Sales' and cstatus='ACTIVE' order By cvatdesc"); 
 	if (mysqli_num_rows($gettaxcd)!=0) {
@@ -263,51 +263,51 @@ function listcurrencies(){ //API for currency list
 					
 					<!--Delivery To Panel-->
 						<div id="menu1" class="tab-pane fade" style="padding-left:5px; padding-left: 10px;">
-									<table width="100%" border="0">
-										<tr>
-											<td width="150"><b>Customer</b></td>
-											<td width="310" colspan="2" style="padding:2px">
-												<div class="col-xs-8 nopadding">
-													<div class="col-xs-3 nopadding">
-														<input type="text" id="txtdelcustid" name="txtdelcustid" class="form-control input-sm" placeholder="Customer Code..." tabindex="1">
-													</div>
-													<div class="col-xs-9 nopadwleft">
-														<input type="text" class="form-control input-sm" id="txtdelcust" name="txtdelcust" width="20px" tabindex="1" placeholder="Search Customer Name..."  size="60" autocomplete="off">
-													</div> 
-												</div>						
-											</td>
-										</tr>
-										<tr>
-											<td><button type="button" class="btn btn-primary btn-sm" tabindex="6" id="btnNewAdd" name="btnNewAdd">Select Address</button></td>
-											<td colspan="2" style="padding:2px"><div class="col-xs-8 nopadding"><input type="text" class="form-control input-sm" id="txtchouseno" name="txtchouseno" placeholder="House/Building No./Street..." autocomplete="off"  readonly="true" /></div></td>
-										</tr>					
-										<tr>
-											<td>&nbsp;</td>
-											<td colspan="2" style="padding:2px">
-												<div class="col-xs-8 nopadding">
-													<div class="col-xs-6 nopadding">
-														<input type="text" class="form-control input-sm" id="txtcCity" name="txtcCity" placeholder="City..." autocomplete="off"  readonly="true" />
-													</div>														
-													<div class="col-xs-6 nopadwleft">
-														<input type="text" class="form-control input-sm" id="txtcState" name="txtcState" placeholder="State..." autocomplete="off"   readonly="true" />
-													</div>
-												</div>
-											</td>
-										</tr> 
-										<tr>
-											<td>&nbsp;</td>
-											<td colspan="2" style="padding:2px">
-												<div class="col-xs-8 nopadding">
-													<div class="col-xs-9 nopadding">
-														<input type="text" class="form-control input-sm" id="txtcCountry" name="txtcCountry" placeholder="Country..." autocomplete="off" readonly="true" />
-													</div>														
-													<div class="col-xs-3 nopadwleft">
-														<input type="text" class="form-control input-sm" id="txtcZip" name="txtcZip" placeholder="Zip Code..." autocomplete="off"  readonly="true" />
-													</div>
-												</div>
-											</td>
-										</tr> 
-									</table>
+							<table width="100%" border="0">
+								<tr>
+									<td width="150"><b>Customer</b></td>
+									<td width="310" colspan="2" style="padding:2px">
+										<div class="col-xs-8 nopadding">
+											<div class="col-xs-3 nopadding">
+												<input type="text" id="txtdelcustid" name="txtdelcustid" class="form-control input-sm" placeholder="Customer Code..." tabindex="1">
+											</div>
+											<div class="col-xs-9 nopadwleft">
+												<input type="text" class="form-control input-sm" id="txtdelcust" name="txtdelcust" width="20px" tabindex="1" placeholder="Search Customer Name..."  size="60" autocomplete="off">
+											</div> 
+										</div>						
+									</td>
+								</tr>
+								<tr>
+									<td><button type="button" class="btn btn-primary btn-sm" tabindex="6" id="btnNewAdd" name="btnNewAdd">Select Address</button></td>
+									<td colspan="2" style="padding:2px"><div class="col-xs-8 nopadding"><input type="text" class="form-control input-sm" id="txtchouseno" name="txtchouseno" placeholder="House/Building No./Street..." autocomplete="off"  readonly="true" /></div></td>
+								</tr>					
+								<tr>
+									<td>&nbsp;</td>
+									<td colspan="2" style="padding:2px">
+										<div class="col-xs-8 nopadding">
+											<div class="col-xs-6 nopadding">
+												<input type="text" class="form-control input-sm" id="txtcCity" name="txtcCity" placeholder="City..." autocomplete="off"  readonly="true" />
+											</div>														
+											<div class="col-xs-6 nopadwleft">
+												<input type="text" class="form-control input-sm" id="txtcState" name="txtcState" placeholder="State..." autocomplete="off"   readonly="true" />
+											</div>
+										</div>
+									</td>
+								</tr> 
+								<tr>
+									<td>&nbsp;</td>
+									<td colspan="2" style="padding:2px">
+										<div class="col-xs-8 nopadding">
+											<div class="col-xs-9 nopadding">
+												<input type="text" class="form-control input-sm" id="txtcCountry" name="txtcCountry" placeholder="Country..." autocomplete="off" readonly="true" />
+											</div>														
+											<div class="col-xs-3 nopadwleft">
+												<input type="text" class="form-control input-sm" id="txtcZip" name="txtcZip" placeholder="Zip Code..." autocomplete="off"  readonly="true" />
+											</div>
+										</div>
+									</td>
+								</tr> 
+							</table>
 						</div>
 					
 					<!-- Attachment Panel -->
@@ -350,7 +350,7 @@ function listcurrencies(){ //API for currency list
 										<th width="100px" style="border-bottom:1px solid #999">Code</th>
 										<th width="300px" style="border-bottom:1px solid #999">Description</th>
 										<th width="100px" style="border-bottom:1px solid #999" id='tblAvailable'>Available</th>
-										<th width="150px" style="border-bottom:1px solid #999" class="chkVATClass">VAT</th>
+										<th width="200px" style="border-bottom:1px solid #999" class="chkVATClass">VAT</th>
 										<th width="80px" style="border-bottom:1px solid #999">UOM</th>
 										<th width="60px" style="border-bottom:1px solid #999">Factor</th>
 										<th width="80px" style="border-bottom:1px solid #999">Qty</th>
@@ -431,25 +431,9 @@ function listcurrencies(){ //API for currency list
 						<div class="well">							
 							<div class="row static-info align-reverse">
 								<div class="col-xs-7 name">
-									Total NET Sales:
-									<input type="hidden" id="txtnNetVAT" name="txtnNetVAT" value="0">
-								</div>
-								<div class="col-xs-4 value" id="divtxtnNetVAT">
-									0.00
-								</div>
-							</div>
-							<div class="row static-info align-reverse">
-								<div class="col-xs-7 name">
-									Add VAT:
-									<input type="hidden" id="txtnVAT" name="txtnVAT" value="0">
-								</div>
-								<div class="col-xs-4 value" id="divtxtnVAT">
-									0.00
-								</div>
-							</div>
-							<div class="row static-info align-reverse">
-								<div class="col-xs-7 name">
 									Total Amount:
+									<input type="hidden" id="txtnNetVAT" name="txtnNetVAT" value="0">
+									<input type="hidden" id="txtnVAT" name="txtnVAT" value="0">
 									<input type="hidden" id="txtnGross" name="txtnGross" value="0">
 									<input type="hidden" id="txtnBaseGross" name="txtnBaseGross" value="0">
 								</div>
@@ -1062,7 +1046,7 @@ function listcurrencies(){ //API for currency list
 			},
 			highlighter: Object,
 			afterSelect: function(item) { 					
-							
+
 				$('#txtprodnme').val(item.desc).change(); 
 				$('#txtprodid').val(item.id); 
 				$("#hdnunit").val(item.cunit); 
@@ -1087,7 +1071,7 @@ function listcurrencies(){ //API for currency list
 
 			if(event.keyCode == 13){
 
-			$.ajax({
+				$.ajax({
 					url:'../get_productid.php',
 					data: 'c_id='+ $(this).val() + "&itmbal="+xChkBal+"&styp="+ $("#selsityp").val(),                 
 					success: function(value){
@@ -1105,48 +1089,45 @@ function listcurrencies(){ //API for currency list
 						$("#hdnmakebuy").val(data[10]);
 
 
-			if($("#txtprodid").val() != "" && $("#txtprodnme").val() !="" ){
-				var isItem = "NO";
-				var disID = "";
+						if($("#txtprodid").val() != "" && $("#txtprodnme").val() !="" ){
+							var isItem = "NO";
+							var disID = "";
+							
+							$("#MyTable > tbody > tr").each(function() {	
+								disID =  $(this).find('input[type="hidden"][name="txtitemcode"]').val();
+
+								if($("#txtprodid").val()==disID){
+									
+									isItem = "YES";
+
+								}
+							});	
+
+						//if value is not blank
+						}
 				
-				$("#MyTable > tbody > tr").each(function() {	
-					disID =  $(this).find('input[type="hidden"][name="txtitemcode"]').val();
+						//if(isItem=="NO"){		
 
-					if($("#txtprodid").val()==disID){
-						
-						isItem = "YES";
-
+						addItemName("","","","","","","");
+						ComputeGross();	
+					
+						//   }
+						//  else{
+							
+						//	addqty();
+						//}
+				
+						$("#txtprodid").val("");
+						$("#txtprodnme").val("");
+						$("#hdnunit").val("");
+						$("#hdnqty").val("");
+						$("#hdnqtyunit").val("");
+				
+						//closing for success: function(value){
 					}
-				});	
-
-			//if value is not blank
-			}
-			
-			//if(isItem=="NO"){		
-
-				addItemName("","","","","","","");
-				ComputeGross();	
-				
-			//   }
-			//  else{
-				
-			//	addqty();
-			//}
-			
-			$("#txtprodid").val("");
-			$("#txtprodnme").val("");
-			$("#hdnunit").val("");
-			$("#hdnqty").val("");
-			$("#hdnqtyunit").val("");
-	
-				//closing for success: function(value){
-				}
-					}); 
-
-		
-			
-			//if enter is clicked
-			}
+				}); 
+						
+			}//if enter is clicked
 			
 		});
 
@@ -1338,7 +1319,6 @@ function myFunctionadd(qty,pricex,curramt,amtx,factr,cref,nrefident){
 	var itmccode = $("#hdnpricever").val();
 	var itmakebuy = $("#hdnmakebuy").val(); 
 	
-	//alert(itmqtyunit);
 	if(qty=="" && pricex=="" && amtx=="" && factr==""){
 		var itmtotqty = 1;
 		var price = chkprice(itmcode,itmunit,itmccode,xtoday);
@@ -1656,12 +1636,12 @@ function myFunctionadd(qty,pricex,curramt,amtx,factr,cref,nrefident){
 		$("#txtnGross").val(gross2);
 		$("#txtnBaseGross").val(gross);		
 
-		$("#divtxtnNetVAT").text(nnetTot.toFixed(2));
-		$("#divtxtnVAT").text(vatzTot.toFixed(2));
+		//$("#divtxtnNetVAT").text(nnetTot.toFixed(2));
+		//$("#divtxtnVAT").text(vatzTot.toFixed(2));
 		$("#divtxtnGross").text(gross.toFixed(2));
 
-		$("#divtxtnNetVAT").formatNumber();
-		$("#divtxtnVAT").formatNumber();
+		//$("#divtxtnNetVAT").formatNumber();
+		//$("#divtxtnVAT").formatNumber();
 		$("#divtxtnGross").formatNumber();
 		
 	}

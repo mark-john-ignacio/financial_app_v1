@@ -2,7 +2,7 @@
 	if(!isset($_SESSION)){
 		session_start();
 	}
-	$_SESSION['pageid'] = "PR_edit.php";
+	$_SESSION['pageid'] = "PR";
 
 	include('../../Connection/connection_string.php');
 	include('../../include/denied.php');
@@ -14,6 +14,26 @@
 	}
 	else{
 		$cprno = $_REQUEST['txtcprno'];
+	}
+
+	//POST
+	$poststat = "True";
+	$sql = mysqli_query($con,"select * from users_access where userid = '$employeeid' and pageid = 'PR_post'");
+	if(mysqli_num_rows($sql) == 0){
+		$poststat = "False";
+	}
+
+	//CANCEL
+	$cancstat = "True";
+	$sql = mysqli_query($con,"select * from users_access where userid = '$employeeid' and pageid = 'PR_cancel'");
+	if(mysqli_num_rows($sql) == 0){
+		$cancstat = "False";
+	}
+
+	$postedit = "True";
+	$sql = mysqli_query($con,"select * from users_access where userid = '$employeeid' and pageid = 'PR_edit'");
+	if(mysqli_num_rows($sql) == 0){
+		$postedit = "False";
 	}
 
 	$arrseclist = array();
@@ -30,12 +50,6 @@
 		if(count($arrseclist)==0){
 			$arrseclist[] = 0;
 		}
-	}
-
-	$poststat = "True";
-	$sql = mysqli_query($con,"select * from users_access where userid = '$employeeid' and pageid = 'PR_edit.php'");
-	if(mysqli_num_rows($sql) == 0){
-		$poststat = "False";
 	}
 
 	// UOM LIST //
@@ -75,6 +89,13 @@
 	
 	}
 
+	$chkapprovals = "";
+	$sqlappx = mysqli_query($con,"Select * from purchrequest_trans_approvals where compcode='$company' and lapproved=0 and lreject=0 and cprno='$cprno' Order by nlevel ASC LIMIT 1");
+	if (mysqli_num_rows($sqlappx)!=0) {
+		while($rows = mysqli_fetch_array($sqlappx, MYSQLI_ASSOC)){
+			$chkapprovals = $rows['userid']; 
+		}
+	}
 
 	//get locations of cost center
 	@$clocs = array();
@@ -146,6 +167,7 @@ if (mysqli_num_rows($sqlhead)!=0) {
 		$lCancelled = $row['lcancelled'];
 		$lPosted = $row['lapproved'];
 		$lVoid = $row['lvoid'];
+		$lSent = $row['lsent'];
 	}
 ?>
 	<form action="PR_editsave.php?hdnsrchval=<?=(isset($_REQUEST['hdnsrchval'])) ? $_REQUEST['hdnsrchval'] : ""?>" name="frmpos" id="frmpos" method="post"  enctype="multipart/form-data">
@@ -157,8 +179,10 @@ if (mysqli_num_rows($sqlhead)!=0) {
 				</div>
 				<div class="status">
 					<?php
+						$xm = 0;
 						if($lCancelled==1){
 							echo "<font color='#FF0000'><b>CANCELLED</b></font>";
+							$xm = 1;
 						}
 						
 						if($lPosted==1){
@@ -167,6 +191,7 @@ if (mysqli_num_rows($sqlhead)!=0) {
 							}else{
 								echo "<font color='#FF0000'><b>POSTED</b></font>";
 							}
+							$xm = 1;
 						}
 					?>
 				</div>
@@ -307,7 +332,7 @@ if (mysqli_num_rows($sqlhead)!=0) {
 								</thead>
 								<tbody class="tbody">
 									<?php 
-										$sqlbody = mysqli_query($con,"select a.* from purchrequest_t a left join items b on A.compcode=B.compcode and A.citemno=b.cpartno where a.compcode = '$company' and a.ctranno = '$cprno'");
+										$sqlbody = mysqli_query($con,"select a.* from purchrequest_t a left join items b on A.compcode=B.compcode and A.citemno=b.cpartno where a.compcode = '$company' and a.ctranno = '$cprno' Order By a.nident");
 
 										if (mysqli_num_rows($sqlbody)!=0) {
 											$cntr = 0;
@@ -373,16 +398,18 @@ if (mysqli_num_rows($sqlhead)!=0) {
 					</div>
 				</div>
 
-				<?php
-					if($poststat=="True"){
-				?>
+				
 
 				<div class="row nopadwtop2x">
 					<div class="col-xs-12">
 						<div class="portlet">
 							<div class="portlet-body">
 								<input type="hidden" name="hdnrowcnt" id="hdnrowcnt">
-								<button type="button" class="btn btn-primary btn-sm" tabindex="6" onClick="window.location.href='PR.php?ix=<?=isset($_REQUEST['hdnsrchval']) ? $_REQUEST['hdnsrchval'] : ""?>';" id="btnMain" name="btnMain">
+								<?php
+									if($postedit=="True"){
+								?>
+
+								<button type="button" class="btn btn-primary btn-sm" tabindex="6" onClick="window.location.href='PR.php?ix=<?=isset($_REQUEST['hdnsrchval']) ? $_REQUEST['hdnsrchval'] : ""?>&loc=<?=isset($_REQUEST['hdnsrchsec']) ? $_REQUEST['hdnsrchsec'] : ""?>&st=<?=isset($_REQUEST['hdnsrchsta']) ? $_REQUEST['hdnsrchsta'] : ""?>';" id="btnMain" name="btnMain">
 									Back to Main<br>(ESC)
 								</button>
 							
@@ -395,6 +422,8 @@ if (mysqli_num_rows($sqlhead)!=0) {
 								</button>
 
 								<?php
+									}
+
 									$sql = mysqli_query($con,"select * from users_access where userid = '".$_SESSION['employeeid']."' and pageid = 'PR_print'");
 
 									if(mysqli_num_rows($sql) == 1){
@@ -406,7 +435,9 @@ if (mysqli_num_rows($sqlhead)!=0) {
 									</button>
 
 								<?php		
-										}
+									}
+
+									if($postedit=="True"){
 								?>
 
 								<button type="button" class="btn btn-warning btn-sm" tabindex="6" onClick="enabled();" id="btnEdit" name="btnEdit">
@@ -416,13 +447,36 @@ if (mysqli_num_rows($sqlhead)!=0) {
 								<button type="button" class="btn btn-success btn-sm" tabindex="6" onClick="return chkform();" id="btnSave" name="btnSave">
 									Save<br>(CTRL+S)
 								</button>
+
+								<?php
+										if($xm==0 && $lSent==1){ 
+											$chkrejstat1 = "";
+											$chkrejstat2 = "";
+											if($chkapprovals==$employeeid){
+												$chkrejstat1 = (($poststat!="True") ? " disabled" : "");
+												$chkrejstat2 = (($cancstat!="True") ? " disabled" : "");
+											}else{
+												$chkrejstat1 = " disabled";
+												$chkrejstat2 = " disabled";
+											}
+				
+											if($chkrejstat1==""){
+												echo "<button id=\"btnPosting\" type=\"button\" onClick=\"trans('POST','".$cprno."')\" class=\"btn btn-default btn-sm".$chkrejstat1."\">Post<br><i class=\"fa fa-thumbs-up\" style=\"font-size:18px;color:Green\" title=\"Approve transaction\"></i></button>";
+											}
+				
+											if($chkrejstat2==""){
+												echo " <button id=\"btnCanceling\" type=\"button\" onClick=\"trans('CANCEL','".$cprno."')\" class=\"btn btn-default btn-sm".$chkrejstat2."\">Cancel<br><i class=\"fa fa-thumbs-down\" style=\"font-size:18px;color:Red\" title=\"Cancel transaction\"></i></button>";
+											}
+																		
+										}
+
+									}
+								?>
 							</div>
 						</div>
 					</div>
 				</div>
-				<?php
-					}
-				?>
+
 			</div>
 		</div>
 
@@ -451,40 +505,35 @@ if (mysqli_num_rows($sqlhead)!=0) {
 
 	<!-- 1) Alert Modal -->
 	<div class="modal fade" id="AlertModal" tabindex="-1" role="dialog" data-keyboard="false" data-backdrop="static" aria-hidden="true">
-			<div class="vertical-alignment-helper">
-					<div class="modal-dialog vertical-align-top">
-							<div class="modal-content">
-								<div class="alert-modal-danger">
-										<p id="AlertMsg"></p>
-									<p>
-											<center>
-													<button type="button" class="btn btn-primary btn-sm" data-dismiss="modal" id="alertbtnOK">Ok</button>
-											</center>
-									</p>
-								</div>
-							</div>
+		<div class="vertical-alignment-helper">
+			<div class="modal-dialog vertical-align-top">
+				<div class="modal-content">
+					<div class="alert-modal-danger">
+						<p id="AlertMsg"></p>
+						<p>
+						<center>
+								<button type="button" class="btn btn-primary btn-sm" id="OK" onclick="trans_send('OK')">Ok</button>
+								<button type="button" class="btn btn-danger btn-sm" id="Cancel" onclick="trans_send('Cancel')">Cancel</button>
+								
+								
+								<button type="button" class="btn btn-primary btn-sm" data-dismiss="modal" id="alertbtnOK">Ok</button>
+								
+								<input type="hidden" id="typ" name="typ" value = "">
+								<input type="hidden" id="modzx" name="modzx" value = "">
+						</center>
+						</p>
 					</div>
+				</div>
 			</div>
+		</div>
 	</div>
 
-
-	<!-- PRINT OUT MODAL-->
-		<div class="modal fade" id="PrintModal" role="dialog" data-keyboard="false" data-backdrop="static">
-			<div class="modal-dialog modal-lg">
-				<div class="modal-contnorad">   
-					<div class="modal-bodylong">
-						<button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>        
-						
-						<iframe id="myprintframe" name="myprintframe" scrolling="no" style="width:100%; height:8.5in; display:block; margin:0px; padding:0px; border:0px"></iframe>
-												
-					</div>
-				</div><!-- /.modal-content -->
-			</div><!-- /.modal-dialog -->
-		</div><!-- /.modal -->
-	<!-- End Bootstrap modal -->
-
-	<form method="post" name="frmedit" id="frmedit" action="PurchRet_edit.php">
+	<form method="post" name="frmedit" id="frmedit" action="PR_edit.php"> 
 		<input type="hidden" name="txtctranno" id="txtctranno" value="">
+	</form>
+
+	<form method="post" name="frmprint" id="frmprint" action="PrintPR_PDF.php" target="_blank">
+		<input type="hidden" name="printid" id="printid" value="">
 	</form>
 
 </body>
@@ -506,7 +555,7 @@ if (mysqli_num_rows($sqlhead)!=0) {
 
 	//alert(xzconfig.length);
 
-	var arroffice = new Array("xls","xlsx","doc","docx","ppt","pptx","csv");
+	var arroffice = new Array("xls","xlsx","doc","docx","ppt","pptx");
 	var arrimg = new Array("jpg","png","gif","jpeg");
 
 	var xtc = "";
@@ -523,6 +572,8 @@ if (mysqli_num_rows($sqlhead)!=0) {
 			xtc = "image";
 		}else if(object.ext=="txt"){
 			xtc = "text";
+		}else if(object.ext=="csv"){
+			xtc = "gdocs";
 		}else{
 			xtc = object.ext;
 		}
@@ -607,7 +658,7 @@ if (mysqli_num_rows($sqlhead)!=0) {
 				initialPreview: fileslist,
 				initialPreviewAsData: true,
 				initialPreviewFileType: 'image',
-				initialPreviewDownloadUrl: 'https://<?=$_SERVER['HTTP_HOST']?>/Components/assets/PReq/<?=$company."_".$cprno?>/{filename}',
+				initialPreviewDownloadUrl: '<?=$AttachUrlBase?>PReq/<?=$company."_".$cprno?>/{filename}',
 				initialPreviewConfig: filesconfigs
 			});
 		}else{
@@ -650,7 +701,7 @@ if (mysqli_num_rows($sqlhead)!=0) {
 				});
 			},
 			displayText: function (item) {
-				return '<div style="border-top:1px solid gray; width: 300px"><span >'+item.cname+'</span><br><small><span class="dropdown-item-extra">' + item.cunit + '</span></small></div>';
+				return '<div style="border-top:1px solid gray; width: 300px"><span >'+item.id+": "+item.cname+'</span><br><small><span class="dropdown-item-extra">' + item.cunit + '</span></small></div>';
 			},
 			highlighter: Object,
 			afterSelect: function(item) { 					
@@ -790,10 +841,10 @@ if (mysqli_num_rows($sqlhead)!=0) {
 			+"<td style='padding:1px' width='80px'><input type='text' value='1' class='numeric form-control input-xs' style='text-align:right' name=\"txtnqty\" id=\"txtnqty"+lastRow+"\" autocomplete='off' onFocus='this.select();' /> <input type='hidden' value='"+itmunit+"' name='hdnmainuom' id='hdnmainuom"+lastRow+"'> <input type='hidden' value='1' name='hdnfactor' id='hdnfactor"+lastRow+"'> </td>"
 			+"<td style='padding:1px' width='250px'><input type='text' class='form-control input-xs' id='dremarks"+lastRow+"' name='dremarks' placeholder='Enter remarks...' /></td>"
 			+'<td width="150px" style="padding:1px">'+costcntr+'</td>'
-			+"<td width='50px' style='padding:1px'><input class='btn btn-danger btn-xs' type='button' id='del" + itmcode + "' value='delete' /></td>"
+			+"<td width='50px' style='padding:1px'><input class='btn btn-danger btn-xs' type='button' id='del" + lastRow + "' value='delete' /></td>"
 		);									
 
-			$("#del"+itmcode).on('click', function() { 
+			$("#del"+lastRow).on('click', function() { 
 				$(this).closest('tr').remove();
 			});
 
@@ -840,6 +891,12 @@ if (mysqli_num_rows($sqlhead)!=0) {
 		$("#btnNew").attr("disabled", false);
 		$("#btnPrint").attr("disabled", false);
 		$("#btnEdit").attr("disabled", false);
+
+		$("#btnPosting").attr("disabled", false);
+		$("#btnCanceling").attr("disabled", false);
+		 
+
+		$(".kv-file-zoom").attr("disabled", false);
 	}
 
 	function enabled(){
@@ -869,7 +926,10 @@ if (mysqli_num_rows($sqlhead)!=0) {
 				$("#btnMain").attr("disabled", true);
 				$("#btnNew").attr("disabled", true);
 				$("#btnPrint").attr("disabled", true);
-				$("#btnEdit").attr("disabled", true);				
+				$("#btnEdit").attr("disabled", true);	
+				
+				$("#btnPosting").attr("disabled", true);
+				$("#btnCanceling").attr("disabled", true);
 		
 		}
 	}
@@ -882,12 +942,11 @@ if (mysqli_num_rows($sqlhead)!=0) {
 		else{
 
 				if(typx=="Print"){
-					//alert("PrintPO.php?hdntransid="+x);
-					var url = "PrintPR.php?hdntransid="+x;
-					// var url = "PR_printv1.php?tranno=" + x;
-					$("#myprintframe").attr("src", url);
 
-					$("#PrintModal").modal('show');
+					var url = "PrintPR_PDF.php?hdntransid="+x;
+					$("#printid").val(x);
+
+					$("#frmprint").submit();
 				}
 
 		}
@@ -904,6 +963,8 @@ if (mysqli_num_rows($sqlhead)!=0) {
 				
 				$("#AlertMsg").html("&nbsp;&nbsp;NO details found!");
 				$("#alertbtnOK").show();
+				$("#OK").hide();
+				$("#Cancel").hide();
 				$("#AlertModal").modal('show');
 
 			return false;
@@ -931,6 +992,8 @@ if (mysqli_num_rows($sqlhead)!=0) {
 				
 				$("#AlertMsg").html("&nbsp;&nbsp;Details Error: "+msgz);
 				$("#alertbtnOK").show();
+				$("#OK").hide();
+				$("#Cancel").hide();
 				$("#AlertModal").modal('show');
 
 				return false;
@@ -961,4 +1024,94 @@ if (mysqli_num_rows($sqlhead)!=0) {
 		}
 
 	}
+
+	function trans(x,num){
+
+		$("#typ").val(x);
+		$("#modzx").val(num);
+
+		$("#AlertMsg").html("");
+
+		if(x=="CANCEL1"){
+			x = "CANCEL";
+		}
+								
+		$("#AlertMsg").html("Are you sure you want to "+x+" PR No.: "+num);
+		$("#alertbtnOK").hide();
+		$("#OK").show();
+		$("#Cancel").show();
+		$("#AlertModal").modal('show');
+
+	}
+
+	function trans_send(idz){
+
+		var itmstat = "";
+		var x = "";
+		var num = "";
+		var msg = "";
+
+		var x = $("#typ").val();
+		var num = $("#modzx").val();
+
+		if(idz=="OK" && (x=="POST" || x=="SEND")){
+
+			$.ajax ({
+				url: "PR_Tran.php",
+				data: { x: num, typ: x, canmsg: "" },
+				dataType: "json",
+				beforeSend: function() {
+					$("#AlertMsg").html("&nbsp;&nbsp;<b>Processing " + num + ": </b> Please wait a moment...");
+					$("#alertbtnOK").css("display", "none");
+					$("#OK").css("display", "none");
+					$("#Cancel").css("display", "none");
+				},
+				success: function( data ) {
+					console.log(data);
+					//setmsg(data,num);
+					$("#txtctranno").val('<?=$cprno?>');
+					$("#frmedit").submit(); 
+				}
+			});
+			
+
+		}else if(idz=="OK" && (x=="CANCEL" || x=="CANCEL1")){
+			bootbox.prompt({
+				title: 'Enter reason for cancellation.',
+				inputType: 'text',
+				centerVertical: true,
+				callback: function (result) {
+					if(result!="" && result!=null){
+						$.ajax ({
+							url: "PR_Tran.php",
+							data: { x: num, typ: x, canmsg: result },
+							dataType: "json",
+							beforeSend: function() {
+								$("#AlertMsg").html("&nbsp;&nbsp;<b>Processing " + num + ": </b> Please wait a moment...");
+								$("#alertbtnOK").css("display", "none");
+								$("#OK").css("display", "none");
+								$("#Cancel").css("display", "none");
+							},
+							success: function( data ) {
+								console.log(data);
+								setmsg(data,num);
+							}
+						});
+					}else{
+						$("#AlertMsg").html("Reason for cancellation is required!");
+						$("#alertbtnOK").css("display", "inline");
+						$("#OK").css("display", "none");
+						$("#Cancel").css("display", "none");
+					}						
+				}
+			});
+		}else if(idz=="Cancel"){
+			
+			$("#AlertMsg").html("");
+			$("#AlertModal").modal('hide');
+			
+		}
+
+	}
+
 </script>

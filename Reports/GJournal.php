@@ -2,7 +2,7 @@
 if(!isset($_SESSION)){
 session_start();
 }
-$_SESSION['pageid'] = "GJournal.php";
+$_SESSION['pageid'] = "GJournal";
 include('../Connection/connection_string.php');
 include('../include/denied.php');
 include('../include/access.php');
@@ -12,7 +12,7 @@ include('../include/access.php');
 <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
 <title>Myx Financials</title>
 
-<link href="../global/plugins/font-awesome/css/font-awesome.min.css" rel="stylesheet" type="text/css"/>
+  <link rel="stylesheet" type="text/css" href="../global/plugins/font-awesome/css/font-awesome.min.css"/>
 	<link rel="stylesheet" type="text/css" href="../Bootstrap/css/bootstrap.css">
 	<link rel="stylesheet" type="text/css" href="../Bootstrap/css/bootstrap-datetimepicker.css">
 

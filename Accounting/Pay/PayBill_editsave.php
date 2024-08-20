@@ -200,11 +200,12 @@ include('../../include/denied.php');
 	mysqli_query($con,"INSERT INTO logfile(`compcode`, `ctranno`, `cuser`, `ddate`, `cevent`, `module`, `cmachine`, `cremarks`) 
 	values('$company','$cCVNo','$preparedby',NOW(),'UPDATED','CHECK ISSUANCE','$compname','Updated Record')");
 
+
 ?>
-<form action="PayBill_edit.php" name="frmpos" id="frmpos" method="post">
+<form action="th_acctentry2.php" name="frmpos" id="frmpos" method="post">
 	<input type="hidden" name="txtctranno" id="txtctranno" value="<?php echo $cCVNo;?>" />
 </form>
 <script>
-	alert('Record Succesfully Updated');
+	//alert('Record Succesfully Updated');
   	document.forms['frmpos'].submit();
 </script>

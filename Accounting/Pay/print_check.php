@@ -104,7 +104,7 @@ function numberTowords($num)
 			//	$rettxt .= " ".$ones[substr($decnum,1,1)];
 			}
 
-			$rettxt .= $decnum ."/100";
+			$rettxt .= $decnum ."/100 ONLY";
 
 		}else{
 			$rettxt .= " PESOS ONLY";
@@ -144,6 +144,9 @@ function numberTowords($num)
 			$Refno = ($row['cpaymethod']=="cheque") ? $row['ccheckno'] : $row['cpayrefno']; 
 
 			$cdoctype = $row['cdoctype'];
+			//1. BDO/LANDBANK CHECK FORMAT
+			//2. METROBANK CHECK FORMAT
+			//3. EASTWEST CHECK FORMAT
 		}
 	}
 
@@ -169,6 +172,7 @@ function numberTowords($num)
 		body{
 			font-family: 'Courier New', monospace !important;
 			font-weight: 900 !important;
+			font-size: 10pt;	
 		}
 		table {
 			border-collapse: collapse;
@@ -176,7 +180,7 @@ function numberTowords($num)
 		.ewdatemo{
 			position: absolute;
 			float: right;
-			top: 45px;
+			top: 40px;
 			right: 215px;
 			width: 30px;
 			height:  25px;    
@@ -187,7 +191,7 @@ function numberTowords($num)
 		.ewdatedy{
 			position: absolute;
 			float: right;
-			top: 45px;
+			top: 40px;
 			right: 179px;
 			width: 30px;
 			height:  25px;    
@@ -197,7 +201,7 @@ function numberTowords($num)
 		.ewdateyr{
 			position: absolute;
 			float: right;
-			top: 45px;
+			top: 40px;
 			right: 139px;
 			width: 30px;
 			height:  25px;    
@@ -207,26 +211,29 @@ function numberTowords($num)
 		.ewdamt{
 			position: absolute;
 			float: right;
-			top: 80px;
+			top: 75px;
 			right:70px;
 			width: 150px;
 			height:  18px;   
+			font-size: 10pt;	
 			/*border: 1px solid #000;*/
 		}
 		.ewdpay{
 			position: absolute;
-			top: 81px;
+			top: 76px;
 			left: 165px;
 			width: 338px;
 			height:  18px;   
+			font-size: 10pt;	
 			/*border: 1px solid #000;*/
 		}
 		.ewdamtwords{
 			position: absolute;
-			top: 110px;
+			top: 105px;
 			left: 132px;
 			width: 600px;
 			height:  18px;    
+			font-size: 10pt;	
 			/*border: 1px solid #000;*/
 			
 		}
@@ -239,7 +246,7 @@ function numberTowords($num)
 
 	<div class="ewdamt"><?=number_format($Amount,2)?></div>
 	<div class="ewdpay"><?=$Payee?></div>
-	<div class="ewdamtwords"><?=numberTowords($Amount)?></div>
+	<div class="ewdamtwords">* <?=numberTowords($Amount)?> *</div>
 <?php
 	}elseif($cdoctype==2){
 ?>
@@ -248,6 +255,7 @@ function numberTowords($num)
 			body{
 				font-family: 'Courier New', monospace !important;
 				font-weight: 900 !important;
+				font-size: 10pt;	
 			}
 			table {
 				border-collapse: collapse;
@@ -289,7 +297,8 @@ function numberTowords($num)
 				top: 75px;
 				right:90px;
 				width: 150px;
-				height:  18px;    
+				height:  18px;
+				font-size: 10pt;	    
 				/*border: 1px solid #000;*/
 			}
 			.ewdpay{
@@ -298,7 +307,7 @@ function numberTowords($num)
 				left: 130px;
 				width: 338px;
 				height:  18px;   
-
+				font-size: 10pt;	
 				/*border: 1px solid #000;*/
 			}
 			.ewdamtwords{
@@ -307,7 +316,7 @@ function numberTowords($num)
 				left: 108px;
 				width: 600px;
 				height:  18px;    
-
+				font-size: 10pt;	
 				/*border: 1px solid #000;*/
 				
 			}
@@ -325,7 +334,7 @@ function numberTowords($num)
 
 	<div class="ewdamt"><?=number_format($Amount,2)?></div>
 	<div class="ewdpay"><?=$Payee?></div>
-	<div class="ewdamtwords"><?=numberTowords($Amount)?></div>
+	<div class="ewdamtwords">* <?=numberTowords($Amount)?> *</div>
 <?php
 	}elseif($cdoctype==3){
 ?>
@@ -334,6 +343,7 @@ function numberTowords($num)
 		body{
 			font-family: 'Courier New', monospace !important;
 			font-weight: 900 !important;
+			font-size: 10pt;	
 		}
 		table {
 			border-collapse: collapse;
@@ -342,10 +352,10 @@ function numberTowords($num)
 			position: absolute;
 			float: right;
 			top: 45px;
-			right: 225px;
+			right: 215px;
 			width: 30px;
 			height:  25px;    
-			letter-spacing:8px;
+			letter-spacing:10px;
 			font-size: 10pt;
 			/*border: 1px solid #000;*/
 			
@@ -354,20 +364,20 @@ function numberTowords($num)
 			position: absolute;
 			float: right;
 			top: 45px;
-			right: 179px;
+			right: 170px;
 			width: 30px;
 			height:  25px;    
-			letter-spacing:8px;
+			letter-spacing:11px;
 			font-size: 10pt;
 		}
 		.ewdateyr{
 			position: absolute;
 			float: right;
 			top: 45px;
-			right: 129px;
+			right: 119px;
 			width: 30px;
 			height:  25px;    
-			letter-spacing:8px;
+			letter-spacing:11px;
 			font-size: 10pt;
 		}
 		.ewdamt{
@@ -377,22 +387,27 @@ function numberTowords($num)
 			right:90px;
 			width: 150px;
 			height:  18px;    
+			font-size: 10pt;	
 			/*border: 1px solid #000;*/
 		}
 		.ewdpay{
 			position: absolute;
 			top: 80px;
-			left: 150px;
-			width: 338px;
+			left: 100px;
+			width: 440px;
 			height:  18px;    
+			line-height: 15px;
+			font-size: 10pt;
+			text-align: center;
 			/*border: 1px solid #000;*/
 		}
 		.ewdamtwords{
 			position: absolute;
 			top: 108px;
-			left: 108px;
-			width: 600px;
+			left: 85px;
+			width: 650px;
 			height:  18px;    
+			font-size: 10pt;	
 			/*border: 1px solid #000;*/
 			
 		}
@@ -410,7 +425,7 @@ function numberTowords($num)
 
 	<div class="ewdamt"><?=number_format($Amount,2)?></div>
 	<div class="ewdpay"><?=$Payee?></div>
-	<div class="ewdamtwords"><?=numberTowords($Amount)?></div>
+	<div class="ewdamtwords">* <?=numberTowords($Amount)?> *</div>
 
 <?php
 	}

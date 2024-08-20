@@ -6,7 +6,7 @@
     $_SESSION['pageid'] = "BIR_Forms";
     include("../Connection/connection_string.php");
     include('../include/denied.php');
-    include('../include/access.php');
+   // include('../include/access.php');
 ?>
 
 <html>

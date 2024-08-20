@@ -18,9 +18,11 @@ $preparedby = $_SESSION['employeeid'];
 	$cRemarks =  mysqli_real_escape_string($con, $_REQUEST['txtremarks']); 
 	$cSection =  mysqli_real_escape_string($con, $_REQUEST['selwhfrom']);
 
-	if (!mysqli_query($con, "UPDATE `purchrequest` set `locations_id` = '$cSection', `cremarks` = '$cRemarks', `dneeded` = STR_TO_DATE('$dDateNeed', '%m/%d/%Y'), `crequestedby` = '$cReqBy', `capprovedby` = '$cApprvBy', `ccheckedby` = '$cCheckBy' where `compcode` = '$company' and `ctranno` = '$cSINo'")) {
+	if (!mysqli_query($con, "UPDATE `purchrequest` set `locations_id` = '$cSection', `cremarks` = '$cRemarks', `dneeded` = STR_TO_DATE('$dDateNeed', '%m/%d/%Y'), `crequestedby` = '$cReqBy', `capprovedby` = '$cApprvBy', `ccheckedby` = '$cCheckBy', `lsent` = 0 where `compcode` = '$company' and `ctranno` = '$cSINo'")) {
 		printf("Errormessage: %s\n", mysqli_error($con));
-	} 
+	}else{
+		mysqli_query($con,"Update purchrequest_trans_approvals set compcode='".date("Ymd_His")."' where compcode='$company' and cprno='$cSINo'");
+	}
 	
 	//INSERT WRR DETAILS
 	//Savedetails
@@ -81,13 +83,13 @@ $preparedby = $_SESSION['employeeid'];
 				
 		}
 	}
-		
+
 	//INSERT LOGFILE
 	$compname = gethostbyaddr($_SERVER['REMOTE_ADDR']);
 	
 
 	mysqli_query($con,"INSERT INTO logfile(`compcode`, `ctranno`, `cuser`, `ddate`, `cevent`, `module`, `cmachine`, `cremarks`) 
-	values('$company','$cSINo','$preparedby',NOW(),'INSERTED','PURCHASE REQUEST','$compname','Inserted New Record')");
+	values('$company','$cSINo','$preparedby',NOW(),'UPDATED','PURCHASE REQUEST','$compname','Updated Record')");
 
 ?>
 <form action="PR_edit.php" name="frmpos" id="frmpos" method="post">

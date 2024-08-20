@@ -18,6 +18,8 @@
 	$dTargetDate = mysqli_real_escape_string($con, $_POST['txtTargetDate']);
 	$cRefSO = mysqli_real_escape_string($con, $_POST['crefSO']); 
 	$cPriority = mysqli_real_escape_string($con, $_POST['selpriority']);
+	$cProdType = mysqli_real_escape_string($con, $_POST['selprodtyp']);
+	$cNarration = mysqli_real_escape_string($con, $_POST['txtnarration']);
 	$cDept = mysqli_real_escape_string($con, $_POST['seldept']);
 	$cRemarks = mysqli_real_escape_string($con, $_POST['txtcremarks']);
 
@@ -45,7 +47,7 @@
 	$preparedby = mysqli_real_escape_string($con, $_SESSION['employeeid']);
 
 
-	if (!mysqli_query($con, "UPDATE mrp_jo set `ccode` = '$cCustID', `crefSO` = '$cRefSO', `nrefident` = '$cItemIdent', `citemno` = '$cItemNo', `cunit` = '$cItemUnit', `nqty` = '$njoqty', `dtargetdate` = STR_TO_DATE('$dTargetDate', '%m/%d/%Y'), `cpriority` = '$cPriority', `nworkhrs` = '$nworkhrs', `nsetuptime` = '$nsetup', `ncycletime` = '$ncycle', `ntottime` = '$ntottime', `location_id` = '$cDept', `lnoref` = $dret, `cremarks` = '$cRemarks' where `compcode` = '$company' and `ctranno` = '$cSINo'")) {
+	if (!mysqli_query($con, "UPDATE mrp_jo set `ccode` = '$cCustID', `crefSO` = '$cRefSO', `nrefident` = '$cItemIdent', `citemno` = '$cItemNo', `cunit` = '$cItemUnit', `nqty` = '$njoqty', `dtargetdate` = STR_TO_DATE('$dTargetDate', '%m/%d/%Y'), `cpriority` = '$cPriority', `nworkhrs` = '$nworkhrs', `nsetuptime` = '$nsetup', `ncycletime` = '$ncycle', `ntottime` = '$ntottime', `location_id` = '$cDept', `lnoref` = $dret, `cremarks` = '$cRemarks', `cproductype` = '$cProdType', `cnarration` = '$cNarration' where `compcode` = '$company' and `ctranno` = '$cSINo'")) {
 		$mggx = "Errormessage: ". mysqli_error($con);
 	} else{
 

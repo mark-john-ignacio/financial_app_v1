@@ -73,7 +73,7 @@ if (mysqli_num_rows($sqlhead)!=0) {
 <head>
 </head>
 
-<body style="padding-top:0.4in; margin-top: 0.5in;
+<body style="padding-top:0.4in; margin-top: 1in;
         margin-bottom: 0.5in;
         margin-left: 0.5in;
         margin-right: 0.5in;" onLoad="window.print()">

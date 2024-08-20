@@ -68,16 +68,22 @@
             <table>
                 <tr valign="top">
                     <th><button type="button" class='btn btn-danger btn-block' id="btnView" onclick="btnonclick.call(this)" value="VIEW"><i class='fa fa-search'></i>&nbsp;&nbsp;View Report</button></th>
-                    <th width='100px'>Month of:</th>
+                    <th width='100px' valign="middle">Quarter:</th>
                     <th>
-                        <div class="col-xs-10 nopadding">
-                            <div class="input-group">
-                                <span class="input-group-addon"><i class="fa fa-calendar"></i></span>
-                                <input type="text" id="months" name="months" class="monthpicker form-control input-sm" value="<?= date("MM") ?>">
-                            </div>
+                        <div class="col-xs-12 nopadding">
+                            <?php
+                                $curMonth = date("m", time());
+                                $curQuarter = ceil($curMonth/3);
+                            ?>
+                            <select class="form-control input-sm" name="selqrtr" id="selqrtr">
+                                <option value="1"<?=($curQuarter==1) ? " selected": ""?>>1st Quarter</option>
+                                <option value="2"<?=($curQuarter==2) ? " selected": ""?>>2nd Quarter</option>
+                                <option value="3"<?=($curQuarter==3) ? " selected": ""?>>3rd Quarter</option>
+                                <option value="4"<?=($curQuarter==4) ? " selected": ""?>>4th Quarter</option>
+                            </select>
                         </div>
                     </th>
-                    <th>Year:</th>
+                    <th valign="middle">Year:</th>
                     <th>
                         <div class="col-xs-10 nopadding">
                             <div class="input-group">
@@ -90,7 +96,7 @@
                 </tr>
                 <tr valign="top">
                     <th><button type="button" class="btn btn-success btn-block" id="btnExcel" onclick="btnonclick.call(this)" value="CSV"><i class="fa fa-file-excel-o"></i>&nbsp;&nbsp;To Excel</button></th>
-                    <th>RDO Type: </th>
+                    <th valign="middle">RDO Type: </th>
                     <th>
                         <select class="form-control input-sm" name="rdo" id="rdo">
                             <?php
@@ -134,10 +140,10 @@
             format: 'MMMM'
         })
 
-        FetchAPV();
+       // FetchAPV();
     })
 
-    function FetchAPV() {
+   /* function FetchAPV() {
         let year = $("#years").val();
         let month = $("#months").val();
 
@@ -166,20 +172,20 @@
                 console.log(msg)
             }
         })
-    }
+    }*/
 
     function btnonclick() {
         let type = $(this).val();
         var form = document.getElementById('QAPForm');
         var formData = new FormData(form);
-        FetchAPV();
+       // FetchAPV();
 
         let rdo = $("#rdo").val();
         var newAction = "";
 
-        if (apv.length === 0) {
-            return alert("No Referrence found!");
-        } 
+       // if (apv.length === 0) {
+       //     return alert("No Referrence found!");
+       // } 
 
         if(rdo == ""){ 
             return alert("No RDO found please! Fill this detail!");

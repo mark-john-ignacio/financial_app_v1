@@ -2,27 +2,27 @@
 	if(!isset($_SESSION)){
 		session_start();
 	}
-	$_SESSION['pageid'] = "PR_new.php";
+	$_SESSION['pageid'] = "PR_new";
 
 	include('../../Connection/connection_string.php');
 	include('../../include/denied.php');
 	include('../../include/access2.php');
 
-	$id = $_SESSION['employeeid'];
+	$company = $_SESSION['companyid'];
                         
-  $sql = "select * From users where Userid='$id'";
-  $result=mysqli_query($con,$sql);
-                                                    
-	$cfname = "";                                       
-                        
-  while($row = mysqli_fetch_array($result, MYSQLI_ASSOC))
-  {
+	$sql = "select * From users where Userid='$employeeid'";
+	$result=mysqli_query($con,$sql);
+														
+		$cfname = "";                                       
+							
+	while($row = mysqli_fetch_array($result, MYSQLI_ASSOC))
+	{
 		$mi = ($row['Minit']!="") ? " ".$row['Minit'] : "";
-    $cfname =  $row['Lname'] . ", ". $row['Fname'] . $mi;
-  }
+		$cfname =  $row['Lname'] . ", ". $row['Fname'] . $mi;
+	}
 
 	$arrseclist = array();
-	$sqlempsec = mysqli_query($con,"select A.section_nid as nid, B.cdesc from users_sections A left join locations B on A.section_nid=B.nid where A.UserID='$employeeid' and B.cstatus='ACTIVE' Order By B.cdesc");
+	$sqlempsec = mysqli_query($con,"select A.section_nid as nid, B.cdesc from users_sections A left join locations B on A.section_nid=B.nid and B.compcode='$company' where A.UserID='$employeeid' and B.cstatus='ACTIVE' Order By B.cdesc");
 	$rowdetloc = $sqlempsec->fetch_all(MYSQLI_ASSOC);
 	foreach($rowdetloc as $row0){
 		$arrseclist[] = $row0['nid'];

@@ -2,7 +2,7 @@
 	if(!isset($_SESSION)){
 		session_start();
 	}
-	$_SESSION['pageid'] = "Purch_new.php";
+	$_SESSION['pageid'] = "Purch_new";
 
 	include('../../Connection/connection_string.php');
 	include('../../include/denied.php');
@@ -218,7 +218,7 @@
 										</div>
 									</div>
 								</td>
-								<tH width="150" style="padding:2px">Terms: </tH>
+								<tH width="150" style="padding:2px">Terms: </tH> 
 								<td style="padding:2px">				
 										<select id="selterms" name="selterms" class="form-control input-sm selectpicker">  
 											<?php
@@ -475,6 +475,7 @@
 							<table id="MyTable" class="MyTable table-sm table-bordered" border="1">
 								<thead>
 									<tr>
+										<th style="border-bottom:1px solid #999" width="50px">&nbsp;</th>
 										<?php
 											if($xAllowITMCH==1){
 										?>	
@@ -491,7 +492,7 @@
 										<th width="100px" style="border-bottom:1px solid #999">Qty</th>
 										<th width="100px" style="border-bottom:1px solid #999">Price</th>
 										<th width="100px" style="border-bottom:1px solid #999">Amount</th>
-										<th width="100px" style="border-bottom:1px solid #999">Date Needed</th>
+										<!--<th width="100px" style="border-bottom:1px solid #999">Date Needed</th>-->
 										<th width="100px" style="border-bottom:1px solid #999">Remarks</th>
 										<th style="border-bottom:1px solid #999">&nbsp;</th>
 									</tr>
@@ -519,7 +520,7 @@
 									PR<br>(Insert)
 								</button>
 								
-								<button type="button" class="btn green btn-sm" tabindex="6" onClick="return chkform();">Save<br> (CTRL+S)</button>
+								<button type="button" class="btn green btn-sm" id="btnSave" tabindex="6" onClick="return chkform();">Save<br> (CTRL+S)</button>
 							</div>
 						</div>
 					</div>
@@ -1148,11 +1149,11 @@
 
 		var dneeded= document.getElementById("date_needed").value;
 
-		var itmprice = chkprice(itmcode,itmunit);
-		var itmamt = parseFloat(itmnqty)*parseFloat(itmprice);
-		var itmbaseamt = parseFloat($("#basecurrval").val())*parseFloat(itmamt); 
+		var itmprice = chkprice(itmdesc,itmunit);
+		var itmamt = parseFloat($("#basecurrval").val())*parseFloat(itmamt); 
+		var itmbaseamt = parseFloat(itmnqty)*parseFloat(itmprice);
 
-		var uomoptions = "";
+		var uomoptions = ""; 
 		
 		$.ajax ({
 			url: "../th_loaduomperitm.php",
@@ -1179,6 +1180,9 @@
 			
 		var tbl = document.getElementById('MyTable').getElementsByTagName('tr');
 		var lastRow = tbl.length;
+
+
+		var tdxnum = "<td align=\"center\"><input type=\"text\" class=\"form-control input-xs\" id=\"txtnum"+lastRow+"\" value=\""+lastRow+"\" readonly></td>";
 
 		var tdedt = "";
 		<?php
@@ -1246,7 +1250,8 @@
 
 		var tditmdel = "<td style=\"padding: 1px\" nowrap> <input class='btn btn-danger btn-xs' type='button' id='del" + lastRow + "' value='delete' data-var='"+lastRow+"'/> </td>";
 
-		$('#MyTable > tbody:last-child').append('<tr>'+tdedt + tditmpartdesc + tditmdesc + tditmcode + vattd + tditmunit + tditmqty + tditmprice + tditmbaseamount + tdneeded  + tditmremarks + tditmdel + '</tr>');
+		//tdneeded
+		$('#MyTable > tbody:last-child').append('<tr>'+tdxnum+tdedt + tditmpartdesc + tditmdesc + tditmcode + vattd + tditmunit + tditmqty + tditmprice + tditmbaseamount + tditmremarks + tditmdel + '</tr>');
 
 
 			$("#del"+lastRow).on('click', function() {
@@ -1272,7 +1277,7 @@
 			
 			$("#seluom"+lastRow).on('change', function() {
 
-				var xyz = chkprice(itmcode,$(this).val());
+				var xyz = chkprice(itmdesc,$(this).val());
 				
 				$('#txtnprice'+lastRow).val(xyz.trim());
 				
@@ -1285,7 +1290,9 @@
 				
 			});
 
-			$('#dneed'+lastRow).datetimepicker({
+			ComputeGross();
+
+			/*$('#dneed'+lastRow).datetimepicker({
 				format: 'MM/DD/YYYY',
 				useCurrent: false,
 				minDate: moment().format('L'),
@@ -1294,7 +1301,7 @@
 						horizontal: 'right',
 						vertical: 'bottom'
 				}
-			});
+			});*/
 										
 	}
 
@@ -1303,10 +1310,12 @@
 		if(rowCount>1){
 			for (var i = xy+1; i <= rowCount; i++) {
 
+				
+				var ITMtxtnum = document.getElementById('txtnum' + i);
 				var ITMedt = document.getElementById('txtedtitm' + i);
 				var ITMCode = document.getElementById('txtitemcode' + i);
 				var ITMDesc = document.getElementById('txtitemdesc' + i);
-				var ITMewt = document.getElementById('selitmewtyp' + i);
+				//var ITMewt = document.getElementById('selitmewtyp' + i);
 				var ITMvats = document.getElementById('selitmvatyp' + i);
 				var ITMuom = document.getElementById('seluom' + i);
 				var ITMqty = document.getElementById('txtnqty' + i);
@@ -1315,7 +1324,7 @@
 				var ITMprce = document.getElementById('txtnprice' + i);
 				var ITMtramnt = document.getElementById('txtntranamount' + i); 
 				var ITMamnt = document.getElementById('txtnamount' + i); 
-				var ITMneed = document.getElementById('dneed' + i);
+				//var ITMneed = document.getElementById('dneed' + i);
 				var ITMdelx = document.getElementById('del' + i);
 				var ITMremx = document.getElementById('txtitemrem' + i);
 
@@ -1326,7 +1335,7 @@
 
 				ITMCode.id = "txtitemcode" + za;
 				ITMDesc.id = "txtitemdesc" + za;
-				ITMewt.id = "selitmewtyp" + za;
+				//ITMewt.id = "selitmewtyp" + za;
 				ITMvats.id = "selitmvatyp" + za;
 				ITMuom.id = "seluom" + za;
 				ITMqty.id = "txtnqty" + za;
@@ -1335,12 +1344,15 @@
 				ITMprce.id = "txtnprice" + za;
 				ITMtramnt.id = "txtntranamount" + za;
 				ITMamnt.id = "txtnamount" + za;
-				ITMneed.id = "dneed" + za;
+				//ITMneed.id = "dneed" + za;
 
 				ITMdelx.setAttribute('data-var',''+za+'');
 				ITMdelx.id = "del" + za;
 	
 				ITMremx.id = "txtitemrem" + za;
+
+				ITMtxtnum.id = "txtnum" + za;
+				ITMtxtnum.value = za;
 			}
 		}
 	}
@@ -1517,7 +1529,6 @@
 				$("#txtntranamount"+r).autoNumeric('destroy');
 				$("#txtntranamount"+r).autoNumeric('init',{mDec:2});
 
-
 				namt2 = TotAmt * parseFloat($("#basecurrval").val());
 				$(this).find("input[type='hidden'][name='txtnamount']").val(namt2); 
 
@@ -1536,7 +1547,7 @@
 		var ccode = document.getElementById("txtcustid").value;
 				
 		$.ajax ({
-			url: "../th_checkitmprice.php",
+			url: "../th_checkitmpoprice.php",
 			data: { itm: itmcode, cust: ccode, cunit: itmunit},
 			async: false,
 			success: function( data ) {
@@ -1633,7 +1644,7 @@
 		var trancode = "";
 		var isDone = "True";
 
-
+			$("#btnSave").attr("disabled", true);
 			/*Saving the header
 			var ccode = $("#txtcustid").val();
 			var crem = $("#txtremarks").val();
@@ -1686,7 +1697,7 @@
 					var nprice = $(this).find('input[name="txtnprice"]').val();
 					var ntranamt = $(this).find('input[name="txtntranamount"]').val();
 					var namt = $(this).find('input[type="hidden"][name="txtnamount"]').val();
-					var dneed = $(this).find('input[name="dneed"]').val();
+					//var dneed = $(this).find('input[name="dneed"]').val();
 					var mainunit = $(this).find('input[type="hidden"][name="hdnmainuom"]').val();
 					var nfactor = $(this).find('input[type="hidden"][name="hdnfactor"]').val(); 
 					var citmremarks = $(this).find('input[name="txtitemrem"]').val();
@@ -1707,7 +1718,7 @@
 					
 					$.ajax ({
 						url: "Purch_newsavedet.php",
-						data: { trancode: trancode, crefpr:crefpr, crefprident:crefprident, dneed: dneed, indx: index, citmno: citmno, cuom: cuom, nqty:nqty, nprice: nprice, namt:namt, mainunit:mainunit, nfactor:nfactor, ntranamt:ntranamt, citmremarks:citmremarks, vatcode:vatcode, nrate:nrate, ewtcode:'', ewtrate:0, citmpartno:citmpartno, citmnoOLD:citmnoOLD, citmdesc:citmdesc },
+						data: { trancode: trancode, crefpr:crefpr, crefprident:crefprident, indx: index, citmno: citmno, cuom: cuom, nqty:nqty, nprice: nprice, namt:namt, mainunit:mainunit, nfactor:nfactor, ntranamt:ntranamt, citmremarks:citmremarks, vatcode:vatcode, nrate:nrate, ewtcode:'', ewtrate:0, citmpartno:citmpartno, citmnoOLD:citmnoOLD, citmdesc:citmdesc },
 						async: false,
 						success: function( data ) {
 							if(data.trim()=="False"){
@@ -1728,7 +1739,7 @@
 							$('#AlertModal').modal('hide');
 				
 								$("#txtctranno").val(trancode);
-								//$("#frmedit").submit();
+								$("#frmedit").submit();
 				
 						}, 3000); // milliseconds = 3seconds
 
@@ -1801,7 +1812,7 @@
 	function getcontact(cid){
 
 	$.ajax({
-		url:'../get_contactinfo.php',
+		url:'get_contactinfo.php',
 		data: 'c_id='+ cid,                 
 		success: function(value){
 			if(value!=""){
@@ -1812,8 +1823,10 @@
 						
 					$('#txtcontactname').val(data[0]);
 					//$('#txtcontactdesig').val(data[1]);
-					//$('#txtcontactdept').val(data[2]);
+					//$('#txtcontactdept').val(data[2]);  
 					$("#contact_email").val(data[3]);
+					$("#contact_mobile").val(data[4]);
+					$("#contact_fax").val(data[6]);
 				}
 			}
 		}
@@ -1823,87 +1836,97 @@
 
 	function openinv(){
 
-		$('#MyInvTbl').DataTable().destroy();
+		if($("#txtcust").val()=="" || $("#txtcustid").val()==""){
 
-		//clear table body if may laman
-		$('#MyInvTbl tbody').empty(); 
-		$('#MyInvDetList tbody').empty();
-				
-		//get salesno na selected na
-		var y;
-		var salesnos = "";
-		var xstat =  "YES";
+			$("#AlertMsg").html("Please pick a supplier!");
+			$("#alertbtnOK").show();
+			$("#AlertModal").modal('show');
 
-		$.ajax({ //		data: 'x='+x,
-			url: 'th_prlist.php',
-			dataType: 'json',
-			method: 'post',
-			success: function (data) {
+		}else{
 
-				$("#allbox").prop('checked', false);
-								
-				console.log(data);
-				$.each(data,function(index,item){
+			$('#MyInvTbl').DataTable().destroy();
+
+			//clear table body if may laman
+			$('#MyInvTbl tbody').empty(); 
+			$('#MyInvDetList tbody').empty();
+					
+			//get salesno na selected na
+			var y;
+			var salesnos = "";
+			var xstat =  "YES";
+
+			$.ajax({ //		data: 'x='+x,
+				url: 'th_prlist.php',
+				dataType: 'json',
+				method: 'post',
+				success: function (data) {
+
+					$("#allbox").prop('checked', false);
+									
+					console.log(data);
+					$.each(data,function(index,item){
+											
+						if(item.cpono=="NONE"){
+							$("#AlertMsg").html("No Purchase Request Available");
+							$("#alertbtnOK").show();
+							$("#AlertModal").modal('show');
+
+							xstat = "NO";
 										
-					if(item.cpono=="NONE"){
-						$("#AlertMsg").html("No Purchase Request Available");
-						$("#alertbtnOK").show();
-						$("#AlertModal").modal('show');
+							$("#txtcustid").attr("readonly", false);
+							$("#txtcust").attr("readonly", false);
 
-						xstat = "NO";
-									
-						$("#txtcustid").attr("readonly", false);
-						$("#txtcust").attr("readonly", false);
+						}
+						else{
+							$("<tr>").append(
+								$("<td id='td"+item.cprno+"'>").text(item.cprno),
+								$("<td>").text(item.cdesc)
+							).appendTo("#MyInvTbl tbody");
+										
+										
+							$("#td"+item.cprno).on("click", function(){
+								opengetdet($(this).text());
+							});
+										
+							$("#td"+item.cprno).on("mouseover", function(){
+								$(this).css('cursor','pointer');
+							});
+						}
 
+					});
+							
+					if(xstat=="YES"){
+						$('#mySIRef').modal('show');
 					}
-					else{
-						$("<tr>").append(
-							$("<td id='td"+item.cprno+"'>").text(item.cprno),
-							$("<td>").text(item.cdesc)
-						).appendTo("#MyInvTbl tbody");
-									
-									
-						$("#td"+item.cprno).on("click", function(){
-							opengetdet($(this).text());
-						});
-									
-						$("#td"+item.cprno).on("mouseover", function(){
-							$(this).css('cursor','pointer');
-						});
-					}
 
-				});
-						
-				if(xstat=="YES"){
-					$('#mySIRef').modal('show');
+					$('#MyInvTbl').DataTable({
+						"bPaginate": false,
+						"bLengthChange": false,
+						"bFilter": true,
+						"bInfo": false,
+						"bAutoWidth": false,
+						"dom": '<"pull-left"f><"pull-right"l>tip',
+						language: {
+							search: "",
+							searchPlaceholder: "Search PR/Section "
+						}
+					});
+
+					$('#MyInvTbl_filter input').addClass('form-control input-sm');
+					$('#MyInvTbl_filter input').css(
+						{'width':'100%','display':'inline-block'}
+					);
+
+				},
+				error: function (req, status, err) {
+					console.log('Something went wrong', status, err);
+					$("#AlertMsg").html("Something went wrong<br>Status: "+status +"<br>Error: "+err);
+					$("#alertbtnOK").show();
+					$("#AlertModal").modal('show');
 				}
+			});
 
-				$('#MyInvTbl').DataTable({
-					"bPaginate": false,
-					"bLengthChange": false,
-					"bFilter": true,
-					"bInfo": false,
-					"bAutoWidth": false,
-					"dom": '<"pull-left"f><"pull-right"l>tip',
-					language: {
-						search: "",
-						searchPlaceholder: "Search PR/Section "
-					}
-				});
-
-				$('#MyInvTbl_filter input').addClass('form-control input-sm');
-				$('#MyInvTbl_filter input').css(
-					{'width':'100%','display':'inline-block'}
-				);
-
-			},
-			error: function (req, status, err) {
-				console.log('Something went wrong', status, err);
-				$("#AlertMsg").html("Something went wrong<br>Status: "+status +"<br>Error: "+err);
-				$("#alertbtnOK").show();
-				$("#AlertModal").modal('show');
-			}
-		});
+		}
 
 	}
 

@@ -3,7 +3,7 @@
 		session_start();
 	}
 
-	$_SESSION['pageid'] = "Quote_edit.php";
+	$_SESSION['pageid'] = "Quote";
 
 	include('../../Connection/connection_string.php');
 	include('../../include/denied.php');
@@ -12,15 +12,27 @@
 
 	$company = $_SESSION['companyid'];
 
+	//POST
+	$poststat = "True";
+	$sql = mysqli_query($con,"select * from users_access where userid = '$employeeid' and pageid = 'Quote_edit'");
+	if(mysqli_num_rows($sql) == 0){
+		$poststat = "False";
+	}
+
+	//PRINT
+	$printstat = "True";
+	$sql = mysqli_query($con,"select * from users_access where userid = '$employeeid' and pageid = 'Quote_print'");
+	if(mysqli_num_rows($sql) == 0){
+		$printstat = "False";
+	}
+
+
 	if(isset($_REQUEST['txtctranno'])){
 			$txtctranno = $_REQUEST['txtctranno'];
 	}
 	else{
 			$txtctranno = $_REQUEST['txtcsalesno'];
-		}
-		
-	$company = $_SESSION['companyid'];
-
+	}
 
 	$sqlhead = mysqli_query($con,"select a.*,b.cname,b.cpricever,c.cname as cdelname from quote a left join customers b on a.compcode=b.compcode and a.ccode=b.cempid left join customers_secondary c on a.compcode=c.compcode and a.cdelcode=c.ccode where a.ctranno = '$txtctranno' and a.compcode='$company'");
 
@@ -289,7 +301,7 @@ if (mysqli_num_rows($sqlhead)!=0) {
 							<option value="weekly" <?php if($cRCType=="weekly") { echo "selected"; }  ?> >Weekly</option>
 							<option value="monthly" <?php if($cRCType=="monthly") { echo "selected"; }  ?> >Monthly</option>
 							<option value="quartertly" <?php if($cRCType=="quartertly") { echo "selected"; }  ?> >Quartertly</option>
-							<option value="yearly" <?php if($cRCType=="yearly") { echo "selected"; }  ?> >Yearly</option>
+							<option value="yearly" <?php if($cRCType=="yearly") { echo "selected"; }  ?> >Annual</option>
 							<option value="semi_annual" <?php if($cRCType=="semi_annual") { echo "selected"; }  ?>>Semi Annual</option>
 						</select>
 					</div>
@@ -543,7 +555,12 @@ if (mysqli_num_rows($sqlhead)!=0) {
 
 		<div class="col-xs-12 nopadwtop2x">
 				<div class="col-xs-7">
-					<button type="button" class="btn btn-primary btn-sm" tabindex="6" onClick="window.location.href='Quote.php?ix=<?=isset($_REQUEST['hdnsrchval']) ? $_REQUEST['hdnsrchval'] : ""?>';" id="btnMain" name="btnMain">
+
+				<?php
+					if($poststat == "True"){
+				?>
+
+					<button type="button" class="btn btn-primary btn-sm" tabindex="6" onClick="window.location.href='Quote.php?ix=<?=isset($_REQUEST['hdnsrchval']) ? $_REQUEST['hdnsrchval'] : ""?>&st=<?=isset($_REQUEST['hdnsrchsta']) ? $_REQUEST['hdnsrchsta'] : ""?>&stype=<?=isset($_REQUEST['hdnsrchtyp']) ? $_REQUEST['hdnsrchtyp'] : ""?>&sdtf=<?=isset($_REQUEST['hdnsrchdte']) ? $_REQUEST['hdnsrchdte'] : ""?>&dtfr=<?=isset($_REQUEST['hdnsrchdtef']) ? $_REQUEST['hdnsrchdtef'] : ""?>&dtto=<?=isset($_REQUEST['hdnsrchdtet']) ? $_REQUEST['hdnsrchdtet'] : ""?>';" id="btnMain" name="btnMain">
 						Back to Main<br>(ESC)
 					</button>
 		
@@ -554,7 +571,11 @@ if (mysqli_num_rows($sqlhead)!=0) {
 					<button type="button" class="btn btn-danger btn-sm" tabindex="6" onClick="chkSIEnter(13,'frmpos');" id="btnUndo" name="btnUndo">
 						Undo Edit<br>(F3)
 					</button>
+				<?php
+					}
 
+					if($printstat == "True"){
+				?>
 					<button type="button" class="btn btn-info btn-sm" tabindex="6" onClick="printchk('<?php echo $txtctranno;?>','Print');" id="btnPrint" name="btnPrint">
 						Print<br>(F4)
 					</button>
@@ -564,6 +585,9 @@ if (mysqli_num_rows($sqlhead)!=0) {
 					</button>
 
 					<?php
+					}
+					if($poststat == "True"){
+
 						if($lPosted==1 && $lVoid==0){
 					?>
 					<button type="button" class="btn btn-info btn-sm" tabindex="6" id="btnEmail" name="btnEmail" onclick="sendEmail()">  
@@ -580,7 +604,9 @@ if (mysqli_num_rows($sqlhead)!=0) {
 					<button type="button" class="btn btn-success btn-sm" tabindex="6" onClick="return chkform();" id="btnSave" name="btnSave">
 						Save<br>(F2)    
 					</button>
-
+				<?php
+					}
+				?>
 				</div>	
 
 				<div class="col-xs-2"  style="padding-top: 14px !important;">
@@ -939,6 +965,7 @@ else{
 				['style', ['style']],
 				['font', ['bold', 'underline', 'clear']],
 				['fontname', ['fontname']],
+				['fontsize', ['fontsize']],
 				['color', ['color']],
 				['para', ['ul', 'ol', 'paragraph']],
 			]
@@ -1474,59 +1501,80 @@ else{
 				
 		var tditmamount = "<td width=\"100\" nowrap> <input type='text' value='"+baseprice.toFixed(4)+"' class='numeric form-control input-xs' style='text-align:right' name=\"txtnamount\" id='txtnamount"+lastRow+"' > </td>";
 		
-		var tditmdel = "<td width=\"90\" nowrap> <input class='btn btn-danger btn-xs' type='button' id='del" + itmcode + "' value='delete' onClick=\"deleteRow(this);\"/> &nbsp; <input class='btn btn-primary btn-xs' type='button' id='row_" + lastRow + "_info' value='+' onclick = \"viewhidden('"+itmcode+"','"+itmdesc+"','"+lastRow+"');\"/> </td>";
+		var tditmdel = "<td width=\"90\" nowrap> <input class='btn btn-danger btn-xs' type='button' name='itmdel' id='del" + lastRow + "' value='delete'/> &nbsp; <input class='btn btn-primary btn-xs' type='button' name='itmins' id='row_" + lastRow + "_info' value='+' onclick = \"viewhidden('"+itmcode+"','"+itmdesc+"','"+lastRow+"');\"/> </td>";
 
 
 		$('#MyTable > tbody:last-child').append('<tr id="'+lastRow+'">'+tditmcode + tditmdesc + tditmavail + tditmunit + tditmfactor + tditmqty + tditmprice + tditmbaseamount + tditmamount + tditmdel + '</tr>');
 
 
-										$("#del"+itmcode).on('click', function() {
-											$(this).closest('tr').remove();
-										});
+			$("#del"+lastRow).on('click', function() {
+				$(this).closest('tr').remove();
+				Reindex();
+			});
 
 
-										$("input.numeric2").autoNumeric('init',{mDec:4});
-										$("input.numeric").autoNumeric('init',{mDec:2});
+			$("input.numeric2").autoNumeric('init',{mDec:4});
+			$("input.numeric").autoNumeric('init',{mDec:2});
 
-										//$("input.numeric").numeric();
-										$("input.numeric, input.numeric2").on("click", function () {
-										$(this).select();
-										});
+			//$("input.numeric").numeric();
+			$("input.numeric, input.numeric2").on("click", function () {
+			$(this).select();
+			});
+			
+			$("input.numeric, input.numeric2").on("keyup", function () {
+			ComputeAmt($(this).attr('id'));
+			ComputeGross();
+			});
+			
+			$("#seluom"+lastRow).on('change', function() {
+
+				var xyz = chkprice(itmcode,$(this).val(),itmccode,xtoday);
+				var mainuomdata = $(this).data("main");
+				var fact = $(this).find(':selected').data('factor');
+
+				if(fact!=0){
+					$('#hdnfactor'+lastRow).val(fact);
+				}
+
+				if(mainuomdata!==$(this).val()){
+					$('#hdnfactor'+lastRow).attr("readonly", false);
+				}else{
+					$('#hdnfactor'+lastRow).attr("readonly", true);
+				}
+
+				$('#txtnprice'+lastRow).val(xyz.trim());
+				//alert($(this).attr('id'));
+				ComputeAmt($(this).attr('id'));
+				ComputeGross();
+
+				//var fact = setfactor($(this).val(), itmcode);
+				//alert(fact);
+
+			});
+			
+			ComputeGross();
 										
-										$("input.numeric, input.numeric2").on("keyup", function () {
-										ComputeAmt($(this).attr('id'));
-										ComputeGross();
-										});
 										
-										$("#seluom"+lastRow).on('change', function() {
+	}
 
-											var xyz = chkprice(itmcode,$(this).val(),itmccode,xtoday);
-											var mainuomdata = $(this).data("main");
-											var fact = $(this).find(':selected').data('factor');
+	function Reindex(){
+		$("#MyTable > tbody > tr").each(function(index) {
+			$x = index+1;
+			$(this).attr("id",$x);
 
-											if(fact!=0){
-												$('#hdnfactor'+lastRow).val(fact);
-											}
+			$(this).find('select[name="seluom"]').attr("id", "seluom"+$x);
+			$(this).find('input[name="txtnqty"]').attr("id", "txtnqty"+$x);
+			$(this).find('input[name="txtnprice"]').attr("id", "txtnprice"+$x);
+			$(this).find('input[name="txtntranamount"]').attr("id", "txtntranamount"+$x);
+			$(this).find('input[name="txtnamount"]').attr("id", "txtnamount"+$x);
+			$(this).find('input[type="hidden"][name="hdnmainuom"]').attr("id", "hdnmainuom"+$x);
+			$(this).find('input[name="hdnfactor"]').attr("id", "hdnfactor"+$x);
 
-											if(mainuomdata!==$(this).val()){
-												$('#hdnfactor'+lastRow).attr("readonly", false);
-											}else{
-												$('#hdnfactor'+lastRow).attr("readonly", true);
-											}
+			$(this).find('inpu[type="button"][name="itmdel"]').attr("id", "del"+$x);
+			$(this).find('input[type="button"][name="itmins"]').attr("id", "row_"+$x+"_info");
+		});
 
-											$('#txtnprice'+lastRow).val(xyz.trim());
-											//alert($(this).attr('id'));
-											ComputeAmt($(this).attr('id'));
-											ComputeGross();
-
-											//var fact = setfactor($(this).val(), itmcode);
-											//alert(fact);
-
-										});
-										
-										ComputeGross();
-										
-										
+		ComputeGross();
 	}
 
 	function ComputeAmt(nme){

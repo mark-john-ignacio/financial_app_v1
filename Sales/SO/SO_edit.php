@@ -2,7 +2,7 @@
 	if(!isset($_SESSION)){
 		session_start();
 	}
-	$_SESSION['pageid'] = "SO.php";
+	$_SESSION['pageid'] = "SO";
 
 	include('../../Connection/connection_string.php');
 	include('../../include/denied.php');
@@ -19,7 +19,7 @@
 	}
 
 	$poststat = "True";
-	$sql = mysqli_query($con,"select * from users_access where userid = '$employeeid' and pageid = 'SO_edit.php'");
+	$sql = mysqli_query($con,"select * from users_access where userid = '$employeeid' and pageid = 'SO_edit'");
 	if(mysqli_num_rows($sql) == 0){
 		$poststat = "False";
 	}
@@ -480,7 +480,7 @@ if (mysqli_num_rows($sqlhead)!=0) {
 					<?php
 						if($poststat == "True"){
 					?>
-					<button type="button" class="btn btn-primary btn-sm" tabindex="6" onClick="window.location.href='SO.php?ix=<?=isset($_REQUEST['hdnsrchval']) ? $_REQUEST['hdnsrchval'] : ""?>';" id="btnMain" name="btnMain">Back to Main<br>(ESC)</button>
+					<button type="button" class="btn btn-primary btn-sm" tabindex="6" onClick="window.location.href='SO.php?ix=<?=isset($_REQUEST['hdnsrchval']) ? $_REQUEST['hdnsrchval'] : ""?>&st=<?=isset($_REQUEST['hdnsrchsta']) ? $_REQUEST['hdnsrchsta'] : ""?>';" id="btnMain" name="btnMain">Back to Main<br>(ESC)</button>
 
 					<button type="button" class="btn btn-default btn-sm" tabindex="6" onClick="window.location.href='SO_new.php';" id="btnNew" name="btnNew">New<br>(F1)</button>
 
@@ -490,6 +490,8 @@ if (mysqli_num_rows($sqlhead)!=0) {
 					</button>
 
 					<?php
+						}
+
 						$sql = mysqli_query($con,"select * from users_access where userid = '".$_SESSION['employeeid']."' and pageid = 'SO_print'");
 
 						if(mysqli_num_rows($sql) == 1){
@@ -502,6 +504,7 @@ if (mysqli_num_rows($sqlhead)!=0) {
 					<?php		
 						}
 
+						if($poststat == "True"){
 					?>
 					
 					<button type="button" class="btn btn-warning btn-sm" tabindex="6" onClick="enabled();" id="btnEdit" name="btnEdit">Edit<br>(CTRL+E)    </button>
@@ -2224,6 +2227,8 @@ function disabled(){
 	$("#btnNew").attr("disabled", false);
 	$("#btnPrint").attr("disabled", false);
 	$("#btnEdit").attr("disabled", false);
+
+	$(".kv-file-zoom").attr("disabled", false);
 
 }
 

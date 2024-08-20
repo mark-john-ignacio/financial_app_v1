@@ -1,63 +1,69 @@
 <?php
-if(!isset($_SESSION)){
-session_start();
-}
-$_SESSION['pageid'] = "users.php";
+	if(!isset($_SESSION)){
+		session_start();
+	}
+	$_SESSION['pageid'] = "users";
 
-include('../../Connection/connection_string.php');
-include('../../include/denied.php');
-include('../../include/access2.php');
+	include('../../Connection/connection_string.php');
+	include('../../include/denied.php');
+	include('../../include/access2.php');
 
-@$lvlcntA = 0;
-@$lvlcntI = 0;
+	@$lvlcntA = 0;
+	@$lvlcntI = 0;
 
-$sqlhead = mysqli_query($con,"Select * from users where Userid<>'Admin'");
-if (mysqli_num_rows($sqlhead)!=0) {
-	while($row = mysqli_fetch_array($sqlhead, MYSQLI_ASSOC)){
-		if($row['cstatus']=="Active"){
-			@$lvlcntA++;
+	$sqlhead = mysqli_query($con,"Select * from users where Userid<>'Admin'");
+	if (mysqli_num_rows($sqlhead)!=0) {
+		while($row = mysqli_fetch_array($sqlhead, MYSQLI_ASSOC)){
+			if($row['cstatus']=="Active"){
+				@$lvlcntA++;
+			}
+			
+			if($row['cstatus']=="Inactive"){
+				@$lvlcntI++;
+			}
 		}
-		
-		if($row['cstatus']=="Inactive"){
-			@$lvlcntI++;
+	}
+
+	$sqlhead = mysqli_query($con,"Select code from company where compcode='".$_SESSION['companyid']."'");
+	if (mysqli_num_rows($sqlhead)!=0) {
+		while($row = mysqli_fetch_array($sqlhead, MYSQLI_ASSOC)){
+			@$keycode = $row['code']; // 1 = both; 0 = active only
 		}
 	}
-}
 
-$sqlhead = mysqli_query($con,"Select code from company where compcode='".$_SESSION['companyid']."'");
-if (mysqli_num_rows($sqlhead)!=0) {
-	while($row = mysqli_fetch_array($sqlhead, MYSQLI_ASSOC)){
-		@$keycode = $row['code']; // 1 = both; 0 = active only
+	$posedit = "True";
+	$sql = mysqli_query($con,"select * from users_access where userid = '$employeeid' and pageid = 'users_Edit'");
+	if(mysqli_num_rows($sql) == 0){
+		$posedit = "False";
 	}
-}
 
-@$lvlcnt = 0;
-$sqlhead = mysqli_query($con,"Select * from users_license where compcode='".$_SESSION['companyid']."'");
-if (mysqli_num_rows($sqlhead)!=0) {
-	while($row = mysqli_fetch_array($sqlhead, MYSQLI_ASSOC)){
-		@$lvlcnt = $row['value'];
-		@$lvlcompute = $row['ccompute']; // 1 = both; 0 = active only
+	@$lvlcnt = 0;
+	$sqlhead = mysqli_query($con,"Select * from users_license where compcode='".$_SESSION['companyid']."'");
+	if (mysqli_num_rows($sqlhead)!=0) {
+		while($row = mysqli_fetch_array($sqlhead, MYSQLI_ASSOC)){
+			@$lvlcnt = $row['value'];
+			@$lvlcompute = $row['ccompute']; // 1 = both; 0 = active only
+		}
 	}
-}
 
-@$licval = 0;
-$c=base64_decode(@$lvlcnt);
-$ivlen=openssl_cipher_iv_length($cipher="AES-128-CBC");
-$iv=substr($c,0,$ivlen);
-$hmac=substr($c,$ivlen,$sha2len=32);
-$ciphertext_raw=substr($c,$ivlen+$sha2len);
-$original_plaintext=openssl_decrypt($ciphertext_raw,$cipher,@$keycode,$options=OPENSSL_RAW_DATA,$iv);
-$calcmac=hash_hmac('sha256',$ciphertext_raw,@$keycode,$as_binary=true);
-if(hash_equals($hmac,$calcmac))// timing attack safe comparison
-{
-  @$licval = $original_plaintext."\n";
-}
+	@$licval = 0;
+	$c=base64_decode(@$lvlcnt);
+	$ivlen=openssl_cipher_iv_length($cipher="AES-128-CBC");
+	$iv=substr($c,0,$ivlen);
+	$hmac=substr($c,$ivlen,$sha2len=32);
+	$ciphertext_raw=substr($c,$ivlen+$sha2len);
+	$original_plaintext=openssl_decrypt($ciphertext_raw,$cipher,@$keycode,$options=OPENSSL_RAW_DATA,$iv);
+	$calcmac=hash_hmac('sha256',$ciphertext_raw,@$keycode,$as_binary=true);
+	if(hash_equals($hmac,$calcmac))// timing attack safe comparison
+	{
+	@$licval = $original_plaintext."\n";
+	}
 
-if(@$lvlcompute==1){
-	@$remain = intval(@$licval) - (intval(@$lvlcntA)+intval(@$lvlcntI));
-}else{
-	@$remain = intval(@$licval) - intval(@$lvlcntA);
-}
+	if(@$lvlcompute==1){
+		@$remain = intval(@$licval) - (intval(@$lvlcntA)+intval(@$lvlcntI));
+	}else{
+		@$remain = intval(@$licval) - intval(@$lvlcntA);
+	}
 
 
 
@@ -71,6 +77,8 @@ if(@$lvlcompute==1){
 
     <link rel="stylesheet" type="text/css" href="../../Bootstrap/css/bootstrap.css"> 
     <link href="../../global/plugins/font-awesome/css/font-awesome.min.css" rel="stylesheet" type="text/css"/>   
+	<link rel="stylesheet" type="text/css" href="../../Bootstrap/css/alert-modal.css">
+	
     <script src="../../Bootstrap/js/jquery-3.2.1.min.js"></script>
     <script src="../../Bootstrap/js/bootstrap.js"></script>
 
@@ -100,10 +108,9 @@ if(@$lvlcompute==1){
 	<div>
 		<section>
 
-
 		<table border="0" width="100%">
-      <tr>                 
-        <td width="20%"><font size="+2"><u>Users List</u></font></td>
+      		<tr>                 
+        		<td width="20%"><font size="+2"><u>Users List</u></font></td>
 				<td rowspan="2" align="right" class="text-danger">
 
 				[Users License:<b><?=@$licval?></b> , Total Employees (Active [<b><?=@$lvlcntA?></b>] + Inactive [<b><?=@$lvlcntI?></b>]) = <b><?=intval(@$lvlcntA)+intval(@$lvlcntI)?></b> , Remaining License : <b><?=@$remain?></b> ]
@@ -111,13 +118,13 @@ if(@$lvlcompute==1){
 				</td>
 			</tr>
 			<tr>                 
-        <td>
+       			<td>
 					<?php
 
 						//check user access level sa page
 						$employeeid = $_SESSION['employeeid'];	
 						$vrdiabled = "";
-						$sql = mysqli_query($con,"select * from users_access where userid = '$employeeid' and pageid = 'users_add.php'");
+						$sql = mysqli_query($con,"select * from users_access where userid = '$employeeid' and pageid = 'users_New'");
 										
 						if(mysqli_num_rows($sql) == 0){
 							$vrdiabled = "disabled";
@@ -133,135 +140,131 @@ if(@$lvlcompute==1){
 			</tr>
 		</table>												
 
-      <br>
+      	<br>
                 
-              <table id="example" class="display">
-								<thead>
-									<tr>
-											
-											<th>&nbsp;</th>
-										<th>UserID</th>
-											<th>Name</th>
-											<th>Email</th>
-											<th style="text-align: center">Status</th>
-											<th style="text-align: center">Actions</th>
-											<!--<th>Password</th>-->
-									</tr>
-								</thead>
-								<tbody>
-									<?php
-										if($_REQUEST['f'] == "search"){
-											
-											$sql = "select * from users where (Userid like '%$_POST[search]%' or Fname like '%$_POST[search]%' or Lname like '%$_POST[search]%') order by Userid";
-										}else{
-											$sql = "select * from users order by Userid";
-										}
-										
-										@$allemailadd = array();
-										$result=mysqli_query($con,$sql);
-										
-											if (!mysqli_query($con, $sql)) {
-												printf("Errormessage: %s\n", mysqli_error($con));
-											} 
-										
+		<table id="example" class="display">
+			<thead>
+				<tr>						
+					<th>&nbsp;</th>
+					<th>UserID</th>
+					<th>Name</th>
+					<th>Email</th>
+					<th style="text-align: center">Status</th>
+					<th style="text-align: center">Actions</th>
+					<!--<th>Password</th>-->
+				</tr>
+			</thead>
+			<tbody>
+				<?php
+					if($_REQUEST['f'] == "search"){
+						
+						$sql = "select * from users where (Userid like '%$_POST[search]%' or Fname like '%$_POST[search]%' or Lname like '%$_POST[search]%') order by Userid";
+					}else{
+						$sql = "select * from users order by Userid";
+					}
+					
+					@$allemailadd = array();
+					$result=mysqli_query($con,$sql);
+					
+						if (!mysqli_query($con, $sql)) {
+							printf("Errormessage: %s\n", mysqli_error($con));
+						} 
+					
 
-										while($row = mysqli_fetch_array($result, MYSQLI_ASSOC))
-										{
-											$allowx = "Yes";
-											
-											if ($row['cuserpic']=="") {
-												$imgsrc =  "../../imgusers/emp.jpg";
+					while($row = mysqli_fetch_array($result, MYSQLI_ASSOC))
+					{
+						$allowx = "Yes";
+						
+						if ($row['cuserpic']=="") {
+							$imgsrc =  "../../imgusers/emp.jpg";
 
-												
-											} else {
-												$imgsrc = $row['cuserpic'];
+							
+						} else {
+							$imgsrc = $row['cuserpic'];
 
-											}
+						}
 
-												if($row['Userid']=="Admin" && $_SESSION['employeeid']!="Admin") {
-													$allowx = "No";
-												}
+						if($row['Userid']=="Admin" && $_SESSION['employeeid']!="Admin") {
+							$allowx = "No";
+						}
 
-												if($allowx == "Yes"){
+						if($allowx == "Yes"){
 
-										?>
-													<tr>
-														<td align="center">
-																<img alt="" src="<?php echo $imgsrc; ?>" width="30px" height="30px" />
-														</td>
-														<td><?php echo $row['Userid'];?></td>
-														<td><?php echo $row['Fname']." ".$row['Lname'];?></td>
-														<td><?php echo $row['cemailadd'];?></td>
-														<td align="center">
-															<?php 
-																@$allemailadd[] = array('cemailadd' => $row['cemailadd'], 'Userid' => $row['Userid']);
+					?>
+						<tr>
+							<td align="center">
+									<img alt="" src="<?php echo $imgsrc; ?>" width="30px" height="30px" />
+							</td>
+							<td><?php echo $row['Userid'];?></td>
+							<td><?php echo $row['Fname']." ".$row['Lname'];?></td>
+							<td><?php echo $row['cemailadd'];?></td>
+							<td align="center">
+								<?php 
+									@$allemailadd[] = array('cemailadd' => $row['cemailadd'], 'Userid' => $row['Userid']);
 
-																if ($row['cstatus']=="Active"){
-																	echo "<span class='label label-success'>Active</span>";
-																}
-																elseif ($row['cstatus']=="Inactive"){
-																	echo "<span class='label label-danger'>Inactive</span>";
-																}
-																elseif ($row['cstatus']=="Deactivate"){
-																	echo "<span class='label label-danger'>Blocked</span>";
-																}
-																else{
-																	echo "<span class='label label-default'>Status error!</h1></span>";
-																}
-																
-																
-															?>
-														</td>
-														<td align="center" width="150px">
-															<a href="javascript:;" id="editusr" name="<?php echo $row['Userid'];?>" onClick="editsrc('<?php echo $row['Userid'];?>')">
-																<i class="fa fa-user" style="font-size:20px;color:SlateGrey ;" title="Edit user's details"></i>
-															</a>
-																&nbsp;
-															<a href="javascript:;" onClick="sendedit('<?php echo $row['Userid'];?>')">
-																<i class="fa fa-edit" style="font-size:20px;color:SteelBlue ;" title="Edit user's access"></i>
-															</a>
-																&nbsp;
-															<a href="javascript:;" onClick="resetpass('<?php echo $row['Userid'];?>')" class=info>
-																<i class="fa fa-refresh" style="font-size:20px;color:green;" title="Reset user password"></i>
-															</a>
-																&nbsp;
-															<?php
-																if ($row['cstatus']=="Active"){
-															?>
-															
-															<a href="javascript:;" onClick="setstat('<?php echo $row['Userid'];?>', 'Inactive')" class=info>
-																<i class="fa fa-times-circle" style="font-size:20px;color:red;" title="Inactive user access"></i>
-															</a>
+									if ($row['cstatus']=="Active"){
+										echo "<span class='label label-success'>Active</span>";
+									}
+									elseif ($row['cstatus']=="Inactive"){
+										echo "<span class='label label-danger'>Inactive</span>";
+									}
+									elseif ($row['cstatus']=="Deactivate"){
+										echo "<span class='label label-danger'>Blocked</span>";
+									}
+									else{
+										echo "<span class='label label-default'>Status error!</h1></span>";
+									}
+									
+									
+								?>
+							</td>
+							<td align="center" width="150px">
+								<a href="javascript:;" id="editusr" name="<?php echo $row['Userid'];?>" onClick="editsrc('<?php echo $row['Userid'];?>')">
+									<i class="fa fa-user" style="font-size:20px;color:SlateGrey ;" title="Edit user's details"></i>
+								</a>
+									&nbsp;
+								<a href="javascript:;" onClick="sendedit('<?php echo $row['Userid'];?>')">
+									<i class="fa fa-edit" style="font-size:20px;color:SteelBlue ;" title="Edit user's access"></i>
+								</a>
+									&nbsp;
+								<a href="javascript:;" onClick="resetpass('<?php echo $row['Userid'];?>')" class=info>
+									<i class="fa fa-refresh" style="font-size:20px;color:green;" title="Reset user password"></i>
+								</a>
+									&nbsp;
+								<?php
+									if ($row['cstatus']=="Active"){
+								?>
+								
+								<a href="javascript:;" onClick="setstat('<?php echo $row['Userid'];?>', 'Inactive')" class=info>
+									<i class="fa fa-times-circle" style="font-size:20px;color:red;" title="Inactive user access"></i>
+								</a>
 
-															<?php
-																}
-																elseif ($row['cstatus']=="Inactive"){
-															?>
-															
-															<a href="javascript:;" onClick="setstat('<?php echo $row['Userid'];?>', 'Active')" class=info>
-																<i class="fa fa-check-circle" style="font-size:20px;color:GoldenRod ;" title="Activate user access"></i>
-															</a>
-										
-															<?php
-															}
-															?>
+								<?php
+									}
+									elseif ($row['cstatus']=="Inactive"){
+								?>
+								
+								<a href="javascript:;" onClick="setstat('<?php echo $row['Userid'];?>', 'Active')" class=info>
+									<i class="fa fa-check-circle" style="font-size:20px;color:GoldenRod ;" title="Activate user access"></i>
+								</a>
+			
+								<?php
+								}
+								?>
 
-														</td>
-														<!--<td><a href="" title="<?php //echo base64_decode($row['password']);?>"><?php //echo $row['password'];?></a></td>-->
-													</tr>
-									<?php 
-												}
-									}								
-									?>
-								</tbody>
-              </table>
+							</td>
+							<!--<td><a href="" title="<?php //echo base64_decode($row['password']);?>"><?php //echo $row['password'];?></a></td>-->
+						</tr>
+				<?php 
+						}
+				}								
+				?>
+			</tbody>
+		</table>
 
-							<input type="hidden" value='<?=json_encode(@$allemailadd)?>' id="hdnemails">
+		<input type="hidden" value='<?=json_encode(@$allemailadd)?>' id="hdnemails">
               
     </div> <!-- /container -->
-
-	
-
 
 	<!-- Modal -->
 	<div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
@@ -410,7 +413,30 @@ if(@$lvlcompute==1){
 ?>
 
 
-
+	<!-- 1) Alert Modal -->
+	<div class="modal fade" id="AlertModal" tabindex="-1" role="dialog" data-keyboard="false" data-backdrop="static" aria-hidden="true">
+		<div class="vertical-alignment-helper">
+			<div class="modal-dialog vertical-align-top">
+				<div class="modal-content">
+				<div class="alert-modal-danger">
+					<p id="AlertMsg"></p>
+					<p>
+						<center>
+							<button type="button" class="btn btn-primary btn-sm" id="OK" onclick="setStat('OK')">Ok</button>
+							<button type="button" class="btn btn-danger btn-sm" id="Cancel" onclick="setStat('Cancel')">Cancel</button>
+							
+							
+							<button type="button" class="btn btn-primary btn-sm" data-dismiss="modal" id="alertbtnOK">Ok</button>
+							
+							<input type="hidden" id="typ" name="typ" value = "">
+							<input type="hidden" id="modzx" name="modzx" value = "">
+						</center>
+					</p>
+				</div> 
+				</div>
+			</div>
+		</div>
+	</div>
 
 <link rel="stylesheet" type="text/css" href="../../Bootstrap/DataTable/DataTable.css"> 
 <script type="text/javascript" language="javascript" src="../../Bootstrap/DataTable/jquery.dataTables.min.js"></script>
@@ -649,6 +675,10 @@ if(@$lvlcompute==1){
 	function editsrc($xcv){
 		$("#hdnmodtype").val("Edit");
 			
+		var x = "<?=$posedit;?>";
+				
+		if(x.trim()=="True"){
+
 			$.ajax({
 				url: 'users_getdetail.php',
 				data: 'id='+$xcv,
@@ -656,8 +686,8 @@ if(@$lvlcompute==1){
 				method: 'post',
 				async:false,
 				success: function (data) {
-					 console.log(data);
-										 $.each(data,function(index,item){
+						console.log(data);
+											$.each(data,function(index,item){
 					
 						$("#userid").val(item.id);
 						$("#Fname").val(item.fname);
@@ -680,18 +710,27 @@ if(@$lvlcompute==1){
 							$('#imgsignuser').html("");
 						}
 						
-					 });
-					 $("#btnSave").hide();
-					 $("#btnUpdate").show();
-					 
-					 $("#userid").attr('readonly',true);
-					 
-					 
-					 $('#myModalLabel').html("<b>Update User Details</b>");
-					 $('#myModal').modal('show');
+						});
+						$("#btnSave").hide();
+						$("#btnUpdate").show();
+						
+						$("#userid").attr('readonly',true);
+						
+						
+						$('#myModalLabel').html("<b>Update User Details</b>");
+						$('#myModal').modal('show');
 
 				}
 			});
+
+		}else {
+			$("#AlertMsg").html("<center><b>ACCESS DENIED!</b></center>");
+			$("#alertbtnOK").show();
+			$("#OK").hide();
+			$("#Cancel").hide();
+			$("#AlertModal").modal('show');
+
+		}
 	}
 
 </script>

@@ -2,7 +2,7 @@
 	if(!isset($_SESSION)){
 		session_start();
 	}
-	$_SESSION['pageid'] = "Purch.php";
+	$_SESSION['pageid'] = "Purch";
 
 	include('../../Connection/connection_string.php');
 	include('../../include/denied.php');
@@ -12,7 +12,7 @@
 	$company = $_SESSION['companyid'];
 
 	$poststat = "True";
-	$sql = mysqli_query($con,"select * from users_access where userid = '$employeeid' and pageid = 'Purch_edit.php'");
+	$sql = mysqli_query($con,"select * from users_access where userid = '$employeeid' and pageid = 'Purch_edit'");
 	if(mysqli_num_rows($sql) == 0){
 		$poststat = "False";
 	}
@@ -561,6 +561,7 @@ if (mysqli_num_rows($sqlhead)!=0) {
 							<table id="MyTable" class="MyTable table-sm table-bordered" border="1">
 								<thead>
 									<tr>
+										<th style="border-bottom:1px solid #999" width="50px">&nbsp;</th>
 										<?php
 											if($xAllowITMCH==1){
 										?>	
@@ -577,7 +578,7 @@ if (mysqli_num_rows($sqlhead)!=0) {
 										<th width="100px" style="border-bottom:1px solid #999">Qty</th>
 										<th width="100px" style="border-bottom:1px solid #999">Price</th>
 										<th width="100px" style="border-bottom:1px solid #999">Amount</th>
-										<th width="100px" style="border-bottom:1px solid #999">Date Needed</th>
+										<!--<th width="100px" style="border-bottom:1px solid #999">Date Needed</th>-->
 										<th width="100px" style="border-bottom:1px solid #999">Remarks</th>
 										<th style="border-bottom:1px solid #999">&nbsp;</th>
 									</tr>
@@ -602,7 +603,7 @@ if (mysqli_num_rows($sqlhead)!=0) {
 									if($poststat=="True"){
 								?>
 
-								<button type="button" class="btn btn-primary btn-sm" tabindex="6" onClick="window.location.href='Purch.php?ix=<?=isset($_REQUEST['hdnsrchval']) ? $_REQUEST['hdnsrchval'] : ""?>';" id="btnMain" name="btnMain">
+								<button type="button" class="btn btn-primary btn-sm" tabindex="6" onClick="window.location.href='Purch.php?ix=<?=isset($_REQUEST['hdnsrchval']) ? $_REQUEST['hdnsrchval'] : ""?>&st=<?=isset($_REQUEST['hdnsrchsta']) ? $_REQUEST['hdnsrchsta'] : ""?>';" id="btnMain" name="btnMain">
 									Back to Main<br>(ESC)
 								</button>
 							
@@ -619,6 +620,8 @@ if (mysqli_num_rows($sqlhead)!=0) {
 								</button>
 
 								<?php
+									}
+
 									$sql = mysqli_query($con,"select * from users_access where userid = '".$_SESSION['employeeid']."' and pageid = 'Purch_print'");
 
 									if(mysqli_num_rows($sql) == 1){
@@ -643,6 +646,8 @@ if (mysqli_num_rows($sqlhead)!=0) {
 								<?php		
 										}
 									}
+
+									if($poststat=="True"){
 								?>
 
 								<button type="button" class="btn btn-warning btn-sm" tabindex="6" onClick="enabled();" id="btnEdit" name="btnEdit">
@@ -1518,7 +1523,7 @@ else{
 			crefPRIdent = dcrefident;
 
 			if(nqty=="" && nprice=="" && namount=="" && nfactor=="" && cmainunit==""){
-				var itmprice = chkprice(itmcode,itmunit);
+				var itmprice = chkprice(itmdesc,itmunit);
 				var itmamnt = itmprice;
 				var itmbaseamnt = itmprice;
 				var itmfactor = 1;
@@ -1544,9 +1549,9 @@ else{
 					}
 			}
 		}else{
-			var itmprice = chkprice(itmcode,itmunit);
-			var itmamnt = parseFloat(itmnqty)*parseFloat(itmprice);
-			var itmbaseamnt = parseFloat($("#basecurrval").val())*parseFloat(itmamnt);  
+			var itmprice = chkprice(itmdesc,itmunit);
+			var itmamnt = parseFloat($("#basecurrval").val())*parseFloat(itmamnt);
+			var itmbaseamnt =  parseFloat(itmnqty)*parseFloat(itmprice); 
 		}
 
 			var uomoptions = "";
@@ -1580,6 +1585,8 @@ else{
 			
 		var tbl = document.getElementById('MyTable').getElementsByTagName('tr');
 		var lastRow = tbl.length;
+
+		var tdxnum = "<td align=\"center\"><input type=\"text\" class=\"form-control input-xs\" id=\"txtnum"+lastRow+"\" value=\""+lastRow+"\" readonly></td>";
 
 		var tdedt = "";
 		<?php
@@ -1656,7 +1663,8 @@ else{
 
 		var tditmremarks = "<td width=\"150\"> <input type='text' class='form-control input-xs' value='"+crem+"' name=\"txtitemrem\" id=\"txtitemrem" + lastRow + "\" maxlength=\"255\"></td>";
 
-		$('#MyTable > tbody:last-child').append('<tr>'+tdedt + tditmpartdesc + tditmdesc + tditmcode + vattd + tditmunit + tditmqty + tditmprice + tditmbaseamount + tdneeded  + tditmremarks + tditmdel + '</tr>');
+		//tdneeded
+		$('#MyTable > tbody:last-child').append('<tr>'+tdxnum+tdedt + tditmpartdesc + tditmdesc + tditmcode + vattd + tditmunit + tditmqty + tditmprice + tditmbaseamount + tditmremarks + tditmdel + '</tr>');
 
 		//$('#MyTable > tbody:last-child').append('<tr>'+tdedt+tditmcode + tditmdesc + ewttd + vattd + tditmunit + tditmqty + tditmprice + tditmbaseamount + tditmamount+ tdneeded + tditmremarks + tditmdel + '</tr>');
 
@@ -1685,7 +1693,7 @@ else{
 			
 			$("#seluom"+lastRow).on('change', function() {
 
-				var xyz = chkprice(itmcode,$(this).val());
+				var xyz = chkprice(itmdesc,$(this).val());
 				
 				$('#txtnprice'+lastRow).val(xyz.trim());
 				
@@ -1698,7 +1706,7 @@ else{
 				
 			});
 			
-			$('#dneed'+lastRow).datetimepicker({
+			/*$('#dneed'+lastRow).datetimepicker({
 				format: 'MM/DD/YYYY',
 				useCurrent: false,
 				minDate: moment().format('L'),
@@ -1707,7 +1715,7 @@ else{
 					horizontal: 'right',
 					vertical: 'bottom'
 				}
-			});
+			});*/
 
 			ComputeGross();
 
@@ -1720,10 +1728,11 @@ else{
 		if(rowCount>1){
 			for (var i = xy+1; i <= rowCount; i++) {
 
+				var ITMtxtnum = document.getElementById('txtnum' + i);
 				var ITMedt = document.getElementById('txtedtitm' + i);
 				var ITMCode = document.getElementById('txtitemcode' + i);
 				var ITMDesc = document.getElementById('txtitemdesc' + i);
-				var ITMewt = document.getElementById('selitmewtyp' + i);
+				//var ITMewt = document.getElementById('selitmewtyp' + i);
 				var ITMvats = document.getElementById('selitmvatyp' + i);
 				var ITMuom = document.getElementById('seluom' + i);
 				var ITMqty = document.getElementById('txtnqty' + i);
@@ -1732,7 +1741,7 @@ else{
 				var ITMprce = document.getElementById('txtnprice' + i);
 				var ITMtramnt = document.getElementById('txtntranamount' + i); 
 				var ITMamnt = document.getElementById('txtnamount' + i); 
-				var ITMneed = document.getElementById('dneed' + i);
+				//var ITMneed = document.getElementById('dneed' + i);
 				var ITMdelx = document.getElementById('del' + i);
 				var ITMremx = document.getElementById('txtitemrem' + i);
 
@@ -1743,7 +1752,7 @@ else{
 
 				ITMCode.id = "txtitemcode" + za;
 				ITMDesc.id = "txtitemdesc" + za;
-				ITMewt.id = "selitmewtyp" + za;
+				//ITMewt.id = "selitmewtyp" + za;
 				ITMvats.id = "selitmvatyp" + za;
 				ITMuom.id = "seluom" + za;
 				ITMqty.id = "txtnqty" + za;
@@ -1752,12 +1761,15 @@ else{
 				ITMprce.id = "txtnprice" + za;
 				ITMtramnt.id = "txtntranamount" + za;
 				ITMamnt.id = "txtnamount" + za;
-				ITMneed.id = "dneed" + za;
+				//ITMneed.id = "dneed" + za;
 
 				ITMdelx.setAttribute('data-var',''+za+'');
 				ITMdelx.id = "del" + za;
 	
 				ITMremx.id = "txtitemrem" + za;
+
+				ITMtxtnum.id = "txtnum" + za;
+				ITMtxtnum.value = za;
 			}
 		}
 	}
@@ -1953,7 +1965,7 @@ else{
 		var ccode = document.getElementById("txtcustid").value;
 				
 		$.ajax ({
-			url: "../th_checkitmprice.php",
+			url: "../th_checkitmpoprice.php",
 			data: { itm: itmcode, cust: ccode, cunit: itmunit},
 			async: false,
 			success: function( data ) {
@@ -2050,7 +2062,8 @@ else{
 		var trancode = "";
 		var isDone = "True";
 
-
+		$("#btnSave").attr("disabled", true);
+		
 			//Saving the header
 			var pono = $("#txtcpono").val();
 			var ccode = $("#txtcustid").val();
@@ -2113,7 +2126,7 @@ else{
 						var ntranamt = $(this).find('input[name="txtntranamount"]').val();
 						var namt = $(this).find('input[type="hidden"][name="txtnamount"]').val();
 						//alert("g");
-						var dneed = $(this).find('input[name="dneed"]').val();
+						//var dneed = $(this).find('input[name="dneed"]').val();
 						//alert("h");
 						var mainunit = $(this).find('input[type="hidden"][name="hdnmainuom"]').val();
 						//alert("i");
@@ -2138,7 +2151,7 @@ else{
 					
 						$.ajax ({
 							url: "Purch_newsavedet.php",
-							data: { trancode: trancode, crefpr:crefpr, crefprident:crefprident, dneed: dneed, indx: index, citmno: citmno, cuom: cuom, nqty:nqty, nprice: nprice, namt:namt, mainunit:mainunit, nfactor:nfactor, citmdesc:citmdesc, ntranamt:ntranamt, citmremarks:citmremarks, vatcode:vatcode, nrate:nrate, ewtcode:'', ewtrate:0, citmnoOLD:citmnoOLD, citmpartno:citmpartno },
+							data: { trancode: trancode, crefpr:crefpr, crefprident:crefprident, indx: index, citmno: citmno, cuom: cuom, nqty:nqty, nprice: nprice, namt:namt, mainunit:mainunit, nfactor:nfactor, citmdesc:citmdesc, ntranamt:ntranamt, citmremarks:citmremarks, vatcode:vatcode, nrate:nrate, ewtcode:'', ewtrate:0, citmnoOLD:citmnoOLD, citmpartno:citmpartno },
 							async: false,
 							success: function( data ) {
 								if(data.trim()=="False"){
@@ -2363,21 +2376,23 @@ else{
 	function getcontact(cid){
 
 		$.ajax({
-					url:'../get_contactinfo.php',
-					data: 'c_id='+ cid,                 
-					success: function(value){
-						if(value!=""){
-							if(value.trim()=="Multi"){
-								$("#btnSearchCont").click();
-							}else{
-									var data = value.split(":");
-									
-									$('#txtcontactname').val(data[0]);
-									//$('#txtcontactdesig').val(data[1]);
+			url:'get_contactinfo.php',
+			data: 'c_id='+ cid,                 
+			success: function(value){
+				if(value!=""){
+					if(value.trim()=="Multi"){
+						$("#btnSearchCont").click();
+					}else{
+						var data = value.split(":");
+						
+						$('#txtcontactname').val(data[0]);
+						//$('#txtcontactdesig').val(data[1]);
 						//$('#txtcontactdept').val(data[2]);
 						$("#contact_email").val(data[3]);
-							}
-						}
+						$("#contact_mobile").val(data[4]);
+						$("#contact_fax").val(data[6]);
+					}
+				}
 			}
 		});
 
@@ -2385,67 +2400,77 @@ else{
 
 	function openinv(){
 
-		//clear table body if may laman
-		$('#MyInvTbl tbody').empty(); 
-		$('#MyInvDetList tbody').empty();
-				
-		//get salesno na selected na
-		var y;
-		var salesnos = "";
-		var xstat =  "YES";
+		if($("#txtcust").val()=="" || $("#txtcustid").val()==""){
 
-		$.ajax({ //		data: 'x='+x,
-			url: 'th_prlist.php',
-			dataType: 'json',
-			method: 'post',
-			success: function (data) {
+			$("#AlertMsg").html("Please pick a supplier!");
+			$("#alertbtnOK").show();
+			$("#AlertModal").modal('show');
 
-				$("#allbox").prop('checked', false);
-							
-				console.log(data);
-				$.each(data,function(index,item){
+		}else{
+
+			//clear table body if may laman
+			$('#MyInvTbl tbody').empty(); 
+			$('#MyInvDetList tbody').empty();
+					
+			//get salesno na selected na
+			var y;
+			var salesnos = "";
+			var xstat =  "YES";
+
+			$.ajax({ //		data: 'x='+x,
+				url: 'th_prlist.php',
+				dataType: 'json',
+				method: 'post',
+				success: function (data) {
+
+					$("#allbox").prop('checked', false);
 								
-					if(item.cpono=="NONE"){
-						$("#AlertMsg").html("No Purchase Request Available");
-						$("#alertbtnOK").show();
-						$("#AlertModal").modal('show');
-
-						xstat = "NO";
+					console.log(data);
+					$.each(data,function(index,item){
 									
-						$("#txtcustid").attr("readonly", false);
-						$("#txtcust").attr("readonly", false);
+						if(item.cpono=="NONE"){
+							$("#AlertMsg").html("No Purchase Request Available");
+							$("#alertbtnOK").show();
+							$("#AlertModal").modal('show');
 
+							xstat = "NO";
+										
+							$("#txtcustid").attr("readonly", false);
+							$("#txtcust").attr("readonly", false);
+
+						}
+						else{
+							$("<tr>").append(
+								$("<td id='td"+item.cprno+"'>").text(item.cprno),
+								$("<td>").text(item.cdesc)
+							).appendTo("#MyInvTbl tbody");
+										
+										
+							$("#td"+item.cprno).on("click", function(){
+								opengetdet($(this).text());
+							});
+										
+							$("#td"+item.cprno).on("mouseover", function(){
+								$(this).css('cursor','pointer');
+							});
+						}
+
+					});
+								
+					if(xstat=="YES"){
+						$('#mySIRef').modal('show');
 					}
-					else{
-						$("<tr>").append(
-							$("<td id='td"+item.cprno+"'>").text(item.cprno),
-							$("<td>").text(item.cdesc)
-						).appendTo("#MyInvTbl tbody");
-									
-									
-						$("#td"+item.cprno).on("click", function(){
-							opengetdet($(this).text());
-						});
-									
-						$("#td"+item.cprno).on("mouseover", function(){
-							$(this).css('cursor','pointer');
-						});
-					}
+				},
+				error: function (req, status, err) {
 
-				});
-							
-				if(xstat=="YES"){
-					$('#mySIRef').modal('show');
+					console.log('Something went wrong', status, err);
+					$("#AlertMsg").html("Something went wrong<br>Status: "+status +"<br>Error: "+err);
+					$("#alertbtnOK").show();
+					$("#AlertModal").modal('show');
 				}
-			},
-			error: function (req, status, err) {
+			});
 
-				console.log('Something went wrong', status, err);
-				$("#AlertMsg").html("Something went wrong<br>Status: "+status +"<br>Error: "+err);
-				$("#alertbtnOK").show();
-				$("#AlertModal").modal('show');
-			}
-		});
+		}
 
 	}
 

@@ -2,7 +2,7 @@
 	if(!isset($_SESSION)){
 		session_start();
 	}
-	$_SESSION['pageid'] = "APV.php";
+	$_SESSION['pageid'] = "APV";
 
 	include('../../Connection/connection_string.php');
 	include('../../include/denied.php');
@@ -21,7 +21,7 @@
 	}
 
 	$poststat = "True";
-	$sql = mysqli_query($con,"select * from users_access where userid = '$employeeid' and pageid = 'APV_edit.php'");
+	$sql = mysqli_query($con,"select * from users_access where userid = '$employeeid' and pageid = 'APV_edit'");
 	if(mysqli_num_rows($sql) == 0){
 		$poststat = "False";
 	}
@@ -631,7 +631,7 @@
 						<?php
 							if($poststat == "True"){
 						?>
-						<button type="button" class="btn btn-primary btn-sm" tabindex="6" onClick="window.location.href='APV.php?ix=<?=isset($_REQUEST['hdnsrchval']) ? $_REQUEST['hdnsrchval'] : ""?>';" id="btnMain" name="btnMain">
+						<button type="button" class="btn btn-primary btn-sm" tabindex="6" onClick="window.location.href='APV.php?ix=<?=isset($_REQUEST['hdnsrchval']) ? $_REQUEST['hdnsrchval'] : ""?>&st=<?=isset($_REQUEST['hdnsrchsta']) ? $_REQUEST['hdnsrchsta'] : ""?>';" id="btnMain" name="btnMain">
 							Back to Main<br>(ESC)
 						</button>
 
@@ -2306,6 +2306,8 @@
 		$("#btnNew").attr("disabled", false);
 		$("#btnPrint").attr("disabled", false);
 		$("#btnEdit").attr("disabled", false);
+
+		$(".kv-file-zoom").attr("disabled", false);
 
 	}
 

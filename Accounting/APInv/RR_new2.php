@@ -2,7 +2,7 @@
 if(!isset($_SESSION)){
 session_start();
 }
-$_SESSION['pageid'] = "SuppInv2";
+$_SESSION['pageid'] = "SuppInv_new";
 
 include('../../Connection/connection_string.php');
 include('../../include/denied.php');

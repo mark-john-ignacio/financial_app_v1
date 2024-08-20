@@ -1,13 +1,13 @@
 <?php
-if(!isset($_SESSION)){
-session_start();
-}
-$_SESSION['pageid'] = "CashPosition.php";
-include('../Connection/connection_string.php');
-include('../include/denied.php');
-include('../include/access.php');
-
-?><html>
+  if(!isset($_SESSION)){
+   session_start();
+  }
+  $_SESSION['pageid'] = "CashPosition";
+  include('../Connection/connection_string.php');
+  include('../include/denied.php');
+  include('../include/access.php');
+?>
+<html>
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
 <title>Myx Financials</title>

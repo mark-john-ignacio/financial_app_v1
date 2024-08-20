@@ -2,7 +2,7 @@
 	if(!isset($_SESSION)){
 		session_start();
 	}
-	$_SESSION['pageid'] = "POS.php";
+	$_SESSION['pageid'] = "SI";
 
 	include('../../Connection/connection_string.php');
 	include('../../include/denied.php');
@@ -21,12 +21,12 @@
 	$company = $_SESSION['companyid'];
 
 	$poststat = "True";
-	$sql = mysqli_query($con,"select * from users_access where userid = '$employeeid' and pageid = 'POS_edit.php'");
+	$sql = mysqli_query($con,"select * from users_access where userid = '$employeeid' and pageid = 'SI_edit'");
 	if(mysqli_num_rows($sql) == 0){
 		$poststat = "False";
 	}
 
-	$sqlhead = mysqli_query($con,"select a.*,b.cname,b.cpricever,(TRIM(TRAILING '.' FROM(CAST(TRIM(TRAILING '0' FROM B.nlimit)AS char)))) as nlimit, b.cvattype from sales a left join customers b on a.compcode=b.compcode and a.ccode=b.cempid where a.ctranno = '$txtctranno' and a.compcode='$company'");	
+	$sqlhead = mysqli_query($con,"select a.*,b.cname,b.cpricever,(TRIM(TRAILING '.' FROM(CAST(TRIM(TRAILING '0' FROM b.nlimit)AS char)))) as nlimit, b.cvattype from sales a left join customers b on a.compcode=b.compcode and a.ccode=b.cempid where a.ctranno = '$txtctranno' and a.compcode='$company'");	
 
 	/*
 	function listcurrencies(){ //API for currency list
@@ -41,7 +41,7 @@
 	}
 	*/
 
-$getdcnts = mysqli_query($con,"SELECT * FROM `discounts_list` where compcode='$company' order By nident"); 
+	$getdcnts = mysqli_query($con,"SELECT * FROM `discounts_list` where compcode='$company' order By nident"); 
 	if (mysqli_num_rows($getdcnts)!=0) {
 		while($row = mysqli_fetch_array($getdcnts, MYSQLI_ASSOC)){
 			@$arrdisclist[] = array('ident' => $row['nident'], 'ccode' => $row['ccode'], 'cdesc' => $row['cdesc'], 'acctno' => $row['cacctno']); 
@@ -70,9 +70,16 @@ $getdcnts = mysqli_query($con,"SELECT * FROM `discounts_list` where compcode='$c
 		}
 	}
 
+	$nicomeDR = "";
+	$result = mysqli_query($con,"SELECT * FROM `parameters` WHERE compcode='$company' and ccode='INCOME_ACCOUNT'"); 								
+	if (mysqli_num_rows($result)!=0) {
+		$all_course_data = mysqli_fetch_array($result, MYSQLI_ASSOC);						 
+		$nicomeDR = $all_course_data['cvalue']; 							
+	}
+
 
 	$nicomeaccount = "";
-	$result = mysqli_query($con,"SELECT * FROM `parameters` WHERE compcode='$company' and ccode='INCOME_ACCOUNT'"); 								
+	$result = mysqli_query($con,"SELECT * FROM `parameters` WHERE compcode='$company' and ccode='INCOME_CR_ACCOUNT'"); 								
 	if (mysqli_num_rows($result)!=0) {
 		$all_course_data = mysqli_fetch_array($result, MYSQLI_ASSOC);						 
 		$nicomeaccount = $all_course_data['cvalue']; 							
@@ -99,6 +106,29 @@ $getdcnts = mysqli_query($con,"SELECT * FROM `discounts_list` where compcode='$c
 	if(file_exists($directory)){
 		@$arrname = file_checker($directory);
 	} 
+
+	$resprint = mysqli_query($con, "SELECT * FROM `nav_menu_prints` WHERE compcode='$company' and code = 'AR_PAYMENT_OR'");
+
+	$print_or_def = "";
+	$print_or_cus = "";
+	if(mysqli_num_rows($resprint) != 0){
+		while($row = mysqli_fetch_array($resprint, MYSQLI_ASSOC)){
+			if($row['code']=="AR_PAYMENT_OR" && $row['ldefault']==1){
+				$print_or_cus = $row['filename'];
+			}
+			if($row['code']=="AR_PAYMENT_OR" && $row['ldefault']==0){
+				$print_or_def = $row['filename'];
+			}
+		}
+	}
+
+	$result = mysqli_query($con, "SELECT * FROM `parameters` WHERE compcode='$company' and ccode = 'PRINT_VERSION_RP'");
+	if(mysqli_num_rows($result) != 0){
+		$verrow = mysqli_fetch_array($result, MYSQLI_ASSOC);
+		$version = $verrow['cvalue'];
+	} else {
+		$version =''; 
+	}
 
 ?>
 
@@ -301,7 +331,7 @@ if (mysqli_num_rows($sqlhead)!=0) {
 								</td>
 
 								<?php
-									if($nicomeaccount=="si"){
+									if($nicomeDR=="si"){
 								?>
 								<tH width="100"><b>Income Account:</b></tH>
 								<td style="padding:2px">
@@ -617,18 +647,27 @@ if (mysqli_num_rows($sqlhead)!=0) {
 								</button>
 
 								<?php
-									$sql = mysqli_query($con,"select * from users_access where userid = '".$_SESSION['employeeid']."' and pageid = 'POS_print'");
+									}
+
+									$sql = mysqli_query($con,"select * from users_access where userid = '".$_SESSION['employeeid']."' and pageid = 'SI_print'");
 
 									if(mysqli_num_rows($sql) == 1){
 									
 								?>
-										<button type="button" class="btn btn-info btn-sm" tabindex="6" onClick="printchk('<?=$txtctranno;?>');" id="btnPrint" name="btnPrint">
-											Print<br>(CTRL+P)
-										</button>
+										<div class="dropdown" style="display:inline-block !important;">
+											<button type="button" data-toggle="dropdown" class="btn btn-info btn-sm dropdown-toggle" id="btnPrint" name="btnPrint">
+												Print<br>(CTRL+P) <span class="caret"></span>
+											</button>
+											<ul class="dropdown-menu">
+												<li><a href="javascript:;" onClick="printchk('si','<?= $txtctranno ?>');">Invoice</a></li>
+												<li><a href="javascript:;" onClick="printchk('receipt','<?= $txtctranno ?>');">Receipt</a></li>
+											</ul>
+										</div> 
 
 								<?php		
 									}
 
+									if($poststat == "True"){
 								?>
 							
 								<button type="button" class="btn btn-warning btn-sm" tabindex="6" onClick="enabled();" id="btnEdit" name="btnEdit">
@@ -1080,9 +1119,8 @@ else{
             <div class="modal-bodylong">
 <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>        
         
-               <iframe id="myprintframe" name="myprintframe" scrolling="no" style="width:100%; height: 99%; display:block; margin:0px; padding:0px; border:0px"></iframe>
-    
-            	
+               <iframe id="myprintframe" name="myprintframe" scrolling="no" style="width:100%; height: 11in; display:block; margin:0px; padding:0px; border:0px"></iframe>
+             	
 			</div>
         </div><!-- /.modal-content -->
     </div><!-- /.modal-dialog -->
@@ -1180,7 +1218,7 @@ if(file_name.length != 0){
 	  else if(e.keyCode == 80 && e.ctrlKey){//CTRL P
 		if($("#btnPrint").is(":disabled")==false){
 			e.preventDefault();
-			printchk('<?=$txtctranno;?>');
+			printchk('si','<?=$txtctranno;?>');
 		}
 	  }
 	  else if(e.keyCode == 90 && e.ctrlKey){//CTRL Z
@@ -1280,7 +1318,7 @@ if(file_name.length != 0){
 		$(".chklimit").show();
 	}
 
-	if($("#incmracct").val()=="item"){
+	if($("#incmracct").val()=="custom"){ //item if from item sales acct code; dcustom if editable act code per details
 		$(".chkinctype").show();
 	}else{
 		$(".chkinctype").hide();
@@ -1839,20 +1877,20 @@ function myFunctionadd(qty,pricex,ndisc,curramt,amtx,factr,cref,nrefident,citmcl
 			
 	var tditmamount = "<td width=\"100\" nowrap> <input type='text' value='"+baseprice.toFixed(4)+"' class='numeric form-control input-xs' style='text-align:right' name=\"txtnamount\" id='txtnamount"+lastRow+"' readonly> </td>";
 
-	if($("#incmracct").val()=="item"){
+		if($("#incmracct").val()=="custom"){
 			var tdglaccount = "<td nowrap><input type='text' value='"+itmacctid+"' class='form-control input-xs' name=\"txtacctcode\" id='txtacctcode"+lastRow+"' readonly> <input type='hidden' value='"+itmacctno+"' name=\"txtacctno\" id='txtacctno"+lastRow+"'> </td>";
 
 			var tdgltitle = "<td nowrap><input type='text' value='"+itmacctnm+"' class='cacctdesc form-control input-xs' name=\"txtacctname\" id='txtacctname"+lastRow+"'></td>";
 
-			var tditmdel = "<td nowrap> <input class='btn btn-danger btn-xs btn-block' type='button' id='del"+ itmcode +"' value='delete' data-var='"+lastRow+"'/></td>";
+			var tditmdel = "<td nowrap> <input class='btn btn-danger btn-xs' type='button' id='del"+ lastRow +"' value='delete' data-var='"+lastRow+"'/></td>";
 		}else{
 			var tdglaccount = "";
 			var tdgltitle = "";
-			var tditmdel = "<td nowrap> <input type='hidden' value='' name=\"txtacctcode\" id='txtacctcode"+lastRow+"'> <input type='hidden' value='"+itmacctno+"' name=\"txtacctno\" id='txtacctno"+lastRow+"'>  <input type='hidden' value='' name=\"txtacctname\" id='txtacctname"+lastRow+"'> <input class='btn btn-danger btn-xs btn-block' type='button' id='del"+ itmcode +"' value='delete' data-var='"+lastRow+"'/></td>";
+			var tditmdel = "<td nowrap> <input type='hidden' value='"+itmacctid+"' name=\"txtacctcode\" id='txtacctcode"+lastRow+"'> <input type='hidden' value='"+itmacctno+"' name=\"txtacctno\" id='txtacctno"+lastRow+"'>  <input type='hidden' value='"+itmacctnm+"' name=\"txtacctname\" id='txtacctname"+lastRow+"'> <input class='btn btn-danger btn-xs' type='button' id='del"+ lastRow +"' value='delete' data-var='"+lastRow+"'/></td>";
 
 		}
 	
-	var tditmdel = "<td width=\"90\" nowrap> <input class='btn btn-danger btn-xs' type='button' id='del"+ lastRow +"' value='delete' data-var='"+lastRow+"'/> &nbsp; </td>"; // <input class='btn btn-primary btn-xs' type='button' id='row_" + lastRow + "_info' value='+' onclick = \"viewhidden('"+itmcode+"','"+itmdesc+"');\"/> tditmewts
+	//var tditmdel = "<td width=\"90\" nowrap>  &nbsp; </td>"; // <input class='btn btn-primary btn-xs' type='button' id='row_" + lastRow + "_info' value='+' onclick = \"viewhidden('"+itmcode+"','"+itmdesc+"');\"/> tditmewts
 
 	$('#MyTable > tbody:last-child').append('<tr>'+tditmcode + tditmdesc + tditmvats + tditmunit + tditmqty + tditmprice + tditmdisc + tditmbaseamount + tditmamount + tdglaccount + tdgltitle + tditmdel + '</tr>');
 
@@ -2422,7 +2460,7 @@ function openinv(typ){
 							salesnos = salesnos + ",";
 						}
 									
-						salesnos = salesnos +  $(this).find('input[type="hidden"][name="txtitemcode"]').val();
+						salesnos = salesnos +  $(this).find('input[type="hidden"][name="txtcrefident"]').val();
 					}
 					
 				});
@@ -2558,11 +2596,11 @@ function openinv(typ){
 									if(index==0){
 										$("#selbasecurr").val(item.ccurrencycode).change();
 										$("#hidcurrvaldesc").val(item.ccurrencydesc);
-										convertCurrency(item.ccurrencycode);
+										//convertCurrency(item.ccurrencycode);
 									}
 
-
-									addItemName(item.totqty,item.nprice,item.nbaseamount,item.namount,item.nfactor,item.xref,item.crefident,item.citmcls,item.ctaxcode)
+									//qty,price,ndisc,curramt,amt,factr,cref,nrefident,citmcls,cvat
+									addItemName(item.totqty,item.nprice,0,item.nbaseamount,item.namount,item.nfactor,item.xref,item.crefident,item.citmcls,item.ctaxcode)
 													
 							});
 							
@@ -2612,7 +2650,9 @@ function disabled(){
 		$("#btnentry").attr("disabled", false);
 	}
 
-		$("#btn-closemod").attr("disabled", false); 
+	$("#btn-closemod").attr("disabled", false); 
+
+	$(".kv-file-zoom").attr("disabled", false);
 
 }
 
@@ -2681,20 +2721,26 @@ function enabled(){
 	}
 }
 
-function printchk(x){
+function printchk(typ,x){
 	if(document.getElementById("hdncancel").value==1){	
 		document.getElementById("statmsgz").innerHTML = "CANCELLED TRANSACTION CANNOT BE PRINTED!";
 		document.getElementById("statmsgz").style.color = "#FF0000";
 	}
 	else{
-
-		  var url = "SI_confirmprint.php?x="+x;
-		//   var url = "SI_printv1.php?tranno="+x;
+		var url = "";
+		if(typ=="si"){  
+			url = "SI_confirmprint.php?x="+x;
 		  
-		  $("#myprintframe").attr('src',url);
-
-
-		  $("#PrintModal").modal('show');
+		}else if(typ=="receipt"){
+			if(<?= $version ?> != 0){
+				url = "<?=$print_or_cus?>?tranno="+x;
+			} else {
+				url = "<?=$print_or_def?>?tranno="+x;
+			}
+		}
+	
+		$("#myprintframe").attr('src',url);
+		$("#PrintModal").modal('show');
 
 	}
 }
@@ -2734,7 +2780,7 @@ function loaddetails(){
 				$("#hdnunit").val("");
 				$("#hdnqty").val("");
 				$("#hdnqtyunit").val("");
-      	$("#hdncvat").val("");
+      			$("#hdncvat").val("");
 				$("#hdncewt").val("");
 
 
@@ -2965,18 +3011,14 @@ function chkform(){
 					var mainunit = $(this).find('input[type="hidden"][name="hdnmainuom"]').val();
 					var nfactor = $(this).find('input[type="hidden"][name="hdnfactor"]').val();
 
-						if($("#incmracct").val()=="item"){
+						if($("#incmracct").val()=="custom"){
 							var acctcode = $(this).find('input[name="txtacctcode"]').val();
 							var acctid = $(this).find('input[name="txtacctno"]').val();
 							var acctname = $(this).find('input[name="txtacctname"]').val();
-						}else if($("#incmracct").val()=="si"){
-							var acctcode = "";
-							var acctid = $('select[name="selpaytyp"] option:selected').data('id');
-							var acctname = "";
-						}else if($("#incmracct").val()=="customer"){ 
-							var acctcode = "";
-							var acctid = $("#hdncacctcodesalescr").val();
-							var acctname = "";
+						}else{
+							var acctcode = $(this).find('input[type="hidden"][name="txtacctcode"]').val();
+							var acctid = $(this).find('input[type="hidden"][name="txtacctno"]').val();
+							var acctname = $(this).find('input[type="hidden"][name="txtacctname"]').val();
 						}
 
 						if(nqty!==undefined){
@@ -3090,52 +3132,52 @@ function chkform(){
 }
 
 
-function convertCurrency(fromCurrency) {
+/*function convertCurrency(fromCurrency) {
   
-  toCurrency = $("#basecurrvalmain").val(); //statgetrate
-   $.ajax ({
-	 url: "../th_convertcurr.php",
-	 data: { fromcurr: fromCurrency, tocurr: toCurrency },
-	 async: false,
-	 beforeSend: function () {
-		 $("#statgetrate").html(" <i>Getting exchange rate please wait...</i>");
-	 },
-	 success: function( data ) {
+	toCurrency = $("#basecurrvalmain").val(); //statgetrate
+	$.ajax ({
+		url: "../th_convertcurr.php",
+		data: { fromcurr: fromCurrency, tocurr: toCurrency },
+		async: false,
+		beforeSend: function () {
+			$("#statgetrate").html(" <i>Getting exchange rate please wait...</i>");
+		},
+		success: function( data ) {
 
-		 $("#basecurrval").val(data);
-		 $("#hidcurrvaldesc").val($( "#selbasecurr option:selected" ).text()); 
-		 
-	 },
-	 complete: function(){
-		 $("#statgetrate").html("");
-		 recomputeCurr();
-	 }
- });
+			$("#basecurrval").val(data);
+			$("#hidcurrvaldesc").val($( "#selbasecurr option:selected" ).text()); 
+			
+		},
+		complete: function(){
+			$("#statgetrate").html("");
+			recomputeCurr();
+		}
+	});
 
-}
+}*/
 
 
 function recomputeCurr(){
 
- var newcurate = $("#basecurrval").val();
- var rowCount = $('#MyTable tr').length;
-		 
- var gross = 0;
- var amt = 0;
+	var newcurate = $("#basecurrval").val();
+	var rowCount = $('#MyTable tr').length;
+			
+	var gross = 0;
+	var amt = 0;
 
- if(rowCount>1){
-	 for (var i = 1; i <= rowCount-1; i++) {
-		 amt = $("#txtntranamount"+i).val().replace(/,/g,'');			
-		 recurr = parseFloat(newcurate) * parseFloat(amt);
+	if(rowCount>1){
+		for (var i = 1; i <= rowCount-1; i++) {
+			amt = $("#txtntranamount"+i).val().replace(/,/g,'');			
+			recurr = parseFloat(newcurate) * parseFloat(amt);
 
-		 $("#txtnamount"+i).val(recurr);
-		 $("#txtnamount"+i).autoNumeric('destroy');
-		 $("#txtnamount"+i).autoNumeric('init',{mDec:2});
-	 }
- }
+			$("#txtnamount"+i).val(recurr);
+			$("#txtnamount"+i).autoNumeric('destroy');
+			$("#txtnamount"+i).autoNumeric('init',{mDec:2});
+		}
+	}
 
 
- ComputeGross();
+	ComputeGross();
 
 
 }
@@ -3223,8 +3265,7 @@ function chkCloseDiscs(){
 
 	$("#txtndisc"+idnum).val(vcvxg.toFixed(2));
 
-	ComputeAmt(idnum); 
-	
+	ComputeAmt(idnum); 	
 	ComputeGross();
 
 	$('#MyDiscModal').modal('hide');

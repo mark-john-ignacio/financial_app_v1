@@ -2,7 +2,7 @@
     if(!isset($_SESSION)){
         session_start();
     }
-    $_SESSION['pageid'] = "Items_new.php";
+    $_SESSION['pageid'] = "Items_New";
 
     include('../../Connection/connection_string.php');
     include('../../include/denied.php');
@@ -52,6 +52,7 @@
     <script src="../../Bootstrap/js/jquery-3.2.1.min.js"></script>
     <script src="../../Bootstrap/js/bootstrap3-typeahead.js"></script>
     <script src="../../Bootstrap/js/bootstrap.js"></script>
+    <script src="../../Bootstrap/js/jquery.numeric.js"></script>
     
     <script src="../../Bootstrap/js/moment.js"></script>
     
@@ -320,7 +321,7 @@
                             </div>
                             
                             <div class="col-xs-1 nopadwtop">
-                                <input type="text" class="numeric form-control input-sm" id="txtcmarkUp" name="txtcmarkUp" required value="<?php echo $nvalue;?>" autocomplete="off"> 
+                                <input type="text" class="numeric form-control input-sm" id="txtcmarkUp" name="txtcmarkUp" value="<?php echo $nvalue;?>" required autocomplete="off"> 
                             </div>
                             <div class="col-xs-1 nopadwtop">
                                 <div style=" padding: 5px 10px;">
@@ -335,7 +336,7 @@
                             </div>
                             
                             <div class="col-xs-1 nopadwtop">
-                                <input type="text" class="numeric form-control input-sm" id="txtcmarkUp" name="txtcmarkUp" required value="<?php echo $nvalue;?>" autocomplete="off"> 
+                                <input type="text" class="numeric form-control input-sm" id="txtcmarkUp" name="txtcmarkUp" value="<?php echo $nvalue;?>" autocomplete="off"> 
                             </div>
                         </div>
 
@@ -1069,12 +1070,21 @@
 						var xid = $(this).val();
 
 						if(xid=="PM"){
+
+                            $("#txtcmarkUp").attr("required",false);
+
 							$("#divItmMarkUp").hide();
-                            $("#divItmMarkUpFix").hide();
+                            $("#divItmMarkUpFix").hide();                          
 						}else if(xid=="MU"){
+
+                            $("#txtcmarkUp").attr("required",true);
+
 							$("#divItmMarkUp").show();
                             $("#divItmMarkUpFix").hide();						
 						}else if(xid=="MUFIX"){
+
+                            $("#txtcmarkUp").attr("required",true);
+
 							$("#divItmMarkUpFix").show();	
                             $("#divItmMarkUp").hide();						
 						}
@@ -1127,7 +1137,7 @@
         y.innerHTML = "<div class=\"nopadwright\" ><input type='checkbox' id='txtchkSI"+lastRow+"' name='txtchkSI"+lastRow+"' value='1'> </div>";
         z.innerHTML = "<input class='btn btn-danger btn-xs' type='button' id='row_" + lastRow + "_delete' class='delete' value='Delete' onClick=\"deleteRow(this);\"/>";
         
-        $("#txtfactor"+lastRow).autoNumeric('init',{mDec:2});
+        $("#txtfactor"+lastRow).numeric({decimalPlaces: 2});
 		$("#txtfactor"+lastRow).on("focus", function () {
 			$(this).select();
 		});

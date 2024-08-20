@@ -6,8 +6,9 @@ include('Connection/connection_string.php');
 include('Model/helper.php');
 
 $id = mysqli_real_escape_string($con, $_SESSION['employeeid']);
-$ipaddress = getHostByName(getHostName());
-$hashedIP = better_crypt($ipaddress);
+$ipaddress = getMyIP();
+//$hashedIP = better_crypt($ipaddress);
+$hashedIP = $ipaddress;
 
 // $ipaddress = gethostbyaddr($_SERVER['REMOTE_ADDR']);
 
@@ -29,8 +30,6 @@ $result = mysqli_query($con, $sql);
 //set the sessionID to 0 to enable to log again
 $sqlSession = "UPDATE users SET session_ID = 0 WHERE Userid = '$id'";
 $result2 = mysqli_query($con, $sqlSession);
-
-
 
 session_unset();
 session_destroy();

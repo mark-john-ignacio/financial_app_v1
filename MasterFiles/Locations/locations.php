@@ -2,7 +2,7 @@
 	if(!isset($_SESSION)){
 		session_start();
 	}
-	$_SESSION['pageid'] = "Locations.php";
+	$_SESSION['pageid'] = "Locations";
 
 	include('../../Connection/connection_string.php');
 	include('../../include/accessinner.php');
@@ -10,13 +10,13 @@
 	$employeeid = $_SESSION['employeeid'];
 	
 	$posnew = "True";
-	$sql = mysqli_query($con,"select * from users_access where userid = '$employeeid' and pageid = 'Locations_New.php'");
+	$sql = mysqli_query($con,"select * from users_access where userid = '$employeeid' and pageid = 'Locations_New'");
 	if(mysqli_num_rows($sql) == 0){
 		$posnew = "False";
 	}
 
 	$posedit = "True";
-	$sql = mysqli_query($con,"select * from users_access where userid = '$employeeid' and pageid = 'Locations_Edit.php'");
+	$sql = mysqli_query($con,"select * from users_access where userid = '$employeeid' and pageid = 'Locations_Edit'");
 	if(mysqli_num_rows($sql) == 0){
 		$posedit = "False";
 	}
@@ -28,6 +28,8 @@
 
 	<link rel="stylesheet" type="text/css" href="../../Bootstrap/css/bootstrap.css"> 
 	<link href="../../global/plugins/font-awesome/css/font-awesome.min.css" rel="stylesheet" type="text/css"/>   
+	<link rel="stylesheet" type="text/css" href="../../Bootstrap/css/alert-modal.css">
+
 	<script src="../../Bootstrap/js/jquery-3.2.1.min.js"></script>
 	<script src="../../Bootstrap/js/bootstrap.js"></script>
 
@@ -60,77 +62,80 @@
 </head>
 
 <body style="padding:5px">
-	<div>
-		<section>
+	<section>
 
-      <div>
-        <div style="float:left; width:50%">
-					<font size="+2"><u>Sections Master List</u></font>	
-        </div>            
-      </div>
+		<div>
+			<div style="float:left; width:50%">
+				<font size="+2"><u>Sections Master List</u></font>	
+			</div>            
+		</div>
 
-			<br><br>
+		<br><br>
 
-      <button type="button" class="btn btn-primary btn-sm" id="btnadd" name="btnadd"><span class="glyphicon glyphicon glyphicon-file"></span>&nbsp;Create New (F1)</button>
-            
-       <br><br>
+		<div class="col-xs-12 nopadding">
+			<div class="col-xs-2 nopadding">
+				<button type="button" class="btn btn-primary btn-sm" id="btnadd" name="btnadd"><span class="glyphicon glyphicon glyphicon-file"></span>&nbsp;Create New (F1)</button>
+			</div>
+			<div class="col-xs-5" style="padding-top: 6px !important;">
+				<span id="itmerr" style="padding: 5px !important;"> </span>
+			</div>
+		</div>
 			
-			<table id="example" class="display" cellspacing="0" width="100%">
-				<thead>
-					<tr>
-						<th>Section Name</th>
-						<th width="80">Status</th>
-					</tr>
-				</thead>
+		<br><br>
+			
+		<table id="example" class="display" cellspacing="0" width="100%">
+			<thead>
+				<tr>
+					<th>Section Name</th>
+					<th width="80">Status</th>
+				</tr>
+			</thead>
 
-				<tbody>
-					<?php
-						$company = $_SESSION['companyid'];
+			<tbody>
+				<?php
+					$company = $_SESSION['companyid'];
+						
+					$sql = "select * from locations where compcode='$company'order by cdesc";							
+					$result=mysqli_query($con,$sql);
 							
-						$sql = "select * from locations where compcode='$company'order by cdesc";							
-						$result=mysqli_query($con,$sql);
-								
-						if (!mysqli_query($con, $sql)) {
-							printf("Errormessage: %s\n", mysqli_error($con));
-						} 
-								
-						$arrdesc = array();
-						while($row = mysqli_fetch_array($result, MYSQLI_ASSOC))
-						{
-							$arrdesc[] = $row['cdesc'];
-					?>
-						<tr>
-							<td>
-								<a href="javascript:;" onClick="editgrp('<?php echo $row['nid'];?>','<?php echo $row['cdesc'];?>')">
-									<?php echo $row['cdesc'];?>
-								</a>
-								<div class="itmalert alert alert-danger nopadding" id="itm<?php echo $row['nid'];?>" style="display: inline";></div>
-							</td>
-							<td>
-									<div id="itmstat<?php echo $row['nid'];?>">
-									<?php 
-										if($row['cstatus']=="ACTIVE"){
-											echo "<span class='label label-success'>Active</span>&nbsp;&nbsp;<a id=\"popoverData1\" href=\"#\" data-content=\"Set as Inactive\" rel=\"popover\" data-placement=\"bottom\" data-trigger=\"hover\" onClick=\"setStat('". $row['nid'] ."','INACTIVE')\" ><i class=\"fa fa-refresh\" style=\"color: #f0ad4e\"></i></a>";
-										}
-										else{
-											echo "<span class='label label-warning'>Inactive</span>&nbsp;&nbsp;<a id=\"popoverData2\" href=\"#\" data-content=\"Set as Active\" rel=\"popover\" data-placement=\"bottom\" data-trigger=\"hover\" onClick=\"setStat('". $row['nid'] ."','ACTIVE')\"><i class=\"fa fa-refresh\" style=\"color: #5cb85c\"></i></a>";
-										}
-									?>
-								</div>
-							</td>
-						</tr>
-					<?php 
-						}				
-					?>
-										
-				</tbody>
-			</table>
-			<input type="hidden" id="hdndescs" value='<?=json_encode($arrdesc);?>'>
-			<input type="hidden" id="posnew" value="<?=$posnew;?>">
-			<input type="hidden" id="posedit" value="<?=$posedit;?>">
+					if (!mysqli_query($con, $sql)) {
+						printf("Errormessage: %s\n", mysqli_error($con));
+					} 
+							
+					$arrdesc = array();
+					while($row = mysqli_fetch_array($result, MYSQLI_ASSOC))
+					{
+						$arrdesc[] = $row['cdesc'];
+				?>
+					<tr>
+						<td>
+							<a href="javascript:;" onClick="editgrp('<?php echo $row['nid'];?>','<?php echo $row['cdesc'];?>')">
+								<?php echo $row['cdesc'];?>
+							</a>
+							<div class="itmalert alert alert-danger nopadding" id="itm<?php echo $row['nid'];?>" style="display: inline";></div>
+						</td>
+						<td>
+								<div id="itmstat<?php echo $row['nid'];?>">
+								<?php 
+									if($row['cstatus']=="ACTIVE"){
+										echo "<span class='label label-success'>Active</span>&nbsp;&nbsp;<a id=\"popoverData1\" href=\"#\" data-content=\"Set as Inactive\" rel=\"popover\" data-placement=\"bottom\" data-trigger=\"hover\" onClick=\"trans('". $row['nid'] ."','INACTIVE','Inactivate')\" ><i class=\"fa fa-refresh\" style=\"color: #f0ad4e\"></i></a>";
+									}
+									else{
+										echo "<span class='label label-warning'>Inactive</span>&nbsp;&nbsp;<a id=\"popoverData2\" href=\"#\" data-content=\"Set as Active\" rel=\"popover\" data-placement=\"bottom\" data-trigger=\"hover\" onClick=\"trans('". $row['nid'] ."','ACTIVE','Activate')\"><i class=\"fa fa-refresh\" style=\"color: #5cb85c\"></i></a>";
+									}
+								?>
+							</div>
+						</td>
+					</tr>
+				<?php 
+					}				
+				?>
+									
+			</tbody>
+		</table>
+		<input type="hidden" id="hdndescs" value='<?=json_encode($arrdesc);?>'>
 
-		</section>
-	</div>		
+	</section>	
 
 
 	<!-- Modal -->
@@ -172,16 +177,23 @@
 	<!-- 1) Alert Modal -->
 	<div class="modal fade" id="AlertModal" tabindex="-1" role="dialog" data-keyboard="false" data-backdrop="static" aria-hidden="true">
 		<div class="vertical-alignment-helper">
-			<div class="modal-dialog vertical-align-center">
+			<div class="modal-dialog vertical-align-top">
 				<div class="modal-content">
-					<div class="alert-modal-danger">
-						<p id="AlertMsg"></p>
-						<p>
-							<center>
-								<button type="button" class="btn btn-primary btn-sm" data-dismiss="modal">Ok</button>
-							</center>
-						</p>
-					</div>
+				<div class="alert-modal-danger">
+					<p id="AlertMsg"></p>
+					<p>
+						<center>
+							<button type="button" class="btn btn-primary btn-sm" id="OK" onclick="setStat('OK')">Ok</button>
+							<button type="button" class="btn btn-danger btn-sm" id="Cancel" onclick="setStat('Cancel')">Cancel</button>
+							
+							
+							<button type="button" class="btn btn-primary btn-sm" data-dismiss="modal" id="alertbtnOK">Ok</button>
+							
+							<input type="hidden" id="typ" name="typ" value = "">
+							<input type="hidden" id="modzx" name="modzx" value = "">
+						</center>
+					</p>
+				</div> 
 				</div>
 			</div>
 		</div>
@@ -199,13 +211,16 @@ mysqli_close($con);
 	<script>
 	
 		$(function(){
-			$('#example').DataTable();
+
 			$("#add_err").hide();
 			$(".itmalert").hide();
+			
+			$('#example').DataTable();
+			
 
 			// Adding new user
 			$("#btnadd").on("click", function() {
-				var x = $("#posnew").val();
+				var x = "<?=$posnew?>";
 				
 				if(x.trim()=="True"){
 					$("#btnSave").show();
@@ -283,7 +298,7 @@ mysqli_close($con);
 	 });
 	
 		function editgrp(code,desc){
-			var x = $("#posedit").val();
+			var x = "<?=$posedit?>";
 			
 			if(x.trim()=="True"){
 				$("#btnSave").hide();
@@ -302,33 +317,70 @@ mysqli_close($con);
 			}
 
 		}
-	
-		function setStat(code, stat){
-			$.ajax ({
-				url: "th_setstat.php",
-				data: { code: code,  stat: stat },
-				async: false,
-				success: function( data ) {
-					if(data.trim()!="True"){
-						$("#itm"+code).html("<b>Error: </b>"+ data);
-						$("#itm"+code).attr("class", "itmalert alert alert-danger nopadding")
-						$("#itm"+code).show();
-					}
-					else{
-					  if(stat=="ACTIVE"){
-						$("#itmstat"+code).html("<span class='label label-success'>Active</span>&nbsp;&nbsp;<a id=\"popoverData1\" href=\"#\" data-content=\"Set as Inactive\" rel=\"popover\" data-placement=\"bottom\" data-trigger=\"hover\" onClick=\"setStat('"+code+"','INACTIVE')\" ><i class=\"fa fa-refresh\" style=\"color: #f0ad4e\"></i></a>");
-					  }else{
-						 $("#itmstat"+code).html("<span class='label label-warning'>Inactive</span>&nbsp;&nbsp;<a id=\"popoverData2\" href=\"#\" data-content=\"Set as Active\" rel=\"popover\" data-placement=\"bottom\" data-trigger=\"hover\" onClick=\"setStat('"+code+"','ACTIVE')\"><i class=\"fa fa-refresh\" style=\"color: #5cb85c\"></i></a>");
-					  }
-						
-						$("#itm"+code).html("<b>SUCCESS: </b> Status changed to "+stat);
-						$("#itm"+code).attr("class", "itmalert alert alert-success nopadding")
-						$("#itm"+code).show();
 
-					}
-				}
+		function trans(code,stat,msg){
+			var x = "<?=$posedit;?>";
+				
+			if(x.trim()=="True"){
+
+				$("#typ").val(stat);
+				$("#modzx").val(code);
+
+				$("#AlertMsg").html("");
+											
+				$("#AlertMsg").html("Are you sure you want to "+msg+" Section Code: "+code);
+				$("#alertbtnOK").hide();
+				$("#OK").show();
+				$("#Cancel").show();
+				$("#AlertModal").modal('show');
+			}else {
+				$("#AlertMsg").html("<center><b>ACCESS DENIED!</b></center>");
+				$("#alertbtnOK").show();
+				$("#OK").hide();
+				$("#Cancel").hide();
+				$("#AlertModal").modal('show');
+
+			}
+		}
+	
+		function setStat(dstat){
+			var x = "<?=$posedit?>";
 			
-			});
+			if(x.trim()=="True"){
+				if(dstat=="OK"){
+					code = $("#modzx").val();
+					stat = $("#typ").val();
+
+					$.ajax ({
+						url: "th_setstat.php",
+						data: { code: code,  stat: stat },
+						async: false,
+						success: function( data ) {
+							if(data.trim()!="True"){
+								$("#itmerr").html("<b>Error: </b>"+ data);
+								$("#itmerr").attr("class", "itmalert alert alert-danger");
+							}
+							else{
+								if(stat=="ACTIVE"){
+									$("#itmstat"+code).html("<span class='label label-success'>Active</span>&nbsp;&nbsp;<a id=\"popoverData1\" href=\"#\" data-content=\"Set as Inactive\" rel=\"popover\" data-placement=\"bottom\" data-trigger=\"hover\" onClick=\"trans('"+code+"','INACTIVE','Inactivate')\" ><i class=\"fa fa-refresh\" style=\"color: #f0ad4e\"></i></a>");
+								}else{
+									$("#itmstat"+code).html("<span class='label label-warning'>Inactive</span>&nbsp;&nbsp;<a id=\"popoverData2\" href=\"#\" data-content=\"Set as Active\" rel=\"popover\" data-placement=\"bottom\" data-trigger=\"hover\" onClick=\"trans('"+code+"','ACTIVE','Activate')\"><i class=\"fa fa-refresh\" style=\"color: #5cb85c\"></i></a>");
+								}
+									
+								$("#itmerr").html("<b>SUCCESS: </b> "+code+" Status changed to <b><u>"+stat+"</u></b>");
+								$("#itmerr").attr("class", "itmalert alert alert-success");
+
+							}
+						}
+					
+					});
+				}
+				$("#AlertModal").modal('hide');
+			} else {
+				$("#AlertMsg").html("<center><b>ACCESS DENIED!</b></center>");
+				$("#AlertModal").modal('show');
+
+			}
 
 		}
 

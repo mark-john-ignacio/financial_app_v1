@@ -47,8 +47,8 @@ if($_REQUEST['typ']=="POST"){
 		$msgz = "<b>SUCCESS: </b>Your transaction is successfully posted!";
 		$status = "Posted";
 
-		mysqli_query($con,"INSERT INTO logfile(`ctranno`, `cuser`, `ddate`, `cevent`,`module`, `cmachine`, `cremarks`) 
-		values('$tranno','$preparedby',NOW(),'POSTED','SALES INVOICE','$compname','Post Record')");
+		mysqli_query($con,"INSERT INTO logfile(`compcode`, `ctranno`, `cuser`, `ddate`, `cevent`,`module`, `cmachine`, `cremarks`) 
+		values('$company','$tranno','$preparedby',NOW(),'POSTED','SALES INVOICE','$compname','Post Record')");
 		
 	}
 				
@@ -66,8 +66,8 @@ if($_REQUEST['typ']=="CANCEL"){
 		$status = "Cancelled";
 	}
 
-mysqli_query($con,"INSERT INTO logfile(`ctranno`, `cuser`, `ddate`, `cevent`,`module`, `cmachine`, `cremarks`) 
-	values('$tranno','$preparedby',NOW(),'CANCELLED','SALES INVOICE','$compname','Cancel Record')");
+	mysqli_query($con,"INSERT INTO logfile(`compcode`, `ctranno`, `cuser`, `ddate`, `cevent`,`module`, `cmachine`, `cremarks`, `cancel_rem`) 
+	values('$company', '$tranno', '$preparedby', NOW(),'CANCELLED','SALES INVOICE','$compname','Cancel Record','".$_REQUEST['canmsg']."')");
 
 }
 

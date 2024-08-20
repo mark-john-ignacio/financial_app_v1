@@ -2,9 +2,14 @@
     if(!isset($_SESSION)){
         session_start();
     }
+    $_SESSION['pageid'] = "SalesDat";
+
     require_once  "../../vendor2/autoload.php";
     include ("../../Connection/connection_string.php");
+    include('../../include/denied.php');
+	include('../../include/access2.php');
     require_once("../../Model/helper.php");
+    
     $company_code = $_SESSION['companyid'];
     $monthcut = $_REQUEST["viewmonth"];
     $yearcut = $_REQUEST['viewyear'];
@@ -20,7 +25,6 @@
     AND MONTH(STR_TO_DATE(a.dcutdate, '%Y-%m-%d')) = $monthcut 
     AND YEAR(STR_TO_DATE(a.dcutdate, '%Y-%m-%d')) = $yearcut  
     AND a.lapproved = 1 AND a.lvoid = 0 AND a.lcancelled = 0
-    AND b.cvattype != 'NV'
     AND a.ctranno in (
         SELECT b.csalesno FROM receipt a 
         left join receipt_sales_t b on a.compcode = b.compcode AND a.ctranno = b.ctranno
@@ -56,7 +60,7 @@
                     <th>Name of Customer <br>(Last Name, First Name, Middle Name)</th>
                     <th>Customer Address</th>
                     <th>Amount of Gross Sales</th>
-                    <th>Amount of Excempt Sales</th>
+                    <th>Amount of Exempt Sales</th>
                     <th>Amount of Zero Rated Sales</th>
                     <th>Amount of Taxable Sales</th>
                     <th>Amount of Output Tax</th>

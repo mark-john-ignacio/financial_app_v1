@@ -59,8 +59,11 @@
 
     $pay_method = mysqli_real_escape_string($con, $_POST['method']);
     $reference = mysqli_real_escape_string($con, $_POST['reference']);
+    
+    $h_tranno = mysqli_real_escape_string($con, $_POST['holdtranno']);
 
-    if($tranno != ""){
+
+    if(!empty($tranno)){
         mysqli_query($con, "DELETE FROM pos_hold WHERE `compcode` = '$company' AND `transaction` = '$tranno'");
         mysqli_query($con, "DELETE FROM pos_hold_t WHERE `compcode` = '$company' AND `transaction` = '$tranno'");
     }
@@ -73,11 +76,31 @@
             VALUES ('$company', '$code', '$prepared', '$date', '$amount', '$net', '$vat', '$gross', '$discount', '$tendered', '$exchange', '$customer', '$type', '$table', '$coupon', '$service', '$subtotal', '$pay_method', '$reference')";
 
     if(mysqli_query($con, $sql)){
-        echo json_encode([
-            'valid' => true,
-            'tranno' => $code,
-            'msg' => "Payment Successfully added"
-        ]);
+
+        $sql_select_pending = "SELECT * FROM pendingorder_status WHERE tranno = '$tranno'";
+        $result_pending = mysqli_query($con, $sql_select_pending);
+
+        if(mysqli_num_rows($result_pending) > 0){
+            $sql = "UPDATE pendingorder_status SET payment_transaction = '$code', transaction_type = 'Payment', tranno = '$code' WHERE tranno = '$tranno' AND transaction_type = 'Hold'";
+            mysqli_query($con, $sql);
+
+            echo json_encode([
+                'valid' => true,
+                'tranno' => $code,
+                'flag_update' => "Update",
+                'msg' => "Payment Successfully added"
+            ]);
+
+            
+        }
+        else{
+            echo json_encode([
+                'valid' => true,
+                'tranno' => $code,
+                'flag_update' => "Insert",
+                'msg' => "Payment Successfully added"
+            ]);
+        }
     } else {
         $compname = gethostbyaddr($_SERVER['REMOTE_ADDR']);
 

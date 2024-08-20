@@ -36,7 +36,9 @@
 	while($row2 = mysqli_fetch_array($sqllabelnme, MYSQLI_ASSOC)){
 		$totdcount[$row2['citemno']] = $row2['nversion'];
 	}
-
+	//echo "<pre>";
+	//print_r($totdcount);
+	//echo "</pre>";
 	$getbomshrs = array();
 	$chbom = mysqli_query($con,"select * from mrp_items_parameters where compcode='$company'");
 	while($row2 = mysqli_fetch_array($chbom, MYSQLI_ASSOC)){
@@ -54,8 +56,9 @@
 	//echo "<br>";
 
 	mysqli_query($con,"DELETE FROM mrp_jo_process where compcode='$company' and mrp_jo_ctranno ='$tranno'");
-	mysqli_query($con,"DELETE FROM mrp_jo_process_m where compcode='$company' and mrp_jo_ctranno ='$tranno'");
-	
+	mysqli_query($con,"DELETE FROM mrp_jo_process_m where compcode='$company' and mrp_jo_ctranno ='$tranno'"); 
+	mysqli_query($con,"DELETE FROM mrp_jo_process_mrs where compcode='$company' and mrp_jo_ctranno ='$tranno'"); 
+
 	getsubs($dmainitms,$dmainaryy['ctranno'],$dmainaryy['crefSO'],1,$dmainaryy['nqty'],$dmainaryy['ctranno']);
 
 	function getsubs($itm,$maintran,$soref,$lvl,$qty,$sicurr){
@@ -80,8 +83,9 @@
 			$nxtlvl = intval($lvl)+1;
 			
 		
-			$totqty = floatval($qty)*floatval($rs2['nqty1']);
+			$totqty = round(floatval($qty)*floatval($rs2['nqty1']));
 
+			//echo $itm."==".$rs2['cmainitemno']."&&". $rs2['nversion']."==".$xcver."<br><br>";
 			if($itm==$rs2['cmainitemno'] && $rs2['nversion']==$xcver){
 
 				//echo $rs2['cmainitemno'] ." : " . $rs2['citemno'] .": ".$rs2['ctype']." <br><br>";				
@@ -109,6 +113,15 @@
 						echo "Errormessage: ". mysqli_error($con);
 					}
 
+					// INSERT FOR MRS //
+					if (!mysqli_query($con, "INSERT INTO mrp_jo_process_mrs(`compcode`, `mrp_jo_ctranno`, `mrp_jo_sub`, `crefitem`, `nreference_id`, `citemno`, `cunit`, `nqty`, `cremarks`) values('$company', '".$maintran."', '".$sicurr."', '".$itm."', '".$rs2['nid']."', '".$rs2['citemno']."', '".$rs2['cunit']."','".$totqty."', 'BUILDABLE ".$totqty.$rs2['cunit']."')")) {
+					
+						$status = "False";
+						$msgz = $msgz . "<b>ERROR ON ".$rs2['citemno'].": </b>There's a problem generating your material!";
+		
+					}
+					//END MRS
+
 					getsubs($rs2['citemno'],$maintran,$soref,$nxtlvl,$totqty,$SINo);
 
 				}elseif($rs2['ctype']=="BUY"){
@@ -120,6 +133,15 @@
 		
 					}
 
+					// INSERT FOR MRS //
+					if (!mysqli_query($con, "INSERT INTO mrp_jo_process_mrs(`compcode`, `mrp_jo_ctranno`, `mrp_jo_sub`, `crefitem`, `nreference_id`, `citemno`, `cunit`, `nqty`, `cremarks`) values('$company', '".$maintran."', '".$sicurr."', '".$itm."', '".$rs2['nid']."', '".$rs2['citemno']."', '".$rs2['cunit']."','".$totqty."', '')")) {
+					
+						$status = "False";
+						$msgz = $msgz . "<b>ERROR ON ".$rs2['citemno'].": </b>There's a problem generating your material!";
+		
+					}
+					//END MRS
+
 				}
 
 			}
@@ -127,6 +149,11 @@
 
 	}
 
+	//process of the main item
+	$rpromain= mysqli_query($con,"select * from mrp_process_t where compcode='$company' and citemno='$dmainitms' and cstatus='ACTIVE' Order By nid");
+	while($row2 = mysqli_fetch_array($chbom, MYSQLI_ASSOC)){
+		$getallboms[] = $row2;
+	}
 
 
 	$json['ms'] = $msgz;
@@ -135,7 +162,6 @@
 	$json2[] = $json;
 		 
 	//echo json_encode($json2);
-
 
 ?>
 

@@ -2,7 +2,7 @@
 	if(!isset($_SESSION)){
 	session_start();
 	}
-	$_SESSION['pageid'] = "BalSheet.php";
+	$_SESSION['pageid'] = "BalSheet";
 
 	include('../../Connection/connection_string.php');
 	include('../../include/denied.php');
@@ -410,8 +410,10 @@
 					if($row['ctype']=="Details"){
 
 						if($row['cacctid']==$acct_retained){
+							$xcvb11 = gettotal($row['cacctid'], $row['ccategory'], $rxzm);
+
 							$tagwithRetained = 1;
-							$xcvb = $RetainedGross[$rxzm];
+							$xcvb = $RetainedGross[$rxzm] + $xcvb11;
 						}else{
 							$xcvb = gettotal($row['cacctid'], $row['ccategory'], $rxzm);
 						}

@@ -246,7 +246,7 @@
 			</td>
 			<td width="30%" height = "150px" valign="top">
 				<div style="display: block"></b>REMARKS:</b></div>
-				<div style="display: block; height: 150px; width: 100%; border: 1px solid #000"></div>
+				<div style="display: block; height: 150px; width: 100%;">'.nl2br($Remarks).'</div>
 			</td>
 		</tr>
 	</table>
@@ -266,28 +266,28 @@
 					$setfooter = $setfooter .'<div style="text-align: center">'.$cpreparedBy.'</div>';
 				}*/
 
-			$setfooter = $setfooter .'<td width="25%" align="center"  height="100px" valign="top">
+			$setfooter = $setfooter .'<td width="25%" align="center"  height="50px" valign="top">
 			<div style="text-align: center">Prepared By</div>				
-			<div style="text-align: center"><img src = "white.jpg" height="80px"></div>		
+			<div style="text-align: center"><img src = "white.jpg" height="30px"></div>		
 			<div style="text-align: center">'.$cPrepBy.'</div>					
 			</td>';
 
-			$setfooter = $setfooter.'<td width="25%" align="center" height="100px" valign="top">							
-			<div style="text-align: center">Approved By</div>				
-			<div style="text-align: center"><img src = "white.jpg" height="80px"></div>		
+			$setfooter = $setfooter.'<td width="25%" align="center" height="50px" valign="top">							
+			<div style="text-align: center">Checked By</div>				
+			<div style="text-align: center"><img src = "white.jpg" height="30px"></div>		
 			<div style="text-align: center">'.$cCheckedBy.'</div>					
 			</td>';
 
-			$setfooter = $setfooter.'<td width="20%" align="center" height="100px" valign="top">							
+			$setfooter = $setfooter.'<td width="20%" align="center" height="50px" valign="top">							
 			<div style="text-align: center">Approved By</div>				
-			<div style="text-align: center"><img src = "white.jpg" height="80px"></div>		
+			<div style="text-align: center"><img src = "white.jpg" height="30px"></div>		
 			<div style="text-align: center">'.$cApprBy.'</div>					
 			</td>
-			<td width="20%"  align="center" height="100px" valign="top">							
+			<td width="20%"  align="center" height="50px" valign="top">							
 				<div style="padding-bottom: 60px; text-align: center">
 					Supplier Confirmation
 				</div>	
-				<div style="text-align: center"><img src = "white.jpg" height="90px"></div>	
+				<div style="text-align: center"><img src = "white.jpg" height="40px"></div>	
 				<br>							
 			</td>
 		</tr>
@@ -318,16 +318,17 @@
 			<td align="center" class="tdpadx">'.$rowdtls['newdesc'].'</td>
 			<td align="center" class="tdpadx">'.$rowdtls['citemno'].'</td>
 			<td align="center" class="tdpadx">'.intval($rowdtls['nqty']).'</td>
-			<td align="right" class="tdpadx">'.number_format($rowdtls['nprice'],4).'</td>
-			<td align="center" class="tdpadx">'.$rowdtls['cunit'].'</td>										
-			<td align="right" class="tdpadx">'.number_format($rowdtls['namount'],2).'</td>					
+			<td align="right" class="tdpadx" width="100px">'.number_format($rowdtls['nprice'],4).'</td>
+			<td align="center" class="tdpadx" width="60px">'.$rowdtls['cunit'].'</td>										
+			<td align="right" class="tdpadx" width="100px">'.number_format($rowdtls['nbaseamount'],2).'</td>					
 		</tr>';
 
 		} 
 	}
 
 	$html = $html.'<tr>			
-			<td align="right" class="tdpadx" colspan="7"><b>TOTAL</b></td>
+			<td align="right" class="tdpadx" colspan="6"><b>TOTAL</b></td>
+			<td align="center" class="tdpadx">'.$CurrCode.'</td>
 			<td align="right" class="tdpadx">'.number_format($Gross,2).'</td>			
 		</tr>
 	</table>';

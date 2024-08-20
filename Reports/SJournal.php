@@ -2,7 +2,7 @@
 if(!isset($_SESSION)){
 session_start();
 }
-$_SESSION['pageid'] = "SJournal.php";
+$_SESSION['pageid'] = "SJournal";
 include('../Connection/connection_string.php');
 include('../include/denied.php');
 include('../include/access.php');

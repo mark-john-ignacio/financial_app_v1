@@ -12,7 +12,12 @@
 
 	$cMainItemNo = $_REQUEST['xcitm'];
 
-	if (!mysqli_query($con, "UPDATE `mrp_bom` set `compcode` = 'xxx' Where `compcode` = '$company' and `cmainitemno` = '$cMainItemNo'")) {
+	$qryver = "";
+	if($_REQUEST['xcvers']!="0"){
+		$qryver = " and nversion = ".$_REQUEST['xcvers'];
+	}
+
+	if (!mysqli_query($con, "UPDATE `mrp_bom` set `compcode` = 'xxx' Where `compcode` = '$company' and `cmainitemno` = '$cMainItemNo'".$qryver)) {
 		printf("Errormessage: %s\n", mysqli_error($con));
 	} 
 
@@ -26,11 +31,21 @@
 
 	foreach($data as $data){
 		if($data[0]!="sortnum"){
-			$sql = "INSERT INTO `mrp_bom`(`compcode`, `cmainitemno`, `citemno`, `cunit`, `nqty1`, `nqty2`, `nqty3`, `nqty4`, `nqty5`, `nlevel`, `nitemsort`) VALUES ('$company','$cMainItemNo','".$data[1]."','".$data[2]."','".$data[3]."','".$data[4]."','".$data[5]."','".$data[6]."','".$data[7]."','".$data[8]."','".$data[0]."')";
 
-			//echo $sql."<br><br>";
-			if(!mysqli_query($con,$sql)){
-				$xmsg = "False";
+			$ifGo = "Yes";
+			if($_REQUEST['xcvers']!="0"){
+				if($data[5]!=$_REQUEST['xcvers']){
+					$ifGo = "No";
+				}
+			}
+
+			if($ifGo == "Yes"){
+				$sql = "INSERT INTO `mrp_bom`(`compcode`, `cmainitemno`, `citemno`, `cunit`, `nqty1`, `nlevel`, `nitemsort`, `nversion`, `ctype`) VALUES ('$company','$cMainItemNo','".$data[1]."','".$data[2]."','".$data[3]."','2','".$data[0]."','".$data[5]."','".$data[4]."')";
+
+				//echo $sql."<br><br>";
+				if(!mysqli_query($con,$sql)){
+					$xmsg = "False";
+				}
 			}
 		}
 	}
@@ -44,7 +59,10 @@
 	values('$company','$cMainItemNo','$preparedby',NOW(),'UPLOADED','ITEM BOM','$compname','Uploaded Record')");
 
 	if($xmsg == "True"){
-		mysqli_query($con, "DELETE FROM `mrp_bom` Where `compcode` = 'xxx' and `cmainitemno` = '$cMainItemNo'");
+		$concat = $company."_".date("mdYHis");
+		mysqli_query($con, "INSERT INTO `mrp_bom_bckup`(`compcode`, `cmainitemno`, `citemno`, `cunit`, `nqty1`, `nlevel`, `nitemsort`, `nversion`, `ctype`) Select '".$concat."', `cmainitemno`, `citemno`, `cunit`, `nqty1`, `nlevel`, `nitemsort`, `nversion`, `ctype` From mrp_bom Where `compcode` = 'xxx' and `cmainitemno` = '$cMainItemNo'".$qryver);
+
+		mysqli_query($con, "DELETE FROM `mrp_bom` Where `compcode` = 'xxx' and `cmainitemno` = '$cMainItemNo'".$qryver);
 		?>
 
 		<script>

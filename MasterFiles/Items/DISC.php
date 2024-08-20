@@ -1,11 +1,24 @@
 <?php
-if(!isset($_SESSION)){
-session_start();
-}
-$_SESSION['pageid'] = "DISC.php";
+	if(!isset($_SESSION)){
+		session_start();
+	}
+	$_SESSION['pageid'] = "SDISC";
 
-include('../../Connection/connection_string.php');
-include('../../include/accessinner.php');
+	include('../../Connection/connection_string.php');
+	include('../../include/accessinner.php');
+
+
+	$poststat = "True";
+	$sql = mysqli_query($con,"select * from users_access where userid = '$employeeid' and pageid = 'SDISC_post'");
+	if(mysqli_num_rows($sql) == 0){
+		$poststat = "False";
+	}
+
+	$cancstat = "True";
+	$sql = mysqli_query($con,"select * from users_access where userid = '$employeeid' and pageid = 'SDISC_cancel'");
+	if(mysqli_num_rows($sql) == 0){
+		$cancstat = "False";
+	}
 ?>
 <!DOCTYPE html>
 <html>
@@ -88,7 +101,11 @@ include('../../include/accessinner.php');
 								<?php 
 									if(intval($row['lcancelled'])==intval(0) && intval($row['lapproved'])==intval(0)){
 									?>
-										<a href="javascript:;" onClick="trans('POST','<?php echo $row['ctranno'];?>', 'Posted')">POST</a> | <a href="javascript:;" onClick="trans('CANCEL','<?php echo $row['ctranno'];?>','Cancelled')">CANCEL</a>
+
+										<a href="javascript:;" onClick="trans('POST','<?php echo $row['ctranno'];?>', 'Posted')" class="btn btn-xs btn-default<?=($poststat!="True") ? " disabled" : ""?>"><i class="fa fa-thumbs-up" style="font-size:20px;color:Green ;" title="Approve transaction"></i></a> 
+
+										<a href="javascript:;" onClick="trans('CANCEL','<?php echo $row['ctranno'];?>','Cancelled')" class="btn btn-xs btn-default<?=($cancstat!="True") ? " disabled" : ""?>"><i class="fa fa-thumbs-down" style="font-size:20px;color:Red ;" title="Cancel transaction"></i></a> 
+
 									<?php
 									}
 									else{
@@ -258,7 +275,16 @@ mysqli_close($con);
         });
 
 		$('#btnmass').click(function(){
-			window.location="../../MassUpload/specialDiscount.php"
+			var x = chkAccess('SDISC_New');
+			
+			if(x.trim()=="True"){
+
+				window.location="../../MassUpload/specialDiscount.php"
+			} else {
+				$("#AlertMsg").html("<center><b>ACCESS DENIED!</b></center>");
+				$("#AlertModal").modal('show');
+
+			}
 		})
 
 		// Adding new user
@@ -277,7 +303,7 @@ mysqli_close($con);
 			} 
 			var today = mm+'/'+dd+'/'+yyyy;
 
-			var x = chkAccess('DISC_New');
+			var x = chkAccess('SDISC_New');
 			
 			if(x.trim()=="True"){
 				$("#btnSave").show();
@@ -373,7 +399,7 @@ mysqli_close($con);
 	});
 	
 	function editgrp(code,desc,lbl,val,effdte, types, approve, cancel, cacctcode, cacctdesc){
-		 var x = chkAccess('DISC_Edit');
+		 var x = chkAccess('SDISC_Edit');
 
 		 var isposcd = 0;
 
@@ -387,64 +413,77 @@ mysqli_close($con);
 			isposcd = "POSTED";
 		}
 		 
-		 if(x.trim()=="True"){
-			$("#btnSave").hide();
+		 
+		$("#btnSave").hide();
+		$("#btnUpdate").show();
+					
+		$("#txtcode").val(code);
+		$('#txtdesc').val(desc);	
+		$('#txtlabel').val(lbl);
+		$('#txtvalue').val(val);
+		$('#effect_date').val(effdte);
+		$('#salesdracctnme').val(cacctdesc);
+		$('#salesdracct').val(cacctcode);
+		$(".rad").each(function(){
+			if($(this).val() === types) return $(this).prop("checked",true) 
+		});
+
+		if(isposcd!=0){
 			$("#btnUpdate").show();
-						
-			$("#txtcode").val(code);
-			$('#txtdesc').val(desc);	
-			$('#txtlabel').val(lbl);
-			$('#txtvalue').val(val);
-			$('#effect_date').val(effdte);
-			$('#salesdracctnme').val(cacctdesc);
-			$('#salesdracct').val(cacctcode);
+			$("#btnUpdate").attr("disabled",true);
+					
+			$("#txtcode").attr("readonly", true);
+			$('#txtdesc').attr("readonly", true);	
+			$('#txtlabel').attr("readonly", true);
+			$('#txtvalue').attr("readonly", true);
+			$('#effect_date').attr("readonly", true);
+			$('#salesdracctnme').attr("readonly", true);
+
 			$(".rad").each(function(){
-				if($(this).val() === types) return $(this).prop("checked",true) 
+				$(this).attr("disabled",true);
 			});
 
-			if(isposcd!=0){
-				$("#btnUpdate").attr("disabled",true);
-						
-				$("#txtcode").attr("readonly", true);
-				$('#txtdesc').attr("readonly", true);	
-				$('#txtlabel').attr("readonly", true);
-				$('#txtvalue').attr("readonly", true);
-				$('#effect_date').attr("readonly", true);
-				$('#salesdracctnme').attr("readonly", true);
+			$('#myModalLabel').html("<b>Update Discounts Detail</b> <font style='color: red'>("+isposcd+")</font>");
+		}else{
+			$("#btnUpdate").attr("disabled",false);
+					
+			$("#txtcode").attr("readonly", false);
+			$('#txtdesc').attr("readonly", false);	
+			$('#txtlabel').attr("readonly", false);
+			$('#txtvalue').attr("readonly", false);
+			$('#effect_date').attr("readonly", false);
+			$('#salesdracctnme').attr("readonly", false);
 
-				$(".rad").each(function(){
-					$(this).attr("disabled",true);
-				});
+			$(".rad").each(function(){
+				$(this).attr("disabled",false);
+			});
 
-				$('#myModalLabel').html("<b>Update Discounts Detail</b> <font style='color: red'>("+isposcd+")</font>");
-			}else{
-				$("#btnUpdate").attr("disabled",false);
-						
-				$("#txtcode").attr("readonly", false);
-				$('#txtdesc').attr("readonly", false);	
-				$('#txtlabel').attr("readonly", false);
-				$('#txtvalue').attr("readonly", false);
-				$('#effect_date').attr("readonly", false);
-				$('#salesdracctnme').attr("readonly", false);
+			$('#myModalLabel').html("<b>Update Discounts Detail</b>");
+		}
+							
+		
+		$('#myModal').modal('show');
 
-				$(".rad").each(function(){
-					$(this).attr("disabled",false);
-				});
+		if(x.trim()!="True"){
+			$("#btnUpdate").hide();
+					
+			$("#txtcode").attr("readonly", true);
+			$('#txtdesc').attr("readonly", true);	
+			$('#txtlabel').attr("readonly", true);
+			$('#txtvalue').attr("readonly", true);
+			$('#effect_date').attr("readonly", true);
+			$('#salesdracctnme').attr("readonly", true);
 
-				$('#myModalLabel').html("<b>Update Discounts Detail</b>");
-			}
-								
-			
-			$('#myModal').modal('show');
-		 } else {
-			 $("#AlertMsg").html("<center><b>ACCESS DENIED!</b></center>");
-			 $("#AlertModal").modal('show');
-
-		 }
+			$(".rad").each(function(){
+				$(this).attr("disabled",true);
+			});
+		}
 
 	}
 	
 	function setStat(code, stat){
+		var x = chkAccess('SDISC_Edit');
+		if(x.trim()=="True"){
 			$.ajax ({
 				url: "th_itmdiscstat.php",
 				data: { code: code,  stat: stat },
@@ -471,6 +510,11 @@ mysqli_close($con);
 				}
 			
 			});
+		} else {
+			$("#AlertMsg").html("<center><b>ACCESS DENIED!</b></center>");
+			$("#AlertModal").modal('show');
+
+		}
 
 	}
 
@@ -481,11 +525,11 @@ mysqli_close($con);
 			data: { x: num, typ: x },
 			async: false,
 			success: function( data ) {
-					$("#AlertMsg").html(data);
-					$("#AlertModal").modal('show');
-					
-					$("#msg"+num).html(msg);
-					location.reload()
+				$("#AlertMsg").html(data);
+				$("#AlertModal").modal('show');
+				
+				$("#msg"+num).html(msg);
+				location.reload()
 			}
 		});
 	

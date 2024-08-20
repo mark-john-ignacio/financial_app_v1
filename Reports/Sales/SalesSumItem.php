@@ -2,7 +2,7 @@
 if(!isset($_SESSION)){
 session_start();
 }
-$_SESSION['pageid'] = "SalesSummary.php";
+$_SESSION['pageid'] = "SalesSummary";
 
 include('../../Connection/connection_string.php');
 include('../../include/denied.php');
@@ -76,7 +76,7 @@ if($postedtran!==""){
 	$qryposted = " and b.lapproved=".$postedtran."";
 }
 
-if($trantype=="Trade"){
+//if($trantype=="Trade"){
 
 	$result=mysqli_query($con,"select a.compcode, a.citemno, c.citemdesc, a.cunit, b.lapproved, c.ctype, e.cdesc as typdesc, sum(a.nqty) as nqty, sum(A.nprice*a.nqty) as nprice
 	From sales_t a	
@@ -92,7 +92,7 @@ if($trantype=="Trade"){
 		$finarray[] = $row;
 	}
 
-}elseif($trantype=="Non-Trade"){
+/*}elseif($trantype=="Non-Trade"){
 
 	$result=mysqli_query($con,"select a.compcode, a.citemno, c.citemdesc, a.cunit, b.lapproved, c.ctype, e.cdesc as typdesc, sum(a.nqty) as nqty, sum(A.nprice*a.nqty) as nprice
 	From ntsales_t a	
@@ -133,7 +133,7 @@ if($trantype=="Trade"){
 	while($row = mysqli_fetch_array($result, MYSQLI_ASSOC)){
 		$finarray[] = $row;
 	}
-}
+}*/
 
 $mnths = (int)abs((strtotime($date1) - strtotime($date2))/(60*60*24*30)) + 1;
 	

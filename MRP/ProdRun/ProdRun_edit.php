@@ -2,7 +2,7 @@
 	if(!isset($_SESSION)){
 		session_start();
 	}
-	$_SESSION['pageid'] = "JobOrders";
+	$_SESSION['pageid'] = "ProdRun";
 
 	include('../../Connection/connection_string.php');
 	//include('../../include/denied.php');
@@ -21,13 +21,6 @@
 		$postedt = "False";
 	}
 
-	//QC POSTING
-	$qcost = "True";
-	$sql = mysqli_query($con,"select * from users_access where userid = '$employeeid' and pageid = 'ProdRun_post'");
-	if(mysqli_num_rows($sql) == 0){
-		$qcost = "False";
-	}
-
 	$arrallsec = array();
 	$sqlempsec = mysqli_query($con,"select A.nid, A.cdesc From locations A Where A.compcode='$company' and A.cstatus='ACTIVE' Order By A.cdesc");
 
@@ -37,11 +30,13 @@
 	}
 
 	$arrmrpjo_pt = array();
-	$sql = "select nid,ctranno,mrp_process_id,mrp_process_desc,nmachineid,DATE_FORMAT(ddatestart, \"%m/%d/%Y %h:%i:%s %p\") as ddatestart,DATE_FORMAT(ddateend, \"%m/%d/%Y %h:%i:%s %p\") as ddateend,nactualoutput,operator_id,nrejectqty,nscrapqty,lqcposted,cqcpostedby,dqcdateposted from mrp_jo_process_t X where X.compcode='$company' and X.ctranno in (Select ctranno from mrp_jo_process where compcode='$company' and mrp_jo_ctranno  = '$tranno')";
+	$sql = "select nid,ctranno,mrp_process_id,mrp_process_desc,nmachineid,DATE_FORMAT(ddatestart, \"%m/%d/%Y %h:%i:%s %p\") as ddatestart,DATE_FORMAT(ddateend, \"%m/%d/%Y %h:%i:%s %p\") as ddateend,nactualoutput,operator_id,nrejectqty,nscrapqty,cqcpostedby,cremarks,X.lpause from mrp_jo_process_t X where X.compcode='$company' and (X.ctranno in (Select ctranno from mrp_jo_process where compcode='$company' and mrp_jo_ctranno  = '$tranno') or X.ctranno='$tranno')";
+
 	$resultmain = mysqli_query ($con, $sql); 
 	while($row2 = mysqli_fetch_array($resultmain, MYSQLI_ASSOC)){
 		$arrmrpjo_pt[] = $row2;				
 	}
+	
 
 	$arrmachines = array();
 	$sqlmrpmach = mysqli_query($con,"select A.nid, A.cdesc From mrp_machines A Where A.compcode='$company' and A.cstatus='ACTIVE' Order By A.cdesc");
@@ -60,7 +55,7 @@
 	}
 
 	@$arrname = array();
-	$directory = "../../Components/assets/JOR/{$company}_{$tranno}/";
+	$directory = "../../Components/assets/ProdRun/{$company}_{$tranno}/";
 	if(file_exists($directory)){
 		@$arrname = file_checker($directory);
 	}
@@ -109,7 +104,8 @@
 
 <body style="padding:5px">
 
-	<form action="JO_updatesave.php" name="frmpos" id="frmpos" method="post" enctype="multipart/form-data">
+	<form action="ProdRun_updatesave.php" name="frmpos" id="frmpos" method="post" enctype="multipart/form-data">
+		<input type="hidden" name="ctranno" id="ctranno" value="<?=$tranno?>" />
 		<fieldset>
 				<legend>			
 					<div class="col-xs-6 nopadding"> Job Order Details </div>  
@@ -138,12 +134,36 @@
 								</thead>
 								<tbody class="tbody">
 									<?php
+										$arrreslx = array();
 										$sql = "select X.*, A.citemdesc from mrp_jo_process X left join items A on X.compcode=A.compcode and X.citemno=A.cpartno where X.compcode='$company' and X.mrp_jo_ctranno = '$tranno' Order By X.nid";
 										$resultmain = mysqli_query ($con, $sql); 
 										while($row2 = mysqli_fetch_array($resultmain, MYSQLI_ASSOC)){
+											$arrreslx[] = $row2;
+										}
+
+										foreach($arrreslx as $row2){
 									?>
 										<tr id="tr<?=$row2['nid']?>">
 											<td><a href="javascript:;" onclick="getprocess('<?=$row2['ctranno']?>','<?=$row2['citemdesc']?>','tr<?=$row2['nid']?>')"><?=$row2['ctranno']?></a></td>
+											<td><?=$row2['citemdesc']?></td>
+											<td><?=$row2['cunit']?></td>
+											<td style="text-align: right"><?=number_format($row2['nqty'])?></td>
+											<td style="text-align: right"><?=number_format($row2['nworkhrs'],2)?></td>
+											<td style="text-align: right"><?=number_format($row2['nsetuptime'],2)?></td>
+											<td style="text-align: right"><?=number_format($row2['ncycletime'],2)?></td>
+											<td style="text-align: right"><?=number_format($row2['ntottime'],2)?></td>
+										</tr>
+									<?php
+										}
+									?>
+									<!--MAIN -->
+									<?php
+										$sql = "select X.*, A.citemdesc from mrp_jo X left join items A on X.compcode=A.compcode and X.citemno=A.cpartno where X.compcode='$company' and X.ctranno = '$tranno' Order By X.nid";
+										$resultmain = mysqli_query ($con, $sql); 
+										while($row2 = mysqli_fetch_array($resultmain, MYSQLI_ASSOC)){
+									?>
+										<tr id="tr0">
+											<td><a href="javascript:;" onclick="getprocess('<?=$row2['ctranno']?>','<?=$row2['citemdesc']?>','tr0')"><?=$row2['ctranno']?></a></td>
 											<td><?=$row2['citemdesc']?></td>
 											<td><?=$row2['cunit']?></td>
 											<td style="text-align: right"><?=number_format($row2['nqty'])?></td>
@@ -178,17 +198,7 @@
 													<th width='158px' style="background-color: #fdb2b2; text-align: center; padding:1px"> Date Ended</th>
 													<th width='100px' style="background-color: #e5b2fd; text-align: center; padding:1px"> Actual Output</th>
 													<th width='200px' style="background-color: #e5b2fd; text-align: center; padding:1px">Operator</th>
-													<th width='100px' style="text-align: center; padding:1px">Reject Qty</th>
-													<th width='100px' style="text-align: center; padding:1px">Scrap Qty</th>
-
-													<?php
-														if($qcost=="True"){
-													?>
-													<th width='158px' style="background-color: #f6fdb2; text-align: center; padding:1px">Actions</th>
-													<th width='200px' style="background-color: #f6fdb2; text-align: center; padding:1px">Remarks</th>
-													<?php
-														}
-													?>
+													<th width='80px' style="background-color: #e5b2fd; text-align: center; padding:1px">Update</th>
 												</tr>
 											</thead>
 											<tbody class="tbody">
@@ -330,49 +340,47 @@
 
 <link rel="stylesheet" type="text/css" href="../../Bootstrap/DataTable/DataTable.css"> 
 <script type="text/javascript" language="javascript" src="../../Bootstrap/DataTable/jquery.dataTables.min.js"></script>
+<script type="text/javascript" src="../../global/plugins/bootbox/bootbox.min.js"></script>
 
 <script type="text/javascript">
-
-	var file_name = <?= json_encode(@$arrname) ?>;
-	/**
-	 * Checking of list files
-	 */
-	file_name.map(({name, ext}) => {
-			console.log("Name: " + name + " ext: " + ext)
-	})
-
-	var arroffice = new Array("xls","xlsx","doc","docx","ppt","pptx","csv");
-	var arrimg = new Array("jpg","png","gif","jpeg");
 
 	var list_file = [];
 	var file_config = [];
 	var extender;
-	/**
-	 * setting up an list of file and config of a file
-	 */
-	file_name.map(({name, ext}, i) => {
-		list_file.push("https://<?=$_SERVER['HTTP_HOST']?>/Components/assets/JOR/<?=$company."_".$tranno?>/" + name)
-		console.log(ext);
+	var file_name = <?= json_encode(@$arrname) ?>;	
 
-		if(jQuery.inArray(ext, arroffice) !== -1){
-			extender = "office";
-		} else if (jQuery.inArray(ext, arrimg) !== -1){
-			extender = "image";
-		} else if (ext == "txt"){
-			extender = "text";
-		} else {
-			extender =  ext;
-		}
+	if(file_name.length != 0){
+		var arroffice = new Array("xls","xlsx","doc","docx","ppt","pptx","csv");
+		var arrimg = new Array("jpg","png","gif","jpeg");
 
-		console.log(extender)
-		file_config.push({
-			type : extender, 
-			caption : name,
-			width : "120px",
-			url: "th_filedelete.php?id="+name+"&code=<?=$tranno?>", 
-			key: i + 1
-		});
-	})
+		/**
+		 * setting up an list of file and config of a file
+		 */
+
+		file_name.map(({name, ext}, i) => {
+			list_file.push("<?=$AttachUrlBase?>ProdRun/<?=$company."_".$tranno?>/" + name)
+			console.log(ext);
+
+			if(jQuery.inArray(ext, arroffice) !== -1){
+				extender = "office";
+			} else if (jQuery.inArray(ext, arrimg) !== -1){
+				extender = "image";
+			} else if (ext == "txt"){
+				extender = "text";
+			} else {
+				extender =  ext;
+			}
+
+			console.log(extender)
+			file_config.push({
+				type : extender, 
+				caption : name,
+				width : "120px",
+				url: "th_filedelete.php?id="+name+"&code=<?=$tranno?>", 
+				key: i + 1
+			});
+		})
+	}
 
 	$(document).keydown(function(e) {	 
 	  if(e.keyCode == 83 && e.ctrlKey) { //Ctrl S
@@ -406,7 +414,7 @@
 
 			if(file_name.length > 0){
 				$('#file-0').fileinput({
-					showUpload: false,
+					showUpload: true,
 					showClose: false,
 					allowedFileExtensions: ['jpg', 'png', 'gif', 'jpeg', 'pdf', 'txt', 'csv', 'xls', 'xlsx', 'doc', 'docx', 'ppt', 'pptx'],
 					overwriteInitial: false,
@@ -417,12 +425,12 @@
 					initialPreview: list_file,
 					initialPreviewAsData: true,
 					initialPreviewFileType: 'image',
-					initialPreviewDownloadUrl: 'https://<?=$_SERVER['HTTP_HOST']?>/Components/assets/JOR/<?=$company."_".$tranno?>/{filename}',
+					initialPreviewDownloadUrl: '<?=$AttachUrlBase?>ProdRun/<?=$company."_".$tranno?>/{filename}',
 					initialPreviewConfig: file_config
 				});
 			} else {
 				$("#file-0").fileinput({
-					showUpload: false,
+					showUpload: true,
 					showClose: false,
 					allowedFileExtensions: ['jpg', 'png', 'gif', 'jpeg', 'pdf', 'txt', 'csv', 'xls', 'xlsx', 'doc', 'docx', 'ppt', 'pptx'],
 					overwriteInitial: false,
@@ -447,33 +455,143 @@
 	});
 
 	$(document).on('click', 'button.nbtnstart', function(e) {
+
 		let yx = $(this).data("val");
-		let yxval = moment().format('YYYY-MM-DD HH:mm:ss');
 
-		setVals(yx,"ddatestart",yxval);
+		if($("#selmachine"+yx).val()==""){
 
-		yxval = moment().format('MM/DD/YYYY hh:mm:ss A');
-		$("#tdS"+yx).html("<input type=\"text\" class=\"form-control input-sm text-center\" value=\""+yxval+"\" readonly>");
-		$("#btnEnd"+yx).removeAttr("disabled"); 
-		$("#btnEnd"+yx).removeClass("disabled");
+			$("#AlertMsg").html("Select Machine!");
+			$("#alertbtnOK").show();
+			$("#AlertModal").modal('show');
+
+		}else{
+	
+			let yxval = moment().format('YYYY-MM-DD HH:mm:ss');
+
+			setVals(yx,"ddatestart",yxval);
+
+			yxval = moment().format('MM/DD/YYYY hh:mm:ss A');
+			$("#tdS"+yx).html("<input type=\"text\" class=\"txtdatestart form-control input-sm text-center\" value=\""+yxval+"\" readonly style=\"cursor: pointer\" data-val=\""+yx+"\">");
+			
+			$("#btnEnd"+yx).removeAttr("disabled"); 
+			$("#btnEnd"+yx).removeClass("disabled");
+
+			$("#selmachine"+yx).prop('disabled', true);
+			$("#txtnactual"+yx).removeAttr("disabled");
+			$("#seloperator"+yx).removeAttr("disabled"); 
+
+			$("#btnUpActual"+yx).removeClass("disabled");
+			$("#btnUpActual"+yx).removeAttr("disabled");
+		}
 
 	});
 
 	$(document).on('click', 'button.nbtnend', function(e) {
+
 		let yx = $(this).data("val");
 		let yxval = moment().format('YYYY-MM-DD HH:mm:ss');
 
-		setVals(yx,"ddateend",yxval);
+		if($("#txtnactual"+yx).val()==0 || $("#txtnactual"+yx)=="" || $("#seloperator"+yx).val() == ""){
+			$("#AlertMsg").html("Please enter your actual output and operator!");
+			$("#alertbtnOK").show();
+			$("#AlertModal").modal('show');
+		}else{
+			setVals(yx,"ddateend",yxval);
+			setVals(yx,"nactualoutput",$("#txtnactual"+yx).val());
+			setVals(yx,"operator_id",$("#seloperator"+yx).val());
 
-		yxval = moment().format('MM/DD/YYYY hh:mm:ss A');
-		$("#tdE"+yx).html("<input type=\"text\" class=\"form-control input-sm text-center\" value=\""+yxval+"\" readonly>");
+			updateLog(yx, $("#txtnactual"+yx).val(), $("#seloperator"+yx).val());
 
-		$("#txtnscrap"+yx).removeAttr("disabled"); 
-		$("#txtnreject"+yx).removeAttr("disabled"); 
-		$("#txtnactual"+yx).removeAttr("disabled");
+			yxval = moment().format('MM/DD/YYYY hh:mm:ss A');
+			$("#tdE"+yx).html("<input type=\"text\" class=\"txtdateend form-control input-sm text-center\" value=\""+yxval+"\" readonly style=\"cursor: pointer\" data-val=\""+yx+"\" style=\"cursor: pointer\">");
 
-		$("#seloperator"+yx).removeAttr("disabled");
+			$("#txtnactual"+yx).attr("disabled", true);
+			$("#seloperator"+yx).attr("disabled", true); 
 
+			$("#btnUpActual"+yx).addClass("disabled");
+			$("#btnUpActual"+yx).attr("disabled", true);
+		}
+
+	}); 
+
+	$(document).on('click', 'button.nbtnupactual', function(e) {
+		let yx = $(this).data("val");
+
+		setVals(yx,"nactualoutput",$("#txtnactual"+yx).val());
+		setVals(yx,"operator_id",$("#seloperator"+yx).val());
+		updateLog(yx, $("#txtnactual"+yx).val(), $("#seloperator"+yx).val());
+
+		$("#AlertMsg").html("Actual output and operator updated!");
+		$("#alertbtnOK").show();
+		$("#AlertModal").modal('show');
+	});
+
+	$(document).on('click', 'input.txtdateend', function(e) {
+		let yx = $(this).data("val");
+
+		bootbox.prompt({
+			title: 'Enter reason for resetting Date Ended.',
+			inputType: 'text',
+			centerVertical: true,
+			callback: function (result) {
+				if(result==""){					
+					bootbox.alert({
+						message: "Reason for resetting Date Ended is required!",
+						size: "small",
+						className: "bootalert"
+					});
+				}else if(result!=""){
+					setVals(yx,"ddateend","", result);
+
+					$("#tdE"+yx).html("<button type=\"button\" class=\"nbtnend btn btn-danger btn-sm btn-block\" id=\"btnEnd"+yx+"\" data-val=\""+yx+"\">End</button>");
+
+					$("#txtnactual"+yx).attr("disabled", false);
+					$("#seloperator"+yx).attr("disabled", false); 
+
+					$("#btnUpActual"+yx).removeClass("disabled");
+					$("#btnUpActual"+yx).attr("disabled", false);
+				}				
+			}
+		});
+	});
+
+	$(document).on('click', 'input.txtdatestart', function(e) {
+		let yx = $(this).data("val");
+
+		$vsar = getlogs(yx);
+
+		if(parseInt($vsar)==0){
+			bootbox.prompt({
+				title: 'Enter reason for resetting Date Start.',
+				inputType: 'text',
+				centerVertical: true,
+				callback: function (result) {
+					if(result==""){					
+						bootbox.alert({
+							message: "Reason for resetting Date Start is required!",
+							size: "small",
+							className: "bootalert"
+						});
+					}else if(result!=""){
+						setVals(yx,"ddatestart","", result);
+
+						$("#tdS"+yx).html("<button type=\"button\" class=\"nbtnstart btn btn-success btn-sm btn-block\" id=\"btnStart"+yx+"\" data-val=\""+yx+"\" >Start</button>");
+						
+						$("#txtnactual"+yx).attr("disabled", true);
+						$("#seloperator"+yx).attr("disabled", true); 
+
+						$("#btnUpActual"+yx).addClass("disabled");
+						$("#btnUpActual"+yx).attr("disabled", true);
+					}				
+				}
+			});
+		}else{
+			bootbox.alert({
+				message: "You cannot reset Date Start because of Actual Output logs!",
+				size: "small",
+				className: "bootalert"
+			});
+		}
 	});
 
 	function getprocess($xtran,$xitms,$trid){
@@ -503,7 +621,7 @@
 				var dstart = "";
 				var deend = "";
 
-				if(lqcnext==1){
+				//if(lqcnext==1){
 
 					//machine Select
 					machoptions = "";
@@ -516,11 +634,15 @@
 						machoptions = machoptions + "<option value='"+this['nid']+"' "+xstat+">"+this['cdesc']+"</option>";
 					});
 
-					tdmach = "<select class='ncmachine form-control input-xs' name=\"selmachine\" id=\"selmachine"+lastRow+"\" data-val=\""+lastRow+"\" ><option></option>" + machoptions + "</select>";
+					var mach_stat = "";
+					if ((value.ddatestart!="null" && value.ddatestart!=null && value.ddatestart!="") || value.lpause==1) {
+						mach_stat = "disabled";
+					}
+					tdmach = "<select class='ncmachine form-control input-xs "+mach_stat+"' name=\"selmachine\" id=\"selmachine"+lastRow+"\" data-val=\""+lastRow+"\" "+mach_stat+"><option></option>" + machoptions + "</select>";
 					
 					var x = value.ddatestart;
 					if (x!="null" && x!=null && x!="") {
-						dstart = "<input type=\"text\" class=\"form-control input-sm text-center\" value=\""+value.ddatestart+"\" readonly>";
+						dstart = "<input type=\"text\" class=\"txtdatestart form-control input-sm text-center\" value=\""+value.ddatestart+"\" readonly style=\"cursor: pointer\" data-val=\""+lastRow+"\">";
 					}else{
 						let stat = "disabled";
 						if(value.nmachineid !=0){
@@ -531,51 +653,54 @@
 					
 					var x = value.ddateend;
 					if (x!="null" && x!=null && x!="") {
-						deend = "<input type=\"text\" class=\"form-control input-sm text-center\" value=\""+value.ddateend+"\" readonly>";
+						deend = "<input type=\"text\" class=\"txtdateend form-control input-sm text-center\" value=\""+value.ddateend+"\" readonly style=\"cursor: pointer\" data-val=\""+lastRow+"\">";
 					}else{
 						let stat = "disabled";
 						let y = value.ddatestart;
-						if(y!="null" && y!=null && y!=""){
+						if((y!="null" && y!=null && y!="") && value.lpause==0){
 							stat = "";
 						}
 						deend = "<button type=\"button\" class=\"nbtnend btn btn-danger btn-sm btn-block "+stat+"\" id=\"btnEnd"+lastRow+"\" data-val=\""+lastRow+"\" "+stat+">End</button>";
 					}
 					
-
-					let stat = "disabled";
-					let yxz = value.ddateend;
-					if(yxz!="null" && yxz!=null && yxz!=""){
-						stat = "";
+					var entr_stat = "disabled";
+					if ((value.ddatestart!="null" && value.ddatestart!=null && value.ddatestart!="" && (value.ddateend=="" || value.ddateend==null || value.ddateend=="null")) && value.lpause==0) {
+						entr_stat = "";
 					}
-
 					//operators Select
 					opeoptions = "";
+					var xoperator = value.operator_id;
 					$.each(jQuery.parseJSON(file_operators), function() { 
-						opeoptions = opeoptions + "<option value='"+this['nid']+"'>"+this['cdesc']+"</option>";
+						let xstat = "";
+						if(xoperator==this['nid']){
+							xstat = "selected";
+						}
+						opeoptions = opeoptions + "<option value='"+this['nid']+"' "+xstat+">"+this['cdesc']+"</option>";
 					});
 
-					tdoper = "<select class='form-control input-xs' id=\"seloperator"+lastRow+"\" data-val=\""+lastRow+"\" "+stat+"><option></option>" + opeoptions + "</select>";  
+					tdoper = "<select class='form-control input-xs "+entr_stat+"' id=\"seloperator"+lastRow+"\" data-val=\""+lastRow+"\" "+entr_stat+"><option></option>" + opeoptions + "</select>";  
 
-					dactual = "<input type=\"text\" class=\"form-control input-sm text-right\" id=\"txtnactual"+lastRow+"\" data-val=\""+lastRow+"\" value=\"0\" "+stat+">";
-					dreject = "<input type=\"text\" class=\"form-control input-sm text-right\" id=\"txtnreject"+lastRow+"\" data-val=\""+lastRow+"\" value=\"0\" "+stat+">";
-					dscrap = "<input type=\"text\" class=\"form-control input-sm text-right\" id=\"txtnscrap"+lastRow+"\" data-val=\""+lastRow+"\" value=\"0\" "+stat+">";
+					dactual = "<input type=\"text\" class=\"form-control input-sm text-right\" id=\"txtnactual"+lastRow+"\" data-val=\""+lastRow+"\" value=\""+value.nactualoutput+"\" "+entr_stat+">";
+					
+					dupdact = "<button type=\"button\" class=\"nbtnupactual btn btn-warning btn-sm btn-block "+entr_stat+" \" id=\"btnUpActual"+lastRow+"\" data-val=\""+lastRow+"\" "+entr_stat+">Update Output</button>";
 
+				//}
+
+				if(value.lpause==1){
+					$addmsg = " <span class=\"text-danger\"> (ON PAUSE)</span>";
+				}else{
+					$addmsg = "";
 				}
 
-				var tdprocess = "<td style='padding:1px'>"+value.mrp_process_desc+"</td>";
+				var tdprocess = "<td style='padding:1px'>"+value.mrp_process_desc+$addmsg+"</td>";
 				var tdmachine = "<td style='padding:1px'>"+tdmach+"</td>";
 				var tddatest = "<td style='padding:1px' id=\"tdS"+lastRow+"\">"+dstart+"</td>";
 				var tddateen = "<td style='padding:1px' id=\"tdE"+lastRow+"\">"+deend+"</td>";
 				var tdactual = "<td style='padding:1px'>"+dactual+"</td>";
 				var tdoperator = "<td style='padding:1px'>"+tdoper+"</td>";
-				var tdreject = "<td style='padding:1px'>"+dreject+"</td>";
-				var tdscrap = "<td style='padding:1px'>"+dscrap+"</td>";
-				var tdqc = "<td style='padding:1px'>&nbsp;</td>";
-				var tdrems = "<td style='padding:1px'>&nbsp;</td>";
-
-				//alert(tdinfocode + "\n" + tdinfodesc + "\n" + tdinfofld + "\n" + tdinfoval + "\n" + tdinfodel); nsel2
+				var tdupdtebtn = "<td style='padding:1px'>"+dupdact+"</td>";
 				
-				$('#MyJOSubs > tbody:last-child').append('<tr>'+tdprocess + tdmachine + tddatest + tddateen + tdactual + tdoperator + tdreject + tdscrap + tdqc + tdrems + '</tr>');
+				$('#MyJOSubs > tbody:last-child').append('<tr>'+tdprocess + tdmachine + tddatest + tddateen + tdactual + tdoperator + tdupdtebtn + '</tr>');
 
 
 				$("#selmachine"+lastRow).select2({
@@ -583,7 +708,7 @@
 				});
 
 				$("#seloperator"+lastRow).select2({
-						placeholder: "Please select the operator"
+					placeholder: "Please select the operator"
 				});
 
 				machoptions = "";
@@ -593,17 +718,45 @@
 		}); 
 	}
 
-	function setVals(processid, colnme, colval){
-
+	function setVals(processid, colnme, colval, resetmsg = ""){
+		var $issset = "False";
 		$.ajax ({
 			url: "th_setstat.php",
-			data: { processid: processid,  colnme: colnme, colval: colval },
+			data: { processid: processid,  colnme: colnme, colval: colval, resetmsg: resetmsg },
 			async: false,
 			dataType: "text",
 			success: function( data ) {
-
+				$issset = data;
 			}			
 		});
+	}
+
+	function updateLog(processid, actualoutput, actualoperator){
+		var $issset = "False";
+		$.ajax ({
+			url: "th_updatelog.php",
+			data: { processid: processid,  actualoutput: actualoutput, actualoperator: actualoperator },
+			async: false,
+			dataType: "text",
+			success: function( data ) {
+				$issset = data;
+			}			
+		});
+	}
+
+	function getlogs(processid){
+		var $issset = "False";
+		$.ajax ({
+			url: "th_getlog.php",
+			data: { processid: processid },
+			async: false,
+			dataType: "text",
+			success: function( data ) {
+				$issset = data;
+			}			
+		});
+
+		return $issset;
 	}
 
 </script>

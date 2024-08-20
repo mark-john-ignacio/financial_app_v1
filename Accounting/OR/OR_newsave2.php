@@ -343,8 +343,16 @@ if($rowcntothers!=0){
 	mysqli_query($con,"INSERT INTO logfile(`compcode`, `ctranno`, `cuser`, `ddate`, `cevent`, `module`, `cmachine`, `cremarks`) 
 	values('$company','$cSINo','$preparedby',NOW(),'INSERTED','RECEIVE PAYMENT','$compname','Inserted New Record')");
 
+
+	//$xurl = "";
+	//if($dret==0){
+		$xurl = "th_acctentry.php";
+	//}else{
+	//	$xurl = "OR_edit2.php";
+	//}
+
 ?>
-<form action="OR_edit2.php" name="frmpos" id="frmpos" method="post">
+<form action="<?=$xurl?>" name="frmpos" id="frmpos" method="post">
 	<input type="hidden" name="txtctranno" id="txtctranno" value="<?php echo $cSINo;?>" />
 </form>
 <script>

@@ -1,241 +1,160 @@
 <?php
-if(!isset($_SESSION)){
-session_start();
-}
-require_once "../Connection/connection_string.php";
-
-function better_crypt($input, $rounds = 10) { 
-
-	$crypt_options = array( 'cost' => $rounds ); 
-	return password_hash($input, PASSWORD_BCRYPT, $crypt_options); 
-
-}
+	if(!isset($_SESSION)){
+		session_start();
+	}
+	require_once "../Connection/connection_string.php";
+	require_once('../Model/helper.php');
 
 ?>
 
 
+<!DOCTYPE html>
+<!--[if IE 8]> <html lang="en" class="ie8 no-js"> <![endif]-->
+<!--[if IE 9]> <html lang="en" class="ie9 no-js"> <![endif]-->
+<!--[if !IE]><!-->
 <html lang="en">
+<!--<![endif]-->
+<!-- BEGIN HEAD -->
 <head>
-<meta charset="utf-8">
-<meta http-equiv="X-UA-Compatible" content="IE=edge">
-<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta charset="utf-8"/>
 <title>MYX Financials</title>
-<link href="../Bootstrap/css/NFont.css" rel="stylesheet">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<meta http-equiv="Content-type" content="text/html; charset=utf-8">
+<meta content="" name="description"/>
+<meta content="" name="author"/>
+<!-- BEGIN GLOBAL MANDATORY STYLES -->
+<link href="http://fonts.googleapis.com/css?family=Open+Sans:400,300,600,700&subset=all" rel="stylesheet" type="text/css"/>
 <link href="../global/plugins/font-awesome/css/font-awesome.min.css" rel="stylesheet" type="text/css"/>
-<link rel="stylesheet" type="text/css" href="../Bootstrap/css/bootstrap.css?t=<?php echo time();?>">
-
-<script src="../Bootstrap/js/jquery-3.2.1.min.js"></script>
-<script src="../Bootstrap/js/bootstrap.js"></script>
-
-<style type="text/css">
-    body {
-		font-family: 'Varela Round', sans-serif;
-	}
-	.modal-login {		
-		color: #636363;
-		width: 350px;
-	}
-	.modal-login .modal-content {
-		padding: 20px;
-		border-radius: 5px;
-		border: none;
-	}
-	.modal-login .modal-header {
-		border-bottom: none;   
-        position: relative;
-        justify-content: center;
-	}
-	.modal-login .form-control:focus {
-		border-color: #70c5c0;
-	}
-	.modal-login .form-control, .modal-login .btn {
-		min-height: 40px;
-		border-radius: 3px; 
-	}
-	.modal-login .modal-footer {
-		background: #ecf0f1;
-		border-color: #dee4e7;
-		text-align: center;
-        justify-content: center;
-		margin: 0 -20px -20px;
-		border-radius: 5px;
-		font-size: 13px;
-	}
-	.modal-login .modal-footer a {
-		color: #999;
-	}		
-	.modal-login .avatar {
-		position: absolute;
-		margin: 0 auto;
-		left: 0;
-		right: 0;
-		top: -70px;
-		width: 95px;
-		height: 95px;
-		border-radius: 50%;
-		z-index: 9;
-		background: #DDF3FF;
-		padding: 15px;
-		box-shadow: 0px 2px 2px rgba(0, 0, 0, 0.1);
-	}
-	.modal-login .logo {
-		position: absolute;
-		margin: 0 auto;
-		left: 0;
-		right: 0;
-		top: -30px;
-		width: 130px;
-		height: 150px;
-		z-index: 9;
-		padding: 15px;
-		border-radius: 50%;
-		/*background: #FFFFFF;
-		box-shadow: 0px 2px 2px rgba(0, 0, 0, 0.1);*/
-		
-	}
-	.modal-login .avatar img {
-		width: 100%;
-	}
-	.modal-login.modal-dialog {
-		margin-top: 80px;
-	}
-    .modal-login .btn {
-        color: #fff;
-        border-radius: 4px;
-		background: #0089cb;
-		text-decoration: none;
-		transition: all 0.4s;
-        line-height: normal;
-        border: none;
-    }
-	.modal-login .btn:hover, .modal-login .btn:focus {
-		background: #0373a9;
-		outline: none;
-	}
-	.trigger-btn {
-		display: inline-block;
-		margin: 100px auto;
-	}
-	.modal-body{
-		top: 70px;
-	}
-</style>
+<link href="../global/plugins/simple-line-icons/simple-line-icons.min.css" rel="stylesheet" type="text/css"/>
+<link href="../global/plugins/bootstrap/css/bootstrap.min.css" rel="stylesheet" type="text/css"/>
+<link href="../global/plugins/uniform/css/uniform.default.css" rel="stylesheet" type="text/css"/>
+<!-- END GLOBAL MANDATORY STYLES -->
+<!-- BEGIN PAGE LEVEL STYLES -->
+<link href="../global/plugins/select2/select2.css" rel="stylesheet" type="text/css"/>
+<link href="../admin/pages/css/login-soft.css?x=<?=time()?>" rel="stylesheet" type="text/css"/>
+<!-- END PAGE LEVEL SCRIPTS -->
+<!-- BEGIN THEME STYLES -->
+<link href="../global/css/components.css" id="style_components" rel="stylesheet" type="text/css"/>
+<link href="../global/css/plugins.css" rel="stylesheet" type="text/css"/>
+<link href="../admin/layout/css/layout.css" rel="stylesheet" type="text/css"/>
+<link id="style_color" href="../admin/layout/css/themes/darkblue.css" rel="stylesheet" type="text/css"/>
+<link href="../admin/layout/css/custom.css" rel="stylesheet" type="text/css"/>
+<!-- END THEME STYLES -->
+<link rel="shortcut icon" href="favicon.ico"/>
 </head>
-<body>
-<!-- Modal HTML -->
+<!-- END HEAD -->
+<!-- BEGIN BODY -->
+<body class="login">
 
-<?php
-$error = "";
-if (isset($_GET["key"]) && isset($_GET["email"]) && isset($_GET["action"]) 
-&& ($_GET["action"]=="reset") && !isset($_POST["action"])){
-  $key = $_GET["key"];
-  $email = $_GET["email"];
-  $curDate = date("Y-m-d H:i:s");
-  $query = mysqli_query($con,
-  "SELECT * FROM `password_reset_temp` WHERE `key`='".$key."' and `email`='".$email."';"
-  );
-  $row = mysqli_num_rows($query);
-  if ($row==""){
-?>
-		<div id="myModal">
-			<div class="modal-dialog modal-login">
-				<div class="modal-content">
-					<div class="modal-header">
-		                <div class="logo">			
-											<img src="../images/LogoNew.png" width="90" height="120">	
-		                </div>
+<!-- BEGIN SIDEBAR TOGGLER BUTTON -->
+<div class="menu-toggler sidebar-toggler">
+</div>
+<!-- END SIDEBAR TOGGLER BUTTON -->
+<!-- BEGIN LOGIN -->
+<div class="content">
+	<!-- BEGIN LOGIN FORM -->
+	<!-- BEGIN LOGO -->
+	<div class="logo">
+		<a href="index.html">
+			<img src="../images/LogoNew.png" width="120">	
+		</a>
+	</div>
+	<!-- END LOGO -->
 
-					</div>
-					<div class="modal-body text-center">
+	<?php
+	$error = "";
+	if (isset($_GET["key"]) && isset($_GET["email"]) && isset($_GET["action"]) && ($_GET["action"]=="reset") && !isset($_POST["action"])){
+		$key = $_GET["key"];
+		$email = $_GET["email"];
+		$curDate = date("Y-m-d H:i:s");
 
+		$stmt = $con->prepare("SELECT * FROM `password_reset_temp` WHERE `key` = ? and `email`= ?");
+        $stmt->bind_param("ss", $key, $email);
+        $stmt->execute();
+        $result = $stmt->get_result();
+        $row = $result->fetch_assoc();
 
-					  <h2>Invalid Link</h2>
-						<p>The link is invalid/expired. Either you did not copy the correct link
-						from the email, or you have already used the key in which case it is 
-						deactivated.</p>
-						<p><a href="https://<?=$_SERVER['HTTP_HOST']?>/forgotpassword.php">
-						Click here</a> to reset password.</p>
+        $xp = ($row['email']) ?? "";
 
-					</div>
-				</div>
+		if ($xp==""){
+	?>
+			<center><h3 class="form-title">Invalid Link</h3></center>
+			<div class="form-group">
+				<h4>Forgot your password ?</h4>
+				<p>The link is invalid/expired. Either you did not copy the correct link
+					from the email, or you have already used the key in which case it is 
+					deactivated.
+				</p>
+				<p>Go <a href="<?=$UrlBase?>">
+				back</a> to login page and click "here" to reset your password.</p>
 			</div>
-		</div>
-<?php
-	}else{
-		$row = mysqli_fetch_assoc($query);
-		$expDate = $row['expDate'];
-		if ($expDate >= $curDate){
-		?>
-			<div id="myModal">
-				<div class="modal-dialog modal-login">
-					<div class="modal-content">
-						<div class="modal-header">
-											<div class="logo">			
-								<img src="../images/LogoNew.png" width="90" height="120">	
-											</div>
-
-						</div>
-						<div class="modal-body">
-
-
-							<form method="post" action="reset-password.php" name="frmupdatepass" id="frmupdatepass">
-								<input type="hidden" name="action" value="update" />
-								<div class="form-group">
-									<input type="password" class="form-control form-control-sm" id="pass1" name="pass1" maxlength="15" required placeholder="Enter New Password..."/>
-								</div>
-								<div class="form-group">
-								<input type="password" class="form-control form-control-sm" id="pass2" name="pass2" maxlength="15" required placeholder="Re-Enter New Password..."/>
-								</div>
-
-								<div class="col-xs-12" id="warning" style="display: none">
-									<div id="alphabettxt"><span id="alphabet"></span> Must have an Alphabetical character! </div>
-									<div id="numerictxt"><span id="numeric"></span> Must have a Numeric character!</div>
-									<div id="stringlentxt"><span id="stringlen"></span> Minimum of 8 characters! </div>
-									<div id="passmatchtxt"><span id="passmatch"></span> Password Match! </div>
-									
-								</div>
-
-								<input type="hidden" name="email" value="<?php echo $email;?>"/>
-								<input type="button" name="btnAdd" id="btnAdd" value="Reset Password" class="btn btn-warning btn-lg btn-block login-btn" />
-							</form>
-
-						</div>
-					</div>
-				</div>
-			</div>
-		<?php
+	<?php
 		}else{
+			$expDate = $row['expDate'];
+			if ($expDate >= $curDate){
 	?>
 
-		<div id="myModal">
-			<div class="modal-dialog modal-login">
-				<div class="modal-content">
-					<div class="modal-header">
-		                <div class="logo">			
-											<img src="../images/LogoNew.png" width="90" height="120">	
-		                </div>
-
-					</div>
-					<div class="modal-body text-center">
-
-
-					  <h2>Link Expired</h2>
-						<p>The link is expired. You are trying to use the expired link which 
-						as valid only 24 hours (1 day after request).<br /><br /></p>
-
+				
+			<form method="post" action="reset-password.php" name="frmupdatepass" id="frmupdatepass">
+				<input type="hidden" name="action" value="update" />
+				<input type="hidden" name="email" value="<?=$_GET["email"]?>" />
+				<div class="alert alert-danger display-hide">
+					<button class="close" data-close="alert"></button>
+					<span> Enter password and confirm password. </span>
+				</div>
+				<div class="form-group">
+					<!--ie8, ie9 does not support html5 placeholder, so we just show field title for that-->
+					<label class="control-label visible-ie8 visible-ie9">New Password</label>
+					<div class="input-icon">
+						<i class="fa fa-user"></i>
+						<input class="form-control placeholder-no-fix" type="password" autocomplete="off" placeholder="New Password (20 characters max)" name="pass1" id="pass1" value="" maxlength="20"/>
 					</div>
 				</div>
+				<div class="form-group">
+					<label class="control-label visible-ie8 visible-ie9">Confirm Password</label>
+					<div class="input-icon">
+						<i class="fa fa-lock"></i>
+						<input class="form-control placeholder-no-fix" type="password" autocomplete="off" placeholder="Confirm Password (20 characters max)" name="pass2" id="pass2" value="" maxlength="20"/>
+					</div>
+				</div>
+
+				<div class="form-group" id="warning" style="display: none">
+					<div id="alphabettxt"><span id="alphabet"></span> Must have an Alphabetical character! </div>
+					<div id="numerictxt"><span id="numeric"></span> Must have a Numeric character!</div>
+					<div id="stringlentxt"><span id="stringlen"></span> Minimum of 8 characters! </div>
+					<div id="passmatchtxt"><span id="passmatch"></span> Password Match! </div>					
+				</div>
+
+				<div class="form-actions">				
+					<button type="button" id="btnAdd" name="btnAdd" class="btn blue pull-right"> Reset Password <i class="m-icon-swapright m-icon-white"></i> </button>
+				</div>
+
+				<p> &nbsp; </p>
+			</form>
+
+						
+	<?php
+		}else{
+
+	?>
+
+			<center><h3 class="form-title">Link Expired</h3></center>
+			<div class="form-group">
+				<p>The link is expired. You are trying to use the expired link which 
+				is valid only 24 hours (1 day after request).<br /><br /></p>
+
+				<p>Go <a href="<?=$UrlBase?>">
+				back</a> to login page and click "here" to reset your password.</p>
 			</div>
-		</div>
 
 <?php
 
-    }
+    	}
 	}
 } // isset email key validate end
  
- 
-if(isset($_POST["email"]) && isset($_POST["action"]) && ($_POST["action"]=="update")){
+if(isset($_POST["action"]) && ($_POST["action"]=="update")){
 	$error="";
 	$pass1 = mysqli_real_escape_string($con,$_POST["pass1"]);
 	$pass2 = mysqli_real_escape_string($con,$_POST["pass2"]);
@@ -244,131 +163,162 @@ if(isset($_POST["email"]) && isset($_POST["action"]) && ($_POST["action"]=="upda
 	if ($pass1!=$pass2){
 		$error = "<p>Password do not match, both password should be same.<br /><br /></p>";
 	}
-  if($error!=""){
+  	if($error!=""){
 		//echo "<div class='error'>".$error."</div><br />";
 	}
 	else{
+
 		$cPass_hash = better_crypt($pass1);
 
-		mysqli_query($con,"UPDATE `users` SET `password`='".$cPass_hash."' WHERE `cemailadd`='".$email."'");
+		$stmtlog = $con->prepare("UPDATE users set `password` = ?, `modify` = current_date(), `cstatus` = 'Active' WHERE `cemailadd` = ?");
+		$stmtlog->bind_param("ss", $cPass_hash, $email);
+		$stmtlog->execute();
+		$stmtlog->close();
 
 		$compname = gethostbyaddr($_SERVER['REMOTE_ADDR']);
 
-		mysqli_query($con,"INSERT INTO logfile(`compcode`, `ctranno`, `cuser`, `ddate`, `module`, `cevent`, `cmachine`, `cremarks`) 
-			values('001','$email','',NOW(),'PASSWORD','RECOVER','$compname','Recover Password')");		 
+		$stmtlog = $con->prepare("INSERT INTO logfile(`compcode`, `ctranno`, `cuser`, `ddate`, `module`, `cevent`, `cmachine`, `cremarks`) 
+		values('001',?,'',NOW(),'PASSWORD','RECOVER',?,'Recover Password')");
+		$stmtlog->bind_param("ss", $email, $compname);
+		$stmtlog->execute();
+		$stmtlog->close(); 
 
-		mysqli_query($con,"DELETE FROM `password_reset_temp` WHERE `email`='".$email."'");
-		 
-		$error = '<div class="error"><p>Congratulations! Your password has been updated successfully.</p>
-		<p><a href="https://'.$_SERVER['HTTP_HOST'].'">
-		Click here</a> to Login.</p></div><br />';
+		$stmtlog = $con->prepare("DELETE FROM `password_reset_temp` WHERE `email` = ?");
+		$stmtlog->bind_param("s", $email);
+		$stmtlog->execute();
+		$stmtlog->close(); 	 
    } 
 ?>
 
-		<div id="myModal">
-			<div class="modal-dialog modal-login">
-				<div class="modal-content">
-					<div class="modal-header">
-		                <div class="logo">			
-											<img src="../images/LogoNew.png" width="90" height="120">	
-		                </div>
-
-					</div>
-					<div class="modal-body text-center">
-
-
-					  <?php echo $error; ?>
-
-					</div>
-				</div>
-			</div>
+		<center><h3 class="form-title">Reset Password</h3></center>
+		<div class="form-group">
+			<h4>Congratulations!</h4>
+			<p>Your password has been updated successfully.
+			</p>
+			<p><a href="<?=$UrlBase?>">Click here</a> to Login.</p>
 		</div>
 
 <?php
 }
 ?>
 
-		
+</div>
+<!-- END LOGIN -->
+<!-- BEGIN COPYRIGHT -->
+<div class="copyright"> 2022 &copy; MYXFinancials by Sert Technology Inc. / HRWeb PH </div>
+<!-- END COPYRIGHT -->
+<!-- BEGIN JAVASCRIPTS(Load javascripts at bottom, this will reduce page load time) -->
+<!-- BEGIN CORE PLUGINS -->
+<!--[if lt IE 9]>
+<script src="global/plugins/respond.min.js"></script>
+<script src="global/plugins/excanvas.min.js"></script> 
+<![endif]-->
+<script src="../global/plugins/jquery.min.js" type="text/javascript"></script>
+<script src="../global/plugins/jquery-migrate.min.js" type="text/javascript"></script>
+<script src="../global/plugins/bootstrap/js/bootstrap.min.js" type="text/javascript"></script>
+<script src="../global/plugins/jquery.blockui.min.js" type="text/javascript"></script>
+<script src="../global/plugins/uniform/jquery.uniform.min.js" type="text/javascript"></script>
+<script src="../global/plugins/jquery.cokie.min.js" type="text/javascript"></script>
+<!-- END CORE PLUGINS -->
+<!-- BEGIN PAGE LEVEL PLUGINS -->
+<script src="../global/plugins/jquery-validation/js/jquery.validate.min.js" type="text/javascript"></script>
+<script src="../global/plugins/backstretch/jquery.backstretch.min.js" type="text/javascript"></script>
+<script type="text/javascript" src="../global/plugins/select2/select2.min.js"></script>
+<!-- END PAGE LEVEL PLUGINS -->
+<!-- BEGIN PAGE LEVEL SCRIPTS -->
+<script src="../global/scripts/metronic.js" type="text/javascript"></script>
+<script src="../admin/layout/scripts/layout.js" type="text/javascript"></script>
+<!-- END PAGE LEVEL SCRIPTS -->
+<script>
+	var warnings = { alpha: false, numeric: false, stringlen: false };
+	jQuery(document).ready(function() {     
+		Metronic.init(); // init metronic core components
+		Layout.init(); // init current layout
 
-</body>
-</html>
+		// init background slide images
+		$.backstretch([
+			"../admin/pages/media/bg/1.jpg?x=<?=time()?>",
+			"../admin/pages/media/bg/2.jpg?x=<?=time()?>",
+			"../admin/pages/media/bg/3.jpg?x=<?=time()?>",
+			"../admin/pages/media/bg/4.jpg?x=<?=time()?>"
+			], {
+				fade: 1000,
+				duration: 8000
+			}
+		);
 
-<script type="text/javascript">
-  var warnings = { alpha: false, numeric: false, stringlen: false };
-
-      $(document).ready(function(){
-        $('#btnAdd').on('click', function(){
-          const newpassword = $('#pass1').val();
-          const confirmpassword = $('#pass2').val();
-          
-          const confirmNewPassword = PasswordValidation( newpassword );
-          const confirmPassword = PasswordValidation( confirmpassword );
-
-		  const chGkGo = PassMatch();
-          
-
-				if( confirmNewPassword && confirmPassword && chGkGo){
-					
-					$("#frmupdatepass").submit();
-
-				} else {
-					$('#warning').css('display', 'block')
-					$('#alphabet').html("<i " + (!warnings.alpha ?  "class='fa fa-exclamation' style='color: #FF0000;'" : "class='fa fa-check' style='color: #008000;' ") + "></i> ");
-					$('#alphabettxt').css('color', ( !warnings.alpha ? '#FF0000' : '#000000' ))
-
-					$('#numeric').html("<i " + ( !warnings.numeric ? "class='fa fa-exclamation' style='color: #FF0000;'" : "class='fa fa-check' style='color: #008000;' ") + "></i> ");
-					$('#numerictxt').css('color', ( !warnings.numeric ? '#FF0000' : '#000000' ))
-
-					$('#stringlen').html("<i " + ( !warnings.stringlen ? "class='fa fa-exclamation' style='color: #FF0000;'" : "class='fa fa-check' style='color: #008000;' ") + "></i>");
-					$('#stringlentxt').css('color', ( !warnings.stringlen ?  '#FF0000' : '#000000' ))
-
-					$('#passmatch').html("<i " + ( !chGkGo ? "class='fa fa-exclamation' style='color: #FF0000;'" : "class='fa fa-check' style='color: #008000;' ") + "></i>");
-					$('#passmatchtxt').css('color', ( !chGkGo ?  '#FF0000' : '#000000' ))
-				}
+		$('#btnAdd').on('click', function(){
+			const newpassword = $('#pass1').val();
+			const confirmpassword = $('#pass2').val();
 			
-          })
+			const confirmNewPassword = PasswordValidation( newpassword );
+			const confirmPassword = PasswordValidation( confirmpassword );
 
-          /**
-           * Update users password
-           */
+			const chGkGo = PassMatch();
+			
 
-          function AlphabetFilter(password){
-            var filter = /^(?=.*[a-zA-Z])/;
-            return filter.test(password)
-          }
-          function NumericFilter(password){
-            var filter = /(?=.*[0-9])/;
-            return filter.test(password);
-          }
+			if( confirmNewPassword && confirmPassword && chGkGo){
+				
+				$("#frmupdatepass").submit();
 
-          function PasswordLimit(inputs){
-            return inputs.length >= 8;
-          }
+			} else {
+				$('#warning').css('display', 'block')
+				$('#alphabet').html("<i " + (!warnings.alpha ?  "class='fa fa-exclamation' style='color: #FF0000;'" : "class='fa fa-check' style='color: #008000;' ") + "></i> ");
+				$('#alphabettxt').css('color', ( !warnings.alpha ? '#FF0000' : '#000000' ))
 
-		  function PassMatch(){
-            const newpassword = $('#pass1').val();
-         	const confirmpassword = $('#pass2').val();
+				$('#numeric').html("<i " + ( !warnings.numeric ? "class='fa fa-exclamation' style='color: #FF0000;'" : "class='fa fa-check' style='color: #008000;' ") + "></i> ");
+				$('#numerictxt').css('color', ( !warnings.numeric ? '#FF0000' : '#000000' ))
 
+				$('#stringlen').html("<i " + ( !warnings.stringlen ? "class='fa fa-exclamation' style='color: #FF0000;'" : "class='fa fa-check' style='color: #008000;' ") + "></i>");
+				$('#stringlentxt').css('color', ( !warnings.stringlen ?  '#FF0000' : '#000000' ))
+
+				$('#passmatch').html("<i " + ( !chGkGo ? "class='fa fa-exclamation' style='color: #FF0000;'" : "class='fa fa-check' style='color: #008000;' ") + "></i>");
+				$('#passmatchtxt').css('color', ( !chGkGo ?  '#FF0000' : '#000000' ))
+			}
+		
+		})
+	});
+	
+	function AlphabetFilter(password){
+		var filter = /^(?=.*[a-zA-Z])/;
+		return filter.test(password)
+	}
+
+	function NumericFilter(password){
+		var filter = /(?=.*[0-9])/;
+		return filter.test(password);
+	}
+
+	function PasswordLimit(inputs){
+		return inputs.length >= 8;
+	}
+
+	function PassMatch(){
+		const newpassword = $('#pass1').val();
+		const confirmpassword = $('#pass2').val();
+
+		if(newpassword!="" && confirmpassword!=""){
 			if(newpassword!=confirmpassword){
 				return false;
 			}else{
 				return true;
 			}
+		}
 
-          }
+	}
 
-          function PasswordValidation(inputs){
-            warnings['alpha'] = AlphabetFilter(inputs)
-            warnings['numeric'] = NumericFilter(inputs)
-            warnings['stringlen'] = PasswordLimit(inputs)
+	function PasswordValidation(inputs){
+		warnings['alpha'] = AlphabetFilter(inputs)
+		warnings['numeric'] = NumericFilter(inputs)
+		warnings['stringlen'] = PasswordLimit(inputs)
 
-            return warnings['alpha'] && warnings['numeric'] && warnings['stringlen'];
+		return warnings['alpha'] && warnings['numeric'] && warnings['stringlen'];
 
-            // if( inputs.length < 8 ){
-            //   warning['stringlen'] = false;
-            //   console.log("Characters must 8 - 15" + arr)
-            // }
-          }	
+	}
 
-      })
 </script>
+<!-- END JAVASCRIPTS -->
+</body>
+<!-- END BODY -->
+</html>
+

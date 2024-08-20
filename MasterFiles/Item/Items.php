@@ -1,14 +1,20 @@
 <?php
-if(!isset($_SESSION)){
-session_start();
-}
-$_SESSION['pageid'] = "Items.php";
+	if(!isset($_SESSION)){
+		session_start();
+	}
+	$_SESSION['pageid'] = "Items";
 
-include('../../Connection/connection_string.php');
-include('../../include/denied.php');
-include('../../include/access2.php');
+	include('../../Connection/connection_string.php');
+	include('../../include/denied.php');
+	include('../../include/access2.php');
 
-$company = $_SESSION['companyid'];  
+	$company = $_SESSION['companyid'];  
+
+	$posedit = "True";
+	$sql = mysqli_query($con,"select * from users_access where userid = '$employeeid' and pageid = 'Items_Edit'");
+	if(mysqli_num_rows($sql) == 0){
+		$posedit = "False";
+	}
 
 ?>
 <!DOCTYPE html>
@@ -46,7 +52,7 @@ function editfrm(x,y){
           <div style="float:right; width:30%; text-align:right">
             	<!--<font size="+1"><a href="javascript:;" onClick="paramchnge('ITEMTYP')">Type</a> | <a href="javascript:;" onClick="paramchnge('ITEMCLS')">Classification</a> | <a href="javascript:;" onClick="paramchnge('ITMUNIT')">UOM</a></font>	-->
 
-						<div class="itmalert alert alert-danger text-center" style="padding: 2px !important; display: none" id="itmerr" >WRONG ERROR</div>
+				<div class="itmalert alert alert-danger text-center" style="padding: 2px !important; display: none" id="itmerr" >WRONG ERROR</div>
 							
           </div>
           
@@ -221,59 +227,80 @@ function editfrm(x,y){
 	
 
 	function trans(code,stat,msg){
+		var x = "<?=$posedit;?>";
+			
+		if(x.trim()=="True"){
+			$("#typ").val(stat);
+			$("#modzx").val(code);
 
-		$("#typ").val(stat);
-		$("#modzx").val(code);
+			$("#AlertMsg").html("");
+										
+			$("#AlertMsg").html("Are you sure you want to "+msg+" Item Code: "+code);
+			$("#alertbtnOK").hide();
+			$("#OK").show();
+			$("#Cancel").show();
+			$("#AlertModal").modal('show');
+		}else {
+			$("#AlertMsg").html("<center><b>ACCESS DENIED!</b></center>");
+			$("#alertbtnOK").show();
+			$("#OK").hide();
+			$("#Cancel").hide();
+			$("#AlertModal").modal('show');
 
-		$("#AlertMsg").html("");
-									
-		$("#AlertMsg").html("Are you sure you want to "+msg+" Item Code: "+code);
-		$("#alertbtnOK").hide();
-		$("#OK").show();
-		$("#Cancel").show();
-		$("#AlertModal").modal('show');
-
+		}
 	}
 
 	function setStat(dstat){
 
-		if(dstat=="OK"){
-			code = $("#modzx").val();
-			stat = $("#typ").val();
-
-			$.ajax ({
-				url: "th_itmsetstat.php",
-				data: { code: code,  stat: stat },
-				async: false,
-				dataType: "text",
-				success: function( data ) {
-					//alert(jQuery.type(data));
-					if(data.trim() == "True"){
-
-					  if(stat=="ACTIVE"){
-						 $("#itmstat"+code).html("<span class='label label-success'>Active</span>&nbsp;&nbsp;<a id=\"popoverData1\" href=\"#\" data-content=\"Set as Inactive\" rel=\"popover\" data-placement=\"bottom\" data-trigger=\"hover\" onClick=\"trans('"+code+"','INACTIVE','Inactivate')\" ><i class=\"fa fa-refresh\" style=\"color: #f0ad4e\"></i></a>");
-					  }else{
-						 $("#itmstat"+code).html("<span class='label label-warning'>Inactive</span>&nbsp;&nbsp;<a id=\"popoverData2\" href=\"#\" data-content=\"Set as Active\" rel=\"popover\" data-placement=\"bottom\" data-trigger=\"hover\" onClick=\"trans('"+code+"','ACTIVE','Activate')\"><i class=\"fa fa-refresh\" style=\"color: #5cb85c\"></i></a>");
-					  }
-						
-						$("#itmerr").html("<b>SUCCESS: </b> "+code+" Status changed to <b><u>"+stat+"</u></b>");
-						$("#itmerr").attr("class", "itmalert alert alert-success");
-						$("#itmerr").css({'display':'inline', 'padding':'8px'});
-
-					}
-					else{
-
-						$("#itmerr").html("<b>Error: </b>"+ data);
-						$("#itmerr").attr("class", "itmalert alert alert-danger")
-						$("#itmerr").css({'display':'inline', 'padding':'8px'});
-
-					}
-				}
+		var x = "<?=$posedit;?>";
 			
-			});
+		if(x.trim()=="True"){
+			if(dstat=="OK"){
+			
+				code = $("#modzx").val();
+				stat = $("#typ").val();
+
+				$.ajax ({
+					url: "th_itmsetstat.php",
+					data: { code: code,  stat: stat },
+					async: false,
+					dataType: "text",
+					success: function( data ) {
+						//alert(jQuery.type(data));
+						if(data.trim() == "True"){
+
+						if(stat=="ACTIVE"){
+							$("#itmstat"+code).html("<span class='label label-success'>Active</span>&nbsp;&nbsp;<a id=\"popoverData1\" href=\"#\" data-content=\"Set as Inactive\" rel=\"popover\" data-placement=\"bottom\" data-trigger=\"hover\" onClick=\"trans('"+code+"','INACTIVE','Inactivate')\" ><i class=\"fa fa-refresh\" style=\"color: #f0ad4e\"></i></a>");
+						}else{
+							$("#itmstat"+code).html("<span class='label label-warning'>Inactive</span>&nbsp;&nbsp;<a id=\"popoverData2\" href=\"#\" data-content=\"Set as Active\" rel=\"popover\" data-placement=\"bottom\" data-trigger=\"hover\" onClick=\"trans('"+code+"','ACTIVE','Activate')\"><i class=\"fa fa-refresh\" style=\"color: #5cb85c\"></i></a>");
+						}
+							
+							$("#itmerr").html("<b>SUCCESS: </b> "+code+" Status changed to <b><u>"+stat+"</u></b>");
+							$("#itmerr").attr("class", "itmalert alert alert-success");
+							$("#itmerr").css({'display':'inline', 'padding':'8px'});
+
+						}
+						else{
+
+							$("#itmerr").html("<b>Error: </b>"+ data);
+							$("#itmerr").attr("class", "itmalert alert alert-danger")
+							$("#itmerr").css({'display':'inline', 'padding':'8px'});
+
+						}
+					}
+				
+				});
+
+			}
+
+			$("#AlertModal").modal('hide');
+		}else {
+			$("#AlertMsg").html("<center><b>ACCESS DENIED!</b></center>");
+			$("#AlertModal").modal('show');
+
 		}
 		
-		$("#AlertModal").modal('hide');
+		
 		
 
 	}

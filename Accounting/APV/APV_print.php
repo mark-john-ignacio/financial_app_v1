@@ -26,7 +26,7 @@ include('../../include/denied.php');
 	}
 	
 	$cpono = $_REQUEST['x'];
-	$sqlhead = mysqli_query($con,"select a.*,b.cname,c.Fname,c.Lname,c.Minit from apv a left join suppliers b on a.compcode=b.compcode and a.ccode=b.ccode left join users c on a.cpreparedby=c.Userid where a.compcode='$company' and a.ctranno = '$cpono'");
+	$sqlhead = mysqli_query($con,"select a.*,b.cname,c.Fname,c.Lname,c.Minit,c.cusersign from apv a left join suppliers b on a.compcode=b.compcode and a.ccode=b.ccode left join users c on a.cpreparedby=c.Userid where a.compcode='$company' and a.ctranno = '$cpono'");
 
 if (mysqli_num_rows($sqlhead)!=0) {
 	while($row = mysqli_fetch_array($sqlhead, MYSQLI_ASSOC)){
@@ -38,7 +38,9 @@ if (mysqli_num_rows($sqlhead)!=0) {
 
 		$nGross = $row['ngross'];
 		
-		$PreparedBy = $row['Lname'].", ".$row['Fname']." ".$row['Minit'];
+		$PreparedBy = $row['Fname']." ".$row['Minit'].(($row['Minit']!=="" && $row['Minit']!==null) ? " " : "").$row['Lname'];
+		$cpreparedBySign = $row['cusersign'];
+
 
 		$lCancelled = $row['lcancelled'];
 		$lPosted = $row['lapproved'];
@@ -166,7 +168,7 @@ html,
 		$xtotdebit = 0;
 		$xtotcredit = 0;
 
-		$sqlhead = mysqli_query($con,"select a.*,b.cname from apv_t a left join customers b on a.compcode=b.compcode and a.csubsidiary=b.cempid where a.compcode='$company' and a.ctranno = '$cpono'");
+		$sqlhead = mysqli_query($con,"SELECT a.*,b.cname FROM apv_t a LEFT JOIN customers b on a.compcode=b.compcode and a.csubsidiary=b.cempid WHERE a.compcode='$company' and a.ctranno = '$cpono' ORDER BY nidentity");
 		
 		if (mysqli_num_rows($sqlhead)!=0) {
 			while($row = mysqli_fetch_array($sqlhead, MYSQLI_ASSOC)){     
@@ -204,16 +206,34 @@ html,
 
 <table border="0" width="100%" style="border-collapse:collapse; padding-top: 10px">
 	<tr>
-		<td width="33%" style="padding-top: 10px">
-			<b>Prepared By:<br><br><br>&nbsp;&nbsp;&nbsp;</b><?php echo $PreparedBy;?>
+		<td width="33%" style="padding-top: 10px; vertical-align: top">
+
+			<?php
+				if($lPosted==1 && $cpreparedBySign != "" && $cpreparedBySign != null){
+			?>
+		
+			<b>Prepared By:</b>
+				<div><img src="<?php echo $cpreparedBySign; ?>" width="160px" height="88px"></div>
+			<?php
+				}else{
+			?>
+
+			<b>Prepared By:<br><br><br><br>&nbsp;&nbsp;&nbsp;</b>
+				<div style="border-top: 1px solid">&nbsp;&nbsp;&nbsp;<?=$PreparedBy?>&nbsp;&nbsp;&nbsp;</div>
+			<?php
+				}
+			?>
+
 		</td>
 
-		<td style="padding-top: 10px">
-			<b>Checked By:<br><br><br>&nbsp;&nbsp;&nbsp;</b>____________________
+		<td style="padding-top: 10px; vertical-align: top">
+			<b>Checked By:<br><br><br><br>&nbsp;&nbsp;&nbsp;</b>
+				<div style="border-top: 1px solid">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</div>
 		</td>
 
-		<td width="33%" style="padding-top: 10px">
-			<b>Approved By:<br><br><br>&nbsp;&nbsp;&nbsp;</b>____________________
+		<td width="33%" style="padding-top: 10px; vertical-align: top">
+			<b>Approved By:<br><br><br><br>&nbsp;&nbsp;&nbsp;</b>
+				<div style="border-top: 1px solid">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</div>
 		</td>
 	</tr>
 </table>

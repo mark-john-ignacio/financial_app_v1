@@ -31,7 +31,7 @@
     <script src="../../Bootstrap/js/jquery-3.2.1.min.js"></script>
     <script src="../../Bootstrap/js/bootstrap.js"></script>
     <script src="../../Bootstrap/js/bootstrap3-typeahead.js"></script>
-    <script type="text/javascript" src="../../global/plugins/bootstrap-fileinput/bootstrap-fileinput.js"></script>
+    <script src="../../global/plugins/bootstrap-fileinput/bootstrap-fileinput.js" type="text/javascript"></script>
     <script src="../../Bootstrap/js/moment.js"></script>
     <script src="../../Bootstrap/js/bootstrap-datetimepicker.min.js"></script>
     <script src="../../Bootstrap/select2/js/select2.full.min.js"></script>

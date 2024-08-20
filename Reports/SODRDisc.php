@@ -2,7 +2,7 @@
   if(!isset($_SESSION)){
     session_start();
   }
-  $_SESSION['pageid'] = "SODRDisc.php";
+  $_SESSION['pageid'] = "SODRDisc";
 
   include('../Connection/connection_string.php');
   include('../include/denied.php');

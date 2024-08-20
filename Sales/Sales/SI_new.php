@@ -2,7 +2,7 @@
 	if(!isset($_SESSION)){
 		session_start();
 	}
-	$_SESSION['pageid'] = "POS_new.php";
+	$_SESSION['pageid'] = "SI_new";
 
 	include('../../Connection/connection_string.php');
 	include('../../include/denied.php');
@@ -82,8 +82,15 @@
 		}
 	}
 
-	$nicomeaccount = "";
+	$nicomeDR = "";
 	$result = mysqli_query($con,"SELECT * FROM `parameters` WHERE compcode='$company' and ccode='INCOME_ACCOUNT'"); 								
+	if (mysqli_num_rows($result)!=0) {
+		$all_course_data = mysqli_fetch_array($result, MYSQLI_ASSOC);						 
+		$nicomeDR = $all_course_data['cvalue']; 							
+	}
+
+	$nicomeaccount = "";
+	$result = mysqli_query($con,"SELECT * FROM `parameters` WHERE compcode='$company' and ccode='INCOME_CR_ACCOUNT'"); 								
 	if (mysqli_num_rows($result)!=0) {
 		$all_course_data = mysqli_fetch_array($result, MYSQLI_ASSOC);						 
 		$nicomeaccount = $all_course_data['cvalue']; 							
@@ -275,7 +282,7 @@
 								</td>
 
 							<?php
-								if($nicomeaccount=="si"){
+								if($nicomeDR=="si"){
 							?>
 							<tH width="100"><b>Income Account:</b></tH>
 							<td style="padding:2px">
@@ -848,7 +855,7 @@
 			$(".chklimit").show();
 		}
 
-		if($("#incmracct").val()=="item"){
+		if($("#incmracct").val()=="custom"){
 			$(".chkinctype").show();
 		}else{
 			$(".chkinctype").hide();
@@ -1655,7 +1662,7 @@
 
 		var tditmamount = "<td nowrap> <input type='text' value='"+baseprice+"' class='numeric form-control input-xs' style='text-align:right' name=\"txtnamount\" id='txtnamount"+lastRow+"' readonly> </td>";
 
-		if($("#incmracct").val()=="item"){
+		if($("#incmracct").val()=="custom"){
 			var tdglaccount = "<td nowrap><input type='text' value='"+itmacctid+"' class='form-control input-xs' name=\"txtacctcode\" id='txtacctcode"+lastRow+"' readonly> <input type='hidden' value='"+itmacctno+"' name=\"txtacctno\" id='txtacctno"+lastRow+"'> </td>";
 
 			var tdgltitle = "<td nowrap><input type='text' value='"+itmacctnm+"' class='cacctdesc form-control input-xs' name=\"txtacctname\" id='txtacctname"+lastRow+"'></td>";
@@ -2249,7 +2256,7 @@
 							salesnos = salesnos + ",";
 						}
 									
-						salesnos = salesnos +  $(this).find('input[type="hidden"][name="txtitemcode"]').val();
+						salesnos = salesnos +  $(this).find('input[type="hidden"][name="txtcrefident"]').val();
 					}
 					
 				});
@@ -2744,18 +2751,14 @@
 						var mainunit = $(this).find('input[type="hidden"][name="hdnmainuom"]').val();
 						var nfactor = $(this).find('input[type="hidden"][name="hdnfactor"]').val();
 
-						if($("#incmracct").val()=="item"){
+						if($("#incmracct").val()=="custom"){
 							var acctcode = $(this).find('input[name="txtacctcode"]').val();
 							var acctid = $(this).find('input[name="txtacctno"]').val();
 							var acctname = $(this).find('input[name="txtacctname"]').val();
-						}else if($("#incmracct").val()=="si"){
-							var acctcode = "";
-							var acctid = $('select[name="selpaytyp"] option:selected').data('id');
-							var acctname = "";
-						}else if($("#incmracct").val()=="customer"){ 
-							var acctcode = "";
-							var acctid = $("#hdncacctcodesalescr").val();
-							var acctname = "";
+						}else{
+							var acctcode = $(this).find('input[type="hidden"][name="txtacctcode"]').val();
+							var acctid = $(this).find('input[type="hidden"][name="txtacctno"]').val();
+							var acctname = $(this).find('input[type="hidden"][name="txtacctname"]').val();
 						}
 						
 						if(nqty!==undefined){

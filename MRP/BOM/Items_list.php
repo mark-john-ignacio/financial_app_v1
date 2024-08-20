@@ -40,7 +40,7 @@ $company = $_SESSION['companyid'];
 		<section>
         <div>
         	<div style="float:left; width:50%">
-						<font size="+2"><u>Production - Items Master List</u></font>	
+				<font size="+2"><u>Material BOM</u></font>	
           </div>
             
           <div style="float:right; width:30%; text-align:right">

@@ -2,7 +2,7 @@
 if(!isset($_SESSION)){
 session_start();
 }
-$_SESSION['pageid'] = "PurchSummary.php";
+$_SESSION['pageid'] = "PurchSummary";
 
 include('../Connection/connection_string.php');
 include('../include/denied.php');
@@ -41,18 +41,23 @@ include('../include/access.php');
         <span class="glyphicon glyphicon-search"></span> View Report
       </button>
     </td>
-    <td width="150" style="padding-left:10px"><b>Product: </b></td>
+    <td width="150" style="padding-left:10px"><b>Filter By: </b></td>
     <td style="padding:2px">
-			<div class="col-xs-6 nopadding">	
-			<SELECT name="seltyp" id="seltyp" class="form-control input-sm" onChange="setact(this.value);">
-            
-            	<option value="Purchases/PurchSumItem">Per Item</option>
-                <option value="Purchases/PurchSumSupp">Per Supplier</option>
-                <option value="Purchases/PurchSumInv">Per Transaction</option>
-                <option value="Purchases/PurchSumMonth">Per Month</option>
-                
-            </SELECT>
-            </div>	
+			<div class="col-xs-4 nopadding">	
+			  <select name="seltyp" id="seltyp" class="form-control input-sm" onChange="setact(this.value);">            
+          <option value="Purchases/PurchSumItem">Per Item</option>
+          <option value="Purchases/PurchSumSupp">Per Supplier</option>
+          <option value="Purchases/PurchSumInv">Per Transaction</option>
+          <option value="Purchases/PurchSumMonth">Per Month</option>           
+        </select>
+      </div>	
+      <div class="col-xs-4 nopadwleft">
+          <select id="sleposted" name="sleposted" class="form-control input-sm selectpicker"  tabindex="4">
+              <option value="">All Transactions</option>   
+              <option value="1">Posted</option>      
+              <option value="0">UnPosted</option>           
+          </select> 
+      </div>  
    </td>
   </tr>
   <tr>
@@ -61,51 +66,36 @@ include('../include/access.php');
         <i class="fa fa-file-excel-o"></i> To Excel
       </button>
     </td>
-    <td style="padding-left:10px"><b>Transaction Type: </b></td>
-    <td style="padding:2px">
-      <div class="col-xs-6 nopadding">
-                <select id="sleposted" name="sleposted" class="form-control input-sm selectpicker"  tabindex="4">
-                    <option value="">All Transactions</option>   
-                    <option value="1">Posted</option>      
-                    <option value="0">UnPosted</option>           
-                </select>
-                    
-            </div>  
-    </td>
-  </tr>
-  <tr>
     <td style="padding-left:10px"><b>Date Range: </b></td>
     <td style="padding:2px">
-
       <div class="col-xs-12 nopadding" id="datezpick">
-        <div class="col-xs-3 nopadding">
-		      <input type='text' class="datepick form-control input-sm" id="date1" name="date1" value="<?php echo date("m/d/Y"); ?>" />
-		    </div>
-        
-        <div class="col-xs-1 nopadding" style="vertical-align:bottom;" align="center">
-        	<label style="padding:1px;">TO</label>
-        </div>
- 
-        <div class="col-xs-3 nopadding">
-		      <input type='text' class="datepick form-control input-sm" id="date2" name="date2" value="<?php echo date("m/d/Y"); ?>" />
-		    </div>
-      </div>   
 
-        
+        <div class="form-group nopadding">
+            <div class="col-xs-8 nopadding">
+            <div class="input-group input-large date-picker input-daterange">
+                <input type="text" class="datepick form-control input-sm" id="date1" name="date1" value="<?php echo date("m/d/Y"); ?>">
+                <span class="input-group-addon">to </span>
+                <input type="text" class="datepick form-control input-sm" id="date2" name="date2" value="<?php echo date("m/d/Y"); ?>">
+            </div>
+            </div>	
+        </div>
+
+      </div>  
+
+
       <div class="col-xs-3 nopadding" id="monthpick" style="display:none"> 
-			  <select name="selmonth" id="id" class="form-control input-sm">
+        <select name="selmonth" id="id" class="form-control input-sm">
           <?php 
-					  $now = date("Y");
-					  //$varyr = $now - 2014;					
-					  for ($x=2023; $x<=$now; $x++){
-				  ?>
+            $now = date("Y");
+            //$varyr = $now - 2014;					
+            for ($x=2023; $x<=$now; $x++){
+          ?>
             <option value="<?php echo $x;?>" <?php if($x==$now){echo "selected";}?>><?php echo $x;?></option>
           <?php 
             } 
           ?>
         </select>
-     	</div>
-
+      </div>
     </td>
   </tr>
 </table>

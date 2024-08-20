@@ -2,7 +2,7 @@
 	if(!isset($_SESSION)){
 		session_start();
 	}
-	$_SESSION['pageid'] = "SO_unpost.php";
+	$_SESSION['pageid'] = "SO_unpost";
 	include('../../Connection/connection_string.php');
 	include('../../include/denied.php');
 	include('../../include/access2.php');
@@ -18,8 +18,7 @@
 	<meta name="viewport" content="initial-scale=1.0, maximum-scale=2.0">
 
 <link href="../../global/plugins/font-awesome/css/font-awesome.min.css" rel="stylesheet" type="text/css"/> 
-<link rel="stylesheet" type="text/css" href="../../Bootstrap/css/bootstrap.css">  
-<link rel="stylesheet" type="text/css" href="../../Bootstrap/css/alert-modal.css">  
+<link rel="stylesheet" type="text/css" href="../../Bootstrap/css/bootstrap.css?x=<?=time()?>">  
 <script src="../../Bootstrap/js/jquery-3.2.1.min.js"></script>
 <script src="../../Bootstrap/js/bootstrap.js"></script>
 </head>
@@ -90,7 +89,8 @@
 				</table>
 
 			</section>
-		</div>		
+		</div>	
+		<input type="hidden" name="hdnreason" id="hdnreason" value="">	
 	</form>  
 
 <!-- PRINT OUT MODAL-->
@@ -115,6 +115,7 @@
 
 <link rel="stylesheet" type="text/css" href="../../Bootstrap/DataTable/DataTable.css"> 
 <script type="text/javascript" language="javascript" src="../../Bootstrap/DataTable/jquery.dataTables.min.js"></script>
+<script type="text/javascript" src="../../global/plugins/bootbox/bootbox.min.js"></script>
 
 <script type="text/javascript">
 
@@ -128,7 +129,23 @@
 					alert("You must check at least one checkbox.");
 					return false;
 				}else{
-					$("#frmunpost").submit();
+					bootbox.prompt({
+						title: 'Enter reason for void.',
+						inputType: 'text',
+						centerVertical: true,
+						callback: function (result) {
+							if(result!="" && result!=null){
+								$("#hdnreason").val(result);
+								$("#frmunpost").submit();
+							}else{
+								bootbox.alert({
+									message: "Reason for void is required!",
+									size: "small",
+									className: "bootalert"
+								});
+							}						
+						}
+					});
 				}
 
 			});

@@ -2,7 +2,7 @@
 	if(!isset($_SESSION)){
 		session_start();
 	}
-	$_SESSION['pageid'] = "DR_new.php";
+	$_SESSION['pageid'] = "DR_new";
 
 	include('../../Connection/connection_string.php');
 	include('../../include/denied.php');
@@ -1171,7 +1171,7 @@ $(function(){
 			//add details
 			//alert("th_qolistputall.php?id=" + $(this).val() + "&itmbal=" + xChkBal);
 				$.ajax({
-					url : "th_qolistputall.php?id=" + $(this).val() + "&itmbal=" + xChkBal,
+					url : "th_qolistputall.php?id=" + $(this).val() + "&itmbal=" + xChkBal + "&ddate=" + $("#date_delivery").val(),
 					type: "GET",
 					dataType: "JSON",
 					async: false,
@@ -1899,7 +1899,7 @@ function InsertSI(){
 	   			var id = $(this).val();
 				//alert("th_qolistput.php?id=" + tranno + "&itm=" + id + "&itmbal=" + xChkBal);
 	   			$.ajax({
-					url : "th_qolistput.php?id=" + tranno + "&itm=" + id + "&itmbal=" + xChkBal,
+					url : "th_qolistput.php?id=" + tranno + "&itm=" + id + "&itmbal=" + xChkBal + "&ddate=" + $("#date_delivery").val(),
 					type: "GET",
 					dataType: "JSON",
 					success: function(data)

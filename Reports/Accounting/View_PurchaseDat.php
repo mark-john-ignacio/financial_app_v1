@@ -2,9 +2,16 @@
     if(!isset($_SESSION)){
         session_start();
     }
+
+    $_SESSION['pageid'] = "PurchaseDat";
+
     require_once  "../../vendor2/autoload.php";
     include ("../../Connection/connection_string.php");
+    include('../../include/denied.php');
+	include('../../include/access2.php');
+
     require_once("../../Model/helper.php");
+
     $company_code = $_SESSION['companyid'];
     $monthcut = $_REQUEST["viewmonth"];
     $yearcut = $_REQUEST['viewyear'];
@@ -20,152 +27,48 @@
     $account = $query -> fetch_array(MYSQLI_ASSOC);
     $vat_code = $account['cacctno'];
 
-    // $sql = "SELECT a.*, b.ctradename, b.ctin, b.chouseno, b.cstate, b.ccity, b.ccountry FROM apv a 
-    // LEFT JOIN suppliers b on a.compcode = b.compcode AND a.ccode = b.ccode
-    // LEFT JOIN (
-    //     SELECT DISTINCT(a.ctranno), a.cvatcode, a.compcode from apv_d a
-    //         LEFT JOIN apv b on a.compcode = b.compcode AND a.ctranno = b.ctranno
-    //         WHERE a.compcode ='$company_code' 
-    //         AND MONTH(STR_TO_DATE(b.dapvdate, '%Y-%m-%d')) = $monthcut 
-    //         AND YEAR(STR_TO_DATE(b.dapvdate, '%Y-%m-%d')) = $yearcut 
-    //         AND b.lapproved = 1 AND b.lvoid = 0 AND b.lcancelled =0 
-    //         AND a.ctranno in (
-    //             SELECT capvno FROM paybill a 
-    //             LEFT JOIN paybill_t b on a.compcode = b.compcode AND a.ctranno = b.ctranno
-    //         )
-    //     ) c on a.compcode = c.compcode AND a.ctranno = c.ctranno
-    // WHERE a.compcode ='$company_code' 
-    // AND MONTH(STR_TO_DATE(a.dapvdate, '%Y-%m-%d')) = $monthcut 
-    // AND YEAR(STR_TO_DATE(a.dapvdate, '%Y-%m-%d')) = $yearcut 
-    // AND a.lapproved = 1 AND a.lvoid = 0 AND a.lcancelled =0 
-    // -- AND c.cvatcode <> 'NT'
-    // AND a.ctranno in (
-    //     SELECT capvno FROM paybill a 
-    //     LEFT JOIN paybill_t b on a.compcode = b.compcode AND a.ctranno = b.ctranno
-    // )";
-
-    if($code != ''){
-        $sql = "SELECT a.*, b.* FROM paybill a
-        LEFT JOIN suppliers b on a.compcode = b.compcode AND a.ccode = b.ccode
-        WHERE a.compcode = '$company_code'
-        AND MONTH(STR_TO_DATE(a.dcheckdate, '%Y-%m-%d')) = $monthcut
-        AND YEAR(STR_TO_DATE(a.dcheckdate, '%Y-%m-%d')) = $yearcut
-        AND b.cvattype = '$code'
-        AND ctranno in (
-            SELECT a.ctranno FROM paybill_t a 
-            LEFT JOIN apv_t b on a.compcode = b.compcode AND a.capvno = b.ctranno
-            WHERE a.compcode = '$company_code' AND b.cacctno = '$vat_code'
-        )
-        AND a.lapproved = 1 AND (a.lcancelled != 1 OR a.lvoid != 1)";
-    } else {
-        $sql = "SELECT a.*, b.* FROM paybill a
-        LEFT JOIN suppliers b on a.compcode = b.compcode AND a.ccode = b.ccode
-        WHERE a.compcode = '$company_code'
-        AND MONTH(STR_TO_DATE(a.dcheckdate, '%Y-%m-%d')) = $monthcut
-        AND YEAR(STR_TO_DATE(a.dcheckdate, '%Y-%m-%d')) = $yearcut
-        AND b.cvattype = '$code'
-        AND ctranno in (
-            SELECT a.ctranno FROM paybill_t a 
-            WHERE a.compcode = '$company_code' 
-        )
-        AND a.lapproved = 1 AND (a.lcancelled != 1 OR a.lvoid != 1)";
-    }
+    //getallapv with input tax
+    $allapvno = array();
+    $apventry = array();
+    $sql = "SELECT A.cmodule, A.ctranno, A.ctaxcode, B.nrate, A.ndebit, A.ncredit FROM glactivity A left join vatcode B on A.compcode=B.compcode and A.ctaxcode=B.cvatcode WHERE A.compcode = '$company_code' AND A.acctno = '$vat_code' and MONTH(A.ddate)=$monthcut and YEAR(A.ddate)=$yearcut";
     $query = mysqli_query($con, $sql);
     if(mysqli_num_rows($query) != 0){
         while($row = $query -> fetch_assoc()){
-            array_push($sales, $row);
+            $allapvno[] = $row['ctranno'];   
+            $apventry[$row['ctranno']] = $row;    
         }
     }
-    function isEmpty($sales){
-        if(empty($sales)){
-            return ;
+
+    $suppliersdet = array();
+    $sql = "SELECT * FROM suppliers WHERE compcode = '$company_code'";
+    $query = mysqli_query($con, $sql);
+    if(mysqli_num_rows($query) != 0){
+        while($row = $query -> fetch_assoc()){
+            $suppliersdet[$row['ccode']] = $row;
         }
-        $TOTAL_GROSS = 0;
-        $TOTAL_NET = 0;
-        $TOTAL_VAT = 0;
-        $TOTAL_EXEMPT = 0;
-        $TOTAL_ZERO_RATED = 0;
-        $TOTAL_GOODS = 0;
-        $TOTAL_SERVICE = 0;
-        $TOTAL_CAPITAL = 0;
-        $TOTAL_TAX_GROSS = 0;
+    }
+
+    //getall apv with payment
+  /*  $allapvpaid = array();
+    $sql = "SELECT A.ctranno, A.capvno FROM paybill_t A left join paybill B on A.compcode=B.compcode and A.ctranno=B.ctranno WHERE A.compcode = '$company_code' AND A.capvno in ('".implode("','",$allapvno)."') AND (B.lapproved = 1 AND B.lvoid = 0)";
+    $query = mysqli_query($con, $sql);
+    if(mysqli_num_rows($query) != 0){
+        while($row = $query -> fetch_assoc()){
+            $allapvpaid[] = $row['capvno'];
+        }
+    } */
+
+
+    $TOTAL_GROSS = 0;
+    $TOTAL_NET = 0;
+    $TOTAL_VAT = 0;
+    $TOTAL_EXEMPT = 0;
+    $TOTAL_ZERO_RATED = 0;
+    $TOTAL_GOODS = 0;
+    $TOTAL_SERVICE = 0;
+    $TOTAL_CAPITAL = 0;
+    $TOTAL_TAX_GROSS = 0;
 ?>
-            <table class='table'>
-                <tr class='btn-primary ' style='text-align: center'>
-                    <th>Tax Payer <br>Month</th>
-                    <th>Tax Payer <br>Indentification Number</th>
-                    <th>Registered Name</th>
-                    <th>Name of Customer <br>(Last Name, First Name, Middle Name)</th>
-                    <th>Customer Address</th>
-                    <th>AMOUNT of Gross Purchase</th>
-                    <th>AMOUNT of Excempt Purchase</th>
-                    <th>AMOUNT of Zero Rated Purchase</th>
-                    <th>AMOUNT of Taxable Purchase</th>
-                    <th>AMOUNT of PURCHASE SERIVICES</th>
-                    <th>AMOUNT OF PURCHASE CAPITAL GOODS</th>
-                    <th>AMOUNT OF PURCHASE GOODS OTHER THAN CAPITAL GOODS</th>
-                    <th>AMOUNT of Input Tax</th>
-                    <th>AMOUNT of Gross Taxable Purchase</th>
-                </tr>
-                <?php 
-
-                    foreach($sales as $list):
-                        $compute = ComputePaybills($list);
-                        $fullAddress = str_replace(",", "", $list['chouseno']);
-                        if(trim($list['ccity']) != ""){
-                            $fullAddress .= " ". str_replace(",", "", $list['ccity']);
-                        }
-                        if(trim($list['cstate']) != ""){
-                            $fullAddress .= " ". str_replace(",", "", $list['cstate']);
-                        }
-                        if(trim($list['ccountry']) != ""){
-                            $fullAddress .= " ". str_replace(",", "", $list['ccountry']);
-                        }
-                        
-                        $TOTAL_GROSS += floatval($compute['gross']);
-                        $TOTAL_NET += floatval($compute['net']);
-                        $TOTAL_VAT += floatval($compute['vat']);
-                        $TOTAL_EXEMPT += floatval($compute['exempt']);
-                        $TOTAL_ZERO_RATED += floatval($compute['zero']);
-                        $TOTAL_GOODS += floatval($compute['goods']);
-                        $TOTAL_SERVICE += floatval($compute['service']);
-                        $TOTAL_CAPITAL += floatval($compute['capital']);
-                        $TOTAL_TAX_GROSS += floatval($compute['gross_vat']);
-                ?>
-                    <tr>
-                        <td width='100px'><?= $list['dcheckdate'] ?></td>
-                        <td><?= substr($list['ctin'],0,11) ?></td>
-                        <td><?= $list['ctradename'] ?></td>
-                        <td>&nbsp;</td>
-                        <td><?= $fullAddress ?></td>
-                        <td align='right'><?= number_format($compute['gross'], 2) ?></td>
-                        <td align='right'><?= number_format($compute['exempt'],2) ?></td>
-                        <td align='right'><?= number_format($compute['zero'], 2) ?></td>
-                        <td align='right'><?= number_format($compute['net'], 2) ?></td>
-
-                        <td align='right'><?= number_format($compute['service'], 2) ?></td>
-                        <td align='right'><?= number_format($compute['capital'],2) ?></td>
-                        <td align='right'><?= number_format($compute['goods'], 2) ?></td>
-
-                        <td align='right'><?= number_format($compute['vat'], 2) ?></td>
-                        <td align='right'><?= number_format($compute['gross_vat'],2) ?></td>
-                    </tr>
-                <?php endforeach;?>
-                <tr>
-                    <td colspan='5' style='font-weight: bold'>GRAND TOTAL</td>
-                    <td align='right'><?= number_format($TOTAL_GROSS,2) ?></td>
-                    <td align='right'><?= number_format($TOTAL_EXEMPT,2) ?></td>
-                    <td align='right'><?= number_format($TOTAL_ZERO_RATED,2) ?></td>
-                    <td align='right'><?= number_format($TOTAL_NET,2) ?></td>
-                    <td align='right'><?= number_format($TOTAL_SERVICE,2) ?></td>
-                    <td align='right'><?= number_format($TOTAL_CAPITAL,2) ?></td>
-                    <td align='right'><?= number_format($TOTAL_GOODS,2) ?></td>
-                    <td align='right'><?= number_format($TOTAL_VAT,2) ?></td>
-                    <td align='right'><?= number_format($TOTAL_TAX_GROSS,2) ?></td>
-                </tr>
-            </table>
-        <?php
-    }?>
 
     <!DOCTYPE html>
     <html lang="en">
@@ -194,7 +97,151 @@
             <h5>OWNER'S ADDRESS: <?= $company['compadd'] ?></h5>
         </div>
         <div style='padding: 10px; padding-top: 20px;'>
-            <?= isEmpty($sales);?>
+            <table class='table'>
+                <tr class='btn-primary ' style='text-align: center'>
+                    <th>Tax Payer <br>Month</th>
+                    <th>Tax Payer <br>Indentification Number</th>
+                    <th>Registered Name</th>
+                    <th>Name of Customer <br>(Last Name, First Name, Middle Name)</th>
+                    <th>Customer Address</th>
+                    <th>AMOUNT of Gross Purchase</th>
+                    <th>AMOUNT of Excempt Purchase</th>
+                    <th>AMOUNT of Zero Rated Purchase</th>
+                    <th>AMOUNT of Taxable Purchase</th>
+                    <th>AMOUNT of PURCHASE SERIVICES</th>
+                    <th>AMOUNT OF PURCHASE CAPITAL GOODS</th>
+                    <th>AMOUNT OF PURCHASE GOODS OTHER THAN CAPITAL GOODS</th>
+                    <th>AMOUNT of Input Tax</th>
+                    <th>AMOUNT of Gross Taxable Purchase</th>
+                </tr>
+                <?php 
+                    $sql = "SELECT A.ctranno, A.ngross, A.ccode, A.chouseno, A.ccity, A.cstate, A.ccountry, A.ctin, A.cname, A.dapvdate
+                    From
+                    (
+                    SELECT A.ctranno, A.ngross, A.ccode, B.chouseno, B.ccity, B.cstate, B.ccountry, B.ctin, B.cname, A.dapvdate as dapvdate
+                    FROM apv A 
+                    left join suppliers B on A.compcode=B.compcode and A.ccode=B.ccode 
+                    WHERE A.compcode = '$company_code' AND A.ctranno in ('".implode("','",$allapvno)."') AND (A.lapproved = 1 AND A.lvoid = 0) 
+                    
+                    UNION ALL
+                    
+                    SELECT A.ctranno, A.ntotdebit as ngross, A.ccode, B.chouseno, B.ccity, B.cstate, B.ccountry, B.ctin, B.cname, A.djdate as dapvdate 
+                    FROM journal A 
+                    left join suppliers B on A.compcode=B.compcode and A.ccode=B.ccode 
+                    WHERE A.compcode = '$company_code' AND A.ctranno in ('".implode("','",$allapvno)."') AND (A.lapproved = 1 AND A.lvoid = 0) 
+                    ) A
+                    Order by A.dapvdate, A.cname";
+
+                   // $sql = " SELECT A.ctranno, A.ngross, A.dapvdate, A.ccode, B.chouseno, B.ccity, B.cstate, B.ccountry, B.ctin, B.cname, A.dapvdate as ddate
+                   // FROM apv A 
+                  //  left join suppliers B on A.compcode=B.compcode and A.ccode=B.ccode 
+                 //   WHERE A.compcode = '$company_code' AND A.ctranno in ('".implode("','",$allapvno)."') AND (A.lapproved = 1 AND A.lvoid = 0) Order by A.dapvdate, B.cname";
+
+                    $query = mysqli_query($con, $sql);
+                    if(mysqli_num_rows($query) != 0){
+                        
+                        while($row = $query -> fetch_assoc()){
+
+                            $fullAddress = str_replace(",", "", $row['chouseno']);
+                            if(trim($row['ccity']) != ""){
+                                $fullAddress .= " ". str_replace(",", "", $row['ccity']);
+                            }
+                            if(trim($row['cstate']) != ""){
+                                $fullAddress .= " ". str_replace(",", "", $row['cstate']);
+                            }
+                            if(trim($row['ccountry']) != ""){
+                                $fullAddress .= " ". str_replace(",", "", $row['ccountry']);
+                            }
+                        
+                            $xcnet = 0;
+                            $xcvat = 0;
+                            $xczerotot = 0;
+                            $xcexmpt = 0;
+                            $xservc = 0;
+                            $xsgoods = 0;
+                            $xsgoodsother = 0;
+                            $rowgros = 0;
+
+                            if($apventry[$row['ctranno']]['nrate']>0){
+
+                                if(floatval($apventry[$row['ctranno']]['ndebit'])>0) {
+                                    $xcvbam = floatval($apventry[$row['ctranno']]['ndebit']);
+                                    $rowgros = $row['ngross'];
+                                }else{
+                                    $xcvbam = 0-floatval($apventry[$row['ctranno']]['ncredit']);
+                                    $rowgros = 0-$row['ngross'];
+                                }
+
+                                $xcnet = $xcvbam / (floatval($apventry[$row['ctranno']]['nrate'])/100);
+                                $xcvat = $xcvbam;
+
+                                if($apventry[$row['ctranno']]['ctaxcode']=="VTSDOM" || $apventry[$row['ctranno']]['ctaxcode'] == "VTSNR"){
+                                    $xservc = $xcnet;
+                                }
+
+                                if($apventry[$row['ctranno']]['ctaxcode']=="VTGE1M" || $apventry[$row['ctranno']]['ctaxcode'] == "VTGNE1M"){
+                                    $xsgoods = $xcnet;
+                                }
+
+                                if($apventry[$row['ctranno']]['ctaxcode']=="VTGIMOCG" || $apventry[$row['ctranno']]['ctaxcode'] == "VTGOCG"){
+                                    $xsgoodsother = $xcnet;
+                                }
+                            }
+
+                            if($apventry[$row['ctranno']]['ctaxcode']=="VTZERO"){
+                                $xczerotot = floatval($row['ngross']);
+                            }
+
+                            if($apventry[$row['ctranno']]['ctaxcode']=="VTNOTQ"){
+                                $xcexmpt = floatval($row['ngross']);
+                            }
+
+                            $TOTAL_GROSS += floatval($rowgros);
+                            $TOTAL_NET += floatval($xcnet);
+                            $TOTAL_VAT += floatval($xcvat);
+                            $TOTAL_EXEMPT += floatval($xcexmpt);
+                            $TOTAL_ZERO_RATED += floatval($xczerotot);
+                            $TOTAL_GOODS += floatval($xsgoods);
+                            $TOTAL_SERVICE += floatval($xservc);
+                            $TOTAL_CAPITAL += floatval($xsgoodsother);
+                            $TOTAL_TAX_GROSS += floatval($xcnet) + floatval($xcvat);
+                ?>
+                    <tr>
+                        <td width='100px'><?= $row['dapvdate'] ?></td>
+                        <td><?= substr($row['ctin'],0,11) ?></td>
+                        <td><?= $row['cname'] ?></td>
+                        <td>&nbsp;</td>
+                        <td><?= $fullAddress ?></td>
+                        <td align='right'><?= number_format($rowgros, 2) ?></td>
+                        <td align='right'><?= number_format($xcexmpt,2) ?></td>
+                        <td align='right'><?= number_format($xczerotot, 2) ?></td>
+                        <td align='right'><?= number_format($xcnet, 2) ?></td>
+
+                        <td align='right'><?= number_format($xservc, 2) ?></td>
+                        <td align='right'><?= number_format($xsgoods,2) ?></td>
+                        <td align='right'><?= number_format($xsgoodsother, 2) ?></td>
+
+                        <td align='right'><?= number_format($xcvat, 2) ?></td>
+                        <td align='right'><?= number_format((floatval($xcnet) + floatval($xcvat)),2) ?></td>
+                    </tr>
+                <?php 
+                        }
+                    }
+                ?>
+                <tr>
+                    <td colspan='5' style='font-weight: bold'>GRAND TOTAL</td>
+                    <td align='right'><?= number_format($TOTAL_GROSS,2) ?></td>
+                    <td align='right'><?= number_format($TOTAL_EXEMPT,2) ?></td>
+                    <td align='right'><?= number_format($TOTAL_ZERO_RATED,2) ?></td>
+                    <td align='right'><?= number_format($TOTAL_NET,2) ?></td>
+                    <td align='right'><?= number_format($TOTAL_SERVICE,2) ?></td>
+                    <td align='right'><?= number_format($TOTAL_CAPITAL,2) ?></td>
+                    <td align='right'><?= number_format($TOTAL_GOODS,2) ?></td>
+                    <td align='right'><?= number_format($TOTAL_VAT,2) ?></td>
+                    <td align='right'><?= number_format($TOTAL_TAX_GROSS,2) ?></td>
+                </tr>
+            </table>
+
         </div>
     </body>
     </html>

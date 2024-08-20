@@ -19,9 +19,9 @@ function chkgrp($valz) {
 }
 
 
-$chkSales = mysqli_query($con,"select * from dr where compcode='$company' and YEAR(ddate) = YEAR(CURDATE()) Order By ctranno desc LIMIT 1");
+$chkSales = mysqli_query($con,"select * from dr where compcode='$company' and YEAR(ddate) = YEAR(CURDATE()) Order By ddate desc LIMIT 1");
 if (mysqli_num_rows($chkSales)==0) {
-	$cSINo = "DR".$dmonth.$dyear."00000";
+	$cSINo = "DR".$dyear."000000001";
 }
 else {
 	while($row = mysqli_fetch_array($chkSales, MYSQLI_ASSOC)){
@@ -29,12 +29,12 @@ else {
 	}
 	
 	
-	if(substr($lastSI,2,2) <> $dmonth){
-		$cSINo = "DR".$dmonth.$dyear."00000";
+	if(substr($lastSI,2,2) <> $dyear){
+		$cSINo = "DR".$dyear."000000001";
 	}
 	else{
-		$baseno = intval(substr($lastSI,6,5)) + 1;
-		$zeros = 5 - strlen($baseno);
+		$baseno = intval(substr($lastSI,4,9)) + 1;
+		$zeros = 9 - strlen($baseno);
 		$zeroadd = "";
 		
 		for($x = 1; $x <= $zeros; $x++){
@@ -42,13 +42,14 @@ else {
 		}
 		
 		$baseno = $zeroadd.$baseno;
-		$cSINo = "DR".$dmonth.$dyear.$baseno;
+		$cSINo = "DR".$dyear.$baseno;
 	}
 }
 
 	$cCustID = $_REQUEST['ccode'];
 	$dDelDate = $_REQUEST['ddate'];
 	$cRemarks = chkgrp($_REQUEST['crem']); 
+	$cRemarksLow = chkgrp($_REQUEST['cremlow']); 
 	$nGross = str_replace(",","",$_REQUEST['ngross']);
 	$nDRPrintNo = chkgrp($_REQUEST['cdrprintno']);
 	$salesman = $_REQUEST['salesman'];
@@ -77,8 +78,8 @@ else {
 	
 	//INSERT HEADER
 
-	if (!mysqli_query($con, "INSERT INTO dr(`compcode`, `ctranno`, `ccode`, `cterms`, `cremarks`, `ddate`, `dcutdate`, `ngross`, `cpreparedby`, `cacctcode`, `cdrprintno`, `csalesman`, `cdelcode`, `cdeladdno`, `cdeladdcity`, `cdeladdstate`, `cdeladdcountry`, `cdeladdzip`, `crefapcord`, `crefapcdr`, `csign1`, `csign2`) 
-	values('$company', '$cSINo', '$cCustID', $cterms, $cRemarks, NOW(), STR_TO_DATE('$dDelDate', '%m/%d/%Y'), '$nGross', '$preparedby', $cacctcode, $nDRPrintNo, '$salesman', '$delcodes', $delhousno, $delcity, $delstate, $delcountry, '$delzip', $cdrapcord, $cdrapcdr, $selSign1, $selSign2)")) {
+	if (!mysqli_query($con, "INSERT INTO dr(`compcode`, `ctranno`, `ccode`, `cterms`, `clowremarks`, `cremarks`, `ddate`, `dcutdate`, `ngross`, `cpreparedby`, `cacctcode`, `cdrprintno`, `csalesman`, `cdelcode`, `cdeladdno`, `cdeladdcity`, `cdeladdstate`, `cdeladdcountry`, `cdeladdzip`, `crefapcord`, `crefapcdr`, `csign1`, `csign2`) 
+	values('$company', '$cSINo', '$cCustID', $cterms, $cRemarksLow, $cRemarks, NOW(), STR_TO_DATE('$dDelDate', '%m/%d/%Y'), '$nGross', '$preparedby', $cacctcode, $nDRPrintNo, '$salesman', '$delcodes', $delhousno, $delcity, $delstate, $delcountry, '$delzip', $cdrapcord, $cdrapcdr, $selSign1, $selSign2)")) {
 		echo "False";
 
 		echo mysqli_error($con);

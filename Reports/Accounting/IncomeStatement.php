@@ -2,7 +2,7 @@
 	if(!isset($_SESSION)){
 	session_start();
 	}
-	$_SESSION['pageid'] = "IncomeStatement.php";
+	$_SESSION['pageid'] = "IncomeStatement";
 
 	include('../../Connection/connection_string.php');
 	include('../../include/denied.php');
@@ -275,7 +275,6 @@
 
 			$arrlvlamt[0] = 0;
 
-
 			if($row['ccategory']=="EXPENSES"){
 				$BPROFITzc0 = floatval($profitRevn) - floatval($profitCost);
 				$donetwo = ($BPROFITzc0<0) ? "(".number_format(abs($BPROFITzc0),2).")" : number_format(($BPROFITzc0),2);
@@ -349,11 +348,27 @@
 	$donetwo = ($arrlvlamt[0]<0) ? "(".number_format(abs($arrlvlamt[0]),2).")" : number_format(($arrlvlamt[0]),2);
 	echo "<tr><td colspan='2' style='border-bottom: 2px solid #000; border-top: 1px solid #000;'><b>TOTAL ".$ccate."</b></td><td align='right' style='border-bottom: 2px solid #000; border-top: 1px solid #000;'><b>".$donetwo."</b></td></tr>";
 
+	if($ccate=="REVENUE"){
+		$profitRevn = floatval($arrlvlamt[0]);
+	}
+
+	if($ccate=="COST OF SALES"){				
+		 $profitCost= floatval($arrlvlamt[0]);
+	}
+
 	if($ccate=="EXPENSES"){
 		$BPEXPzc0 = floatval($arrlvlamt[0]);
 	}
 
-	$xctot = $BPROFITzc0-$BPEXPzc0;
+	if(floatval($BPEXPzc0)==0){
+		$xctot = floatval($profitRevn) - floatval($profitCost);
+		$donetwo = ($xctot<0) ? "(".number_format(abs($xctot),2).")" : number_format(($xctot),2);
+		echo "<tr><td colspan='2' style='padding-top:10px'><b>GROSS PROFIT</b></td><td align='right' style='border-bottom: 1px solid #000; padding-top:10px'><b>".$donetwo."</b></td></tr>";
+
+	}else{
+		$xctot = $BPROFITzc0-$BPEXPzc0;
+	}
+	
 	$xctotax = 0;
 	$xctotaxaftr = 0;
 ?>

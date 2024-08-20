@@ -1,11 +1,23 @@
 <?php
-if(!isset($_SESSION)){
-session_start();
-}
-$_SESSION['pageid'] = "PM.php";
+	if(!isset($_SESSION)){
+		session_start();
+	}
+	$_SESSION['pageid'] = "PM";
 
-include('../../Connection/connection_string.php');
-include('../../include/accessinner.php');
+	include('../../Connection/connection_string.php');
+	include('../../include/accessinner.php');
+
+	$poststat = "True";
+	$sql = mysqli_query($con,"select * from users_access where userid = '$employeeid' and pageid = 'PM_post'");
+	if(mysqli_num_rows($sql) == 0){
+		$poststat = "False";
+	}
+
+	$cancstat = "True";
+	$sql = mysqli_query($con,"select * from users_access where userid = '$employeeid' and pageid = 'PM_cancel'");
+	if(mysqli_num_rows($sql) == 0){
+		$cancstat = "False";
+	}
 ?>
 <!DOCTYPE html>
 <html>
@@ -48,7 +60,7 @@ include('../../include/accessinner.php');
 				<th width="150">Effectivity Date</th>
 				<th>Versions</th>
 				<th>Remarks</th>
-				<th width="100">Status</th>
+				<th width="100" style="text-align: center">Status</th>
 			</tr>
 		</thead>
 
@@ -82,12 +94,16 @@ include('../../include/accessinner.php');
 					<td>
 					<?php echo $row['cremarks'];?>
 				</td>
-				<td>
+				<td  style="text-align: center">
 				<div id="msg<?php echo $row['ctranno'];?>">
 				<?php 
 				if(intval($row['lcancelled'])==intval(0) && intval($row['lapproved'])==intval(0)){
 				?>
-					<a href="javascript:;" onClick="trans('post','<?php echo $row['ctranno'];?>')">POST</a> | <a href="javascript:;" onClick="trans('cancel','<?php echo $row['ctranno'];?>')">CANCEL</a>
+
+					<a href="javascript:;" onClick="trans('post','<?php echo $row['ctranno'];?>')" class="btn btn-xs btn-default<?=($poststat!="True") ? " disabled" : ""?>"><i class="fa fa-thumbs-up" style="font-size:20px;color:Green ;" title="Approve transaction"></i></a> 
+
+					<a href="javascript:;" onClick="trans('cancel','<?php echo $row['ctranno'];?>')" class="btn btn-xs btn-default<?=($cancstat!="True") ? " disabled" : ""?>"><i class="fa fa-thumbs-down" style="font-size:20px;color:Red ;" title="Cancel transaction"></i></a> 
+
 				<?php
 				}
 				else{
@@ -266,12 +282,21 @@ mysqli_close($con);
 		$("#add_errpick").hide();
 
 		$('#btnmass').click(function(){
-			window.location="../../MassUpload/SalesPrice.php"
+			var x = chkAccess('PM_New');
+		 	if(x.trim()=="True"){
+				window.location="../../MassUpload/SalesPrice.php"
+			}else{
+				$("#AlertMsg").html("<center><b>ACCESS DENIED!</b></center>");
+				$("#alertbtnOK").show();
+				$("#OK").hide();
+				$("#Cancel").hide();
+			 	$("#AlertModal").modal('show');
+			}
 		})
 
 		$("#btnadd").on("click", function() {
 			
-		 var x = chkAccess('PM_New.php');
+		 var x = chkAccess('PM_New');
 
 		 if(x.trim()=="True"){
 			$("#TblItemver").empty();
@@ -321,22 +346,22 @@ mysqli_close($con);
 		
 		// Adding new user
 		$("#btnver").on("click", function() {
-		 var x = chkAccess('PM_Edit.php');
+			var x = chkAccess('PM_Edit');
 
-		 if(x.trim()=="True"){
-			$("#TblItemver").empty();
-			$("#add_err").hide();
-			
-			loadversions();
-			$('#myModal').modal('show');
-		 } else {
-			 $("#AlertMsg").html("<center><b>ACCESS DENIED!</b></center>");
-				$("#alertbtnOK").show();
-				$("#OK").hide();
-				$("#Cancel").hide();
-			 $("#AlertModal").modal('show');
+			if(x.trim()=="True"){
+				$("#TblItemver").empty();
+				$("#add_err").hide();
+				
+				loadversions();
+				$('#myModal').modal('show');
+			} else {
+				$("#AlertMsg").html("<center><b>ACCESS DENIED!</b></center>");
+					$("#alertbtnOK").show();
+					$("#OK").hide();
+					$("#Cancel").hide();
+				$("#AlertModal").modal('show');
 
-		 }
+			}
 		});
 				
 		$("#btnSave").on("click", function() {

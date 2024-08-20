@@ -384,12 +384,12 @@
 										<tr>
 											
                   							<td valign="middle">Check</td>
-											<td><div class="checkbox"<?=($cpaymeth=="cheque") ? " checked" : ""?>></div></td>
+											<td><div class="checkbox<?=($cpaymeth=="cheque") ? " checked" : ""?>"></div></td>
 											<td>&nbsp;</td>
 										</tr>
 										<tr>											
 											<td valign="middle">Cash</td>
-											<td><div class="checkbox"<?=($cpaymeth=="cash") ? " checked" : ""?>></div></td>
+											<td><div class="checkbox<?=($cpaymeth=="cash") ? " checked" : ""?>"></div></td>
 											<td>&nbsp;</td>
 										</tr>
 									</table>

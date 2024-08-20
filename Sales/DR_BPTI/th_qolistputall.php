@@ -10,7 +10,7 @@
 	$date1 = date("Y-m-d");
 
 	//get all so
-	$resq = mysqli_query ($con, "Select A.*, B.cvattype, C.cpartno, C.cskucode, C.citemdesc From so_t A left join quote B on A.compcode=B.compcode and A.ctranno=B.ctranno left join items C on A.compcode=C.compcode and A.citemno=C.cpartno  where A.compcode='$company' and A.ctranno = '".$_REQUEST['id']."'");
+	$resq = mysqli_query ($con, "Select A.nqty, A.cmainunit, A.cunit, A.nfactor, A.nprice, A.nbaseamount, A.namount, A.ctranno, A.nident, IFNULL(A.ditempono, '') as ditempono, B.cvattype, C.cpartno, IFNULL(C.cskucode,'') as cskucode, C.citemdesc, IFNULL(C.cnotes,'') as cnotes From so_t A left join quote B on A.compcode=B.compcode and A.ctranno=B.ctranno left join items C on A.compcode=C.compcode and A.citemno=C.cpartno  where A.compcode='$company' and A.ctranno = '".$_REQUEST['id']."'");
 	if (mysqli_num_rows($resq)!=0){
 		while($row = mysqli_fetch_array($resq, MYSQLI_ASSOC)){
 			@$arrresq[]=$row;
@@ -66,13 +66,14 @@
 		if($xremain>0){
 			$json['id'] = $row['cpartno'];
 			$json['desc'] = $row['citemdesc'];
+			$json['cpartname'] = $row['cnotes']; 
 			$json['nqty'] = $row['nqty'];
 			$json['totqty'] = $nqty1 - $nqty2;
 			$json['cqtyunit'] = $row['cmainunit'];
 			$json['cunit'] = $row['cunit'];
 			$json['nfactor'] = $row['nfactor'];
 			$json['nprice'] = $row['nprice'];
-			$json['nbaseamount'] = $row['nbaseamount'];
+			$json['nbaseamount'] = $row['nbaseamount']; 
 			$json['namount'] = $row['namount'];
 			$json['xref'] = $row['ctranno'];
 			$json['xrefident'] = $row['nident'];

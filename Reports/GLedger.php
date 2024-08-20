@@ -2,7 +2,7 @@
 if(!isset($_SESSION)){
 session_start();
 }
-$_SESSION['pageid'] = "GLedger.php";
+$_SESSION['pageid'] = "GLedger";
 include('../Connection/connection_string.php');
 include('../include/denied.php');
 include('../include/access.php');

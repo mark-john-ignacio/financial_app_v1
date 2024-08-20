@@ -3,7 +3,7 @@
     session_start();
   }
 
-  $_SESSION['pageid'] = "ARMonitoring.php";
+  $_SESSION['pageid'] = "ARMonitoring";
   include('../Connection/connection_string.php');
   include('../include/denied.php');
   include('../include/access.php');
@@ -58,8 +58,8 @@
         <td style="padding:2px">        
           <div class="col-xs-8 nopadding">
             <select id="selrptnme" name="selrptnme" class="form-control input-sm selectpicker"  tabindex="4">
-              <option value="ARMonitoring">Billing/Invoice</option>      
-              <option value="QuoteMonitoring">Quotation/Billing</option>           
+              <option value="ARMonitoring">Invoices</option>      
+              <option value="QuoteMonitoring">Quotation/Billing Uninvoiced</option>           
             </select>                            
           </div>         
         </td>
@@ -74,7 +74,6 @@
         <td style="padding:2px">
           <div class="col-xs-8 nopadding">
             <select id="selrpt" name="selrpt" class="form-control input-sm selectpicker"  tabindex="4">
-              <option value="">All Transactions</option>   
               <option value="1">All Posted Transactions</option>      
               <option value="0">All Pending Transactions</option>    
               <option value="2">All Cancelled/Void Transactions</option>        

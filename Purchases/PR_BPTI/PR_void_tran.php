@@ -3,7 +3,7 @@
 		session_start();
 	}
 
-	$_SESSION['pageid'] = "PR_unpost.php";
+	$_SESSION['pageid'] = "PR_unpost";
 
 	require_once "../../Connection/connection_string.php";
 
@@ -24,8 +24,8 @@
 				$status = "True";
 
 				foreach($_POST["allbox"] as $rz){
-					mysqli_query($con,"INSERT INTO logfile(`ctranno`, `cuser`, `ddate`, `cevent`, `module`, `cmachine`, `cremarks`) 
-				values('$rz','$preparedby',NOW(),'VOID','PURCHASE REQUEST','$compname','Void Record')");
+					mysqli_query($con,"INSERT INTO logfile(`compcode`,`ctranno`, `cuser`, `ddate`, `cevent`, `module`, `cmachine`, `cremarks`, `cancel_rem`) 
+					values('$company','$rz','$preparedby',NOW(),'VOID','PURCHASE REQUEST','$compname','Void Record','".$_POST["hdnreason"]."')"); 
 				}
 
 			}

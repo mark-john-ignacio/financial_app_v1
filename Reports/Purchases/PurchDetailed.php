@@ -1,20 +1,24 @@
 <?php
-if(!isset($_SESSION)){
-session_start();
-}
-include('../../Connection/connection_string.php');
-$company = $_SESSION['companyid'];
-				$sql = "select * From company where compcode='$company'";
-				$result=mysqli_query($con,$sql);
-				
-					if (!mysqli_query($con, $sql)) {
-						printf("Errormessage: %s\n", mysqli_error($con));
-					} 
-					
-				while($row = mysqli_fetch_array($result, MYSQLI_ASSOC))
-				{
-					$compname =  $row['compname'];
-				}
+	if(!isset($_SESSION)){
+		session_start();
+	}
+	$_SESSION['pageid'] = "PurchDetailed";
+	include('../../Connection/connection_string.php');
+	include('../../include/denied.php');
+	include('../../include/access2.php');
+
+	$company = $_SESSION['companyid'];
+	$sql = "select * From company where compcode='$company'";
+	$result=mysqli_query($con,$sql);
+	
+	if (!mysqli_query($con, $sql)) {
+		printf("Errormessage: %s\n", mysqli_error($con));
+	} 
+		
+	while($row = mysqli_fetch_array($result, MYSQLI_ASSOC))
+	{
+		$compname =  $row['compname'];
+	}
 ?>
 
 <html>
@@ -52,8 +56,9 @@ $company = $_SESSION['companyid'];
     <th>RR Qty</th>
     <th>PO Price</th>
     <th>PO Amount</th>
-		<th>SI Price</th>
+	<th>SI Price</th>
     <th>SI Amount</th>
+	<th>Currency</th>
   </tr>
   
 <?php
@@ -79,7 +84,7 @@ if($rpt==""){
 }
 
 $arrPO = array();
-$result=mysqli_query($con,"Select A.cpono, A.nident, A.citemno, A.nprice, A.namount From purchase_t A left join purchase B on A.compcode=B.compcode and A.cpono=B.cpono where A.compcode='".$company."' and B.lcancelled=0 and B.lapproved=1 and B.lvoid=0");
+$result=mysqli_query($con,"Select A.cpono, A.nident, A.citemno, A.nprice, A.namount, B.ccurrencycode From purchase_t A left join purchase B on A.compcode=B.compcode and A.cpono=B.cpono where A.compcode='".$company."' and B.lcancelled=0 and B.lapproved=1 and B.lvoid=0");
 while($row = mysqli_fetch_array($result, MYSQLI_ASSOC)){
 	$arrPO[] = $row;
 }
@@ -135,9 +140,11 @@ $result=mysqli_query($con,$sql);
 
 		//find PO reference
 		$POPrice = 0;
+		$POCurrCode = "";
 		foreach($arrPO as $rowPO){
 			if($rowPO['cpono']==$row['creference'] && $rowPO['citemno']==$row['citemno'] && $rowPO['nident']==$row['nrefidentity']){
 				$POPrice = $rowPO['nprice'];
+				$POCurrCode = $rowPO['ccurrencycode'];
 			}
 		}
 
@@ -168,7 +175,8 @@ $result=mysqli_query($con,$sql);
     <td align="right"><?php echo number_format($POPrice,2);?></td>
     <td align="right"><?php echo number_format($POAmt,2);?></td>
 		<td align="right"><?php echo number_format($SIPrice,2);?></td>
-    <td align="right"><?php echo number_format($SIAmt,2);?></td>
+    <td align="right"><?php echo number_format($SIAmt,2);?></td> 
+	<td><?=$POCurrCode?></td>
   </tr>
 <?php 
 		$invval = "";

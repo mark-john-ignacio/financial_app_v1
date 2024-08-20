@@ -8,6 +8,7 @@ include('../../Connection/connection_string.php');
 // include('../../include/access2.php');
 
 $company = $_SESSION['companyid'];
+$prepared = mysqli_real_escape_string($con, $_SESSION['employeename']);
 
 $itemcode = $_REQUEST['query'];
 $date = date("Y-m-d");
@@ -25,6 +26,7 @@ $sql = "SELECT a.cpartno, a.cpartno as cscancode, a.citemdesc, a.cunit, a.cstatu
 					group by a.citemno
 				 ) c on a.cpartno=c.citemno
 			WHERE a.compcode='$company' and a.lbarcode = '$itemcode' Limit 1 ";
+            
 
 $query = mysqli_query($con, $sql);
 if(mysqli_num_rows($query) != 0){

@@ -2,7 +2,7 @@
 if(!isset($_SESSION)){
 session_start();
 }
-$_SESSION['pageid'] = "CDJ.php";
+$_SESSION['pageid'] = "CDJ";
 include('../Connection/connection_string.php');
 include('../include/denied.php');
 include('../include/access.php');
@@ -68,7 +68,7 @@ $(function(){
                  format: 'MM/DD/YYYY'
            });
            $('#btnxls').on('click', function(){
-              $('#frmrep').attr("action", "Accounting/CDB_xls.php");
+              $('#frmrep').attr("action", "Accounting/CDJ_xls.php");
               $('#frmrep').submit();
            })
            $('#btnsales').on('click', function(){

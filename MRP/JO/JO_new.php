@@ -116,9 +116,9 @@
 										<div class="col-xs-12" style="padding-left:2px; padding-bottom:2px">
 											<div class="col-xs-8 nopadding">
 												<select id="selpriority" name="selpriority" class="form-control input-sm selectpicker">
-													<option value="Low">Low</option>
+													<option value="SP">SP</option>													
+													<option value="Urgent">Urgent</option>
 													<option value="Normal" selected>Normal</option>
-													<option value="High">High</option>
 												</select>
 											</div>
 									</td>		
@@ -127,11 +127,34 @@
 
 								<tr>									
 									<td valign="top" style="padding-top:8px;"><span style="padding:2px;"><b>Remarks</b></span></td>
-									<td>
+									<td rowspan="3" style="vertical-align: top">
 										<div class="col-xs-12"  style="padding-left:2px; padding-bottom:2px">
-											<textarea class="form-control input-sm" id="txtcremarks" name="txtcremarks" rows="3"></textarea>
+											<textarea class="form-control input-sm" id="txtcremarks" name="txtcremarks" rows="4"></textarea>
 										</div>
 									</td>
+									<td valign="top" style="padding-top:8px;"><span style="padding:2px"><b>Product Type:</b></span></td>
+									<td valign="top">
+										<div class="col-xs-12" style="padding-left:2px; padding-bottom:2px">
+											<div class="col-xs-8 nopadding">
+												<select id="selprodtyp" name="selprodtyp" class="form-control input-sm selectpicker">
+													<option value="Individual">Individual</option>		
+													<option value="RACK">RACK</option>								
+												</select>
+											</div>
+									</td>											
+								</tr>
+								<tr>	
+									<td valign="top">&nbsp;</td>
+									<td valign="top" style="padding-top:8px;"><span style="padding:2px"><b>Narration:</b></span></td>
+									<td valign="top">
+										<div class="col-xs-12" style="padding-left:2px; padding-bottom:2px">
+											<div class="col-xs-8 nopadding">
+												<input type="text" class="form-control input-sm" id="txtnarration" name="txtnarration" width="20px" placeholder="" required autocomplete="off" tabindex="4">
+											</div>
+									</td>
+								</tr>
+								<tr>	
+									<td valign="top">&nbsp;</td>
 									<td valign="top" style="padding-top:8px;"><span style="padding:2px"><b>Department:</b></span></td>
 									<td valign="top">
 										<div class="col-xs-12" style="padding-left:2px; padding-bottom:2px">
@@ -146,7 +169,7 @@
 													?>
 												</select>
 											</div>
-									</td>											
+									</td>
 								</tr>
 
 							</table>
@@ -372,7 +395,7 @@
 				});
 			},
 			displayText: function (item) {
-				return '<div style="border-top:1px solid gray; width: 300px"><span >'+item.desc+'</span</div>';
+				return '<div style="border-top:1px solid gray; width: 300px"><span >'+item.id+": "+item.desc+'</span</div>';
 			},
 			highlighter: Object,
 			afterSelect: function(item) { 					

@@ -16,4 +16,7 @@ imgsupp/*
 imgsman/*
 MRP/bom_uploads/*
 Components/*
-main.php
+admin/pages/media/*
+system_management/vendor/fakerphp/*
+system_management/vendor/mikey179/*
+system_management/.env

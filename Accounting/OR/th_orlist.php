@@ -101,8 +101,8 @@
 			$json['ngrossdisplay'] = number_format($ntotaldue,2);
 			$json['npayment'] = $npay;
 
-			$json['cdm'] = $cCMTot;
-			$json['ccm'] = $cDMTot;
+			$json['cdm'] = $cDMTot;
+			$json['ccm'] = $cCMTot;
 
 			$json['cacctno'] = $row['cacctid'];
 			$json['ctitle'] = $row['cacctdesc'];

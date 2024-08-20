@@ -2,7 +2,7 @@
   if(!isset($_SESSION)){
   session_start();
   }
-  $_SESSION['pageid'] = "IncomeStatement.php";
+  $_SESSION['pageid'] = "IncomeStatement";
 
   include('../Connection/connection_string.php');
   include('../include/denied.php');
@@ -107,7 +107,7 @@
                   <select id="selyr" name="selyr" class="form-control input-sm selectpicker"  tabindex="4">
                     <?php
                       $yrnow = date("Y");
-                      $yrstart = 2023;
+                      $yrstart = 2022;
                       for($i=$yrnow; $i>=$yrstart ; $i--){
                     ?>
                       <option value="<?=$i?>"><?=$i?></option>     

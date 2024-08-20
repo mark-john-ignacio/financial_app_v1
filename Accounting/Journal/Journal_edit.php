@@ -2,7 +2,7 @@
 if(!isset($_SESSION)){
 session_start();
 }
-$_SESSION['pageid'] = "Journal.php";
+$_SESSION['pageid'] = "Journal";
 
 include('../../Connection/connection_string.php');
 include('../../include/denied.php');
@@ -11,7 +11,7 @@ include('../../include/access.php');
 $company = $_SESSION['companyid'];
 
 $poststat = "True";
-$sql = mysqli_query($con,"select * from users_access where userid = '$employeeid' and pageid = 'Journal_edit.php'");
+$sql = mysqli_query($con,"select * from users_access where userid = '$employeeid' and pageid = 'Journal_edit'");
 if(mysqli_num_rows($sql) == 0){
 	$poststat = "False";
 }
@@ -466,7 +466,7 @@ else{
 				<div class="modal-bodylong">
 					<button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>        
 			
-				<iframe id="myprintframe" name="myprintframe" scrolling="no" style="width:100%; height:98%; display:block; margin:0px; padding:0px; border:0px"></iframe>
+				<iframe id="myprintframe" name="myprintframe" scrolling="no" style="width:100%; height:11in; display:block; margin:0px; padding:0px; border:0px"></iframe>
 				</div>
 			</div><!-- /.modal-content -->
 		</div><!-- /.modal-dialog -->

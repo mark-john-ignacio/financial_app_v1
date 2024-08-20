@@ -16,10 +16,10 @@
 	// Set document properties
 	$spreadsheet->getProperties()->setCreator('Myx Financials')
     ->setLastModifiedBy('Myx Financials')
-    ->setTitle('JO Summary')
-    ->setSubject('JO Summary Report')
-    ->setDescription('JO Report, generated using Myx Financials.')
-    ->setKeywords('myx_financials job_order_report')
+    ->setTitle('SO Summary')
+    ->setSubject('SO Summary Report')
+    ->setDescription('SO Report, generated using Myx Financials.')
+    ->setKeywords('myx_financials sales_order_report')
     ->setCategory('Myx Financials Report');
 
 	// Add some data
@@ -69,7 +69,7 @@
 		$qryposted = " and b.lapproved=".$postedtran."";
 	}
 
-	if($trantype=="Trade"){
+	//if($trantype=="Trade"){
 
 		$sqlx = "select a.compcode, b.ccode, d.ctradename as cname, b.lapproved, d.ccustomertype as ctype, e.cdesc as typdesc, sum(a.nqty) as nqty, sum(A.namount) as nprice
 		From so_t a	
@@ -82,7 +82,7 @@
 		Group By a.compcode, b.ccode, d.ctradename, b.lapproved, d.ccustomertype, e.cdesc
 		order by d.ccustomertype, sum(A.namount) DESC";
 
-	}elseif($trantype=="Non-Trade"){
+	/*}elseif($trantype=="Non-Trade"){
 
 		$sqlx = "select a.compcode, b.ccode, d.ctradename as cname, b.lapproved, d.ccustomertype as ctype, e.cdesc as typdesc, sum(a.nqty) as nqty, sum(A.namount) as nprice
 		From ntso_t a	
@@ -121,7 +121,7 @@
 		) A 
 		Group By A.compcode, A.ccode, A.cname, A.lapproved, A.ctype, A.typdesc order by A.ctype, sum(A.nprice) DESC";
 
-	}
+	}*/
 
 		$result=mysqli_query($con,$sqlx);
 		while($row = mysqli_fetch_array($result, MYSQLI_ASSOC)){
@@ -165,7 +165,7 @@
 
 
 // Rename worksheet
-$spreadsheet->getActiveSheet()->setTitle('Job_Order_Summary_Per_Customer');
+$spreadsheet->getActiveSheet()->setTitle('Sales_Order_Summary_Per_Customer');
 
 // Set active sheet index to the first sheet, so Excel opens this as the first sheet
 $spreadsheet->setActiveSheetIndex(0);
@@ -174,7 +174,7 @@ ob_end_clean();
 
 // Redirect output to a client’s web browser (Xlsx)
 header('Content-Type: application/vnd.openxmlformats-officedocument.spreadsheetml.sheet');
-header('Content-Disposition: attachment;filename="Job_Order_Per_Customer.xlsx"');
+header('Content-Disposition: attachment;filename="Sales_Order_Per_Customer.xlsx"');
 header('Cache-Control: max-age=0');
 // If you're serving to IE 9, then the following may be needed
 header('Cache-Control: max-age=1');

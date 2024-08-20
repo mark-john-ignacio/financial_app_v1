@@ -62,8 +62,8 @@ if($_REQUEST['typ']=="POST"){
 
 	}
 
-mysqli_query($con,"INSERT INTO logfile(`ctranno`, `cuser`, `ddate`, `cevent`, `module`, `cmachine`, `cremarks`) 
-	values('$tranno','$preparedby',NOW(),'POSTED','RECEIVING','$compname','Post Record')");
+	mysqli_query($con,"INSERT INTO logfile(`compcode`,`ctranno`, `cuser`, `ddate`, `cevent`, `module`, `cmachine`, `cremarks`) 
+	values('$company','$tranno','$preparedby',NOW(),'POSTED','RECEIVING','$compname','Post Record')");
 
 
 
@@ -80,8 +80,8 @@ if($_REQUEST['typ']=="CANCEL"){
 		$status = "Cancelled";
 	}
 
-mysqli_query($con,"INSERT INTO logfile(`ctranno`, `cuser`, `ddate`, `cevent`, `module`, `cmachine`, `cremarks`) 
-	values('$tranno','$preparedby',NOW(),'CANCELLED','RECEIVING','$compname','Cancel Record')");
+	mysqli_query($con,"INSERT INTO logfile(`compcode`,`ctranno`, `cuser`, `ddate`, `cevent`, `module`, `cmachine`, `cremarks`, `cancel_rem`) 
+	values('$company','$tranno','$preparedby',NOW(),'CANCELLED','RECEIVING','$compname','Cancel Record','".$_REQUEST['canmsg']."')");
 
 }
 

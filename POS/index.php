@@ -2,12 +2,14 @@
     if(!isset($_SESSION)){
         session_start();
     }
-    $_SESSION['pageid'] = "POS_View.php";
-    $company = $_SESSION['companyid'];
+    //$_SESSION['pageid'] = "POS_View.php";
 
     include('../Connection/connection_string.php');
-    include('../include/denied.php');
-    include('../include/access2.php');
+    //include('../include/denied.php');
+    //include('../include/access2.php');
+
+    $company = $_SESSION['companyid'];
+    $employee_cashier_name = $_SESSION['employeeid'];
 
     $category = [];
     $items = [];
@@ -42,6 +44,8 @@
                     group by a.citemno
                 ) c on a.cpartno=c.citemno
             WHERE a.compcode='$company' and a.cstatus = 'ACTIVE' and a.ctradetype='Trade' order by a.cclass, a.citemdesc";
+
+            //echo $sql;
 
     $query = mysqli_query($con, $sql);
     if(mysqli_num_rows($query) != 0) {
@@ -89,6 +93,7 @@
     <link rel="stylesheet" type="text/css" href="../Bootstrap/css/bootstrap2.css?v=<?php echo time();?>">
 	<link href="../global/css/googleapis.css" rel="stylesheet" type="text/css"/>
 	<link href="../global/plugins/font-awesome/css/font-awesome.min.css" rel="stylesheet" type="text/css"/>
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
 
     <link rel="stylesheet" type="text/css" href="../Bootstrap/slick/slick.css">
     <link rel="stylesheet" type="text/css" href="../Bootstrap/slick/slick-theme.css">
@@ -102,6 +107,8 @@
     <script src="../Bootstrap/js/bootstrap.js"></script>
     <script src="../Bootstrap/js/moment.js"></script>
     <script src="../Bootstrap/slick/slick.js" type="text/javascript" charset="utf-8"></script>
+
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.min.js"></script>
     <title>MyxFinancials</title>
 
     <style>
@@ -151,6 +158,10 @@
         #wrapper {
             display: absolute;
             bottom: 0px;
+        }
+        .disabled {
+            pointer-events: none;
+            opacity: 1;
         }
     </style>
 </head>
@@ -265,6 +276,25 @@
                                         <?php endforeach; ?>
                                     </select>
                                 </div>
+                                <div class='input-group'>
+                                    <input class='form-control input-sm' type="number" name='waiting_time' id='waiting_time' min="0" placeholder="Waiting Time (Mins)">
+                                </div>
+                                <div class="input-group">
+                                    <select name="kitchen_receipt" id="kitchen_receipt" class="form-control input-sm" style="display: none;">
+                                        <option value="" disabled selected>Kitchen Receipt ?</option>
+                                        <option value="Yes">YES</option>
+                                        <option value="No">NO</option>
+                                    </select>
+                                    <button class=" btn btn-sm btn-primary" id="kitchenReceiptButton" type="button">
+                                        <i class="material-icons fa-fw" aria-hidden="true" style="font-size:15px; vertical-align:middle;">&#xe8b0;</i> Kitchen Receipt
+                                    </button>   
+                                </div>
+                                <script>
+                                    document.getElementById('kitchenReceiptButton').addEventListener('click', function() {
+                                        var selectElement = document.getElementById('kitchen_receipt');
+                                        selectElement.value = "Yes";
+                                    });
+                                </script>
                         </div>
 
                         <div>
@@ -293,7 +323,8 @@
 
                         <div style='height: 350px; overflow: auto;'>
                             <div id='item-wrapper'>
-                                <?php foreach($items as $list):
+                                <?php 
+                                foreach($items as $list):
                                     if($list['isInvetory'] != 1) {?>
                                     
                                         <div class='itmslist' id="itemlist" style="height:100px;                     
@@ -448,6 +479,7 @@
 
                                         <label for="totalTender">Total Tendered Amount</label>
                                         <input type="text" name="totalTender" id="totalTender" class='form-control' readonly>
+                                        <input type="hidden" id="h_tranno">
 
                                         <label for="discountInput">Special Discount</label>
                                         <input type="text" name="discountInput" id="discountInput" class='form-control' readonly>
@@ -561,7 +593,7 @@
                     <h3 class="modal-title" id="invheader">Void Authentication</h3>
                 </div>
 
-                <div class='modal-body' id='modal-body' style='height: 100%'>
+                <div class='modal-bodylong' id='modal-bodylong' style='height: 100%'>
                     <div>
                         <label for="loginid" class='nopadwtop'>Username:</label>
                         <input type="text" class='form-control input-sm' id='loginid' name='loginid' placeholder="Enter Username..." autocomplete='false' />
@@ -577,6 +609,7 @@
             </div>
         </div>
     </div>
+
     <!-- Print Modal -->
     <div class="modal fade" id="PrintModal" role="dialog" data-keyboard="false" data-backdrop="static">
         <div class="modal-dialog modal-lg">
@@ -584,6 +617,17 @@
                 <div class="modal-bodylong">
                     <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
                     <iframe id="myprintframe" name="myprintframe" scrolling="no" style="width:100%; height:8.5in; display:block; margin:0px; padding:0px; border:0px"></iframe>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="modal fade" id="kitchenPrintModal" role="dialog" data-keyboard="false" data-backdrop="static">
+        <div class="modal-dialog modal-lg">
+            <div class="modal-contnorad">   
+                <div class="modal-bodylong">
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                    <iframe id="mykprintframe" name="mykprintframe" scrolling="no" style="width:100%; height:8.5in; display:block; margin:0px; padding:0px; border:0px"></iframe>
                 </div>
             </div>
         </div>
@@ -708,9 +752,20 @@
             },
             highlighter: Object,
             afterSelect: function(items) { 
-                console.log(items)
-                duplicate(items)
-                table_store(itemStored)
+                console.log(items);
+                duplicate(items); 
+                table_store(itemStored); 
+                $.ajax({
+                    url: "DualView/Function/ibarcode.php", 
+                    dataType: "json",
+                    data: {
+                        selected_item: items.partno 
+                    },
+                    success: function(response) {
+                        
+                        console.log(response);
+                    }
+                });
                 $('#barcode').val("").change()
             }
         })
@@ -760,6 +815,7 @@
                         coupon.push(coupons)
                         $("#couponinput").val(getCoupon(coupon))
                         PaymentCompute()
+                        updateCouponToDatabase();
                     } else {
                         $("#couponmsg").text(res.msg)
                         $("#couponmsg").css("color", "RED")
@@ -861,32 +917,57 @@
         });
 
 
-        $('#item-wrapper').on('click', '#itemlist',function(){
-            const name = $(this).attr("name");
-            insert_item(name)
-        })
+        $('#item-wrapper').on('click', '#itemlist', function() {
+            const $this = $(this);
+            const name = $this.attr("name");
+            insert_item(name);
+        });
 
 
         $('#VoidSubmit').click(function(){
             $("input:checkbox[name=itemcheck]:checked").each(function(){
-                itemStored.splice($(this).val(), 1);
-                specialDisc.splice($(this).val(), 1);
+                var $checkbox = $(this);
+                var $row = $checkbox.closest('tr');
+                var index = $row.index();
 
+                var value = $checkbox.val();
+                var name1 = $checkbox.data('name1');
+                
+                
+                itemStored.splice(index, 1);
+                specialDisc.splice(index, 1);
+
+                
                 table_store(itemStored);
-                $('#mymodal').modal('hide')
+                $.ajax({
+                    url: 'DualView/Function/vdelete.php',
+                    method: 'POST',
+                    data: { name1: name1 },
+                    success: function(response) {
+                        console.log('Data sent successfully:', response);
+                        $("#loginid").val('');
+                        $("#loginpass").val('');
+                    },
+                    error: function(jqXHR, textStatus, errorThrown) {
+                        console.error('Error sending data:', textStatus, errorThrown);
+                    }
+                });
+
+                $('#mymodal').modal('hide');
             });
-        })
+        });
+
 
         $('#btnVoid').click(function(){
-            if(!checkAccess("POS_Void.php")){
-                return;
-            }
+           // if(!checkAccess("POS_Void.php")){
+          //      return;
+          //  }
             if(itemStored.length === 0) {
                 return alert('Transaction is empty!')
             }
 
-            $('#voidlogin').modal('show')
-            table_store(itemStored)
+            $('#voidlogin').modal('show');
+            table_store(itemStored);
         })
 
         $('#SpecialDiscountBtn').click(function(){
@@ -900,37 +981,40 @@
             if(parseFloat(subtotal) <= 0){
                 return alert("Discount has gone to 0! Discount cannot be apply")
             }
-            
-
-            // $("#paymentList tbody").each()
-            $("input:checkbox[id='discounted']:checked").each(function(){
-                let amounts = $(this).val();
-                let itemno = $(this).attr("dataval");
-                
-                itemStored.map((item, index) =>{
-                    console.log(item)
-                    if(item.partno === itemno){
-                        switch(type){
-                            case "PERCENT":
-                                item['specialDisc'] = item.amount * (disc/100);
-                                item['amount'] -= item.amount * (disc/100);
-                                break;
-                            case "PRICE":
-                                item['specialDisc'] = disc;
-                                item['amount'] -= disc;
+            if (person.trim() === "" || id.trim() === "") {
+                alert("Please fill out both the Customer Name and Customer Valid ID fields.");
+            }else{
+                // $("#paymentList tbody").each()
+                $("input:checkbox[id='discounted']:checked").each(function(){
+                    let amounts = $(this).val();
+                    let itemno = $(this).attr("dataval");
+                    
+                    itemStored.map((item, index) =>{
+                        console.log(item)
+                        if(item.partno === itemno){
+                            switch(type){
+                                case "PERCENT":
+                                    item['specialDisc'] = item.amount * (disc/100);
+                                    item['amount'] -= item.amount * (disc/100);
+                                    break;
+                                case "PRICE":
+                                    item['specialDisc'] = disc;
+                                    item['amount'] -= disc;
+                            }
+                        specialDisc.push({item: item.partno, type: type, name: name, person: person, id: id, amount: item.specialDisc})
                         }
-                       specialDisc.push({item: item.partno, type: type, name: name, person: person, id: id, amount: item.specialDisc})
-                    }
-                    console.log(specialDisc)
+                        console.log(specialDisc)
+                    })
                 })
-            })
-            $("#discountInput").val(getSpecialDisc(specialDisc))
-            PaymentCompute()
+                $("#discountInput").val(getSpecialDisc(specialDisc))
+                PaymentCompute()
 
-            alert("Special discount has been added!")
-            table_store(itemStored);
-            $("#paymentcol").show();
-            $("#specialdiscountcol").hide()
+                alert("Special discount has been added!")
+                table_store(itemStored);
+                $("#paymentcol").show();
+                $("#specialdiscountcol").hide()
+                updateDiscountToDatabase();
+            }
         })
 
         $("#discountAmt").change(function(){
@@ -943,16 +1027,39 @@
 
         //button for holding items
         $('#btnHold').on('click', function(){
+            this.disabled = true;
+            let kitchen_receipt = $("#kitchen_receipt").val();
 
-            if(!checkAccess("POS_Hold.php")){
-                return;
+            let waitingTime = $("#waiting_time").val();
+            if (!waitingTime && kitchen_receipt == "Yes") {
+                
+            }
+            else if(!waitingTime && kitchen_receipt == null){
+                this.disabled = false;
+                return alert('Waiting time is required!');
+            }
+            else if(!waitingTime && kitchen_receipt == "No"){
+                this.disabled = false;
+                return alert('Waiting time is required!');
             }
 
-            let tranno, msg;
+            if (!kitchen_receipt) {
+                this.disabled = false;
+                if(kitchen_receipt == null){
+                    kitchen_receipt = "No";
+                }
+            }
+
+           // if(!checkAccess("POS_Hold.php")){
+           //     return;
+         //   }
+
+            let tranno, msg, print, date;
             var isSuccess = false;
             var isHold = false;
 
             if(itemStored.length === 0){
+                this.disabled = false;
                 return alert('Transaction is empty! cannot hold transaction');
             }
             const quantity   = [];
@@ -992,12 +1099,17 @@
                             unit: item.unit,
                             quantity: item.quantity,
                             cost: item.price,
+                            waiting_time: $("#waiting_time").val(),
+                            kitchen_receipt: kitchen_receipt,
+                            date: date,
                         },
                         dataType: 'json',
                         async: false,
                         success: function(res){
                             if(res.valid){
                                 isSuccess = true;
+                                print = res.receipt
+                                date = res.date
                                 msg = res.data;
                             } else {
                                 msg = res.msg
@@ -1009,9 +1121,18 @@
                     })
                 })
             }
-            if(isSuccess){
+            if(isSuccess && print == "No"){
                 alert(msg);
                 location.reload();
+            }
+            else if(isSuccess && print == "Yes"){
+                $("#kitchenPrintModal").modal('hide');
+                alert(msg);
+                $("#kitchenPrintModal").modal('show');
+                $("#mykprintframe").attr("src", "PendingOrders/kitchen_print.php?tranno="+ tranno + "&transaction_type=Hold&date=" + date);
+                setInterval(() => {
+                    location.reload()  
+                }, 3000);
             } else {
                 alert(msg);
             }
@@ -1024,9 +1145,24 @@
 
         $('#btnPay').click(function(){
 
-            if(!checkAccess("POS_Payment.php")){
-                return;
+           // if(!checkAccess("POS_Payment.php")){
+           //     return;
+          //  }
+            let kitchen_receipt = $("#kitchen_receipt").val();
+
+            let waitingTime = $("#waiting_time").val();
+            if (!waitingTime && kitchen_receipt == "Yes") {
+                
             }
+            else if(!waitingTime && kitchen_receipt == null){
+                this.disabled = false;
+                return alert('Waiting time is required!');
+            }
+            else if(!waitingTime && kitchen_receipt == "No"){
+                this.disabled = false;
+                return alert('Waiting time is required!');
+            }
+
             if(itemStored.length === 0){
                 return alert('Transaction is empty! cannot proceed transaction');
             }
@@ -1043,6 +1179,7 @@
             $('#tendered').focus()
             $('#tendered').select()
             $("#couponinput").val(getCoupon(coupon))
+            $("#h_tranno").val()
             $("#ServiceInput").val(service)
             $("#totalAmt").val(total)
             $("#discountInput").val(0)
@@ -1061,40 +1198,51 @@
          * Retrive Hold transaction
          */
 
-        $('#btnRetrieve').click(function(){
-            if(!checkAccess("POS_Retrieve.php")){
-                return;
-            }
+         $(document).ready(function() {
+            $('#btnRetrieve').click(function() {
+               // if (!checkAccess("POS_Retrieve.php")) {
+               //     return;
+              //  }
 
-            $.ajax({
-                url: 'Function/th_gethold.php',
-                dataType: 'json',
-                async: false,
-                success: function(res){
-                    if(res.valid){
-                        $('#RetrieveList > tbody').empty();
-                        res.data.map((item, index) => {
-                            console.log(item)
-                            $("#tranno").val(item.transaction)
-                            $("<tr>").append( 
-                                // $("<td>").html("<input type='checkbox' id='chkretrieve' name='chkretrieve' value='"+item.transaction+"' />"),
-                                $("<td  >").text(item.transaction),
-                                $("<td align='center'>").text(item.table),
-                                $("<td align='center'>").text(item.ordertype),
-                                $("<td align='center'>").text(item.trandate),
-                            ).appendTo('#RetrieveList > tbody')
-                        })
-                    } else{
-                        alert(res.msg)
+                $.ajax({
+                    url: 'Function/th_gethold.php',
+                    dataType: 'json',
+                    async: false,
+                    success: function(res) {
+                        if (res.valid) {
+                            $('#RetrieveList > tbody').empty();
+                            res.data.forEach((item, index) => {
+                                console.log(item);
+                                // Create a new table row with the required data
+                                const $row = $("<tr>").append(
+                                    $("<td>").text(item.transaction),
+                                    $("<td align='center'>").text(item.table),
+                                    $("<td align='center'>").text(item.ordertype),
+                                    $("<td align='center'>").text(item.trandate)
+                                );
+
+                                // Append the new row to the table body
+                                $row.appendTo('#RetrieveList > tbody');
+
+                                // Add a click event listener to the row
+                                $row.click(function() {
+                                    $("#tranno").val(item.transaction);
+                                    // Additional code to handle the display of the selected data can be added here
+                                    console.log("Row clicked:", item.transaction);
+                                });
+                            });
+                        } else {
+                            alert(res.msg);
+                        }
+                    },
+                    error: function(res) {
+                        console.log("AJAX error:", res);
                     }
-                },
-                error: function(res){
-                    console.log(res)
-                }
-            })
+                });
 
-            modalshow("Retrieve")
-        })
+                modalshow("Retrieve");
+            });
+        });
 
         /**
          * Retrive Hold transaction Function
@@ -1111,7 +1259,7 @@
         });
 
         $("#RetrieveList tbody").on("click", "tr", function() {
-            let row = $(this).find('td:eq(0)').text()
+            let row = $(this).find('td:eq(0)').text();
 
             $.ajax({
                 url: 'Function/th_getholdtransaction.php',
@@ -1122,6 +1270,7 @@
                 async: false,
                 success: function(res){
                     if(res.valid){
+                        
                         res.data.map((item, index) => {
                             duplicate(item, parseInt(item.quantity))
                             $("#orderType").each(function(){
@@ -1290,10 +1439,22 @@
             let vat = $("#vat").text()
             let transaction = $("#tranno").val()
             let servicefee = $("#ServiceInput").val().replace(/,/g,'')
+            let h_tranno = $("#h_tranno").val()
             // let totalAmt = $("#totalAmt").val().replace(/./g,'');
             let method = $("#paymethod").find(":selected").val();
             let reference = $("#paymethod_txt").val();
             let tranno = '';
+            let flag_update = '';
+
+            let kitchen_receipt = $("#kitchen_receipt").val();
+            if (!kitchen_receipt) {
+                this.disabled = false;
+                if(kitchen_receipt == null){
+                    kitchen_receipt = "No";
+                }
+            }
+
+            let kprint;
             
             if(parseFloat(total) <= parseFloat(totalTender)){
                 $.ajax({
@@ -1308,6 +1469,7 @@
                         vat: vat,
                         gross: parseFloat(gross),
                         subtotal: parseFloat(total),
+                        holdtranno: $('#h_tranno').val(),
 
                         customer: $('#customer').attr('data-val'),
                         order: $('#orderType').val(),
@@ -1325,6 +1487,7 @@
                         if(res.valid){
                             proceed = res.valid;
                             tranno = res.tranno
+                            flag_update = res.flag_update
                             alert(res.msg)
                         } else {
                             alert(res.msg)
@@ -1349,10 +1512,13 @@
                             unit: item.unit,
                             quantity: item.quantity,
                             amount: item.price,
+                            flag_status: flag_update,
+                            kitchen_receipt: kitchen_receipt,
                             
                             discount: item.discount,
                             discountID: $("#discountID").val(),
                             discountName: $("#discountCust").val(),
+                            waiting_time: $('#waiting_time').val(),
 
                             coupon: JSON.stringify(coupon),
                             specialdisc: JSON.stringify(specialDisc),
@@ -1362,6 +1528,7 @@
                         success: function(res){
                             if(res.valid){
                                 console.log(res.msg)
+                                kprint = res.print
                                 isFinished = true
                             } else {
                                 console.log(res.msg)
@@ -1376,26 +1543,44 @@
                 })
             }
 
-            if(isFinished){
+            if (isFinished) {
                 $.ajax({
                     url: "../include/th_toInv.php",
-                    data:{ tran: tranno, type: "POS"},
+                    data: {tran: tranno, type: "POS"},
                     async: false,
-                    success: function(res){
-                        console.log(res)
+                    success: function(res) {
+                        console.log(res);
                     },
-                    error: function(res){
-                        console.log(res)
+                    error: function(res) {
+                        console.log(res);
                     }
-                })
+                });
 
-                $("#PrintModal").modal('show');
-                $("#myprintframe").attr("src", "pos_print.php?tranno="+ tranno);
-                setInterval(() => {
-                    location.reload()  
-                }, 3000);
+                if (kprint == "Yes") {
+                    $("#kitchenPrintModal").modal('show');
+                    $("#mykprintframe").attr("src", "PendingOrders/kitchen_print.php?tranno=" + tranno + "&transaction_type=Payment");
 
+                    setTimeout(() => {
+                        $("#kitchenPrintModal").modal('hide');
+                    }, 3000);
+
+                    $("#PrintModal").modal('show');
+                    $("#myprintframe").attr("src", "pos_print.php?tranno=" + tranno);
+
+                    setTimeout(() => {
+                        location.reload();
+                    }, 6000);
+                } else {
+                    $("#PrintModal").modal('show');
+                    $("#myprintframe").attr("src", "pos_print.php?tranno=" + tranno);
+
+
+                    setTimeout(() => {
+                        location.reload();
+                    }, 3000);
+                }
             }
+
             
         })
 
@@ -1483,6 +1668,8 @@
      */
 
     function insert_item(partno){
+        
+
         $.ajax({
             url: 'Function/ItemList.php',
             data: {
@@ -1529,9 +1716,7 @@
             let remain = parseFloat(data.quantity)
             let quantity = itemStored[i].quantity; 
 
-            if(quantity >= remain && data.isInventory != 1){
-                return alert("No more stock available")
-            }   
+             
             
             
 
@@ -1596,11 +1781,14 @@
 
         let change = parseFloat(total) - totaltender;
 
+        let hold_tranno = $("#h_tranno").val();
+
         if(change > 0){
             return $('#ExchangeAmt').val("0.00")
         }
         $("#discountInput").val(getSpecialDisc(specialDisc)).change()
         $("#ServiceInput").val(service)
+        $("#h_tranno").val()
         $("#totalTender").val(totaltender)
         $("#totalAmt").val(total)
         $('#ExchangeAmt').val(Math.abs(change))
@@ -1673,7 +1861,7 @@
 
 
             $("<tr>").append(
-                $("<td align='center'>").html("<input type='checkbox' name='itemcheck' value='"+item.name+"'/>"),
+                $("<td align='center'>").html("<input type='checkbox' name='itemcheck' value='"+item.name+"' data-name1='"+ item.partno +"'/>"),
                 $("<td>").text(item.name),
                 $("<td>").text(item.unit),
                 $("<td align='center'>").text(item.quantity),
@@ -1868,6 +2056,76 @@
             error: function(msg) {
                 console.log(msg);
             }
-        })
+        }) 
+    }
+
+    $(document).ready(function(){
+        var employeeCashierName = "<?php echo $employee_cashier_name; ?>";
+        // AJAX call to delete data when the page is reloaded
+        $.ajax({
+            type: "POST",
+            url: "DualView/Function/rdelete.php",
+            data: { employeeCashierName: employeeCashierName },
+            success: function(response){
+                console.log("Data deleted successfully!");
+            },
+            error: function(xhr, status, error){
+                console.error("Error deleting data:", error);
+            }
+        });
+    });
+    $(document).on('change', 'input[name="qty[]"]', function() {
+        var partNo = $(this).data('val');
+        var quantity = $(this).val();
+        updateQuantity(partNo, quantity);
+    });
+
+    function updateQuantity(partNo, quantity) {
+        $.ajax({
+            url: 'DualView/Function/uctable.php',
+            method: 'POST',
+            data: {
+                partNo: partNo,
+                quantity: quantity
+            },
+            success: function(response) {
+                console.log('Quantity updated successfully:', response);
+            },
+            error: function(xhr, status, error) {
+                console.error('Error updating quantity:', error);
+            }
+        });
+    }
+
+    function updateCouponToDatabase() {
+        let couponValue = $("#couponinput").val();
+        
+        $.ajax({
+            url: 'DualView/Function/dv_coupon.php', 
+            method: 'POST',
+            data: { coupon: couponValue },
+            success: function(response) {
+                console.log('Coupon updated successfully.');
+            },
+            error: function(xhr, status, error) {
+                console.error('Error updating coupon:', error);
+            }
+        });
+    }
+
+    function updateDiscountToDatabase() {
+        let discountValue = $("#discountInput").val();
+        
+        $.ajax({
+            url: 'DualView/Function/dv_discount.php',
+            method: 'POST',
+            data: { discount: discountValue },
+            success: function(response) {
+                console.log('Discount updated successfully.');
+            },
+            error: function(xhr, status, error) {
+                console.error('Error updating discount:', error);
+            }
+        });
     }
 </script>

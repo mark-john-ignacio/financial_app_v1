@@ -2,7 +2,7 @@
 	if(!isset($_SESSION)){
 		session_start();
 	}
-	$_SESSION['pageid'] = "DR_unpost.php";
+	$_SESSION['pageid'] = "DR_unpost";
 	include('../../Connection/connection_string.php');
 	include('../../include/denied.php');
 	include('../../include/access2.php');
@@ -89,6 +89,7 @@
 
 			</section>
 		</div>		
+		<input type="hidden" name="hdnreason" id="hdnreason" value="">	
 	</form>  
 
 <!-- PRINT OUT MODAL-->
@@ -113,6 +114,7 @@
 
 <link rel="stylesheet" type="text/css" href="../../Bootstrap/DataTable/DataTable.css"> 
 <script type="text/javascript" language="javascript" src="../../Bootstrap/DataTable/jquery.dataTables.min.js"></script>
+<script type="text/javascript" src="../../global/plugins/bootbox/bootbox.min.js"></script>
 
 <script type="text/javascript">
 
@@ -126,7 +128,23 @@
 					alert("You must check at least one checkbox.");
 					return false;
 				}else{
-					$("#frmunpost").submit();
+					bootbox.prompt({
+						title: 'Enter reason for void.',
+						inputType: 'text',
+						centerVertical: true,
+						callback: function (result) {
+							if(result!="" && result!=null){
+								$("#hdnreason").val(result);
+								$("#frmunpost").submit();
+							}else{
+								bootbox.alert({
+									message: "Reason for void is required!",
+									size: "small",
+									className: "bootalert"
+								});
+							}						
+						}
+					});
 				}
 
 			});

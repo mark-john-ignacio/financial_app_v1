@@ -14,6 +14,7 @@
 
 	require_once "../../include/denied.php";
 	require_once "../../include/access.php";
+	require_once "../../Model/helper.php";
 	require_once "../../include/sendEmail.php";
 
 	//POST RECORD
@@ -130,8 +131,8 @@
 					$msgz = "<b>SUCCESS: </b>Your transaction is successfully posted!";
 					$status = "Posted";
 
-					mysqli_query($con,"INSERT INTO logfile(`ctranno`, `cuser`, `ddate`, `cevent`, `module`, `cmachine`, `cremarks`) 
-					values('$tranno','$preparedby',NOW(),'POSTED','QUOTATION','$compname','Post Record')");
+					mysqli_query($con,"INSERT INTO logfile(`compcode`, `ctranno`, `cuser`, `ddate`, `cevent`, `module`, `cmachine`, `cremarks`) 
+					values('$company', '$tranno','$preparedby',NOW(),'POSTED','QUOTATION','$compname','Post Record')");
 
 					if((intval($cntfinalall) - intval($cntfinalapp)) == 1){ //pag 1 meaning last approver na sya.. set to posted na ang transaction
 
@@ -165,8 +166,9 @@
 										$output.='<p>Myx Financials,</p>';
 
 										$subject = $logonamz." - Quotation";
+										$getcreds = getEmailCred();
 
-										sendEmail($rs['cemailadd'],$output,$subject,$logonamz);
+										sendEmail($rs['cemailadd'],$output,$subject,$logonamz,$getcreds);
 									}
 								}
 							}
@@ -251,8 +253,8 @@
 					$msgz = "<b>SUCCESS: </b>Your transaction is successfully cancelled!";
 					$status = "Cancelled";
 
-					mysqli_query($con,"INSERT INTO logfile(`ctranno`, `cuser`, `ddate`, `cevent`, `module`, `cmachine`, `cremarks`) 
-					values('$tranno','$preparedby',NOW(),'CANCELLED','QUOTATION','$compname','Cancel Record')");
+					mysqli_query($con,"INSERT INTO logfile(`compcode`, `ctranno`, `cuser`, `ddate`, `cevent`, `module`, `cmachine`, `cremarks`, `cancel_rem`) 
+					values('$company', '$tranno','$preparedby',NOW(),'CANCELLED','QUOTATION','$compname','Cancel Record','".$_REQUEST['canmsg']."')");
 
 				}
 
@@ -275,8 +277,8 @@
 			$msgz = "<b>SUCCESS: </b>Your transaction is successfully opened!";
 			$status = "Opened";
 			
-			mysqli_query($con,"INSERT INTO logfile(`ctranno`, `cuser`, `ddate`, `cevent`,`module`, `cmachine`, `cremarks`) 
-		values('$tranno','$preparedby',NOW(),'OPEN','QUOTATION','$compname','Open Record')");
+			mysqli_query($con,"INSERT INTO logfile(`compcode`, `ctranno`, `cuser`, `ddate`, `cevent`,`module`, `cmachine`, `cremarks`) 
+		values('$company', '$tranno','$preparedby',NOW(),'OPEN','QUOTATION','$compname','Open Record')");
 
 		}
 
@@ -382,8 +384,8 @@
 				$msgz = "<b>SUCCESS: </b>Your transaction is successfully sent!";
 				$status = "SENT";
 
-				mysqli_query($con,"INSERT INTO logfile(`ctranno`, `cuser`, `ddate`, `cevent`, `module`, `cmachine`, `cremarks`) 
-				values('$tranno','$preparedby',NOW(),'SEND','QUOTATION','$compname','Cancel Record')");
+				mysqli_query($con,"INSERT INTO logfile(`compcode`, `ctranno`, `cuser`, `ddate`, `cevent`, `module`, `cmachine`, `cremarks`) 
+				values('$company', '$tranno','$preparedby',NOW(),'SEND','QUOTATION','$compname','Cancel Record')");
 
 				if($isemail==1){ //send emails to level 1
 
@@ -392,8 +394,15 @@
 					if (mysqli_num_rows($resemailapps)!=0) {
 						while($row = mysqli_fetch_array($resemailapps, MYSQLI_ASSOC)){
 
-							sendEmail($row['cemailadd'],$row['Fname'],$tranno);
+							$output='<p>Dear '.$row['Fname'].',</p>';
+							$output.='<p>This email is to notify that the QO# '.$tranno.' is waiting for your approval.</p>'; 
+							$output.='<p>Thanks,</p>';
+							$output.='<p>Myx Financials,</p>';
 
+							$subject = $logonamz." - Quotation";
+							$getcreds = getEmailCred();
+
+							sendEmail($row['cemailadd'],$output,$subject,$logonamz,$getcreds);
 						}
 					}
 
@@ -416,8 +425,8 @@
 			$msgz = "<b>SUCCESS: </b>Your transaction is successfully cancelled!";
 			$status = "Cancelled";
 		
-			mysqli_query($con,"INSERT INTO logfile(`ctranno`, `cuser`, `ddate`, `cevent`, `module`, `cmachine`, `cremarks`) 
-			values('$tranno','$preparedby',NOW(),'CANCELLED','QUOTATION','$compname','Cancel Record')");
+			mysqli_query($con,"INSERT INTO logfile(`compcode`, `ctranno`, `cuser`, `ddate`, `cevent`, `module`, `cmachine`, `cremarks`, `cancel_rem`) 
+			values('$company', '$tranno','$preparedby',NOW(),'CANCELLED','QUOTATION','$compname','Cancel Record','".$_REQUEST['canmsg']."')");
 		}
 
 		

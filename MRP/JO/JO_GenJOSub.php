@@ -36,6 +36,7 @@
 
 	$dmainaryy = array();
 	$xtranlit = array();
+	$xtranlit[] = $tranno;
 	$xitmslit = array();
 	$resultmain = mysqli_query ($con, $sql); 
 	while($row2 = mysqli_fetch_array($resultmain, MYSQLI_ASSOC)){
@@ -53,23 +54,37 @@
 		$arrprolist[] = $rs3;
 	}
 	
-		foreach($dmainaryy as $row2){
+	foreach($dmainaryy as $row2){
 
-			
-			foreach($arrprolist as $rs4){
-				if($rs4['citemno']==$row2['citemno']){
+		foreach($arrprolist as $rs4){
+			if($rs4['citemno']==$row2['citemno']){
 
-					if (!mysqli_query($con, "INSERT INTO mrp_jo_process_t(`compcode`, `ctranno`, `mrp_process_id`, `mrp_process_desc`) values('$company', '".$row2['ctranno']."', '".$rs4['items_process_id']."', '".$rs4['cdesc']."')")) {
-					
-						$status = "False";
-						$msgz = $msgz . "<b>ERROR ON ".$row2['ctranno'].": </b>There's a problem generating your process!";
-
-					}
+				if (!mysqli_query($con, "INSERT INTO mrp_jo_process_t(`compcode`, `ctranno`, `mrp_process_id`, `mrp_process_desc`) values('$company', '".$row2['ctranno']."', '".$rs4['items_process_id']."', '".$rs4['cdesc']."')")) {
+				
+					$status = "False";
+					$msgz = $msgz . "<b>ERROR ON ".$row2['ctranno'].": </b>There's a problem generating your process!";
 
 				}
+
+			}
+		}
+
+	}
+
+	//Insert Process of the Main Item
+	foreach($arrprolist as $rs4){
+
+		if($rs4['citemno']==$JOItem){
+
+			if (!mysqli_query($con, "INSERT INTO mrp_jo_process_t(`compcode`, `ctranno`, `mrp_process_id`, `mrp_process_desc`) values('$company', '".$tranno."', '".$rs4['items_process_id']."', '".$rs4['cdesc']."')")) {
+			
+				$status = "False";
+				$msgz = $msgz . "<b>ERROR ON ".$tranno.": </b>There's a problem generating your process!";
+
 			}
 
 		}
+	}
 
 
 	//mysqli_query($con,"Update so set lsent=1 where compcode='$company' and ctranno='$tranno'");

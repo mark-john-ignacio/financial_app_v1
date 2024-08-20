@@ -2,7 +2,7 @@
 if(!isset($_SESSION)){
 session_start();
 }
-$_SESSION['pageid'] = "ARAgeing.php";
+$_SESSION['pageid'] = "ARAgeing";
 
 include('../Connection/connection_string.php');
 include('../include/denied.php');
@@ -49,7 +49,7 @@ $company = $_SESSION['companyid'];
 		      <input type='text' class="datepick form-control input-sm" id="date1" name="date1" />
 
 		    </div>
-        <div class="col-xs-5 nopadwleft">
+        <!--<div class="col-xs-5 nopadwleft">
 
           <select class="form-control input-sm" id="selstat" name="selstat">
             <option value="">ALL Transactions</options>
@@ -57,7 +57,7 @@ $company = $_SESSION['companyid'];
             <option value="Non-Trade">Non-Trade</options>
           </select>
 
-        </div>
+        </div>-->
      </div>   
     </td>
   </tr>
@@ -152,12 +152,12 @@ $(document).ready(function(e) {
     });
 
     $('#btnView').on("click", function(){
-        $('#frmrep').attr("action", "Accounting/ARAgeing.php");
+        $('#frmrep').attr("action", "Sales/ARAgeing.php");
         $('#frmrep').submit();
     });
 
     $('#btnexcel').on("click", function(){
-        $('#frmrep').attr("action", "Accounting/ARAgeing_xls.php");
+        $('#frmrep').attr("action", "Sales/ARAgeing_xls.php");
         $('#frmrep').submit();
     });
 

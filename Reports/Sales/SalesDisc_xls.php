@@ -32,9 +32,11 @@ $spreadsheet->setActiveSheetIndex(0)
 		->setCellValue('F1', 'UOM')
 		->setCellValue('G1', 'SO Qty')
 		->setCellValue('H1', 'DR Qty')
-		->setCellValue('I1', 'SI Qty');
+		->setCellValue('I1', 'SI Qty')
+		->setCellValue('J1', 'SI Price')
+		->setCellValue('K1', 'Returned');
 
-$spreadsheet->getActiveSheet()->getStyle('A1:I1')->getFont()->setBold(true);
+$spreadsheet->getActiveSheet()->getStyle('A1:K1')->getFont()->setBold(true);
 
 //start ng details//
 $company = $_SESSION['companyid'];
@@ -55,18 +57,10 @@ if($postedtran!==""){
 	$qryposted = " and b.lapproved=".$postedtran."";
 }
 
-if($trantype=="Trade"){
-	$tblhdr = "so";
-	$tbldtl = "so_t";
-}elseif($trantype=="Non-Trade"){
-	$tblhdr = "ntso";
-	$tbldtl = "ntso_t";
-}
-
-if($trantype!==""){
+//if($trantype!==""){
 	$xsql = "select a.nident, b.dcutdate, a.ctranno, d.ccustomertype as ctype, e.cdesc as typdesc, b.ccode, d.ctradename as cname, b.lapproved, a.citemno, c.citemdesc, a.cunit, a.nqty, a.nprice, a.namount
-	From ".$tbldtl." a	
-	left join ".$tblhdr." b on a.ctranno=b.ctranno and a.compcode=b.compcode
+	From so_t a	
+	left join so b on a.ctranno=b.ctranno and a.compcode=b.compcode
 	left join items c on a.citemno=c.cpartno and a.compcode=c.compcode
 	left join customers d on b.ccode=d.cempid and b.compcode=d.compcode
 	left join groupings e on d.ccustomertype=e.ccode and c.compcode=e.compcode and e.ctype='CUSTYP'
@@ -75,7 +69,7 @@ if($trantype!==""){
 	order by a.ctranno, a.nident";
 
 
-}else{
+/*}else{
 	$xsql = "Select A.nident, A.dcutdate, A.ctranno, A.ctype, A.typdesc, A.ccode, A.cname, A.lapproved, A.citemno, A.citemdesc, A.cunit, A.nqty, A.nprice, A.namount
 	From (
 		select a.nident, b.dcutdate, a.ctranno, d.ccustomertype as ctype, e.cdesc as typdesc, b.ccode, d.ctradename as cname, b.lapproved, a.citemno, c.citemdesc, a.cunit, a.nqty, a.nprice, a.namount
@@ -100,15 +94,15 @@ if($trantype!==""){
 	) A 
 	order by A.ctranno, A.nident";
 	
-}
+}*/
 
-$resDR=mysqli_query($con,"Select A.ctranno, A.nident, A.creference, A.crefident, A.citemno, A.nqty from dr_t A left join dr B on A.compcode=B.compcode and A.ctranno=B.ctranno where A.compcode='$company' and B.lapproved=1 and B.lvoid=0 UNION ALL Select A.ctranno, A.nident, A.creference, A.crefident, A.citemno, A.nqty from ntdr_t A left join ntdr B on A.compcode=B.compcode and A.ctranno=B.ctranno where A.compcode='$company' and B.lapproved=1 and B.lvoid=0");
+$resDR=mysqli_query($con,"Select A.ctranno, A.nident, A.creference, A.crefident, A.citemno, A.nqty from dr_t A left join dr B on A.compcode=B.compcode and A.ctranno=B.ctranno where A.compcode='$company' and B.lapproved=1 and B.lvoid=0");
 $findr = array();
 while($row = mysqli_fetch_array($resDR, MYSQLI_ASSOC)){
 	$findr[] = $row;
 }
 
-$resSI=mysqli_query($con,"Select creference, nrefident, citemno, sum(nqty) as nqty from sales_t A left join sales B on A.compcode=B.compcode and A.ctranno=B.ctranno where A.compcode='$company' and B.lapproved=1 and B.lvoid=0 Group By creference, nrefident, citemno UNION ALL Select creference, nrefident, citemno, sum(nqty) as nqty from ntsales_t A left join ntsales B on A.compcode=B.compcode and A.ctranno=B.ctranno where A.compcode='$company' and B.lapproved=1 and B.lvoid=0 Group By creference, nrefident, citemno");
+$resSI=mysqli_query($con,"Select creference, nrefident, citemno, A.nprice, sum(nqty) as nqty, sum(A.nqtyreturned) as nqtysr from sales_t A left join sales B on A.compcode=B.compcode and A.ctranno=B.ctranno where A.compcode='$company' and B.lapproved=1 and B.lvoid=0 Group By creference, nrefident, citemno, A.nprice");
 $finsi = array();
 while($row = mysqli_fetch_array($resSI, MYSQLI_ASSOC)){
 	$finsi[] = $row;
@@ -149,6 +143,8 @@ while($row = mysqli_fetch_array($result, MYSQLI_ASSOC)){
 		foreach($finsi as $srow){
 			if(in_array($srow['creference'], $drnos) && in_array($srow['nrefident'], $dridents) && $srow['citemno']==$row['citemno']){
 				$esiqty = $esiqty + floatval($srow['nqty']);
+				$esiqtyret = $esiqtyret + floatval($srow['nqtysr']);
+				$esiprice = $srow['nprice'];
 				break;
 			}
 		}
@@ -173,11 +169,15 @@ while($row = mysqli_fetch_array($result, MYSQLI_ASSOC)){
 		->setCellValue('F'.$cnt, $row['cunit'])
 		->setCellValue('G'.$cnt, $row['nqty'])
 		->setCellValue('H'.$cnt, $edrqty)
-		->setCellValue('I'.$cnt, $esiqty);
+		->setCellValue('I'.$cnt, $esiqty)
+		->setCellValue('J'.$cnt, $esiprice)
+		->setCellValue('K'.$cnt, $esiqtyret);
 
 		$spreadsheet->setActiveSheetIndex(0)->getStyle('G'.$cnt)->getNumberFormat()->setFormatCode("_(* #,##0.00_);_(* \(#,##0.00\);_(* \"-\"??_);_(@_)");
 		$spreadsheet->setActiveSheetIndex(0)->getStyle('H'.$cnt)->getNumberFormat()->setFormatCode("_(* #,##0.00_);_(* \(#,##0.00\);_(* \"-\"??_);_(@_)");
 		$spreadsheet->setActiveSheetIndex(0)->getStyle('I'.$cnt)->getNumberFormat()->setFormatCode("_(* #,##0.00_);_(* \(#,##0.00\);_(* \"-\"??_);_(@_)");
+		$spreadsheet->setActiveSheetIndex(0)->getStyle('J'.$cnt)->getNumberFormat()->setFormatCode("_(* #,##0.00_);_(* \(#,##0.00\);_(* \"-\"??_);_(@_)");
+		$spreadsheet->setActiveSheetIndex(0)->getStyle('K'.$cnt)->getNumberFormat()->setFormatCode("_(* #,##0.00_);_(* \(#,##0.00\);_(* \"-\"??_);_(@_)");
 
 	}
 
