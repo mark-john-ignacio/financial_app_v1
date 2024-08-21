@@ -4,6 +4,7 @@ namespace App\Controllers\API\BIRPDF;
 
 use App\Controllers\BaseController;
 use setasign\Fpdi\Tcpdf\Fpdi;
+use TCPDF_FONTS;
 
 class BIRPDF extends BaseController
 {
@@ -15,7 +16,7 @@ class BIRPDF extends BaseController
         $pdf = new Fpdi();
         
         // Set the source file
-        $templatePath = WRITEPATH . 'uploads/bir_pdf_files/0619-E.pdf';
+        $templatePath = APPPATH . 'Views/PDFTemplates/BIRForm0619-E.pdf';
         $pageCount = $pdf->setSourceFile($templatePath);
         
         // Import the first page of the template
@@ -41,10 +42,11 @@ class BIRPDF extends BaseController
 
     protected function fillFields($pdf, $data)
     {
-        $pdf->SetFont('Courier', 'B');  // 'B' for bold
-        $pdf->SetFontSize(13);  // Set font size to 20
-        $pdf->SetTextColor(0, 0, 0);  // Set text color to black (#000)
-
+        $fontPath = APPPATH . 'Fonts/SpaceMono-Bold.ttf';
+        $fontname = TCPDF_FONTS::addTTFfont($fontPath, 'TrueTypeUnicode', '', 96);
+        $pdf->SetFont($fontname, '', 12);
+        $pdf->SetTextColor(0, 0, 0);
+    
         $this->writeStyledText($pdf, 50, 50, $data->name);
         $this->writeStyledText($pdf, 50, 60, $data->email);
         $this->writeStyledText($pdf, 50, 70, $data->message);
