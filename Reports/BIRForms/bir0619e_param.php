@@ -123,9 +123,50 @@
                 <div class="col-sm-10">
                 &nbsp;
                 </div>
-                <div class="col-sm-2">
+                <!-- <div class="col-sm-2">
                     <button type="submit" class="btn btn-success btn-sm btn-block"><i class="fa fa-print"></i>&nbsp;PRINT PDF</button>
+                </div> -->
+                <div class="col-sm-2">
+                    <button type="button" id="btnPrintPdf" class="btn btn-success btn-sm btn-block">
+                        <i class="fa fa-print"></i>&nbsp;PRINT PDF
+                    </button>
                 </div>
+                <script>
+                $(document).ready(function() {
+                    $("#btnPrintPdf").on("click", function(event) {
+                        event.preventDefault(); // Prevent the default button action
+
+                        // Serialize form data into a JSON object
+                        var formData = {};
+                        $("#frmpos").serializeArray().forEach(function(item) {
+                            formData[item.name] = item.value;
+                        });
+                        console.log("Form data:", formData);
+
+                        // Send the JSON data to the specified URL using AJAX
+                        $.ajax({
+                            url: "<?= $UrlBase . 'system_management/api/pdf' ?>",
+                            type: "POST",
+                            contentType: "application/json",
+                            data: JSON.stringify(formData),
+                            xhrFields: {
+                                responseType: 'arraybuffer'
+                            },
+                            success: function(response) {
+                                var blob = new Blob([response], { type: 'application/pdf' });
+                                var url = URL.createObjectURL(blob);
+                                window.open(url, '_blank');
+                            },
+                            error: function(xhr, status, error) {
+                                console.error("Error:", error);
+                                if (xhr.responseType !== 'arraybuffer') {
+                                    console.error("Server response:", xhr.responseText);
+                                }
+                            }
+                        });
+                    });
+                });
+                </script>
             </div>
 
             <div class="row mt-2">
@@ -148,7 +189,7 @@
                             <table>
                                 <tr>
                                     <td>
-                                        <input type="text" class="form-control input-sm" name="month" id="month" value="<?= isset($month) ? $month : "n/a" ?>" readonly style="width: 80px;">
+                                        <input type="text" class="form-control input-sm" name="month" id="month" value="<?= isset($month) ? $month : "00" ?>" readonly style="width: 80px;">
                                     </td>
                                     <td>
                                         <input type="text" class="form-control input-sm" name="year" id="year" value="<?=$year?>" readonly style="width: 80px;">
@@ -161,10 +202,10 @@
                             <table>
                                 <tr>
                                     <td>
-                                        <input type="text" class="form-control input-sm" name="due_month" id="due_month" value="<?= isset($due_month) ? $due_month :  "n/a" ?>" readonly style="width: 80px;">
+                                        <input type="text" class="form-control input-sm" name="due_month" id="due_month" value="<?= isset($due_month) ? $due_month :  "00" ?>" readonly style="width: 80px;">
                                     </td>
                                     <td>
-                                        <input type="text" class="form-control input-sm" name="due_year" id="due_year" value="<?= isset($due_year) ? $due_year :  "n/a" ?>" readonly style="width: 80px;">
+                                        <input type="text" class="form-control input-sm" name="due_year" id="due_year" value="<?= isset($due_year) ? $due_year :  "0000" ?>" readonly style="width: 80px;">
                                     </td>
                                 </tr>
                             </table>
