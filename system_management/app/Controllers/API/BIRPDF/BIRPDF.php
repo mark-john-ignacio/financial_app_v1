@@ -10,25 +10,29 @@ class BIRPDF extends BaseController
     public function generatePdf()
     {
         $json = $this->request->getJSON();
-
+        
         // Create a new FPDI instance
         $pdf = new Fpdi();
-
-        // Add a page
-        $pdf->AddPage();
-
+        
         // Set the source file
-        $pdf->setSourceFile(WRITEPATH . 'uploads/bir_pdf_files/0619-E.pdf');
-
+        $templatePath = WRITEPATH . 'uploads/bir_pdf_files/0619-E.pdf';
+        $pageCount = $pdf->setSourceFile($templatePath);
+        
         // Import the first page of the template
         $tplId = $pdf->importPage(1);
-
+        
+        // Get the size of the imported page
+        $size = $pdf->getTemplateSize($tplId);
+        
+        // Add a page with the same size as the template
+        $pdf->AddPage($size['orientation'], [$size['width'], $size['height']]);
+        
         // Use the imported page as template
-        $pdf->useTemplate($tplId);
-
+        $pdf->useTemplate($tplId, 0, 0, $size['width'], $size['height']);
+        
         // Fill the fields using positioning
         $this->fillFields($pdf, $json);
-
+        
         // Output the PDF in the browser
         return $this->response
             ->setContentType('application/pdf')
@@ -37,16 +41,18 @@ class BIRPDF extends BaseController
 
     protected function fillFields($pdf, $data)
     {
-        $pdf->SetFont('Helvetica');
-        $pdf->SetFontSize(12);
+        $pdf->SetFont('Courier', 'B');  // 'B' for bold
+        $pdf->SetFontSize(13);  // Set font size to 20
+        $pdf->SetTextColor(0, 0, 0);  // Set text color to black (#000)
 
-        $pdf->SetXY(50, 50);  // Adjust these coordinates as needed
-        $pdf->Write(0, $data->name);
+        $this->writeStyledText($pdf, 50, 50, $data->name);
+        $this->writeStyledText($pdf, 50, 60, $data->email);
+        $this->writeStyledText($pdf, 50, 70, $data->message);
+    }
 
-        $pdf->SetXY(50, 60);  // Adjust these coordinates as needed
-        $pdf->Write(0, $data->email);
-
-        $pdf->SetXY(50, 70);  // Adjust these coordinates as needed
-        $pdf->Write(0, $data->message);
+    protected function writeStyledText($pdf, $x, $y, $text)
+    {
+        $pdf->SetXY($x, $y);
+        $pdf->Write(0, strtoupper($text));
     }
 }
