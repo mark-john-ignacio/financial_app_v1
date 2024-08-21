@@ -180,8 +180,8 @@
 
 		.rdo{
 			position: absolute;
-			top: 190px;
-			left: 759px;
+			top: 196px;
+			left: 738px;
 			width: 50px;
 			height:  20px;    
 			letter-spacing: 12px;
@@ -201,21 +201,21 @@
 
 		.wadd{
 			position: absolute;
-			top: 270px;
-			left: 10px;
+			top: 272px;
+			left: 29.6px;
 			width: 8.3in;
 			height:  18px;    
-			letter-spacing: 12px;
+			letter-spacing: 11.2px;
 			text-align: left;
 			/*border: 1px solid #000;*/
 		}
 		.wadd2{
 			position: absolute;
 			top: 293px;
-			left: 10px;
+			left: 29.6px;
 			width: 8.4in;
 			height:  20px;    
-			letter-spacing: 12px;
+			letter-spacing: 11.2px;
 			text-align: left;
 			/*border: 1px solid #000;*/
 		} 
