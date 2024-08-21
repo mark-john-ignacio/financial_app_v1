@@ -105,13 +105,13 @@
 	
 			$setfooter = '<table border="1" width="100%" style="border-collapse:collapse; margin-top:5px" cellpadding="5px">
 			<tr>
-				<td width="35%" valign="top"> <b>Requested By (Name & Signature):</b> <br><br><br>'.$cpreparedBy.'</td>
+				<td width="35%" valign="top"> <b>Requested By (Name & Signature):</b> <br><br><br></td>
 				<td width="32%" valign="top"> <b>Checked By:</b> <br><br><br> </td>
 				<td width="33%" valign="top"> <b>Approved By:</b> </td>
 			</tr></table><table border="0" width="100%" style="border-collapse:collapse; font-size: 10px"><tr><td> '.date("h:i:sa") . ' '. date("d-m-Y").' </td><td> Note: In Case of Error Please Report to the concern Department within 24hrs ERASURE IS NOT ALLOWED </td><td> BMRC-LW-001-F </td></tr></table>';
 			//end foot
 
-			$html = '<table border="1" align="center" width="100%" style="border-collapse: collapse;">
+			$html = '<div style="height: 450px; overflow-y: hidden"><table border="1" align="center" width="100%" style="border-collapse: collapse; table-layout: fixed; height: 300px">
 			<thead>
 			<tr>
 				<th width="50px" class="text-center">No.</th>
@@ -133,9 +133,9 @@
 				));
 			}
 
+			$PRDet = array();
 			$sqldetx = mysqli_query($con,"Select A.*, B.citemdesc, B.cnotes from invtransfer_t A left join items B on A.compcode=B.compcode and A.citemno=B.cpartno where A.compcode='$company' and A.ctranno='".$row['ctranno']."' Order By A.nidentity");
-			if (mysqli_num_rows($sqldetx)!=0) {
-				$PRDet = array();
+			if (mysqli_num_rows($sqldetx)!=0) {				
 				$cnt = 0;
 				while($rowxx = mysqli_fetch_array($sqldetx, MYSQLI_ASSOC)){
 					$PRDet[] = $rowxx;
@@ -162,7 +162,18 @@
 				} 
 			}
 
-			$html = $html.'</table>';
+			/*for($i=1; $i<=20; $i++){
+				$html = $html.'<tr>
+				<td align="center" class="tdpadx tddetz">&nbsp;</td>
+				<td align="center" class="tdpadx tddetz">&nbsp;</td>
+				<td align="center" class="tdpadx tddetz">&nbsp;</td>
+				<td align="center" class="tdpadx tddetz">&nbsp;</td>
+				<td align="center" class="tdpadx tddetz">&nbsp;</td>
+				<td align="center" class="tdpadx tddetz">&nbsp;</td>		
+			</tr>';
+			}*/
+
+			$html = $html.'</table></div>';
 
 			//echo $sethdr;
 

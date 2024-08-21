@@ -1,107 +1,113 @@
 <?php
-if(!isset($_SESSION)){
-session_start();
-}
-include('../../Connection/connection_string.php');
-include('../../include/denied.php');
-require_once('../../Model/helper.php');
-
-$dmonth = date("m");
-$dyear = date("y");
-$company = $_SESSION['companyid'];
-
-function chkgrp($valz) {
-	if($valz==''){
-		return "NULL";
-	}else{
-    	return "'".$valz."'";
+	if(!isset($_SESSION)){
+		session_start();
 	}
-}
+	include('../../Connection/connection_string.php');
+	include('../../include/denied.php');
+	require_once('../../Model/helper.php');
 
+	$dmonth = date("m");
+	$dyear = date("y");
+	$company = $_SESSION['companyid'];
 
-$chkSales = mysqli_query($con,"select * from sales where compcode='$company' and YEAR(ddate) = YEAR(CURDATE()) Order By ddate desc LIMIT 1");
-if (mysqli_num_rows($chkSales)==0) {
-	$cSINo = "SI".$dyear."000000001";
-}
-else {
-	while($row = mysqli_fetch_array($chkSales, MYSQLI_ASSOC)){
-		$lastSI = $row['ctranno'];
+	$nicomeaccount = "";
+	$result = mysqli_query($con,"SELECT * FROM `parameters` WHERE compcode='$company' and ccode='INCOME_ACCOUNT'"); 								
+	if (mysqli_num_rows($result)!=0) {
+		$all_course_data = mysqli_fetch_array($result, MYSQLI_ASSOC);						 
+		$nicomeaccount = $all_course_data['cvalue']; 							
 	}
-	
-	
-	if(substr($lastSI,2,2) <> $dyear){
+
+	function chkgrp($valz) {
+		if($valz==''){
+			return "NULL";
+		}else{
+			return "'".$valz."'";
+		}
+	}
+
+
+	$chkSales = mysqli_query($con,"select * from sales where compcode='$company' and YEAR(ddate) = YEAR(CURDATE()) Order By ddate desc LIMIT 1");
+	if (mysqli_num_rows($chkSales)==0) {
 		$cSINo = "SI".$dyear."000000001";
 	}
-	else{
-		$baseno = intval(substr($lastSI,4,9)) + 1;
-		$zeros = 9 - strlen($baseno);
-		$zeroadd = "";
-		
-		for($x = 1; $x <= $zeros; $x++){
-			$zeroadd = $zeroadd."0";
+	else {
+		while($row = mysqli_fetch_array($chkSales, MYSQLI_ASSOC)){
+			$lastSI = $row['ctranno'];
 		}
 		
-		$baseno = $zeroadd.$baseno;
-		$cSINo = "SI".$dyear.$baseno;
+		
+		if(substr($lastSI,2,2) <> $dyear){
+			$cSINo = "SI".$dyear."000000001";
+		}
+		else{
+			$baseno = intval(substr($lastSI,4,9)) + 1;
+			$zeros = 9 - strlen($baseno);
+			$zeroadd = "";
+			
+			for($x = 1; $x <= $zeros; $x++){
+				$zeroadd = $zeroadd."0";
+			}
+			
+			$baseno = $zeroadd.$baseno;
+			$cSINo = "SI".$dyear.$baseno;
+		}
 	}
-}
 
-	$cCustID = $_REQUEST['txtcustid'];
-	$dDelDate = $_REQUEST['date_delivery'];
-	$cRemarks = chkgrp($_REQUEST['txtremarks']); 
+	$cCustID = $_POST['txtcustid'];
+	$dDelDate = $_POST['date_delivery'];
+	$cRemarks = chkgrp($_POST['txtremarks']); 
 
-	//$selreinv = $_REQUEST['selreinv'];	
-	$selsitypz = $_REQUEST['selsityp']; 
-	$selpaytyp = $_REQUEST['selpaytyp']; 
-	$selsiseries = chkgrp($_REQUEST['csiprintno']);  
-	$coraclesi = chkgrp($_REQUEST['coracleinv']);  
-	$nnetvat = str_replace(",","",$_REQUEST['txtnNetVAT']);
-	$nvat = str_replace(",","",$_REQUEST['txtnVAT']);
+	//$selreinv = $_POST['selreinv'];	
+	$selsitypz = $_POST['selsityp']; 
+	$selpaytyp = $_POST['selpaytyp']; 
+	$selsiseries = chkgrp($_POST['csiprintno']);  
+	$coraclesi = chkgrp($_POST['coracleinv']);  
 
-	$cterms = $_REQUEST['selcterms'];
+	$cterms = $_POST['selcterms'];
 
-	$CurrCode = $_REQUEST['selbasecurr']; 
-	$CurrDesc = $_REQUEST['hidcurrvaldesc'];  
-	$CurrRate= $_REQUEST['basecurrval']; 
+	$CurrCode = $_POST['selbasecurr']; 
+	$CurrDesc = $_POST['hidcurrvaldesc'];  
+	$CurrRate= $_POST['basecurrval']; 
 
-	$nnetvat = $_REQUEST['txtnNetVAT']; //VATABLE SALES   nnet
-	$nexempt = $_REQUEST['txtnExemptVAT']; //VAT EXEMPT SALES   nexempt
-	$nzeror = $_REQUEST['txtnZeroVAT']; // ZERO RATED SALES  nzerorated
-	$nvat = $_REQUEST['txtnVAT']; //VAT   nvat
-	$nGrossBefore = $_REQUEST['txtnGrossBef']; //TOTAL GROSS  BEFORE DISCOUNT ngrossbefore
+	$nnetvat = $_POST['txtnNetVAT']; //VATABLE SALES   nnet
+	$nexempt = $_POST['txtnExemptVAT']; //VAT EXEMPT SALES   nexempt
+	$nzeror = $_POST['txtnZeroVAT']; // ZERO RATED SALES  nzerorated
+	$nvat = $_POST['txtnVAT']; //VAT   nvat
+	$nGrossBefore = $_POST['txtnGrossBef']; //TOTAL GROSS  BEFORE DISCOUNT ngrossbefore
 
-	if(isset($_REQUEST['txtnEWT'])){
-		$nLessEWT = $_REQUEST['txtnEWT']; //EWT
+	if(isset($_POST['txtnEWT'])){
+		$nLessEWT = $_POST['txtnEWT']; //EWT
 	}else{
 		$nLessEWT = ""; //EWT
 	}
 	
-	$nGrossDisc = str_replace(",","",$_REQUEST['txtnGrossDisc']);  //GROSS DISCOUNT  ngrossdisc
-	$nGross = $_REQUEST['txtnGross']; //TOTAL AMOUNT ngross
-	$BaseGross= $_REQUEST['txtnBaseGross']; //TOTAL AMOUNT * currency rate    nbasegross
+	$nGrossDisc = str_replace(",","",$_POST['txtnGrossDisc']);  //GROSS DISCOUNT  ngrossdisc
+	$nGross = $_POST['txtnGross']; //TOTAL AMOUNT ngross
+	$BaseGross= $_POST['txtnBaseGross']; //TOTAL AMOUNT * currency rate    nbasegross
 
-	if(isset($_REQUEST['selewt'])){
-		$cewtcode = implode(",",$_REQUEST['selewt']);
-	}else{
-		$cewtcode = "";
+	$cewtcode = "";
+	if(isset($_POST['selewt'])){
+		if($_POST['selewt']!=""){
+			$cewtcode = implode(",",$_POST['selewt']);
+		}
 	}
 
-	$RefMods= $_REQUEST['txtrefmod']; 
-	$RefModsNo= $_REQUEST['txtrefmodnos']; 
+	$RefMods= $_POST['txtrefmod']; 
+	$RefModsNo= $_POST['txtrefmodnos']; 
 
-	$cDocType = $_REQUEST['seldoctype']; 
+	$cDocType = $_POST['seldoctype']; 
 	
 	$preparedby = $_SESSION['employeeid'];
 	$cacctcode = "NULL";
 	$cvatcode = "NULL";
 
-				$sqlhead = mysqli_query($con,"Select cacctcodesales, cvattype,cterms from customers where compcode='$company' and cempid='$cCustID'");
-				if (mysqli_num_rows($sqlhead)!=0) {
-					$row = mysqli_fetch_assoc($sqlhead);
-					$cacctcode = "'".$row["cacctcodesales"]."'";
-					$cvatcode = "'".$row["cvattype"]."'";
-					//$cterms = "'".$row["cterms"]."'";
-				}
+	$sqlhead = mysqli_query($con,"Select cacctcodesales, cvattype,cterms from customers where compcode='$company' and cempid='$cCustID'");
+	if (mysqli_num_rows($sqlhead)!=0) {
+		$row = mysqli_fetch_assoc($sqlhead);
+		$cacctcode = "'".$row["cacctcodesales"]."'";
+		$cvatcode = "'".$row["cvattype"]."'";
+		//$cterms = "'".$row["cterms"]."'";
+	}
 	
 	//INSERT HEADER
 

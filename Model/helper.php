@@ -270,11 +270,11 @@
 
     function ReadDescription($module, $ctranno, $company){
         return match($module){
-            'DR' => "Select ctranno, 'DELIVERY RECEIPT' as typ From dr where ctranno = '$ctranno' and compcode='$company'",
+            'DR' => "Select ctranno, cremarks as typ From dr where ctranno = '$ctranno' and compcode='$company'",
 
-            'SI' => "Select ctranno, 'SALES INVOICE' as typ From sales where ctranno = '$ctranno' and compcode='$company'",
+            'SI' => "Select ctranno, cremarks as typ From sales where ctranno = '$ctranno' and compcode='$company'",
 
-            'IN' => "Select ctranno, 'SALES INVOICE' as typ From ntsales where ctranno = '$ctranno' and compcode='$company'",
+            'IN' => "Select ctranno, cremarks as typ From ntsales where ctranno = '$ctranno' and compcode='$company'",
 
             'JE' => "Select ctranno, cmemo as typ From journal where ctranno = '$ctranno' and compcode='$company'",
 

@@ -343,7 +343,7 @@
 						</div>
 					</div>
 					<div class="portlet-body" style="overflow: auto">
-						<div style="min-height: 30vh; width: 1500px;">
+						<div style="height: 250px; width: 1500px; overflow-y:auto;" id="div1det">
 							<table id="MyTable" class="MyTable table-sm table-bordered" border="1">
 								<thead>
 									<tr>
@@ -1467,73 +1467,77 @@ function myFunctionadd(qty,pricex,curramt,amtx,factr,cref,nrefident){
 
 	$('#MyTable > tbody:last-child').append('<tr>'+tditmcode + tditmdesc + tditmavail + tditmvats + tditmunit + tditmfactor + tditmqty + tditmprice + tditmbaseamount + tditmrempo + tddneed + tditmremx + tditmdel + '</tr>');
 
-									$("#del"+lastRow).on('click', function() {
-										$(this).closest('tr').remove();
+	//$("#div1det").animate({ scrollTop: $('#div1det').prop("scrollHeight")}, 1000);
+	var offTop = $('#div1det').prop("scrollHeight");
+	$("#div1det").scrollTop(offTop);
 
-										Reindex();
-										ComputeGross();
-									});
+	$("#del"+lastRow).on('click', function() {
+		$(this).closest('tr').remove();
 
-									$("input.numeric2").autoNumeric('init',{mDec:4});
-									$("input.numeric").autoNumeric('init',{mDec:2});
+		Reindex();
+		ComputeGross();
+	});
 
-									$("#selitmvatyp"+lastRow).on("change", function() {
-										ComputeGross();
-									});
+	$("input.numeric2").autoNumeric('init',{mDec:4});
+	$("input.numeric").autoNumeric('init',{mDec:2});
 
-									//$("input.numeric").numeric(
-									//	{negative: false}
-									//);
+	$("#selitmvatyp"+lastRow).on("change", function() {
+		ComputeGross();
+	});
 
-								//	$("input.numericdec").numeric(
-									//	{
-								//			negative: false,
-								//			decimalPlaces: 4
-								//		}
-								//	);
+	//$("input.numeric").numeric(
+	//	{negative: false}
+	//);
 
-									$("input.numeric, input.numeric2").on("click", function () {
-									   $(this).select();
-									});
-									
-									$("input.numeric, input.numeric2").on("keyup", function () {
-									   ComputeAmt($(this).attr('id'));
-									   ComputeGross();
-									}); 
-									
-									$("#seluom"+lastRow).on('change', function() {
+//	$("input.numericdec").numeric(
+	//	{
+//			negative: false,
+//			decimalPlaces: 4
+//		}
+//	);
 
-										var xyz = chkprice(itmcode,$(this).val(),itmccode,xtoday);
-										var mainuomdata = $(this).data("main");
-										var fact = $(this).find(':selected').data('factor');
-										
-										if(fact!=0){
-											$('#hdnfactor'+lastRow).val(fact);
-										}
+	$("input.numeric, input.numeric2").on("click", function () {
+		$(this).select();
+	});
+	
+	$("input.numeric, input.numeric2").on("keyup", function () {
+		ComputeAmt($(this).attr('id'));
+		ComputeGross();
+	}); 
+	
+	$("#seluom"+lastRow).on('change', function() {
 
-										if(mainuomdata!==$(this).val()){
-											$('#hdnfactor'+lastRow).attr("readonly", false);
-										}else{
-											$('#hdnfactor'+lastRow).attr("readonly", true);
-										}
-										
-										$('#txtnprice'+lastRow).val(xyz.trim());
-										//alert($(this).attr('id'));
-										ComputeAmt($(this).attr('id'));
-										ComputeGross();
-										
-									});
-									
-									$('#txtcitmdneed'+lastRow).datetimepicker({
-										format: 'MM/DD/YYYY',
-										useCurrent: false,
-										//minDate: moment().format('L'),
-										defaultDate: moment().format('L'),
-										widgetPositioning: {
-												horizontal: 'right',
-												vertical: 'bottom'
-										}
-									});
+		var xyz = chkprice(itmcode,$(this).val(),itmccode,xtoday);
+		var mainuomdata = $(this).data("main");
+		var fact = $(this).find(':selected').data('factor');
+		
+		if(fact!=0){
+			$('#hdnfactor'+lastRow).val(fact);
+		}
+
+		if(mainuomdata!==$(this).val()){
+			$('#hdnfactor'+lastRow).attr("readonly", false);
+		}else{
+			$('#hdnfactor'+lastRow).attr("readonly", true);
+		}
+		
+		$('#txtnprice'+lastRow).val(xyz.trim());
+		//alert($(this).attr('id'));
+		ComputeAmt($(this).attr('id'));
+		ComputeGross();
+		
+	});
+	
+	$('#txtcitmdneed'+lastRow).datetimepicker({
+		format: 'MM/DD/YYYY',
+		useCurrent: false,
+		//minDate: moment().format('L'),
+		defaultDate: moment().format('L'),
+		widgetPositioning: {
+				horizontal: 'right',
+				vertical: 'bottom'
+		}
+	});
 									
 																		
 }
@@ -2216,17 +2220,42 @@ function chkform(){
 		//data: { ccode: ccode, crem: crem, ddate: ddate, ngross: ngross, selsityp: csitype, custpono:custpono, salesman:salesman, delcodes:delcodes, delhousno:delhousno, delcity:delcity, delstate:delstate, delcountry:delcountry, delzip:delzip, specins:specins, ncurrcode:ncurrcode, ncurrdesc:ncurrdesc, ncurrrate:ncurrrate, nbasegross:nbasegross },  frmpos
 
 		//var myform = $("#frmpos").serialize();
-		var formdata = new FormData($("#frmpos")[0]);
+		var input_data = [
+			{	key: 'txtcustid', input: $("#txtcustid").val()	},
+			{	key: 'date_delivery', input: $("#date_delivery").val()	},
+			{	key: 'date_PO', input: $("#date_PO").val()	},
+			{	key: 'txtremarks', input: $("#txtremarks").val()	},
+			{	key: 'txtnGross', input: $("#txtnGross").val()	},
+			{	key: 'selsityp', input: $("#selsityp").val()	},
+			{	key: 'txtcPONo', input: $("#txtcPONo").val()	},
+			{	key: 'txtdelcustid', input: $("#txtdelcustid").val()	},
+			{	key: 'txtchouseno', input: $("#txtchouseno").val()	},
+			{	key: 'txtcCity', input: $("#txtcCity").val()	},
+			{	key: 'txtcState', input: $("#txtcState").val()	},
+			{	key: 'txtcCountry', input: $("#txtcCountry").val()	},
+			{	key: 'txtcZip', input: $("#txtcZip").val()	},
+			{	key: 'txtSpecIns', input: $("#txtSpecIns").val()	},
+			{	key: 'selbasecurr', input: $("#selbasecurr").val()	},
+			{	key: 'hidcurrvaldesc', input: $("#hidcurrvaldesc").val()	},
+			{	key: 'basecurrval', input: $("#basecurrval").val()	},
+			{	key: 'txtnBaseGross', input: $("#txtnBaseGross").val()	},
+			{	key: 'txtsalesmanid', input: $("#txtsalesmanid").val()	}
+		];
+
 		/**
 		 * @property JQuery formulate every file to compose to formdata 
 		 * @property formdata.delete('#upload') delete an upload key without values
 		 */
+		var formdata = new FormData();
+		jQuery.each(input_data, function(i, { key, input }){
+			formdata.append(key, input)
+		});
 		formdata.delete('upload[]');
 		jQuery.each(jQuery('#file-0')[0].files, function(i, file) {
 			formdata.append('file-'+i, file);
 		});
 
-		console.log(formdata);
+		//console.log(formdata);
 
 		$.ajax ({
 			url: "SO_newsavehdr.php",

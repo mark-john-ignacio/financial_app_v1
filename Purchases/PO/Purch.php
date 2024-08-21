@@ -213,14 +213,14 @@
 	<!-- 1) TRACKER Modal -->
 	<div class="modal fade" id="TrackMod" tabindex="-1" role="dialog" data-keyboard="false" data-backdrop="static" aria-hidden="true">
 		<div class="modal-dialog modal-lg">
-		<div class="modal-content">
+			<div class="modal-content">
 
-		<div class="modal-header">
-			<button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-			<h3 class="modal-title" id="InvListHdr">PO Approval Status</h3>
-		</div>
-				
-		<div class="modal-body pre-scrollable" id="divtracker" style="height: 45vh">
+				<div class="modal-header">
+					<button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+					<h3 class="modal-title" id="InvListHdr">PO Approval Status</h3>
+				</div>
+						
+				<div class="modal-body pre-scrollable" id="divtracker" style="height: 45vh">
 					
 				</div>
 
@@ -251,13 +251,41 @@
 			
 			fill_datatable("<?=(isset($_REQUEST['ix'])) ? $_REQUEST['ix'] : "";?>", $('#selstats').val(), $('#selstypes').val(), $('#seldtfl').val(), $('#dtefilterfrom').val(), $('#dtefilterto').val());	
 
-			$('#dtefilter').daterangepicker({
-				"autoApply": true,
-				"opens": 'left',
-				"format": 'MM/DD/YYYY',
-				"startDate": moment($('#dtefilterfrom').val()).format('MM/DD/YYYY'),
-				"endDate": moment($('#dtefilterto').val()).format('MM/DD/YYYY')
-			});  
+			<?php
+				if(isset($_REQUEST['dtfr']) && isset($_REQUEST['dtto'])){
+					if($_REQUEST['dtfr'] !="" && $_REQUEST['dtto'] !=""){
+			?>
+				$('#dtefilter').daterangepicker({
+					"autoApply": true,
+					"opens": 'left',
+					"format": 'MM/DD/YYYY',
+					"startDate": moment($('#dtefilterfrom').val()).format('MM/DD/YYYY'),
+					"endDate": moment($('#dtefilterto').val()).format('MM/DD/YYYY')
+				});  
+			<?php
+					}else{
+						?>
+						$('#dtefilter').daterangepicker({
+							"autoApply": true,
+							"opens": 'left',
+							"format": 'MM/DD/YYYY'
+						});  
+
+						$('#dtefilter').val('');
+						<?php
+					}
+				}else{
+			?>
+				$('#dtefilter').daterangepicker({
+					"autoApply": true,
+					"opens": 'left',
+					"format": 'MM/DD/YYYY',
+					"startDate": moment($('#dtefilterfrom').val()).format('MM/DD/YYYY'),
+					"endDate": moment($('#dtefilterto').val()).format('MM/DD/YYYY')
+				});  
+			<?php
+				}
+			?>
 
 			$('#dtefilter').on('apply.daterangepicker', function(ev, picker) {
 

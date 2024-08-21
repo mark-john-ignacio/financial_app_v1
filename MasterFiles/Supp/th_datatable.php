@@ -5,7 +5,7 @@ if(!isset($_SESSION)){
 
 include('../../Connection/connection_string.php');
 
-$column = array('ccode', 'cname', 'cterms', 'ctin');
+$column = array('ccode', 'cname', 'ctin', 'cterms', 'cstatus');
 
 $query = "SELECT * FROM suppliers WHERE compcode='".$_SESSION['companyid']."' ";
 

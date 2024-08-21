@@ -24,6 +24,7 @@
 	where A.compcode='$company' and A.citemno='".$_REQUEST['x']."'
 	Group BY A.nidentity, A.dcutdate, A.citemno, C.citemdesc, A.cmainunit, A.clotsno, A.cpacklist, A.nlocation, B.cdesc
 	Order by A.dcutdate ASC";
+	
 	$rsditm = mysqli_query($con,$sqlitm);
 	if(mysqli_num_rows($rsditm)>=1){
 		

@@ -166,7 +166,7 @@ if (mysqli_num_rows($sqlhead)!=0) {
 	}
 ?>
 	
-	<form action="Purch_editsave.php?hdnsrchval=<?=(isset($_REQUEST['hdnsrchval'])) ? $_REQUEST['hdnsrchval'] : ""?>" name="frmpos" id="frmpos" method="post" onSubmit="return false;">
+	<form action="Purch_editsave.php" name="frmpos" id="frmpos" method="post" onSubmit="return false;">
 		<fieldset>
     		<legend>
 				<div class="col-xs-6 nopadding"> Purchase Order Details </div>  <div class= "col-xs-6 text-right nopadding" id="salesstat">
@@ -846,6 +846,12 @@ else{
 
 <form method="post" name="frmedit" id="frmedit" action="Purch_edit.php">
 	<input type="hidden" name="txtctranno" id="txtctranno" value="">
+	<input type="hidden" name="hdnsrchval" id="hdnsrchval" value="<?=isset($_REQUEST['hdnsrchval']) ? $_REQUEST['hdnsrchval'] : ""?>"/>
+	<input type="hidden" name="hdnsrchsta" id="hdnsrchsta" value="<?=isset($_REQUEST['hdnsrchsta']) ? $_REQUEST['hdnsrchsta'] : ""?>"/>
+	<input type="hidden" name="hdnsrchtyp" id="hdnsrchtyp" value="<?=isset($_REQUEST['hdnsrchtyp']) ? $_REQUEST['hdnsrchtyp'] : ""?>"/>
+	<input type="hidden" name="hdnsrchdte" id="hdnsrchdte" value="<?=isset($_REQUEST['hdnsrchdte']) ? $_REQUEST['hdnsrchdte'] : ""?>"/>
+	<input type="hidden" name="hdnsrchdtef" id="hdnsrchdtef" value="<?=isset($_REQUEST['hdnsrchdtef']) ? $_REQUEST['hdnsrchdtef'] : ""?>"/>
+	<input type="hidden" name="hdnsrchdtet" id="hdnsrchdtet" value="<?=isset($_REQUEST['hdnsrchdtet']) ? $_REQUEST['hdnsrchdtet'] : ""?>"/>
 </form>
 
 <form action="PrintPO.php" method="post" name="frmQPrint" id="frmQprint" target="_blank">

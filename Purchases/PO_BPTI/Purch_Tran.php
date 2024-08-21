@@ -292,6 +292,18 @@ if($_REQUEST['typ']=="CANCEL1"){
 
 }
 
+if($_REQUEST['typ']=="CLOSE"){
+
+	mysqli_query($con,"Update purchase set lclosed=1 where compcode='$company' and cpono='$tranno'");
+
+	$msgz = "<b>SUCCESS: </b>Your transaction is successfully closed!";
+	$status = "Closed";
+
+	mysqli_query($con,"INSERT INTO logfile(`compcode`, `ctranno`, `cuser`, `ddate`, `cevent`, `module`, `cmachine`, `cremarks`, `cancel_rem`) 
+	values('$company', '$tranno','$preparedby',NOW(),'CLOSED','PURCHASE ORDER','$compname','Cancel Record','".$_REQUEST['canmsg']."')");
+
+}
+
 if($_REQUEST['typ']=="SEND"){
 
 	//to be sure

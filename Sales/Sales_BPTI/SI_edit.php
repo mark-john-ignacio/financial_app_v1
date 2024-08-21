@@ -842,7 +842,10 @@ $getdcnts = mysqli_query($con,"SELECT * FROM `discounts_list` where compcode='$c
 							</thead>
 							<tbody class="tbody">
 								<?php
-									$sqldisc = mysqli_query($con,"Select A.ctranno, A.citemnoident, A.citemno, A.discounts_list_code, A.cdisctype, A.nvalue, A.namount, B.cacctno, B.nident, B.cdesc from sales_t_disc A left join discounts_list B on a.compcode=B.compcode and A.discounts_list_code=B.ccode where A.ctranno = '$txtctranno' and B.compcode='$company'");
+								
+									$qry = "Select A.ctranno, A.citemnoident, A.citemno, A.discounts_list_code, A.cdisctype, A.nvalue, A.namount, B.cacctno, B.nident, B.cdesc from sales_t_disc A left join discounts_list B on a.compcode=B.compcode and A.discounts_list_code=B.ccode where A.ctranno = '$txtctranno' and B.compcode='$company'";
+								
+									$sqldisc = mysqli_query($con,$qry);
 									if (mysqli_num_rows($sqldisc)!=0) {
 										while($rowdisc = mysqli_fetch_array($sqldisc, MYSQLI_ASSOC)){
 
@@ -1018,7 +1021,12 @@ $getdcnts = mysqli_query($con,"SELECT * FROM `discounts_list` where compcode='$c
 								<td>Account Credit</td>  
 							</tr>		
 							<?php
+
+							if($lPosted==1 && $lVoid==0 && $lCancelled==0){
 								$getewtcd = mysqli_query($con,"SELECT * FROM glactivity where compcode='$company' and ctranno='$txtctranno'"); 
+							}else{
+								$getewtcd = mysqli_query($con,"SELECT * FROM sales_glactivity where compcode='$company' and ctranno='$txtctranno'"); 
+							}
 								if (mysqli_num_rows($getewtcd)!=0) {
 									while($row = mysqli_fetch_array($getewtcd, MYSQLI_ASSOC)){
 							?>					
@@ -1578,7 +1586,7 @@ $getdcnts = mysqli_query($con,"SELECT * FROM `discounts_list` where compcode='$c
 								$("#hdnunit").val(item.cunit); 
 								$("#hdnqty").val(item.nqty);
 								$("#hdnqtyunit").val(item.cqtyunit);
-								if(typ=="SO"){
+								if(typ=="SO" || typ=="DR"){
 									if($("#hdndefVAT").val()==""){
 										$("#hdncvat").val(item.ctaxcode);
 									}else{
@@ -2756,9 +2764,9 @@ $getdcnts = mysqli_query($con,"SELECT * FROM `discounts_list` where compcode='$c
 		$("#btnPrint").attr("disabled", false);
 		$("#btnEdit").attr("disabled", false);
 
-		if(document.getElementById("hdnposted").value==1 && document.getElementById("hdnvoid").value==0){
+		//if(document.getElementById("hdnposted").value==1 && document.getElementById("hdnvoid").value==0){
 			$("#btnentry").attr("disabled", false);
-		}
+		//}
 
 		$("#btn-closemod").attr("disabled", false); 
 		
@@ -2897,11 +2905,11 @@ $getdcnts = mysqli_query($con,"SELECT * FROM `discounts_list` where compcode='$c
 		
 		if(document.getElementById("txtcust").value=="" && document.getElementById("txtcustid").value==""){
 
-				$("#AlertMsg").html("");
-				
-				$("#AlertMsg").html("&nbsp;&nbsp;Customer Required!");
-				$("#alertbtnOK").show();
-				$("#AlertModal").modal('show');
+			$("#AlertMsg").html("");
+			
+			$("#AlertMsg").html("&nbsp;&nbsp;Customer Required!");
+			$("#alertbtnOK").show();
+			$("#AlertModal").modal('show');
 
 			document.getElementById("txtcust").focus();
 			return false;
@@ -2995,32 +3003,50 @@ $getdcnts = mysqli_query($con,"SELECT * FROM `discounts_list` where compcode='$c
 		}
 		
 		if(ISOK == "YES"){
-		var trancode = "";
-		var isDone = "True";
-		var VARHDRSTAT = "";
-		var VARHDRERR = "";
-		
-			//Saving the header
-			var trancode = $("#txtcsalesno").val();
-			var ccode = $("#txtcustid").val();
-			var crem = $("#txtremarks").val();
-			var ddate = $("#date_delivery").val();
-			var ngross = $("#txtnGross").val();
-			var selreinv = $("#selreinv").val();
-			var selsitypz = $("#selsityp").val();
-			var siprintno = $("#csiprintno").val();
-			var nnetvat = $("#txtnNetVAT").val(); 
-			var nvat = $("#txtnVAT").val();
-					
+			var trancode = "";
+			var isDone = "True";
+			var VARHDRSTAT = "";
+			var VARHDRERR = "";
+			
+			//Saving the header				
 			//alert("SO_newsavehdr.php?ccode=" + ccode + "&crem="+ crem + "&ddate="+ ddate + "&ngross="+ngross);
 			var myform = $("#frmpos").serialize();
-			var formdata = new FormData($('#frmpos')[0]);
-			formdata.delete('upload[]');
+			var formdata = new FormData();
+			var input_data = [
+				{	code: "txtcsalesno", values: $("#txtcsalesno").val()	},
+				{	code: "txtcustid", values: $("#txtcustid").val()	},
+				{	code: "date_delivery", values: $("#date_delivery").val()	},
+				{	code: "txtremarks", values: $("#txtremarks").val()	},
+				{	code: "selsityp", values: $("#selsityp").val()	},
+				{	code: "selpaytyp", values: $("#selpaytyp").val()	},
+				{	code: "csiprintno", values: $("#csiprintno").val()	},
+				{	code: "coracleinv", values: $("#coracleinv").val() }, 
+				{	code: "selcterms", values: $("#selcterms").val()	},
+				{	code: "selbasecurr", values: $("#selbasecurr").val()	},
+				{	code: "hidcurrvaldesc", values: $("#hidcurrvaldesc").val()	},
+				{	code: "basecurrval", values: $("#basecurrval").val()	},
+				{	code: "txtnNetVAT", values: $("#txtnNetVAT").val()	},
+				{	code: "txtnVAT", values: $("#txtnVAT").val()	}, 
+				{	code: "txtnExemptVAT", values: $("#txtnExemptVAT").val()	},
+				{	code: "txtnZeroVAT", values: $("#txtnZeroVAT").val()	}, 
+				{	code: "txtnGrossBef", values: $("#txtnGrossBef").val()	},  				
+				{	code: "txtnEWT", values: $("#txtnEWT").val()	}, 
+				{	code: "txtnGrossDisc", values: $("#txtnGrossDisc").val()	}, 
+				{	code: "txtnGross", values: $("#txtnGross").val()	}, 
+				{	code: "txtnBaseGross", values: $("#txtnBaseGross").val()	}, 
+				{	code: "selewt", values: $("#selewt").val()	},
+				{	code: "txtrefmod", values: $("#txtrefmod").val()	},
+				{	code: "txtrefmodnos", values: $("#txtrefmodnos").val()	},
+				{	code: "seldoctype", values: $("#seldoctype").val()	},				
+			]
+			jQuery.each(input_data, function(i, {code, values}){
+				formdata.append(code, values);
+			})
 			jQuery.each($('#file-0')[0].files, function(i, file){
 				formdata.append('file-'+i, file);
 			})
 
-			//console.log(formdata);
+			console.log(formdata);
 			//alert(formdata);
 			$.ajax ({
 				url: "SI_updatehdr.php",
@@ -3058,93 +3084,93 @@ $getdcnts = mysqli_query($con,"SELECT * FROM `discounts_list` where compcode='$c
 				$("#MyTable > tbody > tr").each(function(index) {	
 					//if(index>0){
 					
-						//$(this).find('select[name="selitmewtyp"]').attr("disabled", false);
+					//$(this).find('select[name="selitmewtyp"]').attr("disabled", false);
 
-						var crefno = $(this).find('input[type="hidden"][name="txtcreference"]').val();
-						var crefident = $(this).find('input[type="hidden"][name="txtcrefident"]').val();
-						var citmno = $(this).find('input[type="hidden"][name="txtitemcode"]').val();
-						var citmdesc = $(this).find('input[name="txtcitemdesc"]').val();	
+					var crefno = $(this).find('input[type="hidden"][name="txtcreference"]').val();
+					var crefident = $(this).find('input[type="hidden"][name="txtcrefident"]').val();
+					var citmno = $(this).find('input[type="hidden"][name="txtitemcode"]').val();
+					var citmdesc = $(this).find('input[name="txtcitemdesc"]').val();	
 
-						var ewtcode = "";
-						var ewtrate = 0;
-						/*if(xChkVatableStatus==1){ 
-							ewtcode = $(this).find('select[name="selitmewtyp"]').val();
+					var ewtcode = "";
+					var ewtrate = 0;
+					/*if(xChkVatableStatus==1){ 
+						ewtcode = $(this).find('select[name="selitmewtyp"]').val();
 
-							//getrate of selected
-							var cnt = 0;
-							$(this).find('select[name="selitmewtyp"] > option:selected').each(function() {
-								//	alert($(this).data("rate"));
-								cnt++;
-								if(cnt>1){
-									ewtrate = ewtrate + ";" + $(this).data("rate");
-								}else{
-									ewtrate = ewtrate + $(this).data("rate");
-								}
-							});
+						//getrate of selected
+						var cnt = 0;
+						$(this).find('select[name="selitmewtyp"] > option:selected').each(function() {
+							//	alert($(this).data("rate"));
+							cnt++;
+							if(cnt>1){
+								ewtrate = ewtrate + ";" + $(this).data("rate");
+							}else{
+								ewtrate = ewtrate + $(this).data("rate");
+							}
+						});
+					}*/
+
+					if(xChkVatableStatus==1){
+						var vatcode = $(this).find('select[name="selitmvatyp"]').val(); 
+						var nrate = $(this).find('select[name="selitmvatyp"] option:selected').data('id'); 
+					}else{
+						var vatcode = $(this).find('input[type="hidden"][name="selitmvatyp"]').val(); 
+						var nrate = $(this).find('input[type="hidden"][name="selitmvatyp"]').data('id'); 
+					}
+
+					var cuom = $(this).find('select[name="seluom"]').val();
+						
+						if(cuom=="" || cuom==null){
+							var cuom = $(this).find('input[type="hidden"][name="seluom"]').val();
+						}
+						
+					var nqty = $(this).find('input[name="txtnqty"]').val();
+					var nprice = $(this).find('input[name="txtnprice"]').val();
+					var ndiscount = $(this).find('input[name="txtndisc"]').val(); 
+					var ntranamt = $(this).find('input[name="txtntranamount"]').val();
+					var namt = $(this).find('input[name="txtnamount"]').val();
+					var mainunit = $(this).find('input[type="hidden"][name="hdnmainuom"]').val();
+					var nfactor = $(this).find('input[type="hidden"][name="hdnfactor"]').val();
+
+						/*if($("#incmracct").val()=="item"){
+							var acctcode = $(this).find('input[name="txtacctcode"]').val();
+							var acctid = $(this).find('input[name="txtacctno"]').val();
+							var acctname = $(this).find('input[name="txtacctname"]').val();
+						}else if($("#incmracct").val()=="si"){
+							var acctcode = "";
+							var acctid = $('select[name="selpaytyp"] option:selected').data('id');
+							var acctname = "";
+						}else if($("#incmracct").val()=="customer"){ 
+							var acctcode = "";
+							var acctid = $("#hdncacctcodesalescr").val();
+							var acctname = "";
 						}*/
 
-						if(xChkVatableStatus==1){
-							var vatcode = $(this).find('select[name="selitmvatyp"]').val(); 
-							var nrate = $(this).find('select[name="selitmvatyp"] option:selected').data('id'); 
-						}else{
-							var vatcode = $(this).find('input[type="hidden"][name="selitmvatyp"]').val(); 
-							var nrate = $(this).find('input[type="hidden"][name="selitmvatyp"]').data('id'); 
+					var itmsysno = $(this).find('input[name="txtsytemno"]').val();
+					var itmposno = $(this).find('input[name="txtposno"]').val();
+
+					if(nqty!==undefined){
+						nqty = nqty.replace(/,/g,'');
+						ndiscount = ndiscount.replace(/,/g,'');
+						nprice = nprice.replace(/,/g,'');
+						namt = namt.replace(/,/g,'');
+						ntranamt = ntranamt.replace(/,/g,'');
+					}
+
+					$xinx = parseInt(index) + 1;
+					
+					//alert("SI_newsavedet.php?trancode="+trancode+"&crefno="+crefno+"&crefident="+crefident+"&indx="+$xinx+"&citmno="+citmno+"&cuom="+cuom+"&nqty="+nqty+"&nprice="+ nprice+"&ndiscount="+ndiscount+"&ntranamt="+ntranamt+"&namt="+namt+"&mainunit="+mainunit+"&nfactor="+nfactor+"&ccode="+ccode+"&vatcode="+vatcode+"&nrate="+nrate+"&ewtcode="+ewtcode+"&ewtrate="+ewtrate+"&acctid="+acctid);
+
+					$.ajax ({
+						url: "SI_newsavedet.php",
+						data: { trancode: trancode, crefno: crefno, crefident:crefident, indx:$xinx, citmno: citmno, citmdesc: citmdesc, cuom: cuom, nqty:nqty, nprice: nprice, ndiscount:ndiscount, ntranamt:ntranamt, namt:namt, mainunit:mainunit, nfactor:nfactor, ccode:$("#txtcustid").val(), vatcode:vatcode, nrate:nrate, ewtcode:ewtcode, ewtrate:ewtrate, itmsysno: itmsysno, itmposno: itmposno },
+						async: false,
+						success: function( data ) {
+
+							if(data.trim()=="False"){
+								isDone = "False";
+							}
 						}
-
-						var cuom = $(this).find('select[name="seluom"]').val();
-							
-							if(cuom=="" || cuom==null){
-								var cuom = $(this).find('input[type="hidden"][name="seluom"]').val();
-							}
-							
-						var nqty = $(this).find('input[name="txtnqty"]').val();
-						var nprice = $(this).find('input[name="txtnprice"]').val();
-						var ndiscount = $(this).find('input[name="txtndisc"]').val(); 
-						var ntranamt = $(this).find('input[name="txtntranamount"]').val();
-						var namt = $(this).find('input[name="txtnamount"]').val();
-						var mainunit = $(this).find('input[type="hidden"][name="hdnmainuom"]').val();
-						var nfactor = $(this).find('input[type="hidden"][name="hdnfactor"]').val();
-
-							/*if($("#incmracct").val()=="item"){
-								var acctcode = $(this).find('input[name="txtacctcode"]').val();
-								var acctid = $(this).find('input[name="txtacctno"]').val();
-								var acctname = $(this).find('input[name="txtacctname"]').val();
-							}else if($("#incmracct").val()=="si"){
-								var acctcode = "";
-								var acctid = $('select[name="selpaytyp"] option:selected').data('id');
-								var acctname = "";
-							}else if($("#incmracct").val()=="customer"){ 
-								var acctcode = "";
-								var acctid = $("#hdncacctcodesalescr").val();
-								var acctname = "";
-							}*/
-
-							var itmsysno = $(this).find('input[name="txtsytemno"]').val();
-							var itmposno = $(this).find('input[name="txtposno"]').val();
-
-							if(nqty!==undefined){
-								nqty = nqty.replace(/,/g,'');
-								ndiscount = ndiscount.replace(/,/g,'');
-								nprice = nprice.replace(/,/g,'');
-								namt = namt.replace(/,/g,'');
-								ntranamt = ntranamt.replace(/,/g,'');
-							}
-
-							$xinx = parseInt(index) + 1;
-							
-							//alert("SI_newsavedet.php?trancode="+trancode+"&crefno="+crefno+"&crefident="+crefident+"&indx="+$xinx+"&citmno="+citmno+"&cuom="+cuom+"&nqty="+nqty+"&nprice="+ nprice+"&ndiscount="+ndiscount+"&ntranamt="+ntranamt+"&namt="+namt+"&mainunit="+mainunit+"&nfactor="+nfactor+"&ccode="+ccode+"&vatcode="+vatcode+"&nrate="+nrate+"&ewtcode="+ewtcode+"&ewtrate="+ewtrate+"&acctid="+acctid);
-
-							$.ajax ({
-								url: "SI_newsavedet.php",
-								data: { trancode: trancode, crefno: crefno, crefident:crefident, indx:$xinx, citmno: citmno, citmdesc: citmdesc, cuom: cuom, nqty:nqty, nprice: nprice, ndiscount:ndiscount, ntranamt:ntranamt, namt:namt, mainunit:mainunit, nfactor:nfactor, ccode:ccode, vatcode:vatcode, nrate:nrate, ewtcode:ewtcode, ewtrate:ewtrate, itmsysno: itmsysno, itmposno: itmposno },
-								async: false,
-								success: function( data ) {
-
-									if(data.trim()=="False"){
-										isDone = "False";
-									}
-								}
-							});
+					});
 					//}
 					
 				});
@@ -3178,29 +3204,42 @@ $getdcnts = mysqli_query($con,"SELECT * FROM `discounts_list` where compcode='$c
 				});	
 
 				//Save Discounts
-					$("#MyTable3 > tbody > tr").each(function(index) {	
-						
-						var discnme = $(this).find('input[type="hidden"][name="txtdiscscode"]').val();
-						var seldisctyp = $(this).find('select[name="secdiscstyp"]').val();
-						var discval = $(this).find('input[name="txtdiscsval"]').val();
-						var discamt = $(this).find('input[name="txtdiscsamt"]').val(); 
-						var discacctno = $(this).find('input[type="hidden"][name="txtdiscacctno"]').val();  
-						var discitmno = $(this).find('input[type="hidden"][name="txtdiscitemno"]').val();
-						var discitmnoident =  $(this).attr("class");
-
+				$("#MyTable3 > tbody > tr").each(function(index) {	
 					
-						$.ajax ({
-							url: "SI_newsavediscs.php",
-							data: { trancode: trancode, indx: index, discnme: discnme, seldisctyp: seldisctyp, discval: discval, discamt: discamt, discacctno: discacctno, discitmno: discitmno, discitmnoident: discitmnoident},
-							async: false,
-							success: function( data ) {
-								if(data.trim()=="False"){
-									isDone = "False";
-								}
+					var discnme = $(this).find('input[type="hidden"][name="txtdiscscode"]').val();
+					var seldisctyp = $(this).find('select[name="secdiscstyp"]').val();
+					var discval = $(this).find('input[name="txtdiscsval"]').val();
+					var discamt = $(this).find('input[name="txtdiscsamt"]').val(); 
+					var discacctno = $(this).find('input[type="hidden"][name="txtdiscacctno"]').val();  
+					var discitmno = $(this).find('input[type="hidden"][name="txtdiscitemno"]').val();
+					var discitmnoident =  $(this).attr("class");
+
+				
+					$.ajax ({
+						url: "SI_newsavediscs.php",
+						data: { trancode: trancode, indx: index, discnme: discnme, seldisctyp: seldisctyp, discval: discval, discamt: discamt, discacctno: discacctno, discitmno: discitmno, discitmnoident: discitmnoident},
+						async: false,
+						success: function( data ) {
+							if(data.trim()=="False"){
+								isDone = "False";
 							}
-						});
-						
+						}
 					});
+					
+				});
+
+
+				//generate GLEntry
+				$.ajax ({
+					url: "SI_saveacctentry.php",
+					data: { trancode: trancode },
+					async: false,
+					success: function( data ) {
+						if(data.trim()=="False"){
+							isDone = "False";
+						}
+					}
+				});
 				
 				if(isDone=="True"){
 					$("#AlertMsg").html("<b>SUCCESFULLY UPDATED: </b> Please wait a moment...");

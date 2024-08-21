@@ -87,7 +87,14 @@
           </button>
         </td>
         
-        <td width="90px" style="padding-left:10px"><div id="dtelabel"><b>Date Range: </b></div></td>
+        <td width="90px" style="padding-left:10px">
+          <div id="dtelabel">
+            <select id="seldte" name="seldte" class="form-control input-sm selectpicker"  tabindex="4">
+                <option value="1">Date Range</option>   
+                <option value="2">Year</option>               
+            </select>
+          </div>
+        </td>
         <td style="padding:2px">
           <div id="dterange">
             <div class="form-group nopadding">
@@ -175,13 +182,13 @@
       $(this).select();
     });
 
-    $("#selrpt").on("change", function(){
-      if($(this).val()=="Accounting/IncomeStatement_Monthly"){
-        $("#dtelabel").html("<b>Year: </b>");
+    $("#seldte").on("change", function(){
+      if($(this).val()==2){
+       // $("#dtelabel").html("<b>Year: </b>");
         $("#dterange").hide();
         $("#dtemonth").show();
       }else{
-        $("#dtelabel").html("<b>Date Range: </b>");
+       // $("#dtelabel").html("<b>Date Range: </b>");
         $("#dterange").show();
         $("#dtemonth").hide();
       }
@@ -218,7 +225,7 @@
         $dval = $("#selrpt").val();
         
           if($("#selconso").val()==2){
-            $('#frmrep').attr("action", $dval+"_xls_Consolidated.php");
+            $('#frmrep').attr("action", $dval+"_Consolidated_xls.php");
             $('#frmrep').submit();
           }else{
             $('#frmrep').attr("action", $dval+"_xls.php");

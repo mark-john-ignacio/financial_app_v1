@@ -246,42 +246,45 @@
 										<div class="col-xs-6 nopadding">
 											<select class="form-control input-sm" name="selbasecurr" id="selbasecurr"> 						
 												<?php
-														$nvaluecurrbase = "";	
-														$nvaluecurrbasedesc = "";	
-														$result = mysqli_query($con,"SELECT * FROM `parameters` WHERE ccode='DEF_CURRENCY'"); 
+													$nvaluecurrbase = "";	
+													$nvaluecurrbasedesc = "";	
+													$result = mysqli_query($con,"SELECT * FROM `parameters` WHERE ccode='DEF_CURRENCY'"); 
+													
+													if (mysqli_num_rows($result)!=0) {
+														$all_course_data = mysqli_fetch_array($result, MYSQLI_ASSOC);
 														
-															if (mysqli_num_rows($result)!=0) {
-																$all_course_data = mysqli_fetch_array($result, MYSQLI_ASSOC);
-																
-																$nvaluecurrbase = $all_course_data['cvalue']; 
-																	
-															}
-															else{
-																$nvaluecurrbase = "";
-															}
+														$nvaluecurrbase = $all_course_data['cvalue']; 
+															
+													}
+													else{
+														$nvaluecurrbase = "";
+													}
 
-															/*
+													/*
 									
-																$objcurrs = listcurrencies();
-																$objrows = json_decode($objcurrs, true);
+													$objcurrs = listcurrencies();
+													$objrows = json_decode($objcurrs, true);
 																	
-														foreach($objrows as $rows){
-															if ($nvaluecurrbase==$rows['currencyCode']) {
+													foreach($objrows as $rows){
+														if ($nvaluecurrbase==$rows['currencyCode']) {
+															$nvaluecurrbasedesc = $rows['currencyName'];
+														}
+
+														if($rows['countryCode']!=="Crypto" && $rows['currencyName']!==null){
+
+															*/
+
+													$sqlhead=mysqli_query($con,"Select symbol as id, CONCAT(symbol,\" - \",country,\" \",unit) as currencyName, rate from currency_rate");
+													if (mysqli_num_rows($sqlhead)!=0) {
+														while($rows = mysqli_fetch_array($sqlhead, MYSQLI_ASSOC)){
+															if($nvaluecurrbase==$rows['id']){
 																$nvaluecurrbasedesc = $rows['currencyName'];
 															}
-
-															if($rows['countryCode']!=="Crypto" && $rows['currencyName']!==null){
-
-																*/
-
-																$sqlhead=mysqli_query($con,"Select symbol as id, CONCAT(symbol,\" - \",country,\" \",unit) as currencyName, rate from currency_rate");
-																if (mysqli_num_rows($sqlhead)!=0) {
-																	while($rows = mysqli_fetch_array($sqlhead, MYSQLI_ASSOC)){
 												?>
 															<option value="<?=$rows['id']?>" <?php if ($nvaluecurrbase==$rows['id']) { echo "selected='true'"; } ?> data-val="<?=$rows['rate']?>"><?=$rows['currencyName']?></option>
 												<?php
-															}
 														}
+													}
 												?>
 											</select>
 												<input type='hidden' id="basecurrvalmain" name="basecurrvalmain" value="<?php echo $nvaluecurrbase; ?>"> 	
@@ -795,9 +798,11 @@
 			
 			//convertCurrency($(this).val());
 	
-			var dval = $(this).find(':selected').attr('data-val');
+			var dval = $(this).find(':selected').data('val');
 	
 			$("#basecurrval").val(dval);
+			$("#hidcurrvaldesc").val($( "#selbasecurr option:selected" ).text());
+
 			$("#statgetrate").html("");
 			recomputeCurr();
 		
@@ -836,7 +841,10 @@
 				$("#txtcustid").val(item.id);
 
 				$("#selbasecurr").val(item.cdefaultcurrency).change(); //val
-				$("#basecurrvalmain").val($("#selbasecurr").data("val"));
+				//$("#basecurrvalmain").val($("#selbasecurr").data("val"));
+
+				//$("#basecurrval").val(data);
+				//$("#hidcurrvaldesc").val($( "#selbasecurr option:selected" ).text()); 
 
 				$("#selterms").val(item.cterms).change();
 				

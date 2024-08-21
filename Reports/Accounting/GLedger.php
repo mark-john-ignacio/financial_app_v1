@@ -92,12 +92,11 @@
 
 <table class='table' width="100%" border="0"  cellpadding = "3" class="tbl-serate">
 	<tr>
-		<th colspan="7">
+		<th colspan="8">
 			<table width="100%" border="0" align="center" cellpadding = "3">
 				<tr>
-					<td width="30%"><b>Acct ID:</b> <?=$rowxz['cacctno']?></td>
+					<td width="150px"><b>Acct ID:</b> <?=$rowxz['cacctno']?></td>
 					<td><b>Description:</b> <?=$rowxz['cacctdesc']; ?></td>
-					<td width="30%" style="text-align:right"><!--<b>Balance:</b> <?//=$rowxz['cacctdesc']; ?>--></td>
 				</tr>
 			</table>
 		</th>
@@ -107,6 +106,7 @@
 	<th style="text-align:left" width="100px">Reference</th>
 	<th style="text-align:left">Description</th>
 	<th style="text-align:left" width="150px">Customer/Supplier</th>
+	<th style="text-align:left" width="100px">Account Code</th>
 	<th style="text-align:left" width="150px">Account Title</th>
 	<th style="text-align:right" width="150px">Debit</th>
 	<th style="text-align:right" width="150px">Credit</th>
@@ -152,6 +152,7 @@
 		?>
 
 		<td><?=(@$namerow['cname'] != null ? @$namerow['cname'] : '-')?></td>
+		<td><?=(@$drow['acctno'] != null ? @$drow['acctno'] : '-')?></td>
 		<td><?=(@$drow['cacctdesc'] != null ? @$drow['cacctdesc'] : '-')?></td>
   		<td style="text-align:right;"><?=(floatval($drow['ndebit'])<>0) ? number_format(floatval($drow['ndebit']), 2) : ""?></td>
     	<td style="text-align:right"><?=(floatval($drow['ncredit'])<>0) ? number_format(floatval($drow['ncredit']), 2) : ""?></td>
@@ -170,7 +171,7 @@
 	?>
 
 	<tr>
-		<td style="text-align:right;" colspan="5"><b>Total <?=$dcurrentacct?></b></td>
+		<td style="text-align:right;" colspan="6"><b>Total <?=$dcurrentacct?></b></td>
   		<td style="text-align:right; border-bottom-style: double; border-top: 1px solid"><b><?=(floatval($totdebit)<>0) ? number_format(floatval($totdebit), 2) : ""?></b></td>
     	<td style="text-align:right; border-bottom-style: double; border-top: 1px solid"><b><?=(floatval($totcredit)<>0) ? number_format(floatval($totcredit), 2) : ""?></b></td>
 		<!--<td>

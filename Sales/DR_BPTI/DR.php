@@ -104,6 +104,7 @@
 					<tr>
 						<th>DR No</th>
 						<th>DR Series No</th>
+						<th>DR Reference</th>
 						<th>Reference</th>
 						<th>Delivered To</th>
 						<th>Delivery Date</th>
@@ -432,6 +433,7 @@
 							
 					},
 					{ "data": 1 },
+					{ "data": 10 },
 					{ "data": 8 },
 					{ "data": null,
 							"render": function (data, type, full, row) {

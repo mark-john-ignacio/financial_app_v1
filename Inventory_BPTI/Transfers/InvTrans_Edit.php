@@ -49,6 +49,13 @@
 		$arrtempsname[] = $row0;
 	}
 
+	$arrtemplates= array();
+	$sqltemplate = mysqli_query($con,"select A.section_nid as nid, A.citemno, B.citemdesc, B.cunit, A.sortnum, A.template_id from invtransfer_template A left join items B on A.compcode=B.compcode and A.citemno=B.cpartno where A.compcode='$company' and A.section_nid in (".implode(",",$arrseclist).") Order By A.section_nid, A.sortnum");
+	$rowTemplate = $sqltemplate->fetch_all(MYSQLI_ASSOC);
+	foreach($rowTemplate as $row0){
+		$arrtemplates[] = array('itemid' => $row0['citemno'], 'itemdesc' => $row0['citemdesc'], 'itemunit' => $row0['cunit'], 'itemsort' => $row0['sortnum'], 'secid' => $row0['nid'], 'template_id' => $row0['template_id']);
+	}
+
 	$prntnme = array();
 	$sqltempname = mysqli_query($con,"select * from nav_menu_prints where compcode='$company'");
 	$rowdettempname= $sqltempname->fetch_all(MYSQLI_ASSOC);
@@ -109,7 +116,7 @@
 		}
 	?>
 
-		<form id="frmCount" name="frmCount" method="post" action="<?="https://".$_SERVER['SERVER_NAME']?>/Inventory/Transfers/InvTrans_EditSave.php">
+		<form id="frmCount" name="frmCount" method="post" action="<?="https://".$_SERVER['SERVER_NAME']?>/Inventory_BPTI/Transfers/InvTrans_EditSave.php">
 
 			<input type="hidden" name="hdnmyxfin" value="<?= $_SESSION['myxtoken'] ?? '' ?>">
 			<input type="hidden" name="hdnposted" id="hdnposted" value="<?php echo $lPosted;?>">
@@ -240,9 +247,9 @@
 					</div>
 					<div class="col-xs-2 nopadding">
 						<select class="form-control input-sm" name="selcntyp" id="selcntyp">			
-							<option value="request" <?=($seltype=="request") ? "selected" : ""?> data-prt="<?=$prntnme['INVTRANS_REQUEST']?>">Request</option>		
-							<option value="transfer" <?=($seltype=="transfer") ? "selected" : ""?> data-prt="<?=$prntnme['INVTRANS_ISSUANCE']?>">Transfer</option>		
-							<option value="fg_transfer" <?=($seltype=="fg_transfer") ? "selected" : ""?> data-prt="<?=$prntnme['INVTRANS_FGISS']?>">FG Transfer</option>				
+							<option value="request" <?=($seltype=="request") ? "selected" : ""?> data-prt="<?=$prntnme['INVTRANS_REQUEST']?>">MRS - Material Requisition Slip</option>		
+							<option value="fg_transfer" <?=($seltype=="fg_transfer") ? "selected" : ""?> data-prt="<?=$prntnme['INVTRANS_FGISS']?>">SIS - Stock In Slip</option>
+							<option value="transfer" <?=($seltype=="transfer") ? "selected" : ""?> data-prt="<?=$prntnme['INVTRANS_ISSUANCE']?>">IRS - Item Return Slip</option>													
 						</select>
 					</div>
 
@@ -258,65 +265,65 @@
 
 								
 			<div class="alt2" dir="ltr" style="
-						margin: 0px;
-						padding: 3px;
-						border: 1px solid #919b9c;
-						width: 100%;
-						height: 250px;
-						text-align: left;
-						overflow: auto; margin-top: 2px !important">
+				margin: 0px;
+				padding: 3px;
+				border: 1px solid #919b9c;
+				width: 100%;
+				height: 250px;
+				text-align: left;
+				overflow: auto; margin-top: 2px !important">
 
-									<table name='MyTbl' id='MyTbl' class="table table-scroll table-striped table-condensed">
-										<thead>
-											<tr>
-												<th width="50">&nbsp;</th>
-												<th width="150">Item Code</th>
-												<th>Item Description</th>
-												<th width="70">Unit</th>
-												<th width="100" class="text-center">Qty</th>
-												<th width="250" class="text-center">Remarks</th>
-												<th width="50">&nbsp;</th>
-											</tr>
-										</thead>
-										<tbody>
-											<?php
-												$sqlhead = mysqli_query($con,"Select A.*, B.citemdesc from invtransfer_t A left join items B on A.compcode=B.compcode and A.citemno=B.cpartno where A.compcode='$company' and A.ctranno='".$_REQUEST['id']."' Order By A.nidentity");
-												if (mysqli_num_rows($sqlhead)!=0) {
-										
-													$cnt = 0;
-													while($row = mysqli_fetch_array($sqlhead, MYSQLI_ASSOC)){
-														$cnt++;
-											?>
-												<tr>				
-													<td><?=$cnt?></td>
-													<td><input type='hidden' value='<?=$row['citemno']?>' name="txtitmcode" id="txtitmcode<?=$cnt?>"><?=$row['citemno']?></td>
-													<td><input type='hidden' value='<?=$row['citemdesc']?>' name="txtitmdesc" id="txtitmdesc<?=$cnt?>"><?=$row['citemdesc']?></td>
-													<td><input type='hidden' value='<?=$row['cunit']?>' name="txtcunit" id="txtcunit<?=$cnt?>"><?=$row['cunit']?></td>
-													<td>
-														<input type='text' class="numeric form-control input-xs text-center" name="txtnqty" id="txtnqty<?=$cnt?>" value="<?=number_format($row['nqty1'],2)?>">
-													</td>
-													<td>
-														<input type='text' class="form-control input-xs text-center" name="txtcrems" id="txtcrems<?=$cnt?>" value="<?=$row['cremarks']?>">
-													</td>
-													<td align="center"><button class="btn btn-danger btn-xs" id="btnDel" id="btnDel<?=$cnt?>"><i class="fa fa-times"></i></button></td>
-												</tr>
+				<table name='MyTbl' id='MyTbl' class="table table-scroll table-striped table-condensed">
+					<thead>
+						<tr>
+							<th width="50">&nbsp;</th>
+							<th width="150">Item Code</th>
+							<th>Item Description</th>
+							<th width="70">Unit</th>
+							<th width="100" class="text-center">Qty</th>
+							<th width="250" class="text-center">Remarks</th>
+							<th width="50">&nbsp;</th>
+						</tr>
+					</thead>
+					<tbody>
+						<?php
+							$sqlhead = mysqli_query($con,"Select A.*, B.citemdesc from invtransfer_t A left join items B on A.compcode=B.compcode and A.citemno=B.cpartno where A.compcode='$company' and A.ctranno='".$_REQUEST['id']."' Order By A.nidentity");
+							if (mysqli_num_rows($sqlhead)!=0) {
+					
+								$cnt = 0;
+								while($row = mysqli_fetch_array($sqlhead, MYSQLI_ASSOC)){
+									$cnt++;
+						?>
+							<tr>				
+								<td><?=$cnt?></td>
+								<td><input type='hidden' value='<?=$row['citemno']?>' name="txtitmcode" id="txtitmcode<?=$cnt?>"><?=$row['citemno']?></td>
+								<td><input type='hidden' value='<?=$row['citemdesc']?>' name="txtitmdesc" id="txtitmdesc<?=$cnt?>"><?=$row['citemdesc']?></td>
+								<td><input type='hidden' value='<?=$row['cunit']?>' name="txtcunit" id="txtcunit<?=$cnt?>"><?=$row['cunit']?></td>
+								<td>
+									<input type='text' class="numeric form-control input-xs text-center" name="txtnqty" id="txtnqty<?=$cnt?>" value="<?=number_format($row['nqty1'],2)?>">
+								</td>
+								<td>
+									<input type='text' class="form-control input-xs text-center" name="txtcrems" id="txtcrems<?=$cnt?>" value="<?=$row['cremarks']?>">
+								</td>
+								<td align="center"><button type="button" class="btn btn-danger btn-xs" id="btnDel<?=$cnt?>"><i class="fa fa-times"></i></button></td>
+							</tr>
 
-													<script type="text/javascript">
-														$(function(){	
+								<script type="text/javascript">
+									$(document).ready(function(e) {
 
-															$("#btnDel<?=$cnt?>").on('click', function() {
-																$(this).closest('tr').remove();
-																Reinitialize();
-															});
+										$("#btnDel<?=$cnt?>").on('click', function() {
+											$(this).closest('tr').remove();
+											Reinitialize();
+										});
 
-														});
-													</script>
-											<?php
-													}
-												}
-											?>
-										</tbody>
-									</table>
+									});
+								</script>
+						<?php
+								}
+							}
+						?>
+					</tbody>
+				</table>
 
 			</div>
 
@@ -396,39 +403,38 @@
 		}
 	?>
 
-
-		<!-- 1) Alert Modal -->
-		<div class="modal fade" id="AlertModal" tabindex="-1" role="dialog" data-keyboard="false" data-backdrop="static" aria-hidden="true">
-				<div class="vertical-alignment-helper">
-						<div class="modal-dialog vertical-align-top">
-								<div class="modal-content">
-									<div class="alert-modal-danger">
-											<p id="AlertMsg"></p>
-										<p>
-												<center>
-														<button type="button" class="btn btn-primary btn-sm" data-dismiss="modal" id="alertbtnOK">Ok</button>
-												</center>
-										</p>
-									</div>
-								</div>
-						</div>
+	<!-- 1) Alert Modal -->
+	<div class="modal fade" id="AlertModal" tabindex="-1" role="dialog" data-keyboard="false" data-backdrop="static" aria-hidden="true">
+		<div class="vertical-alignment-helper">
+			<div class="modal-dialog vertical-align-top">
+				<div class="modal-content">
+					<div class="alert-modal-danger">
+						<p id="AlertMsg"></p>
+						<p>
+							<center>
+								<button type="button" class="btn btn-primary btn-sm" data-dismiss="modal" id="alertbtnOK">Ok</button>
+							</center>
+						</p>
+					</div>
 				</div>
+			</div>
 		</div>
+	</div>
 
-		<!-- PRINT OUT MODAL-->
-			<div class="modal fade" id="PrintModal" role="dialog" data-keyboard="false" data-backdrop="static">
-				<div class="modal-dialog modal-lg">
-					<div class="modal-contnorad">   
-						<div class="modal-body" style="height: 12in !important">
-							<button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>        
-					
-								<iframe id="myprintframe" name="myprintframe" scrolling="yes" style="width:100%; height: 11.5in; display:block; margin:0px; padding:0px; border:0px; overflow: scroll;"></iframe>    
-							
-							</div>
-					</div><!-- /.modal-content -->
-				</div><!-- /.modal-dialog -->
-			</div><!-- /.modal -->
-		<!-- End Bootstrap modal -->
+	<!-- PRINT OUT MODAL-->
+		<div class="modal fade" id="PrintModal" role="dialog" data-keyboard="false" data-backdrop="static">
+			<div class="modal-dialog modal-lg">
+				<div class="modal-contnorad">   
+					<div class="modal-body" style="height: 12in !important">
+						<button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>        
+				
+							<iframe id="myprintframe" name="myprintframe" scrolling="yes" style="width:100%; height: 11.5in; display:block; margin:0px; padding:0px; border:0px; overflow: scroll;"></iframe>    
+						
+						</div>
+				</div><!-- /.modal-content -->
+			</div><!-- /.modal-dialog -->
+		</div><!-- /.modal -->
+	<!-- End Bootstrap modal -->
 </body>
 
 <form action="boamax_mrs.php" method="post" name="frmMrs" id="frmMrs" target="_blank">
@@ -559,13 +565,13 @@
 
 			
 			$("<tr>").append( 
-				$("<td>").html(sornum), 
+				$("<td id=\"tdx"+sornum+"\">").html(sornum), 
 				$("<td>").html("<input type='hidden' value='"+itmid+"' name=\"txtitmcode\" id=\"txtitmcode"+sornum+"\">"+itmid),  
 				$("<td>").html("<input type='hidden' value='"+itmdesc+"' name=\"txtitmdesc\" id=\"txtitmdesc"+sornum+"\">"+itmdesc),
 				$("<td>").html("<input type='hidden' value='"+itmunit+"' name=\"txtcunit\" id=\"txtcunit"+sornum+"\">"+itmunit),
 				$("<td>").html("<input type='text' class=\"numeric form-control input-xs text-center\" name=\"txtnqty\" id=\"txtnqty"+sornum+"\" value=\"0\">"),
 				$("<td>").html("<input type='text' class=\"form-control input-xs text-center\" name=\"txtcrems\" id=\"txtcrems"+sornum+"\" value=\"\">"),
-				$("<td align=\"center\">").html("<button class=\"btn btn-danger btn-xs\" id=\"btnDel\" id=\"btnDel"+sornum+"\"><i class=\"fa fa-times\"></i></button>")
+				$("<td align=\"center\">").html("<button type=\"button\" class=\"btn btn-danger btn-xs\" id=\"btnDel"+sornum+"\"><i class=\"fa fa-times\"></i></button>")
 			).appendTo("#MyTbl tbody");
 
 			$("#btnDel"+sornum).on('click', function() {
@@ -586,11 +592,16 @@
 		$("#MyTbl > tbody > tr").each(function(index) {
 				$newval = index+1;
 
+				$(this).find('td').attr('id','tdx'+$newval);
+
 				$(this).find('input:hidden[name="txtitmcode"]').attr('id','txtitmcode'+$newval);
+
 				$(this).find('input:hidden[name="txtitmdesc"]').attr('id','txtitmdesc'+$newval);
 				$(this).find('input:hidden[name="txtcunit"]').attr('id','txtcunit'+$newval); 
 				$(this).find('input[name="txtnqty"]').attr('id','txtnqty'+$newval); 
 				$(this).find('input[name="txtcrems"]').attr('id','txtcrems'+$newval); 
+
+				$('#tdx'+$newval).html($newval);
 			});
 	}
 

@@ -177,10 +177,11 @@
 			var itmstat = "";
 
 			if(x=="POST"){
+				itmstat = "OK";
 					//generate GL ENtry muna
-					$.ajax ({
+					/*$.ajax ({
 						dataType: "text",
-						url: "../../include/th_toAcc.php",
+						url: "../../include/th_toAcc_ST.php",
 						data: { tran: num, type: "SI" },
 						async: false,
 						success: function( data ) {
@@ -192,7 +193,7 @@
 								itmstat = data.trim();	
 							}
 						}
-					});
+					});*/
 					//alert(itmstat);
 					
 					//Send SMS lng

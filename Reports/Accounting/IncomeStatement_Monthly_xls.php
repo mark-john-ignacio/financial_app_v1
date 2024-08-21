@@ -47,11 +47,25 @@
 		$allaccounts[] = $row;
 	}
 
+	$qrydte = "";
+	if($_POST['seldte']==1){
+		$date1 = $_POST["date1"];
+		$date2 = $_POST["date2"];
+
+		$qrydte = "and A.ddate between STR_TO_DATE('$date1', '%m/%d/%Y') and STR_TO_DATE('$date2', '%m/%d/%Y')";
+	}else{
+		$dteyr = $_POST["selyr"];
+		$qrydte = "and YEAR(A.ddate) = '$dteyr'";	
+
+		$date1 = "01/01/".$dteyr;
+		$date2 = "12/31/".$dteyr;
+	}
+
 	//glactivity
 		$arrallwithbal = array();
 		$sql = "Select MONTH(ddate) as dmonth, A.acctno, B.cacctdesc, sum(A.ndebit) as ndebit, sum(A.ncredit) as ncredit
 				From glactivity A left join accounts B on A.compcode=B.compcode and A.acctno=B.cacctid
-				where A.compcode='$company' and YEAR(A.ddate) = '$dteyr' and IFNULL(B.cacctdesc,'') <> ''
+				where A.compcode='$company' ".$qrydte." and IFNULL(B.cacctdesc,'') <> ''
 				and B.cFinGroup = 'Income Statement'
 				Group By MONTH(ddate), A.acctno, B.cacctdesc
 				Having sum(A.ndebit)<>0 or sum(A.ncredit)<>0

@@ -14,8 +14,8 @@ function chkgrp($valz) {
 }
 
 
-	$company = $_SESSION['companyid'];
-	$CustID = $_REQUEST['ccode'];
+		$company = $_SESSION['companyid'];
+		$CustID = $_REQUEST['ccode'];
 	
 		$cSINo = $_REQUEST['trancode'];
 		$crefno = chkgrp($_REQUEST['crefno']); 

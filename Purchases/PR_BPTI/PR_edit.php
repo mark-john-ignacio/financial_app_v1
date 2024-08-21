@@ -170,7 +170,15 @@ if (mysqli_num_rows($sqlhead)!=0) {
 		$lSent = $row['lsent'];
 	}
 ?>
-	<form action="PR_editsave.php?hdnsrchval=<?=(isset($_REQUEST['hdnsrchval'])) ? $_REQUEST['hdnsrchval'] : ""?>" name="frmpos" id="frmpos" method="post"  enctype="multipart/form-data">
+	<form action="PR_editsave.php" name="frmpos" id="frmpos" method="post"  enctype="multipart/form-data">
+
+		<input type="hidden" name="hdnsrchstype" id="hdnsrchstype" value="<?=isset($_REQUEST['hdnsrchstype']) ? $_REQUEST['hdnsrchstype'] : ""?>" />
+		<input type="hidden" name="hdnsrchval" id="hdnsrchval" value="<?=isset($_REQUEST['hdnsrchval']) ? $_REQUEST['hdnsrchval'] : ""?>" />
+		<input type="hidden" name="hdnsrchsta" id="hdnsrchsta" value="<?=isset($_REQUEST['hdnsrchsta']) ? $_REQUEST['hdnsrchsta'] : ""?>" />
+		<input type="hidden" name="hdnsrchsec" id="hdnsrchsec" value="<?=isset($_REQUEST['hdnsrchsec']) ? $_REQUEST['hdnsrchsec'] : ""?>" />
+		<input type="hidden" name="hdnsrchdte" id="hdnsrchdte" value="<?=isset($_REQUEST['hdnsrchdte']) ? $_REQUEST['hdnsrchdte'] : ""?>" />
+		<input type="hidden" name="hdnsrchdtef" id="hdnsrchdtef" value="<?=isset($_REQUEST['hdnsrchdtef']) ? $_REQUEST['hdnsrchdtef'] : ""?>" />
+		<input type="hidden" name="hdnsrchdtet" id="hdnsrchdtet" value="<?=isset($_REQUEST['hdnsrchdtet']) ? $_REQUEST['hdnsrchdtet'] : ""?>" />
 
 		<div class="portlet">
 			<div class="portlet-title">
@@ -364,9 +372,8 @@ if (mysqli_num_rows($sqlhead)!=0) {
 											<input type='hidden' value='<?=$rowbody['nfactor']?>' name='hdnfactor' id='hdnfactor<?=$cntr?>'>
 										</td>
 										<td width='250px' style='padding:1px'><input type='text' class='form-control input-xs' id='dremarks<?=$cntr?>' name='dremarks' placeholder='Enter remarks...'value="<?=$rowbody['cremarks']?>" /></td>
-										<td width='150px'>
-											<select class='form-control input-xs' name='txtnSub' id='txtnSub<?=$cntr?>'>  
-												<option value='0' data-cdesc=''>NONE</option>
+										<td width='150px'> <!--<option value='0' data-cdesc=''>NONE</option>-->
+											<select class='form-control input-xs' name='txtnSub' id='txtnSub<?=$cntr?>'>												
 												<?php
 													foreach($clocs as $rs2){
 														if($rs2['nid']==$rowbody['location_id']){
@@ -409,7 +416,7 @@ if (mysqli_num_rows($sqlhead)!=0) {
 									if($postedit=="True"){
 								?>
 
-								<button type="button" class="btn btn-primary btn-sm" tabindex="6" onClick="window.location.href='PR.php?ix=<?=isset($_REQUEST['hdnsrchval']) ? $_REQUEST['hdnsrchval'] : ""?>&loc=<?=isset($_REQUEST['hdnsrchsec']) ? $_REQUEST['hdnsrchsec'] : ""?>&st=<?=isset($_REQUEST['hdnsrchsta']) ? $_REQUEST['hdnsrchsta'] : ""?>';" id="btnMain" name="btnMain">
+								<button type="button" class="btn btn-primary btn-sm" tabindex="6" onClick="window.location.href='PR.php?ix=<?=isset($_REQUEST['hdnsrchval']) ? $_REQUEST['hdnsrchval'] : ""?>&st=<?=isset($_REQUEST['hdnsrchsta']) ? $_REQUEST['hdnsrchsta'] : ""?>&swh=<?=isset($_REQUEST['hdnsrchsec']) ? $_REQUEST['hdnsrchsec'] : ""?>&sdtf=<?=isset($_REQUEST['hdnsrchdte']) ? $_REQUEST['hdnsrchdte'] : ""?>&dtfr=<?=isset($_REQUEST['hdnsrchdtef']) ? $_REQUEST['hdnsrchdtef'] : ""?>&dtto=<?=isset($_REQUEST['hdnsrchdtet']) ? $_REQUEST['hdnsrchdtet'] : ""?>&stype=<?=isset($_REQUEST['hdnsrchstype']) ? $_REQUEST['hdnsrchstype'] : ""?>';" id="btnMain" name="btnMain">
 									Back to Main<br>(ESC)
 								</button>
 							
@@ -772,6 +779,14 @@ if (mysqli_num_rows($sqlhead)!=0) {
 			
 		});
 
+		$("#selwhfrom").on("change", function(){
+			$selval = $(this).val();
+			$("#MyTable > tbody > tr").each(function(index) {  
+				tx = index + 1;  			
+				$(this).find('select[name="txtnSub"]').val($selval);
+			});
+		});
+
 		disabled();
 
 	});
@@ -826,11 +841,18 @@ if (mysqli_num_rows($sqlhead)!=0) {
 
 			var xz = $("#costcenters").val();
 			taxoptions = "";
+			$isslctd = "";
 			$.each(jQuery.parseJSON(xz), function() { 
-				taxoptions = taxoptions + "<option value='"+this['nid']+"' data-cdesc='"+this['cdesc']+"'>"+this['cdesc']+"</option>";
+				if($("#selwhfrom").val()==this['nid']){
+					$isslctd = "selected";
+				}else{
+					$isslctd = "";
+				}
+				taxoptions = taxoptions + "<option value='"+this['nid']+"' data-cdesc='"+this['cdesc']+"' "+$isslctd+">"+this['cdesc']+"</option>";
 			});
 
-			var costcntr = "<select class='form-control input-xs' name='txtnSub' id='txtnSub"+lastRow+"'>  <option value='0' data-cdesc=''>NONE</option> " + taxoptions + " </select>";
+			//<option value='0' data-cdesc=''>NONE</option>
+			var costcntr = "<select class='form-control input-xs' name='txtnSub' id='txtnSub"+lastRow+"'> " + taxoptions + " </select>";
 
 			$('#MyTable > tbody:last-child').append( 
 			"<tr>"

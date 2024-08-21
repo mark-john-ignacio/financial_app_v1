@@ -34,7 +34,7 @@ include('../../include/denied.php');
 	}
 	
 	$csalesno = $_REQUEST['x'];
-	$sqlhead = mysqli_query($con,"select a.*,b.cname,b.chouseno,b.ccity,b.cstate,b.ctin from sales a 
+	$sqlhead = mysqli_query($con,"select a.*,b.cname,b.chouseno,b.ccity,b.cstate,b.ctin,b.ctradename from sales a 
   left join customers b on a.compcode=b.compcode and a.ccode=b.cempid 
   where a.compcode='$company' and a.ctranno = '$csalesno'");
 
@@ -42,6 +42,8 @@ if (mysqli_num_rows($sqlhead)!=0) {
 	while($row = mysqli_fetch_array($sqlhead, MYSQLI_ASSOC)){
 		$CustCode = $row['ccode'];
 		$CustName = $row['cname'];
+    $CustBusName = $row['ctradename'];
+
 		$Remarks = $row['cremarks'];
 		$Date = $row['dcutdate'];
     $Adds = $row['chouseno']." ". $row['ccity']." ". $row['cstate'];
@@ -100,7 +102,7 @@ if (mysqli_num_rows($sqlhead)!=0) {
         <tr><td style="padding-right: 0.2in;" align="right"> <?=($PayType=="Credit") ? date_format(date_create($Date), "M d, Y") : "&nbsp;";?> </td></tr>
         <tr><td style="padding-right: 0.2in; padding-top: 5px" align="right"> <?=($PayType=="Cash") ? date_format(date_create($Date), "M d, Y") : "&nbsp;";?> </td></tr>
         <tr><td style="padding-right: 0.2in; padding-top: 5px" align="right"> <?=($PayType=="Credit") ? $cTerms : "&nbsp;";?> <??> </td></tr>
-        <tr><td style="padding-right: 0.1in; padding-top: 5px" align="right"> &nbsp; </td></tr>
+        <tr><td style="padding-right: 0.1in; padding-top: 5px" align="right"> <?=$CustBusName?> </td></tr>
       </table>
     </td>
   </tr>

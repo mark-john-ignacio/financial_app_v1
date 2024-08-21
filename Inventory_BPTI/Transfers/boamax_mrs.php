@@ -105,13 +105,13 @@
 	
 			$setfooter = '<table border="1" width="100%" style="border-collapse:collapse; margin-top:5px" cellpadding="5px">
 			<tr>
-				<td width="35%" valign="top"> <b>Requested By (Name & Signature):</b> <br><br><br>'.$cpreparedBy.'</td>
+				<td width="35%" valign="top"> <b>Requested By (Name & Signature):</b> <br><br><br></td>
 				<td width="32%" valign="top"> <b>Checked By:</b> <br><br><br> </td>
 				<td width="33%" valign="top"> <b>Approved By:</b> </td>
 			</tr></table><table border="0" width="100%" style="border-collapse:collapse; font-size: 10px"><tr><td> '.date("h:i:sa") . ' '. date("d-m-Y").' </td><td> Note: In Case of Error Please Report to the concern Department within 24hrs ERASURE IS NOT ALLOWED </td><td> BMRC-LW-001-F </td></tr></table>';
 			//end foot
 
-			$html = '<table border="1" align="center" width="100%" style="border-collapse: collapse;">
+			$html = '<table border="1" align="center" width="100%" style="border-collapse: collapse; table-layout: fixed">
 			<thead>
 			<tr>
 				<th width="50px" class="text-center">No.</th>

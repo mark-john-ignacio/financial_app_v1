@@ -55,7 +55,14 @@
 	$spreadsheet->getActiveSheet()->setCellValueByColumnAndRow(1, 2, "Company Address: ".strtoupper($compadd));
 	$spreadsheet->getActiveSheet()->setCellValueByColumnAndRow(1, 3, "Vat Registered Tin: ".$comptin);
 	$spreadsheet->getActiveSheet()->setCellValueByColumnAndRow(1, 4, "Profit & Lost Statement: ");
-	$spreadsheet->getActiveSheet()->setCellValueByColumnAndRow(1, 5, "For the Period: ".date_format(date_create($_POST["date1"]),"F d, Y") . " to " . date_format(date_create($_POST["date2"]),"F d, Y"));
+
+	if($_POST['seldte']==1){
+		$spreadsheet->getActiveSheet()->setCellValueByColumnAndRow(1, 5, "For the Period: ".date_format(date_create($_POST["date1"]),"F d, Y") . " to " . date_format(date_create($_POST["date2"]),"F d, Y"));
+	}else{
+		$spreadsheet->getActiveSheet()->setCellValueByColumnAndRow(1, 5, "For the Year: ".$_POST["selyr"]);
+	}
+
+	
 
 	$rowd = 7;
 
@@ -89,9 +96,6 @@
 		$compname =  $row['compname'];
 	}
 
-	$date1 = $_POST["date1"];
-	$date2 = $_POST["date2"];
-
 	//getall accounts
 	$allaccounts = array();
 	$result=mysqli_query($con,"SELECT DISTINCT A.cacctid, A.cacctdesc, A.nlevel, A.mainacct, A.ctype FROM `accounts` A where A.cFinGroup='Income Statement' ORDER BY CASE WHEN A.ccategory='REVENUE' THEN 1 WHEN A.ccategory='COST OF SALES' THEN 2 WHEN A.ccategory='EXPENSES' THEN 3 END, A.nlevel, A.cacctid");
@@ -100,11 +104,25 @@
 		$allaccounts[] = $row;
 	}
 
+	$qrydte = "";
+	if($_POST['seldte']==1){
+		$date1 = $_POST["date1"];
+		$date2 = $_POST["date2"];
+
+		$qrydte = "A.ddate between STR_TO_DATE('$date1', '%m/%d/%Y') and STR_TO_DATE('$date2', '%m/%d/%Y')";
+	}else{
+		$dteyr = $_POST["selyr"];
+		$qrydte = "YEAR(A.ddate) = '$dteyr'";	
+
+		$date1 = "01/01/".$dteyr;
+		$date2 = "12/31/".$dteyr;
+	}
+
 	//glactivity
 	$arrallwithbal = array();
 	$sql = "Select A.compcode, A.acctno, B.cacctdesc, sum(A.ndebit) as ndebit, sum(A.ncredit) as ncredit
 			From glactivity A left join accounts B on A.compcode=B.compcode and A.acctno=B.cacctid
-			where A.ddate between STR_TO_DATE('$date1', '%m/%d/%Y') and STR_TO_DATE('$date2', '%m/%d/%Y')
+			where ".$qrydte." and IFNULL(B.cacctdesc,'') <> ''
 			and B.cFinGroup = 'Income Statement'
 			Group By A.compcode, A.acctno, B.cacctdesc
 			Having sum(A.ndebit)<>0 or sum(A.ncredit)<>0

@@ -34,6 +34,14 @@
 		$defusnmr = isset($_COOKIE['username']) ? $_COOKIE['username'] : '';
 		$defpsswd = isset($_COOKIE['password']) ? $_COOKIE['password'] : '';
 	}
+
+	$tawkchat = "";
+	$result = mysqli_query($con,"SELECT * FROM `parameters` WHERE compcode='001' and ccode='ACTIVATE_CHAT_HELP'"); 								
+	if (mysqli_num_rows($result)!=0) {
+		$all_course_data = mysqli_fetch_array($result, MYSQLI_ASSOC);						 
+		$tawkchat = $all_course_data['cvalue']; 							
+	}
+
 ?>
   
 
@@ -189,19 +197,25 @@
 <script src="admin/pages/scripts/login-soft.js?x=<?=time()?>" type="text/javascript"></script>
 <!-- END PAGE LEVEL SCRIPTS -->
 
+<?php
+	if($tawkchat==1){
+?>
 <!--Start of Tawk.to Script-->
 <script type="text/javascript">
-var Tawk_API=Tawk_API||{}, Tawk_LoadStart=new Date();
-(function(){
-var s1=document.createElement("script"),s0=document.getElementsByTagName("script")[0];
-s1.async=true;
-s1.src='https://embed.tawk.to/669094c3c3fb85929e3e4ddc/1i2ica74n';
-s1.charset='UTF-8';
-s1.setAttribute('crossorigin','*');
-s0.parentNode.insertBefore(s1,s0);
-})();
+	var Tawk_API=Tawk_API||{}, Tawk_LoadStart=new Date();
+	(function(){
+	var s1=document.createElement("script"),s0=document.getElementsByTagName("script")[0];
+	s1.async=true;
+	s1.src='https://embed.tawk.to/669094c3c3fb85929e3e4ddc/1i2ica74n';
+	s1.charset='UTF-8';
+	s1.setAttribute('crossorigin','*');
+	s0.parentNode.insertBefore(s1,s0);
+	})();
 </script>
 <!--End of Tawk.to Script-->
+<?php
+	}
+?>
 
 <script>
 jQuery(document).ready(function() {     
