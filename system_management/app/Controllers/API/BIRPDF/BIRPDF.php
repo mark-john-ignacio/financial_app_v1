@@ -3,8 +3,7 @@
 namespace App\Controllers\API\BIRPDF;
 
 use App\Controllers\BaseController;
-use Dompdf\Dompdf;
-use Dompdf\Options;
+use setasign\Fpdi\Tcpdf\Fpdi;
 
 class BIRPDF extends BaseController
 {
@@ -12,42 +11,42 @@ class BIRPDF extends BaseController
     {
         $json = $this->request->getJSON();
 
-        // Load the PDF template
-        $template = $this->loadTemplate('0619-E.pdf');
+        // Create a new FPDI instance
+        $pdf = new Fpdi();
 
-        // Create a new DOMPDF instance with custom options
-        $options = new Options();
-        $options->setIsRemoteEnabled(true);
-        $dompdf = new Dompdf($options);
+        // Add a page
+        $pdf->AddPage();
 
-        // Load the PDF template into DOMPDF
-        $dompdf->loadPdf($template);
+        // Set the source file
+        $pdf->setSourceFile(WRITEPATH . 'uploads/bir_pdf_files/0619-E.pdf');
 
-        // Get the first page of the PDF
-        $page = $dompdf->getCanvas()->get_pages()[0];
+        // Import the first page of the template
+        $tplId = $pdf->importPage(1);
+
+        // Use the imported page as template
+        $pdf->useTemplate($tplId);
 
         // Fill the fields using positioning
-        $this->fillFields($page, $json);
-
-        // Render the PDF
-        $dompdf->render();
+        $this->fillFields($pdf, $json);
 
         // Output the PDF in the browser
         return $this->response
             ->setContentType('application/pdf')
-            ->setBody($dompdf->output());
+            ->setBody($pdf->Output('', 'S'));
     }
 
-    protected function loadTemplate($templateFile)
+    protected function fillFields($pdf, $data)
     {
-        $templatePath = WRITEPATH . 'uploads/bir_pdf_files/' . $templateFile;
-        return file_get_contents($templatePath);
-    }
+        $pdf->SetFont('Helvetica');
+        $pdf->SetFontSize(12);
 
-    protected function fillFields($page, $data)
-    {
-        $page->text($data->name, 50, 350, null, 0, 'utf-8');
-        $page->text($data->email, 50, 400, null, 0, 'utf-8');
-        $page->text($data->message, 50, 450, null, 0, 'utf-8');
+        $pdf->SetXY(50, 50);  // Adjust these coordinates as needed
+        $pdf->Write(0, $data->name);
+
+        $pdf->SetXY(50, 60);  // Adjust these coordinates as needed
+        $pdf->Write(0, $data->email);
+
+        $pdf->SetXY(50, 70);  // Adjust these coordinates as needed
+        $pdf->Write(0, $data->message);
     }
 }
