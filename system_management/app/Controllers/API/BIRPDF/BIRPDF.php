@@ -60,7 +60,7 @@ class BIRPDF extends BaseController
                 ->setBody($pdfContent);
         } catch (\Exception $e) {
             log_message('error', 'PDF generation failed: ' . $e->getMessage());
-            return $this->response->setStatusCode(500)->setJSON(['error' => 'PDF generation failed']);
+            return $this->response->setStatusCode(500)->setJSON(['error' => 'PDF generation failed:' . $e->getMessage()]);
         }
     }
 
@@ -68,22 +68,37 @@ class BIRPDF extends BaseController
     {
         $fontPath = APPPATH . 'Fonts/SourceCodePro-Bold.ttf';
         $fontname = TCPDF_FONTS::addTTFfont($fontPath, 'TrueTypeUnicode', '', 96);
-        $pdf->SetFont($fontname, '', 13);
+        $pdf->SetFont($fontname, '', 12);
         $pdf->SetTextColor(0, 0, 0);
 
-        $letterSpacing = 2.1;
+        $letterSpacing = 2.55;
         $pdf->setFontSpacing($letterSpacing);
     
-        $this->writeStyledText($pdf, 17, 47, $data->month);
-        $this->writeStyledText($pdf, 26.5,47, $data->year);
-        $this->writeStyledText($pdf, 49, 47, $data->due_month);
-        $this->writeStyledText($pdf, 6.5, 80, $data->registered_address);
+        $this->writeStyledText($pdf, 16.5, 45, $data->month);
+        $this->writeStyledText($pdf, 26.5,45, $data->year);
+        $this->writeStyledText($pdf, 52, 45, $data->due_month);
+        $this->writeStyledText($pdf, 62, 45, $data->due_day);
+        $this->writeStyledText($pdf, 72, 45, $data->due_year);
+        if($data->amended_form == 'Y'){
+            $this->writeStyledText($pdf, 97, 44, 'X');
+        } else {
+            $this->writeStyledText($pdf, 112.5, 44, 'X');
+        }
+
+        if ($data->taxes_withheld == 'Y') {
+            $this->writeStyledText($pdf, 133, 44, 'X');
+        } else {
+            $this->writeStyledText($pdf, 148, 44, 'X');
+        }
+        $this->writeStyledText($pdf, 6.5, 77, $data->registered_address);
+        $this->writeStyledText($pdf, 6.5, 84, substr($data->registered_address_continued, 0, 31));
         // $this->writeStyledText($pdf, 50, 70, $data->message);
     }
 
     protected function writeStyledText($pdf, $x, $y, $text)
     {
         $pdf->SetXY($x, $y);
-        $pdf->Write(0, strtoupper($text));
+        $cellWidth = 200;
+        $pdf->Cell($cellWidth, 10, strtoupper($text), 0, 0, 'L');
     }
 }
