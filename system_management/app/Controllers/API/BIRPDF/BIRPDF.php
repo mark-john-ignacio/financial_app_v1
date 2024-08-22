@@ -63,16 +63,7 @@ class BIRPDF extends BaseController
                 ->setBody($pdfContent);
         } catch (\Exception $e) {
             log_message('error', 'PDF generation failed: ' . $e->getMessage());
-            return $this->response
-                ->setStatusCode(500)
-                ->setHeader('Content-Type', 'application/json')
-                ->setBody(json_encode([
-                    'error' => 'PDF generation failed',
-                    'message' => $e->getMessage(),
-                    'file' => $e->getFile(),
-                    'line' => $e->getLine(),
-                    'trace' => $e->getTraceAsString()
-                ]));
+            return $this->response->setStatusCode(500)->setJSON(['error' => 'PDF generation failed:' . $e->getMessage()]);
         }
     }
 
@@ -109,8 +100,11 @@ class BIRPDF extends BaseController
         $this->fillCheckbox($pdf, 182, 90, $data->withholding_agent_category != 'P');
         $this->writeStyledText($pdf, 6.5, 100, $data->email_address);
 
+        $amountString = $data->amount_of_remittance;
+        $cleanedAmountString = str_replace(',', '', $amountString);
+        $number = (float)$cleanedAmountString;
         //Part II
-        $amountFormatted = number_format($data->amount_of_remittance, 2, '.', '');
+        $amountFormatted = number_format((float)$data->amount_of_remittance, 2, '.', '');
         $this->writeRightAlignedText($pdf, 184.4, 112.25, $amountFormatted, 25); // Adjust 25 to match your field width
     }
 
