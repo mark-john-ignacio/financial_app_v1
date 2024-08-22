@@ -7,7 +7,7 @@ class BIRPDF0619E extends BIRPDFBase
     public function generatePdf()
     {
         $json = $this->request->getJSON();
-        $this->loadTemplate('BIRForm0619-E.pdf');
+        $this->loadTemplate('BIRForm2550-M.pdf');
         $fileName = 'BIR_Form_' . $json->taxpayer_tin . '_' . date('Y-m-d') . '.pdf';
         return $this->generatePdfBase($json, $fileName);
     }

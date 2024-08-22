@@ -35,9 +35,10 @@ abstract class BIRPDFBase extends BaseController
     
     protected abstract function fillFields($data);
     
-    protected function generatePdf($json, $fileName)
+    protected function generatePdfBase($json, $fileName)
     {
         try {
+
             $this->fillFields($json);
             $pdfContent = $this->pdf->Output('', 'S');
     
@@ -67,32 +68,32 @@ abstract class BIRPDFBase extends BaseController
         $this->pdf->Cell($cellWidth, 10, strtoupper($text), 0, 0, 'L');
     }
 
-    protected function writeRightAlignedText($pdf, $x, $y, $text, $fieldWidth)
+    protected function writeRightAlignedText($x, $y, $text, $fieldWidth)
     {
-        $pdf->setFontSpacing(0); // Reset font spacing for proper width calculation
-        $textWidth = $pdf->GetStringWidth($text);
+        $this->pdf->setFontSpacing(0); // Reset font spacing for proper width calculation
+        $textWidth = $this->pdf->GetStringWidth($text);
         $rightAlignedX = $x + $fieldWidth - $textWidth;
-        $pdf->SetXY($rightAlignedX, $y);
-        $pdf->setFontSpacing(2.55); // Restore your desired letter spacing
-        $pdf->Cell($textWidth, 10, strtoupper($text), 0, 0, 'R');
+        $this->pdf->SetXY($rightAlignedX, $y);
+        $this->pdf->setFontSpacing(2.55); // Restore your desired letter spacing
+        $this->pdf->Cell($textWidth, 10, strtoupper($text), 0, 0, 'R');
     }
 
-    protected function fillCheckbox($pdf, $x, $y, $condition)
+    protected function fillCheckbox($x, $y, $condition)
     {
         if ($condition) {
-            $this->writeStyledText($pdf, $x, $y, 'X', 10);
+            $this->writeStyledText($x, $y, 'X', 10);
         }
     }
 
-    protected function processAndWriteAmount($pdf, $x, $y, $amountString, $fieldWidth = 25)
+    protected function processAndWriteAmount($x, $y, $amountString, $fieldWidth = 25)
     {
         $cleanedAmountString = str_replace(',', '', $amountString);
         $number = (float)$cleanedAmountString;
         $amountFormatted = number_format($number, 2, '.', '');
-        $this->writeRightAlignedText($pdf, $x, $y, $amountFormatted, $fieldWidth);
+        $this->writeRightAlignedText($x, $y, $amountFormatted, $fieldWidth);
     }
 
-    protected function processSignatureImage($pdf, $x, $y, $imageRelativePath)
+    protected function processSignatureImage($x, $y, $imageRelativePath)
     {
         $imageRelativePath = preg_replace('/^\.\.\//', '', $imageRelativePath);
         $baseURL = base_url();
@@ -117,7 +118,7 @@ abstract class BIRPDFBase extends BaseController
             file_put_contents($tempImagePath, $imageContent);
         
             // Add the image to the PDF
-            $pdf->Image($tempImagePath, $x, $y, 80, 0, 'PNG'); // (file, x, y, width, height, type)
+            $this->pdf->Image($tempImagePath, $x, $y, 80, 0, 'PNG'); // (file, x, y, width, height, type)
         
             // Clean up the temporary file
             unlink($tempImagePath);
