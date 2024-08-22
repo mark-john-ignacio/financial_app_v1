@@ -26,11 +26,12 @@ abstract class BIRPDFBase extends BaseController
         }
         
         $pageCount = $this->pdf->setSourceFile($this->templatePath);
-        $tplId = $this->pdf->importPage(1);
-        
-        $size = $this->pdf->getTemplateSize($tplId);
-        $this->pdf->AddPage($size['orientation'], [$size['width'], $size['height']]);
-        $this->pdf->useTemplate($tplId, 0, 0, $size['width'], $size['height']);
+        for ($pageNo = 1; $pageNo <= $pageCount; $pageNo++) {
+            $tplId = $this->pdf->importPage($pageNo);
+            $size = $this->pdf->getTemplateSize($tplId);
+            $this->pdf->AddPage($size['orientation'], [$size['width'], $size['height']]);
+            $this->pdf->useTemplate($tplId, 0, 0, $size['width'], $size['height']);
+        }
     }
     
     protected abstract function fillFields($data);
