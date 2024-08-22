@@ -1,0 +1,147 @@
+(function($) {
+    'use strict';
+
+    $(document).ready(function() {
+        var urlBase = $('#frmpos').data('url-base');
+
+        // Cache jQuery selectors
+        const $amountOfRemittance = $('#amount_of_remittance');
+        const $amountRemittedPrevious = $('#amount_remitted_previous');
+        const $netAmountOfRemittance = $('#net_amount_of_remittance');
+        const $penaltySurcharge = $('#penalty_surcharge');
+        const $penaltyInterest = $('#penalty_interest');
+        const $penaltyCompromise = $('#penalty_compromise');
+        const $totalPenalties = $('#total_penalties');
+        const $totalAmountOfRemittance = $('#total_amount_of_remittance');
+        const $xcompute = $('.xcompute');
+
+        // Event Listeners
+        $("#btnPrintPdf").on("click", function(event) {
+            event.preventDefault();
+            var formData = getFormData("#frmpos");
+            sendAjaxRequest(formData, urlBase);
+        });
+
+        $amountOfRemittance.add($amountRemittedPrevious).on('input', calculateNetAmount);
+        $penaltySurcharge.add($penaltyInterest).add($penaltyCompromise).on('input', calculateTotalPenalties);
+        $xcompute.on('input', handleInputRestriction);
+        $xcompute.on('keypress', handleKeyPressRestriction);
+        $xcompute.on('input', calculateTotalAmount);
+
+        $('input[type="text"]').on('focus', function() {
+            $(this).select();
+        });
+
+        // Functions
+        function getFormData(formSelector) {
+            var formData = {};
+            $(formSelector).serializeArray().forEach(function(item) {
+                formData[item.name] = item.value;
+            });
+            console.log("Form data:", formData);
+            return formData;
+        }
+
+        function sendAjaxRequest(formData, urlBase) {
+            $.ajax({
+                url: urlBase + 'system_management/api/pdf/0619e',
+                type: "POST",
+                contentType: "application/json",
+                data: JSON.stringify(formData),
+                xhrFields: {
+                    responseType: 'blob'
+                },
+                success: function(blob, status, xhr) {
+                    handleBlobResponse(blob, xhr);
+                },
+                error: function(xhr, status, error) {
+                    console.error("AJAX error:", {xhr: xhr, status: status, error: error});
+                    handleError(xhr, status, error);
+                }
+            });
+        }
+
+        function handleBlobResponse(blob, xhr) {
+            var filename = xhr.getResponseHeader('X-Filename') || "generated.pdf";
+            var blobUrl = window.URL.createObjectURL(blob);
+            openBlobUrlInNewTab(blobUrl, filename);
+            revokeBlobUrl(blobUrl);
+        }
+
+        function openBlobUrlInNewTab(blobUrl, filename) {
+            var newTab = window.open(blobUrl, '_blank');
+            if (newTab) {
+                newTab.onload = function() {
+                    newTab.document.title = filename;
+                };
+            } else {
+                alert("Please allow popups for this website");
+            }
+        }
+
+        function revokeBlobUrl(blobUrl) {
+            setTimeout(function() {
+                window.URL.revokeObjectURL(blobUrl);
+            }, 5000);
+        }
+
+        function handleError(xhr, status, error) {
+            console.error("Error status:", status);
+            console.error("Error:", error);
+
+            if (xhr.responseType === 'blob') {
+                var reader = new FileReader();
+                reader.onload = function() {
+                    try {
+                        var errorResponse = JSON.parse(this.result);
+                        console.error("Server error response:", errorResponse);
+                        alert("Error: " + (errorResponse.message || "An unknown error occurred"));
+                    } catch (e) {
+                        console.error("Unable to parse error response:", this.result);
+                        alert("An error occurred: " + this.result);
+                    }
+                };
+                reader.onerror = function() {
+                    console.error("FileReader error:", reader.error);
+                    alert("An error occurred while reading the server response");
+                };
+                reader.readAsText(xhr.response);
+            } else {
+                console.error("Server response:", xhr.responseText);
+                alert("An error occurred: " + xhr.responseText);
+            }
+        }
+
+        function calculateNetAmount() {
+            const amount14 = parseFloat($amountOfRemittance.val()) || 0;
+            const amount15 = parseFloat($amountRemittedPrevious.val()) || 0;
+            const netAmount = amount14 - amount15;
+            $netAmountOfRemittance.val(netAmount.toFixed(2));
+        }
+
+        function calculateTotalPenalties() {
+            const surcharge = parseFloat($penaltySurcharge.val()) || 0;
+            const interest = parseFloat($penaltyInterest.val()) || 0;
+            const compromise = parseFloat($penaltyCompromise.val()) || 0;
+            const totalPenalties = surcharge + interest + compromise;
+            $totalPenalties.val(totalPenalties.toFixed(2));
+        }
+
+        function calculateTotalAmount() {
+            const netAmount = parseFloat($netAmountOfRemittance.val()) || 0;
+            const totalPenalties = parseFloat($totalPenalties.val()) || 0;
+            const totalAmount = netAmount + totalPenalties;
+            $totalAmountOfRemittance.val(totalAmount.toFixed(2));
+        }
+
+        function handleInputRestriction(event) {
+            this.value = this.value.replace(/[^0-9.]/g, '');
+        }
+
+        function handleKeyPressRestriction(event) {
+            if ((event.which != 46 || $(this).val().indexOf('.') != -1) && (event.which < 48 || event.which > 57)) {
+                event.preventDefault();
+            }
+        }
+    });
+})(jQuery);
