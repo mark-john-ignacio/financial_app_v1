@@ -205,6 +205,9 @@
                                         <input type="text" class="form-control input-sm" name="due_month" id="due_month" value="<?= isset($due_month) ? $due_month :  "00" ?>" readonly style="width: 80px;">
                                     </td>
                                     <td>
+                                        <input type="text" class="form-control input-sm" name="due_day" id="due_day" value="<?= isset($due_day) ? $due_day :  "00" ?>" readonly style="width: 80px;">
+                                    </td>
+                                    <td>
                                         <input type="text" class="form-control input-sm" name="due_year" id="due_year" value="<?= isset($due_year) ? $due_year :  "0000" ?>" readonly style="width: 80px;">
                                     </td>
                                 </tr>
