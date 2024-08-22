@@ -153,7 +153,7 @@ function getFormData(formSelector) {
 
 function sendAjaxRequest(formData) {
     $.ajax({
-        url: "<?= $UrlBase . 'system_management/api/pdf' ?>",
+        url: "<?= $UrlBase . 'system_management/api/pdf/0619e' ?>",
         type: "POST",
         contentType: "application/json",
         data: JSON.stringify(formData),

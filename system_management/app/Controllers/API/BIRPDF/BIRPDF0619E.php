@@ -6,7 +6,7 @@ use App\Controllers\BaseController;
 use setasign\Fpdi\Tcpdf\Fpdi;
 use TCPDF_FONTS;
 
-class BIRPDF extends BaseController
+class BIRPDF0619E extends BaseController
 {
     public function generatePdf()
     {
