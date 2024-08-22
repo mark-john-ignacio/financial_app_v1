@@ -132,40 +132,92 @@
                     </button>
                 </div>
                 <script>
-                $(document).ready(function() {
-                    $("#btnPrintPdf").on("click", function(event) {
-                        event.preventDefault(); // Prevent the default button action
+$(document).ready(function() {
+    $("#btnPrintPdf").on("click", function(event) {
+        event.preventDefault();
+        var formData = getFormData("#frmpos");
+        sendAjaxRequest(formData);
+    });
+});
 
-                        // Serialize form data into a JSON object
-                        var formData = {};
-                        $("#frmpos").serializeArray().forEach(function(item) {
-                            formData[item.name] = item.value;
-                        });
-                        console.log("Form data:", formData);
+function getFormData(formSelector) {
+    var formData = {};
+    $(formSelector).serializeArray().forEach(function(item) {
+        formData[item.name] = item.value;
+    });
+    console.log("Form data:", formData);
+    return formData;
+}
 
-                        // Send the JSON data to the specified URL using AJAX
-                        $.ajax({
-                            url: "<?= $UrlBase . 'system_management/api/pdf' ?>",
-                            type: "POST",
-                            contentType: "application/json",
-                            data: JSON.stringify(formData),
-                            xhrFields: {
-                                responseType: 'arraybuffer'
-                            },
-                            success: function(response) {
-                                var blob = new Blob([response], { type: 'application/pdf' });
-                                var url = URL.createObjectURL(blob);
-                                window.open(url, '_blank');
-                            },
-                            error: function(xhr, status, error) {
-                                console.error("Error:", error);
-                                if (xhr.responseType !== 'arraybuffer') {
-                                    console.error("Server response:", xhr.responseText);
-                                }
-                            }
-                        });
-                    });
-                });
+function sendAjaxRequest(formData) {
+    $.ajax({
+        url: "<?= $UrlBase . 'system_management/api/pdf' ?>",
+        type: "POST",
+        contentType: "application/json",
+        data: JSON.stringify(formData),
+        xhrFields: {
+            responseType: 'blob'
+        },
+        success: function(blob, status, xhr) {
+            handleBlobResponse(blob, xhr);
+        },
+        error: function(xhr, status, error) {
+            console.error("AJAX error:", {xhr: xhr, status: status, error: error});
+            handleError(xhr, status, error);
+        }
+    });
+}
+
+function handleBlobResponse(blob, xhr) {
+    var filename = xhr.getResponseHeader('X-Filename') || "generated.pdf";
+    var blobUrl = window.URL.createObjectURL(blob);
+    openBlobUrlInNewTab(blobUrl, filename);
+    revokeBlobUrl(blobUrl);
+}
+
+function openBlobUrlInNewTab(blobUrl, filename) {
+    var newTab = window.open(blobUrl, '_blank');
+    if (newTab) {
+        newTab.onload = function() {
+            newTab.document.title = filename;
+        };
+    } else {
+        alert("Please allow popups for this website");
+    }
+}
+
+function revokeBlobUrl(blobUrl) {
+    setTimeout(function() {
+        window.URL.revokeObjectURL(blobUrl);
+    }, 1000);
+}
+
+function handleError(xhr, status, error) {
+    console.error("Error status:", status);
+    console.error("Error:", error);
+
+    if (xhr.responseType === 'blob') {
+        var reader = new FileReader();
+        reader.onload = function() {
+            try {
+                var errorResponse = JSON.parse(this.result);
+                console.error("Server error response:", errorResponse);
+                alert("Error: " + (errorResponse.message || "An unknown error occurred"));
+            } catch (e) {
+                console.error("Unable to parse error response:", this.result);
+                alert("An error occurred: " + this.result);
+            }
+        };
+        reader.onerror = function() {
+            console.error("FileReader error:", reader.error);
+            alert("An error occurred while reading the server response");
+        };
+        reader.readAsText(xhr.response);
+    } else {
+        console.error("Server response:", xhr.responseText);
+        alert("An error occurred: " + xhr.responseText);
+    }
+}
                 </script>
             </div>
 
@@ -341,7 +393,7 @@
                         <tr>
                             <td colspan="4" style="vertical-align: middle;"><b> 14 </b> Amount of Remittance </td>                                       
                             <td>  
-                                <input type="text" class="form-control input-sm text-right" name="amount_of_remittance" id="amount_of_remittance" value="<?=number_format($totEWT,2)?>" readonly> 
+                                <input type="text" class="form-control input-sm text-right" name="amount_of_remittance" id="amount_of_remittance" value="<?=number_format(isset($totEWT) ? $totEWT : "9999.99",2)?>" readonly> 
                             </td>
                         </tr>
                         <tr>
