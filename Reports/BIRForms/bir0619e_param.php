@@ -46,7 +46,8 @@
 		}
 	}
 
-    $year = date("Y", strtotime($_POST['years']));
+    $month = str_pad($_POST['selmonth'], 2, "0", STR_PAD_LEFT);
+    $year = $_POST['years'];
 
     $apv = array();
     $xendingmonth = "";
@@ -117,6 +118,7 @@
 <body>
 
     <form action="bir1601eq.php" name="frmpos" id="frmpos" method="post" target="_blank">
+        <input type="hidden" value="<?= $comprdo['bir_sig_sign']?>" name="signature_image">
         <div class="container">
             <br>
             <div class="row">
@@ -254,13 +256,13 @@ function handleError(xhr, status, error) {
                             <table>
                                 <tr>
                                     <td>
-                                        <input type="text" class="form-control input-sm" name="due_month" id="due_month" value="<?= isset($due_month) ? $due_month :  "00" ?>" readonly style="width: 80px;">
+                                        <input type="text" class="form-control input-sm" name="due_month" id="due_month" value="<?= isset($due_month) ? $due_month :  $month ?>" style="width: 80px;">
                                     </td>
                                     <td>
-                                        <input type="text" class="form-control input-sm" name="due_day" id="due_day" value="<?= isset($due_day) ? $due_day :  "00" ?>" readonly style="width: 80px;">
+                                        <input type="text" class="form-control input-sm" name="due_day" id="due_day" value="<?= isset($due_day) ? $due_day :  "01" ?>" style="width: 80px;">
                                     </td>
                                     <td>
-                                        <input type="text" class="form-control input-sm" name="due_year" id="due_year" value="<?= isset($due_year) ? $due_year :  "0000" ?>" readonly style="width: 80px;">
+                                        <input type="text" class="form-control input-sm" name="due_year" id="due_year" value="<?= isset($due_year) ? $due_year :  $year ?>" style="width: 80px;">
                                     </td>
                                 </tr>
                             </table>
@@ -393,7 +395,7 @@ function handleError(xhr, status, error) {
                         <tr>
                             <td colspan="4" style="vertical-align: middle;"><b> 14 </b> Amount of Remittance </td>                                       
                             <td>  
-                                <input type="text" class="form-control input-sm text-right" name="amount_of_remittance" id="amount_of_remittance" value="<?=number_format(isset($totEWT) ? $totEWT : "9999.99",2)?>" readonly> 
+                                <input type="text" class="xcompute form-control input-sm text-right" name="amount_of_remittance" id="amount_of_remittance" value="<?= "0.00"?>"> 
                             </td>
                         </tr>
                         <tr>
@@ -405,7 +407,7 @@ function handleError(xhr, status, error) {
                         <tr>
                             <td colspan="4" style="vertical-align: middle;"><b> 16 </b> Net Amount of Remittance <i>(Item 14 Less Item 15)</i></td>
                             <td>  
-                                <input type="text" class="xcompute form-control input-sm text-right" name="net_amount_of_remittance" id="net_amount_of_remittance" value="0.00"> 
+                                <input type="text" class="xcompute form-control input-sm text-right" name="net_amount_of_remittance" id="net_amount_of_remittance" value="0.00" readonly> 
                             </td>
                         </tr>
                         <tr>
@@ -438,76 +440,11 @@ function handleError(xhr, status, error) {
                         <tr> 
                             <td colspan="4" style="vertical-align: middle;"><b> 18 Total Amount of Remittance</b> <i>(Sum of Items 16 and 17D)</i></td>                                       
                             <td>  
-                                <input type="text" class="xcompute form-control input-sm text-right" name="total_amount_of_remittance" id="total_amount_of_remittance" value="<?=number_format($totEWT,2)?>" readonly> 
+                                <input type="text" class="xcompute form-control input-sm text-right" name="total_amount_of_remittance" id="total_amount_of_remittance" value="0.00" readonly> 
                             </td>
                         </tr>                        
-                        <!--<tr>
-                            <td align="center" colspan="4"  style="padding: 0px !important;">
-                                <table class="ichecks table table-sm table-bordered" style="margin: 0px !important">
-                                    <tr>
-                                        <td height="60px" width="50%"> For Individual:</td>
-                                        <td> For Non-Individual: </td>
-                                    </tr>
-                                    <tr>
-                                        <td align="center"> Signature over Printed Name of Taxpayer/Authorized Representative/Tax Agent <br> (Indicate Title/Designation and TIN)</td>
-                                        <td align="center"> Signature over Printed Name of President/Vice President/ Authorized Officer or
-                                        Representative/Tax Agent (Indicate Title/Designation and TIN) </td>
-                                    </tr>
-                                </table>
-                            </td>
-                        </tr> -->   
                     </table>
                 </div>  
-                <!-- <div class="col-12" style="margin-top: 3px !important">
-                    <table class="table table-sm table-bordered" style="margin: 0px !important">
-                        <tr>
-                            <td align="center"> <b> Part III - Details of Payment</b></td>
-                        </tr>
-                        <tr>
-                            <td align="center" style="padding: 0px !important;">
-                                <table class="table table-sm table-bordered" style="margin: 0px !important">
-                                    <tr>
-                                        <td align="center">Particulars</td>
-                                        <td align="center">Drawee Bank/Agency</td>
-                                        <td align="center">Number</td>
-                                        <td align="center">Date(MM/DD/YYYY)</td>
-                                        <td align="center">Amount</td>
-                                    </tr>
-                                    <tr>
-                                        <td style="vertical-align: middle"><b>31 </b>Cash/Bank Debit Memo</td>
-                                        <td><input type="text" class="form-control input-sm" name="txt1601eq_casdm1" id="txt1601eq_casdm1" value=""></td>
-                                        <th><input type="text" class="form-control input-sm" name="txt1601eq_casdm2" id="txt1601eq_casdm2" value=""></td>
-                                        <td><input type="text" class="form-control input-sm" name="txt1601eq_casdm3" id="txt1601eq_casdm3" value=""></td>
-                                        <td><input type="text" class="form-control input-sm" name="txt1601eq_casdm4" id="txt1601eq_casdm4" value=""></td>
-                                    </tr>
-                                    <tr>
-                                        <td style="vertical-align: middle"><b>32 </b>Check</td>
-                                        <td><input type="text" class="form-control input-sm" name="txt1601eq_chk1" id="txt1601eq_chk1" value=""></td>
-                                        <th><input type="text" class="form-control input-sm" name="txt1601eq_chk2" id="txt1601eq_chk2" value=""></td>
-                                        <td><input type="text" class="form-control input-sm" name="txt1601eq_chk3" id="txt1601eq_chk3" value=""></td>
-                                        <td><input type="text" class="form-control input-sm" name="txt1601eq_chk4" id="txt1601eq_chk4" value=""></td>
-                                    </tr>
-                                    <tr>
-                                        <td style="vertical-align: middle" colspan="2"><b>33 </b>Tax Debit Memo</td>
-                                        <th><input type="text" class="form-control input-sm" name="txt1601eq_txdm1" id="txt1601eq_txdm1" value=""></td>
-                                        <td><input type="text" class="form-control input-sm" name="txt1601eq_txdm2" id="txt1601eq_txdm2" value=""></td>
-                                        <td><input type="text" class="form-control input-sm" name="txt1601eq_txdm3" id="txt1601eq_txdm3" value=""></td>
-                                    </tr>
-                                    <tr>
-                                        <td style="vertical-align: middle" colspan="5"><b>34 </b>Others (specify below)</td>
-                                    </tr>
-                                    <tr>
-                                        <td><input type="text" class="form-control input-sm" name="txt1601eq_othr0" id="txt1601eq_othr0" value=""></td>
-                                        <td><input type="text" class="form-control input-sm" name="txt1601eq_othr1" id="txt1601eq_othr1" value=""></td>
-                                        <th><input type="text" class="form-control input-sm" name="txt1601eq_othr2" id="txt1601eq_othr2" value=""></td>
-                                        <td><input type="text" class="form-control input-sm" name="txt1601eq_othr3" id="txt1601eq_othr3" value=""></td>
-                                        <td><input type="text" class="form-control input-sm" name="txt1601eq_othr4" id="txt1601eq_othr4" value=""></td>
-                                    </tr>
-                                </table>
-                            </td>
-                        </tr>
-                    </table>
-                </div>  -->
             </div>
         </div>
                
@@ -520,100 +457,62 @@ function handleError(xhr, status, error) {
 </html>
 
 <script type="text/javascript">
-    var sawt = [];
-    $(document).ready(function(){
+    $(document).ready(function() {
+        'use strict';
 
-        $(".xcompute").autoNumeric('init',{mDec:2});
-        $(".xcompute").on("click", function () {
+        // Cache jQuery selectors
+        const $amountOfRemittance = $('#amount_of_remittance');
+        const $amountRemittedPrevious = $('#amount_remitted_previous');
+        const $netAmountOfRemittance = $('#net_amount_of_remittance');
+        const $penaltySurcharge = $('#penalty_surcharge');
+        const $penaltyInterest = $('#penalty_interest');
+        const $penaltyCompromise = $('#penalty_compromise');
+        const $totalPenalties = $('#total_penalties');
+        const $totalAmountOfRemittance = $('#total_amount_of_remittance');
+        const $xcompute = $('.xcompute');
+
+        // Functions
+        function calculateNetAmount() {
+            const amount14 = parseFloat($amountOfRemittance.val()) || 0;
+            const amount15 = parseFloat($amountRemittedPrevious.val()) || 0;
+            const netAmount = amount14 - amount15;
+            $netAmountOfRemittance.val(netAmount.toFixed(2));
+        }
+
+        function calculateTotalPenalties() {
+            const surcharge = parseFloat($penaltySurcharge.val()) || 0;
+            const interest = parseFloat($penaltyInterest.val()) || 0;
+            const compromise = parseFloat($penaltyCompromise.val()) || 0;
+            const totalPenalties = surcharge + interest + compromise;
+            $totalPenalties.val(totalPenalties.toFixed(2));
+        }
+
+        function calculateTotalAmount() {
+            const netAmount = parseFloat($netAmountOfRemittance.val()) || 0;
+            const totalPenalties = parseFloat($totalPenalties.val()) || 0;
+            const totalAmount = netAmount + totalPenalties;
+            $totalAmountOfRemittance.val(totalAmount.toFixed(2));
+        }
+
+        function handleInputRestriction(event) {
+            this.value = this.value.replace(/[^0-9.]/g, '');
+        }
+
+        function handleKeyPressRestriction(event) {
+            if ((event.which != 46 || $(this).val().indexOf('.') != -1) && (event.which < 48 || event.which > 57)) {
+                event.preventDefault();
+            }
+        }
+
+        // Event Listeners
+        $amountOfRemittance.add($amountRemittedPrevious).on('input', calculateNetAmount);
+        $penaltySurcharge.add($penaltyInterest).add($penaltyCompromise).on('input', calculateTotalPenalties);
+        $xcompute.on('input', handleInputRestriction);
+        $xcompute.on('keypress', handleKeyPressRestriction);
+        $xcompute.on('input', calculateTotalAmount);
+
+        $('input[type="text"]').on('focus', function() {
             $(this).select();
         });
-
-        $(".ichecks input").iCheck({
-            checkboxClass: 'icheckbox_square-blue',
-            radioClass: 'iradio_square-blue',
-            increaseArea: '20%' // optional
-        });
-       // $(".birforms").hide();
-
-        $(".yearpicker").datetimepicker({
-            defaultDate: moment(),
-            viewMode: 'years',
-            format: 'YYYY'
-        })
-
-        $("#selfrmname").select2({
-            placeholder: "Please select a form"
-        }); 
-
-        $("#selfil").on("change", function(){
-            $x = $(this).val();
-            if($x=="Monthly"){
-                $("#divqr").hide();
-                $("#divmn").show();
-            }else if($x=="Quarterly"){
-                $("#divqr").show();
-                $("#divmn").hide();
-            }else if($x=="Annually"){
-                $("#divqr").hide();
-                $("#divmn").hide();
-            }
-        });
-
-        $("#selfrmname").on("change", function(){
-            $xc = $(this).find(':selected').attr('data-param')
-
-            $('.birforms').each(function(i, obj) {
-                if($(this).attr("id")==$xc){
-                    $(this).show();
-                }else{
-                    $(this).hide();
-                }
-            });
-            
-        });
-        
-
-        $("#btnView").on("click", function(){
-            $("#frmBIRForm").attr("action", $("#selfrmname").val());
-            $("#frmBIRForm").submit();
-        });
-
-        $(".xcompute").on("keyup", function(){   
-            $TotalTaxesWithheld = $("#txt1601eq_totewt").val().replace(/,/g,'');
-
-            $less1 = ($("#txt1601eq_less1").val()=="") ? 0 : $("#txt1601eq_less1").val().replace(/,/g,'');
-            $less2 = ($("#txt1601eq_less2").val()=="") ? 0 : $("#txt1601eq_less2").val().replace(/,/g,'');
-            $taxrmmited = ($("#txt1601eq_prev").val()=="") ? 0 : $("#txt1601eq_prev").val().replace(/,/g,'');
-            $overremit = ($("#txt1601eq_overr").val()=="") ? 0 : $("#txt1601eq_overr").val().replace(/,/g,''); 
-            $othrpay = ($("#txt1601eq_otrpay").val()=="") ? 0 : $("#txt1601eq_otrpay").val().replace(/,/g,'');
-
-            $totrem = parseFloat($less1) + parseFloat($less2) + parseFloat($taxrmmited) + parseFloat($overremit) + parseFloat($othrpay);
-            $("#txt1601eq_totrem").val($totrem);
-            $("#txt1601eq_totrem").autoNumeric('destroy');
-			$("#txt1601eq_totrem").autoNumeric('init',{mDec:2});
-
-
-            $totsdue = parseFloat($TotalTaxesWithheld) - parseFloat($totrem);
-            $("#txt1601eq_taxdue").val($totsdue);
-            $("#txt1601eq_taxdue").autoNumeric('destroy');
-			$("#txt1601eq_taxdue").autoNumeric('init',{mDec:2});
-
-
-            $penaltysur = ($("#txt1601eq_pensur").val()=="") ? 0 : $("#txt1601eq_pensur").val().replace(/,/g,'');
-            $penaltyint = ($("#txt1601eq_penint").val()=="") ? 0 : $("#txt1601eq_penint").val().replace(/,/g,'');
-            $penaltycom = ($("#txt1601eq_pencom").val()=="") ? 0 : $("#txt1601eq_pencom").val().replace(/,/g,'');
-
-            $totpenalty = parseFloat($penaltysur) + parseFloat($penaltyint) + parseFloat($penaltycom);
-            $("#txt1601eq_pentot").val($totpenalty);
-            $("#txt1601eq_pentot").autoNumeric('destroy');
-			$("#txt1601eq_pentot").autoNumeric('init',{mDec:2});
-
-            txt1601eq_gtot = $totsdue + $totpenalty;
-            $("#txt1601eq_gtot").val(txt1601eq_gtot);
-            $("#txt1601eq_gtot").autoNumeric('destroy');
-			$("#txt1601eq_gtot").autoNumeric('init',{mDec:2});
-        });
-        
-    })
-
+    });
 </script>

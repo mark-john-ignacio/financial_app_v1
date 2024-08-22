@@ -63,7 +63,16 @@ class BIRPDF extends BaseController
                 ->setBody($pdfContent);
         } catch (\Exception $e) {
             log_message('error', 'PDF generation failed: ' . $e->getMessage());
-            return $this->response->setStatusCode(500)->setJSON(['error' => 'PDF generation failed:' . $e->getMessage()]);
+            return $this->response
+                ->setStatusCode(500)
+                ->setHeader('Content-Type', 'application/json')
+                ->setBody(json_encode([
+                    'error' => 'PDF generation failed',
+                    'message' => $e->getMessage(),
+                    'file' => $e->getFile(),
+                    'line' => $e->getLine(),
+                    'trace' => $e->getTraceAsString()
+                ]));
         }
     }
 
@@ -100,12 +109,15 @@ class BIRPDF extends BaseController
         $this->fillCheckbox($pdf, 182, 90, $data->withholding_agent_category != 'P');
         $this->writeStyledText($pdf, 6.5, 100, $data->email_address);
 
-        $amountString = $data->amount_of_remittance;
-        $cleanedAmountString = str_replace(',', '', $amountString);
-        $number = (float)$cleanedAmountString;
-        //Part II
-        $amountFormatted = number_format((float)$data->amount_of_remittance, 2, '.', '');
-        $this->writeRightAlignedText($pdf, 184.4, 112.25, $amountFormatted, 25); // Adjust 25 to match your field width
+        $this->processAndWriteAmount($pdf, 184.3, 112.25, $data->amount_of_remittance);
+        $this->processAndWriteAmount($pdf, 184.3, 118.9, $data->amount_remitted_previous);
+        $this->processAndWriteAmount($pdf, 184.3, 125.25, $data->net_amount_of_remittance);
+        $this->processAndWriteAmount($pdf, 184.3, 135.5, $data->penalty_surcharge);
+        $this->processAndWriteAmount($pdf, 184.3, 142, $data->penalty_interest);
+        $this->processAndWriteAmount($pdf, 184.3, 148.5, $data->penalty_compromise);
+        $this->processAndWriteAmount($pdf, 184.3, 155, $data->total_penalties);
+        $this->processAndWriteAmount($pdf, 184.3, 161.5, $data->total_amount_of_remittance);
+        $this->processSignatureImage($pdf, 120, 176, $data->signature_image);
     }
 
     protected function writeStyledText($pdf, $x, $y, $text, $cellWidth = 200)
@@ -128,6 +140,49 @@ class BIRPDF extends BaseController
     {
         if ($condition) {
             $this->writeStyledText($pdf, $x, $y, 'X', 10);
+        }
+    }
+
+    protected function processAndWriteAmount($pdf, $x, $y, $amountString, $fieldWidth = 25)
+    {
+        $cleanedAmountString = str_replace(',', '', $amountString);
+        $number = (float)$cleanedAmountString;
+        $amountFormatted = number_format($number, 2, '.', '');
+        $this->writeRightAlignedText($pdf, $x, $y, $amountFormatted, $fieldWidth);
+    }
+
+    protected function processSignatureImage($pdf, $x, $y, $imageRelativePath)
+    {
+        $imageRelativePath = preg_replace('/^\.\.\//', '', $imageRelativePath);
+        $baseURL = base_url();
+        $trimmedBaseURL = str_replace('/system_management/public', '', $baseURL);
+        $signatureImageUrl = $trimmedBaseURL . $imageRelativePath;
+        
+        // Create a stream context to bypass SSL verification
+        $contextOptions = [
+            "ssl" => [
+                "verify_peer" => false,
+                "verify_peer_name" => false,
+            ],
+        ];
+        $context = stream_context_create($contextOptions);
+        
+        // Fetch the image from the URL with the context
+        $imageContent = file_get_contents($signatureImageUrl, false, $context);
+        
+        if ($imageContent !== false) {
+            // Save the image to a temporary file
+            $tempImagePath = tempnam(sys_get_temp_dir(), 'signature_') . '.png';
+            file_put_contents($tempImagePath, $imageContent);
+        
+            // Add the image to the PDF
+            $pdf->Image($tempImagePath, $x, $y, 80, 0, 'PNG'); // (file, x, y, width, height, type)
+        
+            // Clean up the temporary file
+            unlink($tempImagePath);
+        } else {
+            // Handle the error if the image could not be fetched
+            echo 'Image could not be fetched from URL: ' . $signatureImageUrl;
         }
     }
 }
