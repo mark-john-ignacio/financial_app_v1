@@ -49,6 +49,8 @@ class BIRPDF extends BaseController
             
             // Generate PDF content
             $pdfContent = $pdf->Output('', 'S');
+
+            $fileName = 'BIR_Form_' . $json->taxpayer_tin . '_' . date('Y-m-d') . '.pdf';
     
             // Debugging: Log PDF size
             log_message('debug', 'Generated PDF size: ' . strlen($pdfContent) . ' bytes');
@@ -56,7 +58,8 @@ class BIRPDF extends BaseController
             // Output the PDF
             return $this->response
                 ->setHeader('Content-Type', 'application/pdf')
-                ->setHeader('Content-Disposition', 'inline; filename="generated.pdf"')
+                ->setHeader('Content-Disposition', 'inline; filename="' . $fileName . '"')
+                ->setHeader('X-Filename', $fileName)
                 ->setBody($pdfContent);
         } catch (\Exception $e) {
             log_message('error', 'PDF generation failed: ' . $e->getMessage());
@@ -79,26 +82,52 @@ class BIRPDF extends BaseController
         $this->writeStyledText($pdf, 52, 45, $data->due_month);
         $this->writeStyledText($pdf, 62, 45, $data->due_day);
         $this->writeStyledText($pdf, 72, 45, $data->due_year);
-        if($data->amended_form == 'Y'){
-            $this->writeStyledText($pdf, 97, 44, 'X');
-        } else {
-            $this->writeStyledText($pdf, 112.5, 44, 'X');
-        }
 
-        if ($data->taxes_withheld == 'Y') {
-            $this->writeStyledText($pdf, 133, 44, 'X');
-        } else {
-            $this->writeStyledText($pdf, 148, 44, 'X');
-        }
+        $this->fillCheckbox($pdf, 97, 44, $data->amended_form == 'Y');
+        $this->fillCheckbox($pdf, 112.5, 44, $data->amended_form != 'Y');
+        $this->fillCheckbox($pdf, 133, 44, $data->taxes_withheld == 'Y');
+        $this->fillCheckbox($pdf, 148, 44, $data->taxes_withheld != 'Y');
+
+        $this->writeStyledText($pdf, 77, 57, $data->taxpayer_tin);
+        $this->writeStyledText($pdf, 189, 57, $data->rdo_code);
+        $this->writeStyledText($pdf, 6.5, 67, $data->withholding_agent_name);
+
         $this->writeStyledText($pdf, 6.5, 77, $data->registered_address);
-        $this->writeStyledText($pdf, 6.5, 84, substr($data->registered_address_continued, 0, 31));
-        // $this->writeStyledText($pdf, 50, 70, $data->message);
+        $this->writeStyledText($pdf, 6.5, 83.5, substr($data->registered_address_continued, 0, 31));
+        $this->writeStyledText($pdf, 189, 83.5, $data->zip_code);
+        $this->writeStyledText($pdf, 36.5, 90, $data->contact_number);
+        $this->fillCheckbox($pdf, 157, 90, $data->withholding_agent_category == 'P');
+        $this->fillCheckbox($pdf, 182, 90, $data->withholding_agent_category != 'P');
+        $this->writeStyledText($pdf, 6.5, 100, $data->email_address);
+
+        $amountString = $data->amount_of_remittance;
+        $cleanedAmountString = str_replace(',', '', $amountString);
+        $number = (float)$cleanedAmountString;
+        //Part II
+        $amountFormatted = number_format((float)$data->amount_of_remittance, 2, '.', '');
+        $this->writeRightAlignedText($pdf, 184.4, 112.25, $amountFormatted, 25); // Adjust 25 to match your field width
     }
 
-    protected function writeStyledText($pdf, $x, $y, $text)
+    protected function writeStyledText($pdf, $x, $y, $text, $cellWidth = 200)
     {
         $pdf->SetXY($x, $y);
-        $cellWidth = 200;
         $pdf->Cell($cellWidth, 10, strtoupper($text), 0, 0, 'L');
+    }
+
+    protected function writeRightAlignedText($pdf, $x, $y, $text, $fieldWidth)
+    {
+        $pdf->setFontSpacing(0); // Reset font spacing for proper width calculation
+        $textWidth = $pdf->GetStringWidth($text);
+        $rightAlignedX = $x + $fieldWidth - $textWidth;
+        $pdf->SetXY($rightAlignedX, $y);
+        $pdf->setFontSpacing(2.55); // Restore your desired letter spacing
+        $pdf->Cell($textWidth, 10, strtoupper($text), 0, 0, 'R');
+    }
+
+    protected function fillCheckbox($pdf, $x, $y, $condition)
+    {
+        if ($condition) {
+            $this->writeStyledText($pdf, $x, $y, 'X', 10);
+        }
     }
 }
