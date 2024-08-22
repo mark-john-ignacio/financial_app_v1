@@ -130,3 +130,5 @@ $routes->get('bir-forms/1601eq', 'BirForms::form1601eq');
 $routes->post('bir-forms/submit-1601eq', 'BirForms::submit1601eq');
 
 $routes->post('api/pdf', 'API\\BIRPDF\\BIRPDF::generatePdf');
+
+$routes->post('api/pdfs', 'API\\BIRPDF\\BIRPDF2550Q::generatePdf');

@@ -115,7 +115,7 @@
 </head>
 <body>
 
-<script>
+<!-- <script>
     function logFormValues() {
         // Get the form element
         var form = document.getElementById('frmpos');
@@ -159,13 +159,10 @@
         logFormValues();
     });
     
-</script>
+</script> -->
 
-
-
-
-<form action="#" name="frmpos" id="frmpos" method="post" target="_blank">
-<input  class="btn btn-primary" type="button" value="Get Values" onclick="logFormValues()">
+<form action="bir1601eq.php" name="frmpos" id="frmpos" method="post" target="_blank">
+<!-- <input  class="btn btn-primary" type="button" value="Get Values" onclick="logFormValues()"> -->
         <div class="container">
             <br>
             <div class="row">
@@ -173,9 +170,48 @@
                 &nbsp;
                 </div>
                 <div class="col-sm-2">
-                    <button type="submit" class="btn btn-success btn-sm btn-block"><i class="fa fa-print"></i>&nbsp;PRINT PDF</button>
+                    <!-- <button type="submit" class="btn btn-success btn-sm btn-block"><i class="fa fa-print"></i>&nbsp;PRINT PDF</button> -->
+                    <button type="button" id="btnPrintPdf" class="btn btn-success btn-sm btn-block">
+                        <i class="fa fa-print"></i>&nbsp;PRINT PDF
+                    </button>
                 </div>
             </div>
+            <script>
+                $(document).ready(function() {
+                    $("#btnPrintPdf").on("click", function(event) {
+                        event.preventDefault(); // Prevent the default button action
+
+                        // Serialize form data into a JSON object
+                        var formData = {};
+                        $("#frmpos").serializeArray().forEach(function(item) {
+                            formData[item.name] = item.value;
+                        });
+                        console.log("Form data:", formData);
+
+                        // Send the JSON data to the specified URL using AJAX
+                        $.ajax({
+                            url: "<?= $UrlBase . 'system_management/api/pdfs' ?>",
+                            type: "POST",
+                            contentType: "application/json",
+                            data: JSON.stringify(formData),
+                            xhrFields: {
+                                responseType: 'arraybuffer'
+                            },
+                            success: function(response) {
+                                var blob = new Blob([response], { type: 'application/pdf' });
+                                var url = URL.createObjectURL(blob);
+                                window.open(url, '_blank');
+                            },
+                            error: function(xhr, status, error) {
+                                console.error("Error:", error);
+                                if (xhr.responseType !== 'arraybuffer') {
+                                    console.error("Server response:", xhr.responseText);
+                                }
+                            }
+                        });
+                    });
+                });
+                </script>
 
             <div class="row mt-2">
                 <div class="col-12"><img src="../../bir_forms/birheader.jpg" width="100%"></div>
@@ -200,9 +236,9 @@
                                         <div style="margin-left: 10px;">
                                             <ul class="ichecks list-inline" style="margin: 0px !important">
 
-                                                <li><input tabindex="3" type="radio" id="txt2550q_accountingperiods1" name="txt2550q_accountingperiods" value="C"><label for="txt2550q_accountingperiods1">&nbsp;Calendar</li>
+                                                <li><input tabindex="3" type="radio" id="txt2550q_accountingperiods1" name="txt2550q_accountingperiods" <?=($comprdo['reporting_period_type']=="calendar") ? "checked" : "disabled"?> value="C"><label for="txt2550q_accountingperiods1">&nbsp;Calendar</li>
 
-                                                <li><input tabindex="3" type="radio" id="txt2550q_accountingperiods2" name="txt2550q_accountingperiods" value="F"><label for="txt2550q_accountingperiods2">&nbsp;Fiscal</li>
+                                                <li><input tabindex="3" type="radio" id="txt2550q_accountingperiods2" name="txt2550q_accountingperiods" <?=($comprdo['reporting_period_type']=="fiscal") ? "checked" : "disabled"?> value="F"><label for="txt2550q_accountingperiods2">&nbsp;Fiscal</li>
                                             </ul>
                                         </div>
                                     </div>
