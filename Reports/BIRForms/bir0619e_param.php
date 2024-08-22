@@ -191,7 +191,7 @@ function openBlobUrlInNewTab(blobUrl, filename) {
 function revokeBlobUrl(blobUrl) {
     setTimeout(function() {
         window.URL.revokeObjectURL(blobUrl);
-    }, 1000);
+    }, 5000);
 }
 
 function handleError(xhr, status, error) {
