@@ -42,6 +42,8 @@
 
     <link href="../../global/css/components.css?x=<?=time()?>" rel="stylesheet" type="text/css"/>
 
+    <link href="css/style.css?x=<?=time()?>" rel="stylesheet" type="text/css"/>
+
     <script src="../../Bootstrap/js/jquery-3.2.1.min.js"></script>
     <script src="../../js/bootstrap3-typeahead.min.js"></script>
     <script src="../../include/select2/select2.full.min.js"></script>

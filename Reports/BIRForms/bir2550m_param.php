@@ -76,104 +76,107 @@
                 <div class="col-12" style="margin-top: 3px !important">
                     <table class="table table-sm table-bordered" style="margin: 0px !important">
                         <tr>
-                            <td align="center" colspan="6"> <b> Part I - Background Information</b></td>
+                            <td align="center" colspan="5"><b>Part I - Background Information</b></td>
                         </tr>
                         <tr>
-                            <td width="20%"> <b> 4 </b> Taxpayer Identification Number (TIN) </td>
-                            <td width ="30%"><input type="text" class="form-control input-sm" name="taxpayer_tin" id="taxpayer_tin" value="<?=$comprdo['comptin']?>" readonly></td>
-                            <td width="10%"> <b> 5 </b> RDO Code </td>
-                            <td width="5%"><input type="text" class="form-control input-sm" name="rdo_code" id="rdo_code" value="<?=$comprdo['comprdo']?>" readonly></td>
-                            <td width="10%"> <b> 6 </b> Line of Business </td>
-                            <td><input type="text" class="form-control input-sm" name="line_of_business" id="line_of_business" value="<?=$comprdo['compbustype']?>" readonly></td>
+                            <td width="20%"><b>4</b> Taxpayer Identification Number (TIN)</td>
+                            <td width="30%"><input type="text" class="form-control input-sm" name="taxpayer_tin" id="taxpayer_tin" value="<?=$comprdo['comptin']?>" readonly></td>
+                            <td width="10%"><b>5</b> RDO Code</td>
+                            <td width="10%"><input type="text" class="form-control input-sm" name="rdo_code" id="rdo_code" value="<?=$comprdo['comprdo']?>" readonly></td>
+                            <td width="30%"><b>6</b> Line of Business<input type="text" class="form-control input-sm" name="line_of_business" id="line_of_business" value="<?=$comprdo['compbustype']?>" readonly></td>
                         </tr>
                         <tr>
                             <td colspan="4">
-                                <b> 7 </b> Withholding Agent's Name (Last Name, First Name, Middle Name for Individual OR Registered Name for Non-Individual)
+                                <b>7</b> Withholding Agent's Name (Last Name, First Name, Middle Name for Individual OR Registered Name for Non-Individual)
                                 <input type="text" class="form-control input-sm" name="withholding_agent_name" id="withholding_agent_name" value="<?=$comprdo['compname']?>" readonly>
                             </td>
-                            <td colspan ="2">
-                                <b> 8 </b> Telephone Number
+                            <td>
+                                <b>8</b> Telephone Number
                                 <input type="text" class="form-control input-sm" name="telephone_number" id="telephone_number" value="<?=$comprdo['bir_sig_phone']?>" readonly>
                             </td>
                         </tr>
                         <tr>
-                        <td colspan="4">
-                            <b> 10 </b> Registered Address 
-                            <small>(Indicate complete address. If branch, indicate the branch address. If registered address is different from the current address, go to the RDO to update registered address by using BIR Form No. 1905)</small>
-                            <input type="text" class="form-control input-sm" name="registered_address" id="registered_address" value="<?=substr($comprdo['compadd'],0,40)?>" readonly>
-                        </td>
-                        </tr>
-                        <tr>
-                            <td colspan="2">
-                                <input type="text" class="form-control input-sm" name="registered_address_continued" id="registered_address_continued" value="<?=(strlen($comprdo['compadd']) > 40) ? substr($comprdo['compadd'],40,71) : ""?>" readonly>
-                            </td>
-                            <td align="right" style="vertical-align: middle">
-                                <b> 10A </b> ZIP Code
+                            <td colspan="4">
+                                <b>9</b> Registered Address 
+                                <small>(Indicate complete address. If branch, indicate the branch address. If registered address is different from the current address, go to the RDO to update registered address by using BIR Form No. 1905)</small>
+                                <input type="text" class="form-control input-sm" name="registered_address" id="registered_address" value="<?=substr($comprdo['compadd'],0,100)?>" readonly>
                             </td>
                             <td>
+                                <b>10</b> ZIP Code
                                 <input type="text" class="form-control input-sm" name="zip_code" id="zip_code" value="<?=$comprdo['compzip']?>" readonly>
                             </td>
                         </tr>
                         <tr>
-                            <td colspan="4" style="padding: 0px !important"> 
-                                <table class="table table-sm table-borderedless" style="margin: 0px !important">
-                                <tr>
-                                    <td width="200px" style="vertical-align: middle; border-right: 1px solid #dddddd !important">
-                                        <b> 11 </b> Contact Number
-                                    </td>
-                                    <td width="250px" style="border-right: 1px solid #dddddd !important"> 
-                                        <input type="text" class="form-control input-sm" name="contact_number" id="contact_number" value="<?=$comprdo['bir_sig_phone']?>"> 
-                                    </td>
-                                    <td width="250px" style="vertical-align: middle;">
-                                        <b> 12 </b> Category of Withholding Agent
-                                    </td>
-                                    <td style="vertical-align: middle;"> 
-                                        <div class="input-group">
+                            <td colspan="5" style="padding: 0px !important"> 
+                                <table class="table table-sm table-borderless" style="margin: 0px !important">
+                                    <td colspan="4">
+                                        <b>11</b> Are you availing tax relief under Special Law or International Tax Treaty?
+                                        <div style="margin-top: 5px">
                                             <ul class="ichecks list-inline" style="margin: 0px !important">
-                                                <li>
-                                                    <input tabindex="3" type="radio" id="category_private" name="withholding_agent_category" value="P" checked>
-                                                    <label for="category_private">&nbsp;PRIVATE</label>
-                                                </li>
-                                                <li>
-                                                    <input tabindex="3" type="radio" id="category_government" name="withholding_agent_category" value="G">
-                                                    <label for="category_government">&nbsp;GOVERNMENT</label>
-                                                </li>
+                                                <li><input tabindex="3" type="radio" id="tax_relief_yes" name="tax_relief" value="yes"><label for="tax_relief_yes">&nbsp;Yes</label></li>
+                                                <li><input tabindex="3" type="radio" id="tax_relief_no" name="tax_relief" value="no" checked><label for="tax_relief_no">&nbsp;No</label></li>
                                             </ul>
                                         </div>
-                                    </td>
-                                </tr>
-                                </table>
-                            </td> 
-                            <tr>
-                                <td style="vertical-align: middle;"> <b> 13 </b> Email Address </td>
-                                <td colspan="3">
-                                    <input type="text" class="form-control input-sm" name="email_address" id="email_address" value="<?=$comprdo['bir_sig_email']?>">
-                                </td>
-                            </tr>                                          
+                                        </td>
+                                    <td colspan="1">
+                                        <div id="tax_relief_specify" style="display: none; margin-top: 5px;">
+                                            <label for="tax_relief_details">If yes, specify:</label>
+                                            <input type="text" class="form-control input-sm" name="tax_relief_details" id="tax_relief_details">
+                                        </div>
+                                    </td> 
+                            </td>
                         </tr>
                     </table>
                 </div>
                 <div class="col-12" style="margin-top: 3px !important">
                     <table class="table table-sm table-bordered" style="margin: 0px !important">
                         <tr>
-                            <td align="center" colspan="5"> <b> Part II - Tax Remittance</b></td>
+                            <td align="center" colspan="5"> <b> Part II - Computation of Tax</b></td>
                         </tr>
                         <tr>
-                            <td colspan="4" style="vertical-align: middle;"><b> 14 </b> Amount of Remittance </td>                                       
+                        <tr>
+                            <td align="center" colspan="3" width="60%"> <b>&nbsp;  </b> </td>
+                            <td align="center" nowrap> <b> Sales Reciepts for the Month </b> </td>
+                            <td align="center" nowrap> <b> Output Tax Due for the Month </b> </td>
+                        </tr>
+                        <tr>
+                            <td colspan="3" style="vertical-align: middle;"><b> 12 </b> VATable Sales/Receipt-Private (Sch .1) </td>
+                            <td>
+                                <b class="inline-block">12A</b>
+                                <input type="text" class="xcompute form-control input-sm text-right inline-block input-auto-width" name="vatable_sales_receipt_private_12a" id="vatable_sales_receipt_private_12a" value="<?= "0.00"?>">
+                            </td>
                             <td>  
-                                <input type="text" class="xcompute form-control input-sm text-right" name="amount_of_remittance" id="amount_of_remittance" value="<?= "0.00"?>"> 
+                                <b class="inline-block">12B</b>
+                                <input type="text" class="xcompute form-control input-sm text-right inline-block input-auto-width" name="vatable_sales_receipt_private_12b" id="vatable_sales_receipt_private_12b" value="<?= "0.00"?>"> 
                             </td>
                         </tr>
                         <tr>
-                            <td colspan="4" style="vertical-align: middle;"><b> 15 </b> Less: Amount Remitted from Previously Filed Form, if this is an amended form</td>                                       
+                            <td colspan="3" style="vertical-align: middle;"><b> 13 </b> Sales to Government </td>
+                            <td>
+                                <b class="inline-block">13A</b>
+                                <input type="text" class="xcompute form-control input-sm text-right inline-block input-auto-width" name="sales_to_government_13a" id="sales_to_government_13a" value="<?= "0.00"?>">
+                            </td>
                             <td>  
-                                <input type="text" class="xcompute form-control input-sm text-right" name="amount_remitted_previous" id="amount_remitted_previous" value="0.00"> 
+                                <b class="inline-block">13B</b>
+                                <input type="text" class="xcompute form-control input-sm text-right inline-block input-auto-width" name="sales_to_government_13b" id="sales_to_government_13b" value="<?= "0.00"?>"> 
                             </td>
                         </tr>
                         <tr>
-                            <td colspan="4" style="vertical-align: middle;"><b> 16 </b> Net Amount of Remittance <i>(Item 14 Less Item 15)</i></td>
+                            <td colspan="3" style="vertical-align: middle;"><b> 14 </b> Zero Rated Sales/Receipts </td>
+                            <td>
+                                <b class="inline-block">&nbsp;&nbsp;14</b>
+                                <input type="text" class="xcompute form-control input-sm text-right inline-block input-auto-width" name="zero_rated_sales_receipts" id="zero_rated_sales_receipts" value="<?= "0.00"?>">
+                            </td>
                             <td>  
-                                <input type="text" class="xcompute form-control input-sm text-right" name="net_amount_of_remittance" id="net_amount_of_remittance" value="0.00" readonly> 
+                            </td>
+                        </tr>
+                        <tr>
+                            <td colspan="3" style="vertical-align: middle;"><b> 15 </b> Zero Rated Sales/Receipts </td>
+                            <td>
+                                <b class="inline-block">&nbsp;&nbsp;14</b>
+                                <input type="text" class="xcompute form-control input-sm text-right inline-block input-auto-width" name="zero_rated_sales_receipts" id="zero_rated_sales_receipts" value="<?= "0.00"?>">
+                            </td>
+                            <td>  
                             </td>
                         </tr>
                         <tr>
@@ -219,3 +222,24 @@
 </body>
 </html>
 <script src="js/bir0619e_param.js"></script>
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        const taxReliefSpecify = document.getElementById('tax_relief_specify');
+
+        // Initialize iCheck
+        $(".ichecks input").iCheck({
+            checkboxClass: 'icheckbox_square-blue',
+            radioClass: 'iradio_square-blue',
+            increaseArea: '20%' // optional
+        });
+
+        // Bind iCheck events
+        $('#tax_relief_yes').on('ifChecked', function() {
+            taxReliefSpecify.style.display = 'block';
+        });
+
+        $('#tax_relief_no').on('ifChecked', function() {
+            taxReliefSpecify.style.display = 'none';
+        });
+    });
+</script>
