@@ -26,8 +26,8 @@
                 <div class="col-12" style="padding-top: 5px; padding-bottom: 0px">
                     <table class="table table-sm table-bordered" style="margin: 0px !important">
                         <tr>
-                            <td align="center" width="150px"> BIR FORM No.<h3 class="nopadding">0619-E</h3>January 2018 (ENCS)<br>Page 1</td>
-                            <td align="center" style="vertical-align: middle !important;"><h3 class="nopadding">Monthy Remittance Form</h3><h4 class="nopadding">of Creditable Income Taxes Withheld (Expanded)</h4></td>
+                            <td align="center" width="150px"> BIR FORM No.<h3 class="nopadding">2550M</h3>February 2007 (ENCS)<br>Page 1</td>
+                            <td align="center" style="vertical-align: middle !important;"><h3 class="nopadding">Monthy Value Added Tax</h3><h4 class="nopadding">Declaration</h4></td>
                             <td align="center" width="200px" style="vertical-align: middle !important;"><img src="../../bir_forms/hdr1601eq.jpg" width="100%"> </td>
                         </tr>
                     </table>
@@ -49,32 +49,16 @@
                             </table>
                         </td>
                         <td align="center" width="20%">
-                            <b>2.</b> Due Date (MM/DD/YYYY)
-                            <table>
-                                <tr>
-                                    <td>
-                                        <input type="text" class="form-control input-sm" name="due_month" id="due_month" value="<?= isset($due_month) ? $due_month :  $month ?>" style="width: 80px;">
-                                    </td>
-                                    <td>
-                                        <input type="text" class="form-control input-sm" name="due_day" id="due_day" value="<?= isset($due_day) ? $due_day :  "01" ?>" style="width: 80px;">
-                                    </td>
-                                    <td>
-                                        <input type="text" class="form-control input-sm" name="due_year" id="due_year" value="<?= isset($due_year) ? $due_year :  $year ?>" style="width: 80px;">
-                                    </td>
-                                </tr>
-                            </table>
-                        </td>
-                        <td align="center" width="20%">
-                            <b>3.</b> Amended Form?
+                            <b>2.</b> Amended Return?
                             <div class="input-group">
                                 <div style="margin-top: 5px">
                                     <ul class="ichecks list-inline" style="margin: 0px !important">
                                         <li>
-                                            <input tabindex="3" type="radio" id="amended_yes" name="amended_form" value="Y">
+                                            <input tabindex="3" type="radio" id="amended_yes" name="amended_return" value="Y">
                                             <label for="amended_yes">&nbsp;YES</label>
                                         </li>
                                         <li>
-                                            <input tabindex="3" type="radio" id="amended_no" name="amended_form" value="N" checked>
+                                            <input tabindex="3" type="radio" id="amended_no" name="amended_return" value="N" checked>
                                             <label for="amended_no">&nbsp;NO</label>
                                         </li>
                                     </ul>
@@ -82,29 +66,8 @@
                             </div>
                         </td>
                         <td align="center" width="20%">
-                            <b>4.</b> Any Taxes Withheld?
-                            <div class="input-group">
-                                <div style="margin-top: 5px">
-                                    <ul class="ichecks list-inline" style="margin: 0px !important">
-                                        <li>
-                                            <input tabindex="3" type="radio" id="taxes_withheld_yes" name="taxes_withheld" value="Y">
-                                            <label for="taxes_withheld_yes">&nbsp;YES</label>
-                                        </li>
-                                        <li>
-                                            <input tabindex="3" type="radio" id="taxes_withheld_no" name="taxes_withheld" value="N" checked>
-                                            <label for="taxes_withheld_no">&nbsp;NO</label>
-                                        </li>
-                                    </ul>
-                                </div>
-                            </div>
-                        </td>
-                        <td align="center" width="10%">
-                            <b>5.</b> ATC
-                            <input type="text" class="form-control input-sm" name="atc" id="atc" value="<?= "WME10" ?>" readonly style="width: 80px;">
-                        </td>
-                        <td align="center" width="10%">
-                            <b>6.</b> Tax Type Code
-                            <input type="text" class="form-control input-sm" name="tax_type_code" id="tax_type_code" value="<?= "WE" ?>" readonly style="width: 80px;">
+                            <b>3.</b> No. of Sheets Attached
+                            <input type="text" class="form-control input-sm" name="no_of_sheets" id="no_of_sheets" value="0">
                         </td>
                     </tr>
                     </table>
@@ -113,18 +76,24 @@
                 <div class="col-12" style="margin-top: 3px !important">
                     <table class="table table-sm table-bordered" style="margin: 0px !important">
                         <tr>
-                            <td align="center" colspan="4"> <b> Part I - Background Information</b></td>
+                            <td align="center" colspan="6"> <b> Part I - Background Information</b></td>
                         </tr>
                         <tr>
-                            <td width="20%"> <b> 7 </b> Taxpayer Identification Number (TIN) </td>
-                            <td><input type="text" class="form-control input-sm" name="taxpayer_tin" id="taxpayer_tin" value="<?=$comprdo['comptin']?>" readonly></td>
-                            <td align="right" nowrap width="100"> <b> 8 </b> RDO Code </td>
-                            <td width="100"><input type="text" class="form-control input-sm" name="rdo_code" id="rdo_code" value="<?=$comprdo['comprdo']?>" readonly></td>
+                            <td width="20%"> <b> 4 </b> Taxpayer Identification Number (TIN) </td>
+                            <td width ="30%"><input type="text" class="form-control input-sm" name="taxpayer_tin" id="taxpayer_tin" value="<?=$comprdo['comptin']?>" readonly></td>
+                            <td width="10%"> <b> 5 </b> RDO Code </td>
+                            <td width="5%"><input type="text" class="form-control input-sm" name="rdo_code" id="rdo_code" value="<?=$comprdo['comprdo']?>" readonly></td>
+                            <td width="10%"> <b> 6 </b> Line of Business </td>
+                            <td><input type="text" class="form-control input-sm" name="line_of_business" id="line_of_business" value="<?=$comprdo['compbustype']?>" readonly></td>
                         </tr>
                         <tr>
                             <td colspan="4">
-                                <b> 9 </b> Withholding Agent's Name (Last Name, First Name, Middle Name for Individual OR Registered Name for Non-Individual)
+                                <b> 7 </b> Withholding Agent's Name (Last Name, First Name, Middle Name for Individual OR Registered Name for Non-Individual)
                                 <input type="text" class="form-control input-sm" name="withholding_agent_name" id="withholding_agent_name" value="<?=$comprdo['compname']?>" readonly>
+                            </td>
+                            <td colspan ="2">
+                                <b> 8 </b> Telephone Number
+                                <input type="text" class="form-control input-sm" name="telephone_number" id="telephone_number" value="<?=$comprdo['bir_sig_phone']?>" readonly>
                             </td>
                         </tr>
                         <tr>
