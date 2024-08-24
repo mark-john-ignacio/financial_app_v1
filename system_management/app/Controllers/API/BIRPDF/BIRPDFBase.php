@@ -71,11 +71,12 @@ abstract class BIRPDFBase extends BaseController
 
     protected function writeRightAlignedText($x, $y, $text, $fieldWidth)
     {
+        $letterSpacing = $this->pdf->getFontSpacing(); 
         $this->pdf->setFontSpacing(0); // Reset font spacing for proper width calculation
         $textWidth = $this->pdf->GetStringWidth($text);
         $rightAlignedX = $x + $fieldWidth - $textWidth;
         $this->pdf->SetXY($rightAlignedX, $y);
-        $this->pdf->setFontSpacing(2.55); // Restore your desired letter spacing
+        $this->pdf->setFontSpacing($letterSpacing); // Restore your desired letter spacing
         $this->pdf->Cell($textWidth, 10, strtoupper($text), 0, 0, 'R');
     }
 

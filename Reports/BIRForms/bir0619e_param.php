@@ -1,7 +1,7 @@
 <?php include 'layouts/default.php'; ?>
 
 <body>
-    <form action="bir1601eq.php" name="frmpos" id="frmpos" method="post" target="_blank" data-url-base="<?= $UrlBase ?>">
+    <form action="bir1601eq.php" name="frmpos" id="frmpos" method="post" target="_blank" data-api-url="<?= $UrlBase . "system_management/api/pdf/0619e"?>">
         <input type="hidden" value="<?= $comprdo['bir_sig_sign']?>" name="signature_image">
         <div class="container">
             <br>

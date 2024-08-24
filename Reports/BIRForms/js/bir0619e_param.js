@@ -2,7 +2,7 @@
     'use strict';
 
     $(document).ready(function() {
-        var urlBase = $('#frmpos').data('url-base');
+        var apiURL = $('#frmpos').data('api-url');
 
         document.title = "BIR Form No. 0619-E";
 
@@ -22,7 +22,7 @@
         $("#btnPrintPdf").on("click", function(event) {
             event.preventDefault();
             var formData = getFormData("#frmpos");
-            sendAjaxRequest(formData, urlBase);
+            sendAjaxRequest(formData, apiURL);
         });
 
         $amountOfRemittance.add($amountRemittedPrevious).on('input', calculateNetAmount);
@@ -45,9 +45,9 @@
             return formData;
         }
 
-        function sendAjaxRequest(formData, urlBase) {
+        function sendAjaxRequest(formData, apiURL) {
             $.ajax({
-                url: urlBase + 'system_management/api/pdf/0619e',
+                url: apiURL,
                 type: "POST",
                 contentType: "application/json",
                 data: JSON.stringify(formData),
