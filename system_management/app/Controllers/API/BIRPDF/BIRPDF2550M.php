@@ -5,12 +5,12 @@ use TCPDF_FONTS;
 
 class BIRPDF2550M extends BIRPDFBase
 {
-    public function generatePdf()
+    public function generatePdf($json = null, $fileName = null)
     {
         $json = $this->request->getJSON();
         $this->loadTemplate('BIRForm2550-M.pdf');
         $fileName = 'BIR_Form_' . $json->taxpayer_tin . '_' . date('Y-m-d') . '.pdf';
-        return $this->generatePdfBase($json, $fileName);
+        return parent::generatePdf($json, $fileName);
     }
 
     protected function fillFields($data)

@@ -4,6 +4,9 @@
     $(document).ready(function() {
         var urlBase = $('#frmpos').data('url-base');
 
+        document.title = "BIR Form No. 0619-E";
+
+
         // Cache jQuery selectors
         const $amountOfRemittance = $('#amount_of_remittance');
         const $amountRemittedPrevious = $('#amount_remitted_previous');

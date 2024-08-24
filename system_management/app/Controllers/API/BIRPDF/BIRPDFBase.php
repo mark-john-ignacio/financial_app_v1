@@ -36,7 +36,7 @@ abstract class BIRPDFBase extends BaseController
     
     protected abstract function fillFields($data);
     
-    protected function generatePdfBase($json, $fileName)
+    protected function generatePdf($json, $fileName)
     {
         try {
 
@@ -94,6 +94,9 @@ abstract class BIRPDFBase extends BaseController
         $this->writeRightAlignedText($x, $y, $amountFormatted, $fieldWidth);
     }
 
+    // TODO: Move image inside the ci4 project to make it secure
+    // TODO: Create an API for fetching the image
+    // TODO: Create a module for setting signature image
     protected function processSignatureImage($x, $y, $imageRelativePath)
     {
         $imageRelativePath = preg_replace('/^\.\.\//', '', $imageRelativePath);
