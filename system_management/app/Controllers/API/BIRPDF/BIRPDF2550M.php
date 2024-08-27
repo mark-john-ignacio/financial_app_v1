@@ -8,13 +8,14 @@ class BIRPDF2550M extends BIRPDFBase
     public function generatePdf($json = null, $fileName = null)
     {
         $json = $this->request->getJSON();
-        $this->loadTemplate('BIRForm2550-M-4.pdf');
+        $this->loadTemplate('BIRForm2550-M.pdf');
         $fileName = 'BIR_Form_' . $json->taxpayer_tin . '_' . date('Y-m-d') . '.pdf';
         return parent::generatePdf($json, $fileName);
     }
 
     protected function fillFields($data)
     {
+        $this->pdf->SetPage(1);
         $fontPath = APPPATH . 'Fonts/SourceCodePro-Bold.ttf';
         $fontname = TCPDF_FONTS::addTTFfont($fontPath, 'TrueTypeUnicode', '', 96);
         $this->pdf->SetFont($fontname, '', 12);
@@ -24,7 +25,7 @@ class BIRPDF2550M extends BIRPDFBase
         $letterSpacing3 = -0.3;
         $letterSpacing4 = -0.8;
 
-        $this->pdf->SetPage(1);
+
 
         $this->pdf->setFontSpacing($letterSpacing2);
         $this->writeStyledText(64, 29, $data->month);
@@ -64,28 +65,31 @@ class BIRPDF2550M extends BIRPDFBase
         $this->pdf->setFontSpacing($letterSpacing3);
         $this->writeStyledText(140, 64.5, $data->tax_relief_details);
 
-        $this->pdf->setFontSpacing($letterSpacing);
+        $this->pdf->setFontSpacing($letterSpacing3);
         // $this->writeRightAlignedText(122, 76.2, $data->vat_sales_12a, 25);
-        $this->processAndWriteAmount(122, 76.2, $data->vat_sales_12a);
+        $this->processAndWriteAmount(125, 76.2, $data->vat_sales_12a);
     }
 
     protected function processAndWriteAmount($x, $y, $amountString, $fieldWidth = 25)
     {
         $cleanedAmountString = str_replace(',', '', $amountString);
         $number = (float)$cleanedAmountString;
-        $amountFormatted = number_format($number, 2, '.', '');
+        $amountFormatted = number_format($number, 2, '.', ','); // Add thousand separators
         $this->writeRightAlignedText($x, $y, $amountFormatted, $fieldWidth);
     }
 
     protected function writeRightAlignedText($x, $y, $text, $fieldWidth)
     {
-        $letterSpacing = $this->pdf->getFontSpacing(); 
-        $this->pdf->setFontSpacing(1); // Reset font spacing for proper width calculation
+        $originalFontSpacing = $this->pdf->getFontSpacing();
+        $this->pdf->setFontSpacing(0); // Reset font spacing for proper width calculation
         $textWidth = $this->pdf->GetStringWidth($text);
         $rightAlignedX = $x + $fieldWidth - $textWidth;
-        // dd($rightAlignedX, $x, $fieldWidth, $textWidth);
+        
+        // Ensure the text doesn't overflow to the left
+        $rightAlignedX = max($x, $rightAlignedX);
+        
         $this->pdf->SetXY($rightAlignedX, $y);
-        $this->pdf->setFontSpacing($letterSpacing); // Restore your desired letter spacing
-        $this->pdf->Cell($textWidth, 10, strtoupper($text), 0, 0, 'R');
+        $this->pdf->setFontSpacing($originalFontSpacing); // Restore original letter spacing
+        $this->pdf->Cell($textWidth, 10, $text, 0, 0, 'R');
     }
 }

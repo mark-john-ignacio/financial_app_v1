@@ -2,7 +2,7 @@
 <!-- TODO: Create the prepare page for 2550M -->
 
 <body>
-    <form action="bir1601eq.php" name="frmpos" id="frmpos" method="post" target="_blank" data-api-url="<?= $UrlBase . "/system_management/api/pdf/2550m"?>">
+    <form action="bir1601eq.php" name="frmpos" id="frmpos" method="post" target="_blank" data-api-url="<?= $UrlBase . "system_management/api/pdf/2550m"?>">
         <input type="hidden" value="<?= $comprdo['bir_sig_sign']?>" name="signature_image">
         <div class="container">
             <br>
