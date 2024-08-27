@@ -244,7 +244,7 @@
                             </td>
                             <td>  
                                 <b class="inline-block">17F</b>
-                                <input type="text" class="xcompute form-control input-sm text-right inline-block input-auto-width" name="total_less_17f" id="total_less_17f" value="<?= "0.00"?>">
+                                <input type="text" class="xcompute form-control input-sm text-right inline-block input-auto-width" name="total_less_17f" id="total_less_17f" value="<?= "0.00"?>" readonly>
                             </td>
                         </tr>
                         <tr>
@@ -338,7 +338,7 @@
                             <td colspan="3" style="vertical-align: middle;"><b class="padded-label"> 18P </b> Total Current Purchases (Sum of 18A, 18C, 18E, 18G, 18I, 18K, 18M, 18N)</td>
                             <td>
                                 <b class="inline-block">18P</b>
-                                <input type="text" class="xcompute form-control input-sm text-right inline-block input-auto-width" name="total_current_purchases_18p" id="total_current_purchases_18p" value="<?= "0.00"?>">
+                                <input type="text" class="xcompute form-control input-sm text-right inline-block input-auto-width" name="total_current_purchases_18p" id="total_current_purchases_18p" value="<?= "0.00"?>" readonly>
                             </td>
                         </tr>
                         <tr>
@@ -348,7 +348,7 @@
                             </td>
                             <td>
                                 <b class="inline-block">19</b>
-                                <input type="text" class="xcompute form-control input-sm text-right inline-block input-auto-width" name="total_available_input_tax_19" id="total_available_input_tax_19" value="<?= "0.00"?>">
+                                <input type="text" class="xcompute form-control input-sm text-right inline-block input-auto-width" name="total_available_input_tax_19" id="total_available_input_tax_19" value="<?= "0.00"?>" readonly>
                             </td>
                         </tr>
                         <tr>
@@ -399,7 +399,7 @@
                             <td></td>
                             <td>
                                 <b class="inline-block">20F</b>
-                                <input type="text" class="xcompute form-control input-sm text-right inline-block input-auto-width" name="total_20f" id="total_20f" value="<?= "0.00"?>">
+                                <input type="text" class="xcompute form-control input-sm text-right inline-block input-auto-width" name="total_20f" id="total_20f" value="<?= "0.00"?>" readonly>
                             </td>
                         </tr>
                         <tr>
@@ -407,7 +407,7 @@
                             <td></td>
                             <td>
                                 <b class="inline-block">21</b>
-                                <input type="text" class="xcompute form-control input-sm text-right inline-block input-auto-width" name="total_allowable_input_tax_21" id="total_allowable_input_tax_21" value="<?= "0.00"?>">
+                                <input type="text" class="xcompute form-control input-sm text-right inline-block input-auto-width" name="total_allowable_input_tax_21" id="total_allowable_input_tax_21" value="<?= "0.00"?>" readonly>
                             </td>
                         </tr>
                         <tr>
@@ -415,7 +415,7 @@
                             <td></td>
                             <td>
                                 <b class="inline-block">22</b>
-                                <input type="text" class="xcompute form-control input-sm text-right inline-block input-auto-width" name="net_vat_payable_22" id="net_vat_payable_22" value="<?= "0.00"?>">
+                                <input type="text" class="xcompute form-control input-sm text-right inline-block input-auto-width" name="net_vat_payable_22" id="net_vat_payable_22" value="<?= "0.00"?>" readonly>
                             </td>
                         </tr>
                         <tr>
@@ -474,7 +474,7 @@
                             <td></td>
                             <td>
                                 <b class="inline-block">23G</b>
-                                <input type="text" class="xcompute form-control input-sm text-right inline-block input-auto-width" name="total_tax_credits_payments_23g" id="total_tax_credits_payments_23g" value="<?= "0.00"?>">
+                                <input type="text" class="xcompute form-control input-sm text-right inline-block input-auto-width" name="total_tax_credits_payments_23g" id="total_tax_credits_payments_23g" value="<?= "0.00"?>" readonly>
                             </td>
                         </tr>
                         <tr>
@@ -482,7 +482,7 @@
                             <td></td>
                             <td>
                                 <b class="inline-block">24</b>
-                                <input type="text" class="xcompute form-control input-sm text-right inline-block input-auto-width" name="tax_still_payable_overpayment_24" id="tax_still_payable_overpayment_24" value="<?= "0.00"?>">
+                                <input type="text" class="xcompute form-control input-sm text-right inline-block input-auto-width" name="tax_still_payable_overpayment_24" id="tax_still_payable_overpayment_24" value="<?= "0.00"?>" readonly>
                             </td>
                         </tr>
                         <tr>
@@ -517,7 +517,7 @@
                             <td></td>
                             <td>
                                 <b class="inline-block">25D</b>
-                                <input type="text" class="xcompute form-control input-sm text-right inline-block input-auto-width" name="total_penalties_25d" id="total_penalties_25d" value="<?= "0.00"?>">
+                                <input type="text" class="xcompute form-control input-sm text-right inline-block input-auto-width" name="total_penalties_25d" id="total_penalties_25d" value="<?= "0.00"?>" readonly>
                             </td>
                         </tr>
                         <tr>
@@ -525,7 +525,7 @@
                             <td></td>
                             <td>
                                 <b class="inline-block">26</b>
-                                <input type="text" class="xcompute form-control input-sm text-right inline-block input-auto-width" name="total_amount_payable_overpayment_26" id="total_amount_payable_overpayment_26" value="<?= "0.00"?>">
+                                <input type="text" class="xcompute form-control input-sm text-right inline-block input-auto-width" name="total_amount_payable_overpayment_26" id="total_amount_payable_overpayment_26" value="<?= "0.00"?>" readonly>
                             </td>
                         </tr>
                     </table>
@@ -538,17 +538,4 @@
 </body>
 </html>
 <script src="js/script.js"></script>
-<script>
-    document.addEventListener('DOMContentLoaded', function() {
-        const taxReliefSpecify = $('#tax_relief_specify');
-
-        // Bind iCheck events
-        $('#tax_relief_yes').on('ifChecked', function() {
-            taxReliefSpecify.show();
-        });
-
-        $('#tax_relief_no').on('ifChecked', function() {
-            taxReliefSpecify.hide();
-        });
-    });
-</script>
+<script src="js/bir2550m_param.js"></script>
