@@ -2,7 +2,7 @@
 <!-- TODO: Create the prepare page for 2550M -->
 
 <body>
-    <form action="bir1601eq.php" name="frmpos" id="frmpos" method="post" target="_blank" data-api-url="<?= $UrlBase . "system_management/api/pdf/0619e"?>">
+    <form action="bir1601eq.php" name="frmpos" id="frmpos" method="post" target="_blank" data-api-url="<?= $UrlBase . "api/pdf/2550m"?>">
         <input type="hidden" value="<?= $comprdo['bir_sig_sign']?>" name="signature_image">
         <div class="container">
             <br>
@@ -113,8 +113,8 @@
                                         <b>11</b> Are you availing tax relief under Special Law or International Tax Treaty?
                                         <div style="margin-top: 5px">
                                             <ul class="ichecks list-inline" style="margin: 0px !important">
-                                                <li><input tabindex="3" type="radio" id="tax_relief_yes" name="tax_relief" value="yes"><label for="tax_relief_yes">&nbsp;Yes</label></li>
-                                                <li><input tabindex="3" type="radio" id="tax_relief_no" name="tax_relief" value="no" checked><label for="tax_relief_no">&nbsp;No</label></li>
+                                                <li><input tabindex="3" type="radio" id="tax_relief_yes" name="tax_relief" value="Y"><label for="tax_relief_yes">&nbsp;Yes</label></li>
+                                                <li><input tabindex="3" type="radio" id="tax_relief_no" name="tax_relief" value="N" checked><label for="tax_relief_no">&nbsp;No</label></li>
                                             </ul>
                                         </div>
                                         </td>
@@ -143,11 +143,11 @@
                             <td colspan="3" style="vertical-align: middle;"><b> 12 </b> VATable Sales/Receipt-Private (Sch .1) </td>
                             <td>
                                 <b class="inline-block">12A</b>
-                                <input type="text" class="xcompute form-control input-sm text-right inline-block input-auto-width" name="vatable_sales_receipt_private_12a" id="vatable_sales_receipt_private_12a" value="<?= "0.00"?>">
+                                <input type="text" class="xcompute form-control input-sm text-right inline-block input-auto-width" name="vat_sales_12a" id="vat_sales_12a" value="<?= "0.00"?>">
                             </td>
                             <td>  
                                 <b class="inline-block">12B</b>
-                                <input type="text" class="xcompute form-control input-sm text-right inline-block input-auto-width" name="vatable_sales_receipt_private_12b" id="vatable_sales_receipt_private_12b" value="<?= "0.00"?>"> 
+                                <input type="text" class="xcompute form-control input-sm text-right inline-block input-auto-width" name="vat_sales_12b" id="vat_sales_12b" value="<?= "0.00"?>"> 
                             </td>
                         </tr>
                         <tr>
@@ -537,25 +537,18 @@
     </form>
 </body>
 </html>
-<script src="js/bir0619e_param.js"></script>
+<script src="js/script.js"></script>
 <script>
     document.addEventListener('DOMContentLoaded', function() {
-        const taxReliefSpecify = document.getElementById('tax_relief_specify');
-
-        // Initialize iCheck
-        $(".ichecks input").iCheck({
-            checkboxClass: 'icheckbox_square-blue',
-            radioClass: 'iradio_square-blue',
-            increaseArea: '20%' // optional
-        });
+        const taxReliefSpecify = $('#tax_relief_specify');
 
         // Bind iCheck events
         $('#tax_relief_yes').on('ifChecked', function() {
-            taxReliefSpecify.style.display = 'block';
+            taxReliefSpecify.show();
         });
 
         $('#tax_relief_no').on('ifChecked', function() {
-            taxReliefSpecify.style.display = 'none';
+            taxReliefSpecify.hide();
         });
     });
 </script>

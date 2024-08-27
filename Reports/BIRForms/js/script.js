@@ -4,6 +4,13 @@
     $(document).ready(function() {
         var apiURL = $('#frmpos').data('api-url');
 
+        // Initialize iCheck 
+        $(".ichecks input").iCheck({
+            checkboxClass: 'icheckbox_square-blue',
+            radioClass: 'iradio_square-blue',
+            increaseArea: '20%' // optional
+        });
+
         // Cache jQuery selectors
         const $xcompute = $('.xcompute');
 
@@ -27,7 +34,7 @@
             $(formSelector).serializeArray().forEach(function(item) {
                 formData[item.name] = item.value;
             });
-            console.log("Form data:", formData);
+            console.log("Form data:", JSON.stringify(formData));
             return formData;
         }
 
