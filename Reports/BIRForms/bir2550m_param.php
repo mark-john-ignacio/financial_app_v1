@@ -165,7 +165,7 @@
                             <td colspan="3" style="vertical-align: middle;"><b> 14 </b> Zero Rated Sales/Receipts </td>
                             <td>
                                 <b class="inline-block">&nbsp;&nbsp;14</b>
-                                <input type="text" class="xcompute form-control input-sm text-right inline-block input-auto-width" name="zero_rated_sales_receipts_14" id="zero_rated_sales_receipts_14" value="<?= "0.00"?>">
+                                <input type="text" class="xcompute form-control input-sm text-right inline-block input-auto-width" name="zero_rated_sales_14" id="zero_rated_sales_14" value="<?= "0.00"?>">
                             </td>
                             <td>  
                             </td>
@@ -174,7 +174,7 @@
                             <td colspan="3" style="vertical-align: middle;"><b> 15 </b> Exempt Sales/Receipts </td>
                             <td>
                                 <b class="inline-block">&nbsp;&nbsp;15</b>
-                                <input type="text" class="xcompute form-control input-sm text-right inline-block input-auto-width" name="exempt_sales_receipts_15" id="exempt_sales_receipts_15" value="<?= "0.00"?>">
+                                <input type="text" class="xcompute form-control input-sm text-right inline-block input-auto-width" name="exempt_sales_15" id="exempt_sales_15" value="<?= "0.00"?>">
                             </td>
                             <td>  
                             </td>
@@ -183,11 +183,11 @@
                             <td colspan="3" style="vertical-align: middle;"><b> 16 </b> Total Sales/Receipts and Output Tax Due </td>
                             <td>
                                 <b class="inline-block">16A</b>
-                                <input type="text" class="xcompute form-control input-sm text-right inline-block input-auto-width" name="total_sales_receipts_output_tax_due_16a" id="total_sales_receipts_output_tax_due_16a" value="<?= "0.00"?>">
+                                <input type="text" class="xcompute form-control input-sm text-right inline-block input-auto-width" name="tot_sales_16a" id="tot_sales_16a" value="<?= "0.00"?>">
                             </td>
                             <td>  
                                 <b class="inline-block">16B</b>
-                                <input type="text" class="xcompute form-control input-sm text-right inline-block input-auto-width" name="total_sales_receipts_output_tax_due_16b" id="total_sales_receipts_output_tax_due_16b" value="<?= "0.00"?>"> 
+                                <input type="text" class="xcompute form-control input-sm text-right inline-block input-auto-width" name="tot_sales_16b" id="tot_sales_16b" value="<?= "0.00"?>"> 
                             </td>
                         </tr>
                         <tr>
