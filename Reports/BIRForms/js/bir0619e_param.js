@@ -18,16 +18,13 @@
         const $xcompute = $('.xcompute');
 
 
+        // Event Listeners
         $amountOfRemittance.add($amountRemittedPrevious).on('input', calculateNetAmount);
         $penaltySurcharge.add($penaltyInterest).add($penaltyCompromise).on('input', calculateTotalPenalties);
-        $xcompute.on('input', handleInputRestriction);
-        $xcompute.on('keypress', handleKeyPressRestriction);
+
         $xcompute.on('input', calculateTotalAmount);
 
-        $('input[type="text"]').on('focus', function() {
-            $(this).select();
-        });
-
+        // Functions
         function calculateNetAmount() {
             const amount14 = parseFloat($amountOfRemittance.val()) || 0;
             const amount15 = parseFloat($amountRemittedPrevious.val()) || 0;
@@ -48,16 +45,6 @@
             const totalPenalties = parseFloat($totalPenalties.val()) || 0;
             const totalAmount = netAmount + totalPenalties;
             $totalAmountOfRemittance.val(totalAmount.toFixed(2));
-        }
-
-        function handleInputRestriction(event) {
-            this.value = this.value.replace(/[^0-9.]/g, '');
-        }
-
-        function handleKeyPressRestriction(event) {
-            if ((event.which != 46 || $(this).val().indexOf('.') != -1) && (event.which < 48 || event.which > 57)) {
-                event.preventDefault();
-            }
         }
     });
 })(jQuery);

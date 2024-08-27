@@ -4,11 +4,21 @@
     $(document).ready(function() {
         var apiURL = $('#frmpos').data('api-url');
 
+        // Cache jQuery selectors
+        const $xcompute = $('.xcompute');
+
         // Event Listeners
         $("#btnPrintPdf").on("click", function(event) {
             event.preventDefault();
             var formData = getFormData("#frmpos");
             sendAjaxRequest(formData, apiURL);
+        });
+
+        $xcompute.on('input', handleInputRestriction);
+        $xcompute.on('keypress', handleKeyPressRestriction);
+
+        $('input[type="text"]').on('focus', function() {
+            $(this).select();
         });
 
         // Functions
@@ -88,6 +98,16 @@
             } else {
                 console.error("Server response:", xhr.responseText);
                 alert("An error occurred: " + xhr.responseText);
+            }
+        }
+
+        function handleInputRestriction(event) {
+            this.value = this.value.replace(/[^0-9.]/g, '');
+        }
+
+        function handleKeyPressRestriction(event) {
+            if ((event.which != 46 || $(this).val().indexOf('.') != -1) && (event.which < 48 || event.which > 57)) {
+                event.preventDefault();
             }
         }
     });
