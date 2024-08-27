@@ -249,3 +249,4 @@
 </body>
 </html>
 <script src="js/bir0619e_param.js"></script>
+<script src="js/script.js"></script>

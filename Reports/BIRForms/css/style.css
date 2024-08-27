@@ -5,3 +5,7 @@
 .input-auto-width {
     width: auto;
 }
+
+.padded-label {
+    padding-left: 30px;
+}
