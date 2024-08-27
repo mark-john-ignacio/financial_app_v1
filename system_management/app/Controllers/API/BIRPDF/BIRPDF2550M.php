@@ -8,7 +8,7 @@ class BIRPDF2550M extends BIRPDFBase
     public function generatePdf($json = null, $fileName = null)
     {
         $json = $this->request->getJSON();
-        $this->loadTemplate('BIRForm2550-M-2.pdf');
+        $this->loadTemplate('BIRForm2550-M-4.pdf');
         $fileName = 'BIR_Form_' . $json->taxpayer_tin . '_' . date('Y-m-d') . '.pdf';
         return parent::generatePdf($json, $fileName);
     }
@@ -64,18 +64,28 @@ class BIRPDF2550M extends BIRPDFBase
         $this->pdf->setFontSpacing($letterSpacing3);
         $this->writeStyledText(140, 64.5, $data->tax_relief_details);
 
-        $this->pdf->setFontSpacing($letterSpacing3);
-        $this->writeRightAlignedText(122, 76.2, $data->vat_sales_12a, 25);
+        $this->pdf->setFontSpacing($letterSpacing);
+        // $this->writeRightAlignedText(122, 76.2, $data->vat_sales_12a, 25);
+        $this->processAndWriteAmount(122, 76.2, $data->vat_sales_12a);
+    }
+
+    protected function processAndWriteAmount($x, $y, $amountString, $fieldWidth = 25)
+    {
+        $cleanedAmountString = str_replace(',', '', $amountString);
+        $number = (float)$cleanedAmountString;
+        $amountFormatted = number_format($number, 2, '.', '');
+        $this->writeRightAlignedText($x, $y, $amountFormatted, $fieldWidth);
     }
 
     protected function writeRightAlignedText($x, $y, $text, $fieldWidth)
     {
         $letterSpacing = $this->pdf->getFontSpacing(); 
-        $this->pdf->setFontSpacing(0); // Reset font spacing for proper width calculation
+        $this->pdf->setFontSpacing(1); // Reset font spacing for proper width calculation
         $textWidth = $this->pdf->GetStringWidth($text);
         $rightAlignedX = $x + $fieldWidth - $textWidth;
+        // dd($rightAlignedX, $x, $fieldWidth, $textWidth);
         $this->pdf->SetXY($rightAlignedX, $y);
         $this->pdf->setFontSpacing($letterSpacing); // Restore your desired letter spacing
-        $this->pdf->Cell($fieldWidth, 10, strtoupper($text), 0, 0, 'R'); // Ensure the cell width is the field width
+        $this->pdf->Cell($textWidth, 10, strtoupper($text), 0, 0, 'R');
     }
 }

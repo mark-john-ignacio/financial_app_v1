@@ -6,7 +6,10 @@ $vendorDir = dirname(__DIR__);
 $baseDir = dirname($vendorDir);
 
 return array(
-    'App\\Controllers\\API\\BIRPDF\\BIRPDF' => $baseDir . '/app/Controllers/API/BIRPDF/BIRPDF.php',
+    'App\\Controllers\\API\\BIRPDF\\BIRPDF0619E' => $baseDir . '/app/Controllers/API/BIRPDF/BIRPDF0619E.php',
+    'App\\Controllers\\API\\BIRPDF\\BIRPDF2550M' => $baseDir . '/app/Controllers/API/BIRPDF/BIRPDF2550M.php',
+    'App\\Controllers\\API\\BIRPDF\\BIRPDF2550Q' => $baseDir . '/app/Controllers/API/BIRPDF/BIRPDF2550Q.php',
+    'App\\Controllers\\API\\BIRPDF\\BIRPDFBase' => $baseDir . '/app/Controllers/API/BIRPDF/BIRPDFBase.php',
     'App\\Controllers\\BIRForms\\BIRFormController' => $baseDir . '/app/Controllers/BIRForms/BIRFormController.php',
     'App\\Controllers\\BIRForms\\BIRFormImage' => $baseDir . '/app/Controllers/BIRForms/BIRFormImage.php',
     'App\\Controllers\\BIRForms\\BIRYearFormController' => $baseDir . '/app/Controllers/BIRForms/BIRYearFormController.php',

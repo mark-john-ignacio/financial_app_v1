@@ -150,7 +150,10 @@ class ComposerStaticInit657ac079313fab046eb8c29fe1d6992b
     );
 
     public static $classMap = array (
-        'App\\Controllers\\API\\BIRPDF\\BIRPDF' => __DIR__ . '/../..' . '/app/Controllers/API/BIRPDF/BIRPDF.php',
+        'App\\Controllers\\API\\BIRPDF\\BIRPDF0619E' => __DIR__ . '/../..' . '/app/Controllers/API/BIRPDF/BIRPDF0619E.php',
+        'App\\Controllers\\API\\BIRPDF\\BIRPDF2550M' => __DIR__ . '/../..' . '/app/Controllers/API/BIRPDF/BIRPDF2550M.php',
+        'App\\Controllers\\API\\BIRPDF\\BIRPDF2550Q' => __DIR__ . '/../..' . '/app/Controllers/API/BIRPDF/BIRPDF2550Q.php',
+        'App\\Controllers\\API\\BIRPDF\\BIRPDFBase' => __DIR__ . '/../..' . '/app/Controllers/API/BIRPDF/BIRPDFBase.php',
         'App\\Controllers\\BIRForms\\BIRFormController' => __DIR__ . '/../..' . '/app/Controllers/BIRForms/BIRFormController.php',
         'App\\Controllers\\BIRForms\\BIRFormImage' => __DIR__ . '/../..' . '/app/Controllers/BIRForms/BIRFormImage.php',
         'App\\Controllers\\BIRForms\\BIRYearFormController' => __DIR__ . '/../..' . '/app/Controllers/BIRForms/BIRYearFormController.php',
