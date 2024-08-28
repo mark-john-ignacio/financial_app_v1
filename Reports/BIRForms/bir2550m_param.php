@@ -143,29 +143,29 @@
                             <td colspan="3" style="vertical-align: middle;"><b> 12 </b> VATable Sales/Receipt-Private (Sch .1) </td>
                             <td>
                                 <b class="inline-block">12A</b>
-                                <input type="text" class="xcompute form-control input-sm text-right inline-block input-auto-width" name="vat_sales_12a" id="vat_sales_12a" value="<?= "0.00"?>">
+                                <input type="text" class="xcompute form-control input-sm text-right inline-block input-auto-width" name="part2_12a" id="part2_12a" value="<?= "0.00"?>">
                             </td>
                             <td>  
                                 <b class="inline-block">12B</b>
-                                <input type="text" class="xcompute form-control input-sm text-right inline-block input-auto-width" name="vat_sales_12b" id="vat_sales_12b" value="<?= "0.00"?>"> 
+                                <input type="text" class="xcompute form-control input-sm text-right inline-block input-auto-width" name="part2_12b" id="part2_12b" value="<?= "0.00"?>"> 
                             </td>
                         </tr>
                         <tr>
                             <td colspan="3" style="vertical-align: middle;"><b> 13 </b> Sales to Government </td>
                             <td>
                                 <b class="inline-block">13A</b>
-                                <input type="text" class="xcompute form-control input-sm text-right inline-block input-auto-width" name="sales_to_government_13a" id="sales_to_government_13a" value="<?= "0.00"?>">
+                                <input type="text" class="xcompute form-control input-sm text-right inline-block input-auto-width" name="part2_13a" id="part2_13a" value="<?= "0.00"?>">
                             </td>
                             <td>  
                                 <b class="inline-block">13B</b>
-                                <input type="text" class="xcompute form-control input-sm text-right inline-block input-auto-width" name="sales_to_government_13b" id="sales_to_government_13b" value="<?= "0.00"?>"> 
+                                <input type="text" class="xcompute form-control input-sm text-right inline-block input-auto-width" name="part2_13b" id="part2_13b" value="<?= "0.00"?>"> 
                             </td>
                         </tr>
                         <tr>
                             <td colspan="3" style="vertical-align: middle;"><b> 14 </b> Zero Rated Sales/Receipts </td>
                             <td>
                                 <b class="inline-block">&nbsp;&nbsp;14</b>
-                                <input type="text" class="xcompute form-control input-sm text-right inline-block input-auto-width" name="zero_rated_sales_14" id="zero_rated_sales_14" value="<?= "0.00"?>">
+                                <input type="text" class="xcompute form-control input-sm text-right inline-block input-auto-width" name="part2_14" id="part2_14" value="<?= "0.00"?>">
                             </td>
                             <td>  
                             </td>
@@ -174,7 +174,7 @@
                             <td colspan="3" style="vertical-align: middle;"><b> 15 </b> Exempt Sales/Receipts </td>
                             <td>
                                 <b class="inline-block">&nbsp;&nbsp;15</b>
-                                <input type="text" class="xcompute form-control input-sm text-right inline-block input-auto-width" name="exempt_sales_15" id="exempt_sales_15" value="<?= "0.00"?>">
+                                <input type="text" class="xcompute form-control input-sm text-right inline-block input-auto-width" name="part2_15" id="part2_15" value="<?= "0.00"?>">
                             </td>
                             <td>  
                             </td>
@@ -183,11 +183,11 @@
                             <td colspan="3" style="vertical-align: middle;"><b> 16 </b> Total Sales/Receipts and Output Tax Due </td>
                             <td>
                                 <b class="inline-block">16A</b>
-                                <input type="text" class="xcompute form-control input-sm text-right inline-block input-auto-width" name="tot_sales_16a" id="tot_sales_16a" value="<?= "0.00"?>">
+                                <input type="text" class="xcompute form-control input-sm text-right inline-block input-auto-width" name="part2_16a" id="part_16a" value="<?= "0.00"?>">
                             </td>
                             <td>  
                                 <b class="inline-block">16B</b>
-                                <input type="text" class="xcompute form-control input-sm text-right inline-block input-auto-width" name="tot_sales_16b" id="tot_sales_16b" value="<?= "0.00"?>"> 
+                                <input type="text" class="xcompute form-control input-sm text-right inline-block input-auto-width" name="part2_16b" id="part2_16b" value="<?= "0.00"?>"> 
                             </td>
                         </tr>
                         <tr>
@@ -199,7 +199,7 @@
                             </td>
                             <td>  
                                 <b class="inline-block">17A</b>
-                                <input type="text" class="xcompute form-control input-sm text-right inline-block input-auto-width" name="input_tax_carried_over_17a" id="input_tax_carried_over_17a" value="<?= "0.00"?>"> 
+                                <input type="text" class="xcompute form-control input-sm text-right inline-block input-auto-width" name="part2_17a" id="part2_17a" value="<?= "0.00"?>"> 
                             </td>
                         </tr>
                         <tr>
@@ -208,7 +208,7 @@
                             </td>
                             <td>  
                                 <b class="inline-block">17B</b>
-                                <input type="text" class="xcompute form-control input-sm text-right inline-block input-auto-width" name="input_tax_deferred_capital_goods_17b" id="input_tax_deferred_capital_goods_17b" value="<?= "0.00"?>"> 
+                                <input type="text" class="xcompute form-control input-sm text-right inline-block input-auto-width" name="part2_17b" id="part2_17b" value="<?= "0.00"?>"> 
                             </td>
                         </tr>
                         <tr>
@@ -217,7 +217,7 @@
                             </td>
                             <td>  
                                 <b class="inline-block">17C</b>
-                                <input type="text" class="xcompute form-control input-sm text-right inline-block input-auto-width" name="transitional_input_tax_17c" id="transitional_input_tax_17c" value="<?= "0.00"?>"> 
+                                <input type="text" class="xcompute form-control input-sm text-right inline-block input-auto-width" name="part2_17c" id="part2_17c" value="<?= "0.00"?>"> 
                             </td>
                         </tr>
                         <tr>
@@ -226,7 +226,7 @@
                             </td>
                             <td>  
                                 <b class="inline-block">17D</b>
-                                <input type="text" class="xcompute form-control input-sm text-right inline-block input-auto-width" name="presumptive_input_tax_17d" id="presumptive_input_tax_17d" value="<?= "0.00"?>">
+                                <input type="text" class="xcompute form-control input-sm text-right inline-block input-auto-width" name="part2_17d" id="part2_17d" value="<?= "0.00"?>">
                             </td>
                         </tr>
                         <tr>
@@ -235,7 +235,7 @@
                             </td>
                             <td>  
                                 <b class="inline-block">17E</b>
-                                <input type="text" class="xcompute form-control input-sm text-right inline-block input-auto-width" name="others_17e" id="others_17e" value="<?= "0.00"?>">
+                                <input type="text" class="xcompute form-control input-sm text-right inline-block input-auto-width" name="part2_17e" id="part2_17e" value="<?= "0.00"?>">
                             </td>
                         </tr>  
                         <tr>
@@ -244,7 +244,7 @@
                             </td>
                             <td>  
                                 <b class="inline-block">17F</b>
-                                <input type="text" class="xcompute form-control input-sm text-right inline-block input-auto-width" name="total_less_17f" id="total_less_17f" value="<?= "0.00"?>" readonly>
+                                <input type="text" class="xcompute form-control input-sm text-right inline-block input-auto-width" name="part2_17f" id="part2_17f" value="<?= "0.00"?>" readonly>
                             </td>
                         </tr>
                         <tr>
@@ -254,91 +254,91 @@
                             <td colspan="3" style="vertical-align: middle;"><b class="padded-label"> 18A/B </b> Purchase of Capital Goods [not exceeding ₱1Million] (see sch.2)</td>
                             <td>
                                 <b class="inline-block">18A</b>
-                                <input type="text" class="xcompute form-control input-sm text-right inline-block input-auto-width" name="purchase_capital_goods_not_exceeding_1m_18a" id="purchase_capital_goods_not_exceeding_1m_18a" value="<?= "0.00"?>">
+                                <input type="text" class="xcompute form-control input-sm text-right inline-block input-auto-width" name="part2_18a" id="part2_18a" value="<?= "0.00"?>">
                             </td>
                             <td>  
                                 <b class="inline-block">18B</b>
-                                <input type="text" class="xcompute form-control input-sm text-right inline-block input-auto-width" name="purchase_capital_goods_not_exceeding_1m_18b" id="purchase_capital_goods_not_exceeding_1m_18b" value="<?= "0.00"?>"> 
+                                <input type="text" class="xcompute form-control input-sm text-right inline-block input-auto-width" name="part2_18b" id="part2_18b" value="<?= "0.00"?>"> 
                             </td>
                         </tr>
                         <tr>
                             <td colspan="3" style="vertical-align: middle;"><b class="padded-label"> 18C/D </b> Purchase of Capital Goods [exceeding ₱1Million] (see sch.3)</td>
                             <td>
                                 <b class="inline-block">18C</b>
-                                <input type="text" class="xcompute form-control input-sm text-right inline-block input-auto-width" name="purchase_capital_goods_exceeding_1m_18c" id="purchase_capital_goods_exceeding_1m_18c" value="<?= "0.00"?>">
+                                <input type="text" class="xcompute form-control input-sm text-right inline-block input-auto-width" name="part2_18c" id="part2_18c" value="<?= "0.00"?>">
                             </td>
                             <td>  
                                 <b class="inline-block">18D</b>
-                                <input type="text" class="xcompute form-control input-sm text-right inline-block input-auto-width" name="purchase_capital_goods_exceeding_1m_18d" id="purchase_capital_goods_exceeding_1m_18d" value="<?= "0.00"?>"> 
+                                <input type="text" class="xcompute form-control input-sm text-right inline-block input-auto-width" name="part2_18d" id="part2_18d" value="<?= "0.00"?>"> 
                             </td>
                         </tr>
                         <tr>
                             <td colspan="3" style="vertical-align: middle;"><b class="padded-label"> 18E/F </b> Domestic Purchases of Goods Other Than Capital Goods </td>
                             <td>
                                 <b class="inline-block">18E</b>
-                                <input type="text" class="xcompute form-control input-sm text-right inline-block input-auto-width" name="domestic_purchases_goods_non_capital_18e" id="domestic_purchases_goods_non_capital_18e" value="<?= "0.00"?>">
+                                <input type="text" class="xcompute form-control input-sm text-right inline-block input-auto-width" name="part2_18e" id="part2_18e" value="<?= "0.00"?>">
                             </td>
                             <td>  
                                 <b class="inline-block">18F</b>
-                                <input type="text" class="xcompute form-control input-sm text-right inline-block input-auto-width" name="domestic_purchases_goods_non_capital_18f" id="domestic_purchases_goods_non_capital_18f" value="<?= "0.00"?>"> 
+                                <input type="text" class="xcompute form-control input-sm text-right inline-block input-auto-width" name="part2_18f" id="part2_18f" value="<?= "0.00"?>"> 
                             </td>
                         </tr>
                         <tr>
                             <td colspan="3" style="vertical-align: middle;"><b class="padded-label"> 18G/H </b> Importation of Goods Other Than Capital Goods </td>
                             <td>
                                 <b class="inline-block">18G</b>
-                                <input type="text" class="xcompute form-control input-sm text-right inline-block input-auto-width" name="importation_goods_non_capital_18g" id="importation_goods_non_capital_18g" value="<?= "0.00"?>">
+                                <input type="text" class="xcompute form-control input-sm text-right inline-block input-auto-width" name="part2_18g" id="part2_18g" value="<?= "0.00"?>">
                             </td>
                             <td>  
                                 <b class="inline-block">18H</b>
-                                <input type="text" class="xcompute form-control input-sm text-right inline-block input-auto-width" name="importation_goods_non_capital_18h" id="importation_goods_non_capital_18h" value="<?= "0.00"?>"> 
+                                <input type="text" class="xcompute form-control input-sm text-right inline-block input-auto-width" name="part2_18h" id="part2_18h" value="<?= "0.00"?>"> 
                             </td>
                         </tr>
                         <tr>
                             <td colspan="3" style="vertical-align: middle;"><b class="padded-label"> 18I/J </b> Domestic Purchase of Services</td>
                             <td>
                                 <b class="inline-block">18I</b>
-                                <input type="text" class="xcompute form-control input-sm text-right inline-block input-auto-width" name="domestic_purchase_services_18i" id="domestic_purchase_services_18i" value="<?= "0.00"?>">
+                                <input type="text" class="xcompute form-control input-sm text-right inline-block input-auto-width" name="part2_18i" id="part2_18i" value="<?= "0.00"?>">
                             </td>
                             <td>  
                                 <b class="inline-block">18J</b>
-                                <input type="text" class="xcompute form-control input-sm text-right inline-block input-auto-width" name="domestic_purchase_services_18j" id="domestic_purchase_services_18j" value="<?= "0.00"?>"> 
+                                <input type="text" class="xcompute form-control input-sm text-right inline-block input-auto-width" name="part2_18j" id="part2_18j" value="<?= "0.00"?>"> 
                             </td>
                         </tr>
                         <tr>
                             <td colspan="3" style="vertical-align: middle;"><b class="padded-label"> 18K/L </b> Services rendered by Non-Resident</td>
                             <td>
                                 <b class="inline-block">18K</b>
-                                <input type="text" class="xcompute form-control input-sm text-right inline-block input-auto-width" name="services_rendered_non_resident_18k" id="services_rendered_non_resident_18k" value="<?= "0.00"?>">
+                                <input type="text" class="xcompute form-control input-sm text-right inline-block input-auto-width" name="part2_18k" id="part2_18k" value="<?= "0.00"?>">
                             </td>
                             <td>  
                                 <b class="inline-block">18L</b>
-                                <input type="text" class="xcompute form-control input-sm text-right inline-block input-auto-width" name="services_rendered_non_resident_18l" id="services_rendered_non_resident_18l" value="<?= "0.00"?>"> 
+                                <input type="text" class="xcompute form-control input-sm text-right inline-block input-auto-width" name="part2_18l" id="part2_18l" value="<?= "0.00"?>"> 
                             </td>
                         </tr>
                         <tr>
                             <td colspan="3" style="vertical-align: middle;"><b class="padded-label"> 18M </b> Purchases Not Qualified for Input Tax</td>
                             <td>
                                 <b class="inline-block">18M</b>
-                                <input type="text" class="xcompute form-control input-sm text-right inline-block input-auto-width" name="purchases_not_qualified_for_input_tax_18m" id="purchases_not_qualified_for_input_tax_18m" value="<?= "0.00"?>">
+                                <input type="text" class="xcompute form-control input-sm text-right inline-block input-auto-width" name="part2_18m" id="part2_18m" value="<?= "0.00"?>">
                             </td>
                         </tr>
                         <tr>
                             <td colspan="3" style="vertical-align: middle;"><b class="padded-label"> 18N/O </b> Others</td>
                             <td>
                                 <b class="inline-block">18N</b>
-                                <input type="text" class="xcompute form-control input-sm text-right inline-block input-auto-width" name="others_18n" id="others_18n" value="<?= "0.00"?>">
+                                <input type="text" class="xcompute form-control input-sm text-right inline-block input-auto-width" name="part2_18n" id="part2_18n" value="<?= "0.00"?>">
                             </td>
                             <td>  
                                 <b class="inline-block">18O</b>
-                                <input type="text" class="xcompute form-control input-sm text-right inline-block input-auto-width" name="others_18o" id="others_18o" value="<?= "0.00"?>"> 
+                                <input type="text" class="xcompute form-control input-sm text-right inline-block input-auto-width" name="part2_18o" id="part2_18o" value="<?= "0.00"?>"> 
                             </td>
                         </tr>
                         <tr>
                             <td colspan="3" style="vertical-align: middle;"><b class="padded-label"> 18P </b> Total Current Purchases (Sum of 18A, 18C, 18E, 18G, 18I, 18K, 18M, 18N)</td>
                             <td>
                                 <b class="inline-block">18P</b>
-                                <input type="text" class="xcompute form-control input-sm text-right inline-block input-auto-width" name="total_current_purchases_18p" id="total_current_purchases_18p" value="<?= "0.00"?>" readonly>
+                                <input type="text" class="xcompute form-control input-sm text-right inline-block input-auto-width" name="part2_18p" id="part2_18p" value="<?= "0.00"?>" readonly>
                             </td>
                         </tr>
                         <tr>
@@ -348,7 +348,7 @@
                             </td>
                             <td>
                                 <b class="inline-block">19</b>
-                                <input type="text" class="xcompute form-control input-sm text-right inline-block input-auto-width" name="total_available_input_tax_19" id="total_available_input_tax_19" value="<?= "0.00"?>" readonly>
+                                <input type="text" class="xcompute form-control input-sm text-right inline-block input-auto-width" name="part2_19" id="part2_19" value="<?= "0.00"?>" readonly>
                             </td>
                         </tr>
                         <tr>
@@ -359,7 +359,7 @@
                             <td></td>
                             <td>
                                 <b class="inline-block">20A</b>
-                                <input type="text" class="xcompute form-control input-sm text-right inline-block input-auto-width" name="input_tax_purchases_capital_goods_exceeding_1m_deferred_20a" id="input_tax_purchases_capital_goods_exceeding_1m_deferred_20a" value="<?= "0.00"?>">
+                                <input type="text" class="xcompute form-control input-sm text-right inline-block input-auto-width" name="part2_20a" id="part2_20a" value="<?= "0.00"?>">
                             </td>
                         </tr>
                         <tr>
@@ -367,7 +367,7 @@
                             <td></td>
                             <td>
                                 <b class="inline-block">20B</b>
-                                <input type="text" class="xcompute form-control input-sm text-right inline-block input-auto-width" name="input_tax_sale_to_government_closed_expense_20b" id="input_tax_sale_to_government_closed_expense_20b" value="<?= "0.00"?>">
+                                <input type="text" class="xcompute form-control input-sm text-right inline-block input-auto-width" name="part2_20b" id="part2_20b" value="<?= "0.00"?>">
                             </td>
                         </tr>
                         <tr>
@@ -375,7 +375,7 @@
                             <td></td>
                             <td>
                                 <b class="inline-block">20C</b>
-                                <input type="text" class="xcompute form-control input-sm text-right inline-block input-auto-width" name="input_tax_allocable_exempt_sales_20c" id="input_tax_allocable_exempt_sales_20c" value="<?= "0.00"?>">
+                                <input type="text" class="xcompute form-control input-sm text-right inline-block input-auto-width" name="part2_20c" id="part2_20c" value="<?= "0.00"?>">
                             </td>
                         </tr>
                         <tr>
@@ -383,7 +383,7 @@
                             <td></td>
                             <td>
                                 <b class="inline-block">20D</b>
-                                <input type="text" class="xcompute form-control input-sm text-right inline-block input-auto-width" name="vat_refund_tcc_claimed_20d" id="vat_refund_tcc_claimed_20d" value="<?= "0.00"?>">
+                                <input type="text" class="xcompute form-control input-sm text-right inline-block input-auto-width" name="part2_20d" id="part2_20d" value="<?= "0.00"?>">
                             </td>
                         </tr>
                         <tr>
@@ -391,7 +391,7 @@
                             <td></td>
                             <td>
                                 <b class="inline-block">20E</b>
-                                <input type="text" class="xcompute form-control input-sm text-right inline-block input-auto-width" name="others_20e" id="others_20e" value="<?= "0.00"?>">
+                                <input type="text" class="xcompute form-control input-sm text-right inline-block input-auto-width" name="part2_20e" id="part2_20e" value="<?= "0.00"?>">
                             </td>
                         </tr>
                         <tr>
@@ -399,7 +399,7 @@
                             <td></td>
                             <td>
                                 <b class="inline-block">20F</b>
-                                <input type="text" class="xcompute form-control input-sm text-right inline-block input-auto-width" name="total_20f" id="total_20f" value="<?= "0.00"?>" readonly>
+                                <input type="text" class="xcompute form-control input-sm text-right inline-block input-auto-width" name="part2_20f" id="part2_20f" value="<?= "0.00"?>" readonly>
                             </td>
                         </tr>
                         <tr>
@@ -407,7 +407,7 @@
                             <td></td>
                             <td>
                                 <b class="inline-block">21</b>
-                                <input type="text" class="xcompute form-control input-sm text-right inline-block input-auto-width" name="total_allowable_input_tax_21" id="total_allowable_input_tax_21" value="<?= "0.00"?>" readonly>
+                                <input type="text" class="xcompute form-control input-sm text-right inline-block input-auto-width" name="part2_21" id="part2_21" value="<?= "0.00"?>" readonly>
                             </td>
                         </tr>
                         <tr>
@@ -415,7 +415,7 @@
                             <td></td>
                             <td>
                                 <b class="inline-block">22</b>
-                                <input type="text" class="xcompute form-control input-sm text-right inline-block input-auto-width" name="net_vat_payable_22" id="net_vat_payable_22" value="<?= "0.00"?>" readonly>
+                                <input type="text" class="xcompute form-control input-sm text-right inline-block input-auto-width" name="part2_22" id="part2_22" value="<?= "0.00"?>" readonly>
                             </td>
                         </tr>
                         <tr>
@@ -426,7 +426,7 @@
                             <td></td>
                             <td>
                                 <b class="inline-block">23A</b>
-                                <input type="text" class="xcompute form-control input-sm text-right inline-block input-auto-width" name="creditable_vat_withheld_23a" id="creditable_vat_withheld_23a" value="<?= "0.00"?>">
+                                <input type="text" class="xcompute form-control input-sm text-right inline-block input-auto-width" name="part2_23a" id="part2_23a" value="<?= "0.00"?>">
                             </td>
                         </tr>
                         <tr>
@@ -434,7 +434,7 @@
                             <td></td>
                             <td>
                                 <b class="inline-block">23B</b>
-                                <input type="text" class="xcompute form-control input-sm text-right inline-block input-auto-width" name="advance_payment_sugar_flour_industries_23b" id="advance_payment_sugar_flour_industries_23b" value="<?= "0.00"?>">
+                                <input type="text" class="xcompute form-control input-sm text-right inline-block input-auto-width" name="part2_23b" id="part2_23b" value="<?= "0.00"?>">
                             </td>
                         </tr>
                         <tr>
@@ -442,7 +442,7 @@
                             <td></td>
                             <td>
                                 <b class="inline-block">23C</b>
-                                <input type="text" class="xcompute form-control input-sm text-right inline-block input-auto-width" name="vat_withheld_sales_to_government_23c" id="vat_withheld_sales_to_government_23c" value="<?= "0.00"?>">
+                                <input type="text" class="xcompute form-control input-sm text-right inline-block input-auto-width" name="part2_23c" id="part2_23c" value="<?= "0.00"?>">
                             </td>
                         </tr>
                         <tr>
@@ -450,7 +450,7 @@
                             <td></td>
                             <td>
                                 <b class="inline-block">23D</b>
-                                <input type="text" class="xcompute form-control input-sm text-right inline-block input-auto-width" name="vat_paid_return_previously_filed_23d" id="vat_paid_return_previously_filed_23d" value="<?= "0.00"?>">
+                                <input type="text" class="xcompute form-control input-sm text-right inline-block input-auto-width" name="part2_23d" id="part2_23d" value="<?= "0.00"?>">
                             </td>
                         </tr>
                         <tr>
@@ -458,7 +458,7 @@
                             <td></td>
                             <td>
                                 <b class="inline-block">23E</b>
-                                <input type="text" class="xcompute form-control input-sm text-right inline-block input-auto-width" name="advance_payments_made_23e" id="advance_payments_made_23e" value="<?= "0.00"?>">
+                                <input type="text" class="xcompute form-control input-sm text-right inline-block input-auto-width" name="part2_23e" id="part2_23e" value="<?= "0.00"?>">
                             </td>
                         </tr>
                         <tr>
@@ -466,7 +466,7 @@
                             <td></td>
                             <td>
                                 <b class="inline-block">23F</b>
-                                <input type="text" class="xcompute form-control input-sm text-right inline-block input-auto-width" name="others_23f" id="others_23f" value="<?= "0.00"?>">
+                                <input type="text" class="xcompute form-control input-sm text-right inline-block input-auto-width" name="part2_23f" id="part2_23f" value="<?= "0.00"?>">
                             </td>
                         </tr>
                         <tr>
@@ -474,7 +474,7 @@
                             <td></td>
                             <td>
                                 <b class="inline-block">23G</b>
-                                <input type="text" class="xcompute form-control input-sm text-right inline-block input-auto-width" name="total_tax_credits_payments_23g" id="total_tax_credits_payments_23g" value="<?= "0.00"?>" readonly>
+                                <input type="text" class="xcompute form-control input-sm text-right inline-block input-auto-width" name="part2_23g" id="part2_23g" value="<?= "0.00"?>" readonly>
                             </td>
                         </tr>
                         <tr>
@@ -482,7 +482,7 @@
                             <td></td>
                             <td>
                                 <b class="inline-block">24</b>
-                                <input type="text" class="xcompute form-control input-sm text-right inline-block input-auto-width" name="tax_still_payable_overpayment_24" id="tax_still_payable_overpayment_24" value="<?= "0.00"?>" readonly>
+                                <input type="text" class="xcompute form-control input-sm text-right inline-block input-auto-width" name="part2_24" id="part2_24" value="<?= "0.00"?>" readonly>
                             </td>
                         </tr>
                         <tr>
@@ -493,7 +493,7 @@
                             <td></td>
                             <td>
                                 <b class="inline-block">25A</b>
-                                <input type="text" class="xcompute form-control input-sm text-right inline-block input-auto-width" name="surcharge_25a" id="surcharge_25a" value="<?= "0.00"?>">
+                                <input type="text" class="xcompute form-control input-sm text-right inline-block input-auto-width" name="part2_25a" id="part2_25a" value="<?= "0.00"?>">
                             </td>
                         </tr>
                         <tr>
@@ -501,7 +501,7 @@
                             <td></td>
                             <td>
                                 <b class="inline-block">25B</b>
-                                <input type="text" class="xcompute form-control input-sm text-right inline-block input-auto-width" name="interest_25b" id="interest_25b" value="<?= "0.00"?>">
+                                <input type="text" class="xcompute form-control input-sm text-right inline-block input-auto-width" name="part2_25b" id="part2_25b" value="<?= "0.00"?>">
                             </td>
                         </tr>
                         <tr>
@@ -509,7 +509,7 @@
                             <td></td>
                             <td>
                                 <b class="inline-block">25C</b>
-                                <input type="text" class="xcompute form-control input-sm text-right inline-block input-auto-width" name="compromise_25c" id="compromise_25c" value="<?= "0.00"?>">
+                                <input type="text" class="xcompute form-control input-sm text-right inline-block input-auto-width" name="part2_25c" id="part2_25c" value="<?= "0.00"?>">
                             </td>
                         </tr>
                         <tr>
@@ -517,7 +517,7 @@
                             <td></td>
                             <td>
                                 <b class="inline-block">25D</b>
-                                <input type="text" class="xcompute form-control input-sm text-right inline-block input-auto-width" name="total_penalties_25d" id="total_penalties_25d" value="<?= "0.00"?>" readonly>
+                                <input type="text" class="xcompute form-control input-sm text-right inline-block input-auto-width" name="part2_25d" id="part2_25d" value="<?= "0.00"?>" readonly>
                             </td>
                         </tr>
                         <tr>
@@ -525,7 +525,7 @@
                             <td></td>
                             <td>
                                 <b class="inline-block">26</b>
-                                <input type="text" class="xcompute form-control input-sm text-right inline-block input-auto-width" name="total_amount_payable_overpayment_26" id="total_amount_payable_overpayment_26" value="<?= "0.00"?>" readonly>
+                                <input type="text" class="xcompute form-control input-sm text-right inline-block input-auto-width" name="part2_26" id="part2_26" value="<?= "0.00"?>" readonly>
                             </td>
                         </tr>
                     </table>
