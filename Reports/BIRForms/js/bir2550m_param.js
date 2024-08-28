@@ -60,7 +60,11 @@
         const $xcompute = $('.xcompute');
 
         // Event Listeners
-        $inputTaxCarriedOver17a.add($inputTaxDeferredCapitalGoods17b).add($transitionalInputTax17c).add($presumptiveInputTax17d).add($others17e).on('input', calculateTotalLess);
+        $part2_17a.add($part2_17b).add($part2_17c).add($part2_17d).add($part2_17e).on('input', calculateTotalLess);
+
+        $part2_18a.add($part2_18c).add($part2_18e).add($part2_18g).add($part2_18i).add($part2_18k).add($part2_18m).add($part2_18n).on('input', calculateTotalCurrentPurchases);
+
+        $part2_17f.add($part2_18b).add($part2_18d).add($part2_18f).add($part2_18h).add($part2_18j).add($part2_18l).add($part2_18o).on('input', calculateTotalAvailableInputTax);
 
         // Functions
         function calculateTotalLess() {
@@ -73,6 +77,31 @@
             $part2_17f.val(totalLess.toFixed(2));
         }
 
+        function calculateTotalCurrentPurchases(){
+            const part2_18a = parseFloat($part2_18a.val()) || 0;
+            const part2_18c = parseFloat($part2_18c.val()) || 0;
+            const part2_18e = parseFloat($part2_18e.val()) || 0;
+            const part2_18g = parseFloat($part2_18g.val()) || 0;
+            const part2_18i = parseFloat($part2_18i.val()) || 0;
+            const part2_18k = parseFloat($part2_18k.val()) || 0;
+            const part2_18m = parseFloat($part2_18m.val()) || 0;
+            const part2_18n = parseFloat($part2_18n.val()) || 0;
+            const totalCurrentPurchases18p = part2_18a + part2_18c + part2_18e + part2_18g + part2_18i + part2_18k + part2_18m + part2_18n;
+            $part2_18p.val(totalCurrentPurchases18p.toFixed(2));
+        }
+
+        function calculateTotalAvailableInputTax() {
+            const part2_17f = parseFloat($part2_17f.val()) || 0;
+            const part2_18b = parseFloat($part2_18b.val()) || 0;
+            const part2_18d = parseFloat($part2_18d.val()) || 0;
+            const part2_18f = parseFloat($part2_18f.val()) || 0;
+            const part2_18h = parseFloat($part2_18h.val()) || 0;
+            const part2_18j = parseFloat($part2_18j.val()) || 0;
+            const part2_18l = parseFloat($part2_18l.val()) || 0;
+            const part2_18o = parseFloat($part2_18o.val()) || 0;
+            const totalAvailableInputTax = part2_17f + part2_18b + part2_18d + part2_18f + part2_18h + part2_18j + part2_18l + part2_18o;
+            $part2_19.val(totalAvailableInputTax.toFixed(2));
+        }
     });
     document.addEventListener('DOMContentLoaded', function() {
         const taxReliefSpecify = $('#tax_relief_specify');
