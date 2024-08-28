@@ -61,7 +61,7 @@
 
         // Event Listeners
         allFunctions();
-        $('.xcompute').on('input', function() {
+        $xcompute.on('input', function() {
             allFunctions();
         });
 
@@ -176,6 +176,32 @@
             $part2_26.val(calculated_26.toFixed(2));
         }
 
+        function duplicate18Fields() {
+            const part2_18a = parseFloat($part2_18a.val()) || 0;
+            const part2_18c = parseFloat($part2_18c.val()) || 0;
+            const part2_18e = parseFloat($part2_18e.val()) || 0;
+            const part2_18g = parseFloat($part2_18g.val()) || 0;
+            const part2_18i = parseFloat($part2_18i.val()) || 0;
+            const part2_18k = parseFloat($part2_18k.val()) || 0;
+            const part2_18n = parseFloat($part2_18n.val()) || 0;
+            $part2_18b.val(part2_18a.toFixed(2));
+            $part2_18d.val(part2_18c.toFixed(2));
+            $part2_18f.val(part2_18e.toFixed(2));
+            $part2_18h.val(part2_18g.toFixed(2));
+            $part2_18j.val(part2_18i.toFixed(2));
+            $part2_18l.val(part2_18k.toFixed(2));
+            $part2_18o.val(part2_18n.toFixed(2));
+        }
+
+        function duplicate12and13Fields() {
+            const part2_12a = parseFloat($part2_12a.val()) || 0;
+            const part2_13a = parseFloat($part2_13a.val()) || 0;
+            $part2_12b.val(part2_12a.toFixed(2));
+            $part2_13b.val(part2_13a.toFixed(2));
+        }
+
+
+
         function allFunctions() {
             calculate16a();
             calculate16b();
@@ -189,6 +215,8 @@
             calculate24();
             calculate25d();
             calculate26();
+            duplicate18Fields();
+            duplicate12and13Fields();
         }
 
     });
