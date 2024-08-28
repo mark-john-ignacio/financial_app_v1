@@ -60,6 +60,9 @@
         const $xcompute = $('.xcompute');
 
         // Event Listeners
+        $part2_12a.add($part2_12b).add($part2_13a).add($part2_13b).add($part2_14).add($part2_15).on('input', calculate16a);
+        $part2_12b.add($part2_13b).on('input', calculate16b)
+
         $part2_17a.add($part2_17b).add($part2_17c).add($part2_17d).add($part2_17e).on('input', calculate17f);
 
         $part2_18a.add($part2_18c).add($part2_18e).add($part2_18g).add($part2_18i).add($part2_18k).add($part2_18m).add($part2_18n).on('input', calculate18p);
@@ -72,8 +75,28 @@
 
         $part2_25a.add($part2_25b).add($part2_25c).on('input', calculate25d);
 
+        $('.xcompute').on('input', function() {
+            allFunctions();
+        });
 
         // Functions
+        function calculate16a() {
+            const part2_12a = parseFloat($part2_12a.val()) || 0;
+            const part2_13a = parseFloat($part2_13a.val()) || 0;
+            const part2_14 = parseFloat($part2_14.val()) || 0;
+            const part2_15 = parseFloat($part2_15.val()) || 0;
+            const calculated_16a = part2_12a + part2_13a + part2_14 + part2_15;
+            $part2_16a.val(calculated_16a.toFixed(2));
+        }
+
+        function calculate16b() {
+            const part2_12b = parseFloat($part2_12b.val()) || 0;
+            const part2_13b = parseFloat($part2_13b.val()) || 0;
+            const calculated_16b = part2_12b + part2_13b;
+            $part2_16b.val(calculated_16b.toFixed(2));
+        }
+
+
         function calculate17f() {
             const part2_17a = parseFloat($part2_17a.val()) || 0;
             const part2_17b = parseFloat($part2_17b.val()) || 0;
@@ -166,6 +189,22 @@
             const calculated_26 = part2_24 + part2_25d;
             $part2_26.val(calculated_26.toFixed(2));
         }
+
+        function allFunctions() {
+            calculate16a();
+            calculate16b();
+            calculate17f();
+            calculate18p();
+            calculate19();
+            calculate20f();
+            calculate21();
+            calculate22();
+            calculate23g();
+            calculate24();
+            calculate25d();
+            calculate26();
+        }
+
     });
     document.addEventListener('DOMContentLoaded', function() {
         const taxReliefSpecify = $('#tax_relief_specify');

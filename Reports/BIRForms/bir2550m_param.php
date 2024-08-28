@@ -183,11 +183,11 @@
                             <td colspan="3" style="vertical-align: middle;"><b> 16 </b> Total Sales/Receipts and Output Tax Due </td>
                             <td>
                                 <b class="inline-block">16A</b>
-                                <input type="text" class="xcompute form-control input-sm text-right inline-block input-auto-width" name="part2_16a" id="part_16a" value="<?= "0.00"?>">
+                                <input type="text" class="xcompute form-control input-sm text-right inline-block input-auto-width" name="part2_16a" id="part2_16a" value="<?= "0.00"?>" readonly>
                             </td>
                             <td>  
                                 <b class="inline-block">16B</b>
-                                <input type="text" class="xcompute form-control input-sm text-right inline-block input-auto-width" name="part2_16b" id="part2_16b" value="<?= "0.00"?>"> 
+                                <input type="text" class="xcompute form-control input-sm text-right inline-block input-auto-width" name="part2_16b" id="part2_16b" value="<?= "0.00"?>" readonly> 
                             </td>
                         </tr>
                         <tr>
