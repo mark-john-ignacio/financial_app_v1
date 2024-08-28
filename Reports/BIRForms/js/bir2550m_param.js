@@ -60,21 +60,7 @@
         const $xcompute = $('.xcompute');
 
         // Event Listeners
-        $part2_12a.add($part2_12b).add($part2_13a).add($part2_13b).add($part2_14).add($part2_15).on('input', calculate16a);
-        $part2_12b.add($part2_13b).on('input', calculate16b)
-
-        $part2_17a.add($part2_17b).add($part2_17c).add($part2_17d).add($part2_17e).on('input', calculate17f);
-
-        $part2_18a.add($part2_18c).add($part2_18e).add($part2_18g).add($part2_18i).add($part2_18k).add($part2_18m).add($part2_18n).on('input', calculate18p);
-
-        $part2_17f.add($part2_18b).add($part2_18d).add($part2_18f).add($part2_18h).add($part2_18j).add($part2_18l).add($part2_18o).on('input', calculate19);
-
-        $part2_20a.add($part2_20b).add($part2_20c).add($part2_20d).add($part2_20e).on('input', calculate20f);
-
-        $part2_23a.add($part2_23b).add($part2_23c).add($part2_23d).add($part2_23e).add($part2_23f).on('input', calculate23g);
-
-        $part2_25a.add($part2_25b).add($part2_25c).on('input', calculate25d);
-
+        allFunctions();
         $('.xcompute').on('input', function() {
             allFunctions();
         });
