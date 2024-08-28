@@ -61,7 +61,8 @@
 
         // Event Listeners
         allFunctions();
-        $('.xcompute').on('input', function() {
+        getTotalSales();
+        $xcompute.on('input', function() {
             allFunctions();
         });
 
@@ -176,6 +177,39 @@
             $part2_26.val(calculated_26.toFixed(2));
         }
 
+        function calculateOutputTax() {
+            const taxpercent = 12;
+            const taxDecimal = taxpercent / 100;
+            const part2_12a = parseFloat($part2_12a.val()) || 0;
+            const part2_13a = parseFloat($part2_13a.val()) || 0;
+            const part2_18a = parseFloat($part2_18b.val()) || 0;
+            const part2_18c = parseFloat($part2_18d.val()) || 0;
+            const part2_18e = parseFloat($part2_18f.val()) || 0;
+            const part2_18g = parseFloat($part2_18h.val()) || 0;
+            const part2_18i = parseFloat($part2_18j.val()) || 0;
+            const part2_18k = parseFloat($part2_18l.val()) || 0;
+            const part2_18n = parseFloat($part2_18o.val()) || 0;
+            const calculated_12b = part2_12a * taxDecimal;
+            const calculated_13b = part2_13a * taxDecimal;
+            const calculated_18b = part2_18a * taxDecimal;
+            const calculated_18d = part2_18c * taxDecimal;
+            const calculated_18f = part2_18e * taxDecimal;
+            const calculated_18h = part2_18g * taxDecimal;
+            const calculated_18j = part2_18i * taxDecimal;
+            const calculated_18l = part2_18k * taxDecimal;
+            const calculated_18o = part2_18n * taxDecimal;
+            $part2_12b.val(calculated_12b.toFixed(2));
+            $part2_13b.val(calculated_13b.toFixed(2));
+            $part2_18b.val(calculated_18b.toFixed(2));
+            $part2_18d.val(calculated_18d.toFixed(2));
+            $part2_18f.val(calculated_18f.toFixed(2));
+            $part2_18h.val(calculated_18h.toFixed(2));
+            $part2_18j.val(calculated_18j.toFixed(2));
+            $part2_18l.val(calculated_18l.toFixed(2));
+        }
+
+
+
         function allFunctions() {
             calculate16a();
             calculate16b();
@@ -189,6 +223,29 @@
             calculate24();
             calculate25d();
             calculate26();
+            calculateOutputTax();
+        }
+
+        function getTotalSales() {
+            var baseURL = $('#base_url').val();
+            $.ajax({
+                url: baseURL + 'system_management/api/bir-forms/2550m/get-sales-month',
+                type: 'POST',
+                contentType: "application/json",
+                data: JSON.stringify({
+                    company_code: $('#company_code').val(),
+                    month: $('#month').val(),
+                    year: $('#year').val()
+                }),
+                success: function(response) {
+                    $('#part2_12a').val(response.total_sales);
+                    console.log("Total Sales:", response.total_sales);
+                    calculateOutputTax();
+                },
+                error: function(xhr, status, error) {
+                    console.error("AJAX error:", {xhr: xhr, status: status, error: error});
+                }
+            });
         }
 
     });
