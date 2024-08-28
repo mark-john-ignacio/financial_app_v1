@@ -4,6 +4,8 @@
 <body>
     <form action="bir1601eq.php" name="frmpos" id="frmpos" method="post" target="_blank" data-api-url="<?= $UrlBase . "system_management/api/pdf/2550m"?>">
         <input type="hidden" value="<?= $comprdo['bir_sig_sign']?>" name="signature_image">
+        <input type="hidden" value="<?= $comprdo['compcode']?>" name="company_code" id="company_code" disabled>
+        <input type="hidden" value="<?= $UrlBase ?>" name="base_url" id="base_url" disabled>
         <div class="container">
             <br>
             <div class="row">

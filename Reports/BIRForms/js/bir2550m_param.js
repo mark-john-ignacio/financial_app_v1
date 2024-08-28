@@ -61,6 +61,7 @@
 
         // Event Listeners
         allFunctions();
+        getTotalSales();
         $xcompute.on('input', function() {
             allFunctions();
         });
@@ -223,6 +224,28 @@
             calculate25d();
             calculate26();
             calculateOutputTax();
+        }
+
+        function getTotalSales() {
+            var baseURL = $('#base_url').val();
+            $.ajax({
+                url: baseURL + 'system_management/api/bir-forms/2550m/get-sales-month',
+                type: 'POST',
+                contentType: "application/json",
+                data: JSON.stringify({
+                    company_code: $('#company_code').val(),
+                    month: $('#month').val(),
+                    year: $('#year').val()
+                }),
+                success: function(response) {
+                    $('#part2_12a').val(response.total_sales);
+                    console.log("Total Sales:", response.total_sales);
+                    calculateOutputTax();
+                },
+                error: function(xhr, status, error) {
+                    console.error("AJAX error:", {xhr: xhr, status: status, error: error});
+                }
+            });
         }
 
     });

@@ -24,7 +24,7 @@ class BIRForm2550M extends ResourceController
         $year = $json->year;
         $month = $json->month;
         $totalSales = $this->salesModel->getSalesPerMonth($month, $year, $company_code);
-        return $this->respond([$totalSales]);
+        return $this->respond($totalSales);
     }
 
 }
