@@ -137,31 +137,31 @@ class BIRPDF2550Q extends BaseController
         $this->writeStyledText($pdf, 127.5, 108.5, $data->txt2550q_14A);
 
         // PART II
-        $this->writeFormattedAmount($pdf, 168, 120.5, 184, 120.5, $data->net_vat_payable, 25);
+        $this->writeFormattedAmount($pdf, 168.8, 120.5, 184, 120.5, $data->net_vat_payable, 25);
 
-        $this->writeFormattedAmount($pdf, 168, 130.5, 184, 130.5, $data->creditable_vat_withhelding, 25);
+        $this->writeFormattedAmount($pdf, 168.8, 130.5, 184, 130.5, $data->creditable_vat_withhelding, 25);
         
-        $this->writeFormattedAmount($pdf, 168, 137.5, 184, 137.5, $data->advance_vat_payments, 25);
+        $this->writeFormattedAmount($pdf, 168.8, 137.5, 184, 137.5, $data->advance_vat_payments, 25);
 
-        $this->writeFormattedAmount($pdf, 168, 144, 184, 144, $data->txt2550q_18, 25);
+        $this->writeFormattedAmount($pdf, 168.8, 144, 184, 144, $data->txt2550q_18, 25);
 
         $this->writeStyledText($pdf, 60.5, 149, $data->specify);
 
-        $this->writeFormattedAmount($pdf, 168, 150.5, 184, 150.5, $data->other_credits_payment, 25);
+        $this->writeFormattedAmount($pdf, 168.8, 150.5, 184, 150.5, $data->other_credits_payment, 25);
 
-        $this->writeFormattedAmount($pdf, 168, 156.5, 184, 156.5, $data->total_tax_credits_payments, 25);
+        $this->writeFormattedAmount($pdf, 168.8, 156.5, 184, 156.5, $data->total_tax_credits_payments, 25);
 
-        $this->writeFormattedAmount($pdf, 168, 162.5, 184, 162.5, $data->tax_still_payable, 25);
+        $this->writeFormattedAmount($pdf, 168.8, 162.5, 184, 162.5, $data->tax_still_payable, 25);
 
         $this->writeFormattedAmount($pdf, 168, 168.5, 184, 168.5, $data->surcharge, 25);
 
-        $this->writeFormattedAmount($pdf, 168, 175.5, 184, 175.5, $data->interest, 25);
+        $this->writeFormattedAmount($pdf, 168.8, 175.5, 184, 175.5, $data->interest, 25);
 
-        $this->writeFormattedAmount($pdf, 168, 182.5, 184, 182.5, $data->compromise, 25);
+        $this->writeFormattedAmount($pdf, 168.8, 182.5, 184, 182.5, $data->compromise, 25);
 
-        $this->writeFormattedAmount($pdf, 168, 189, 184, 189, $data->total_penalties, 25);
+        $this->writeFormattedAmount($pdf, 168.8, 189, 184, 189, $data->total_penalties, 25);
 
-        $this->writeFormattedAmount($pdf, 168, 195, 184, 195, $data->total_amount_payable, 25);
+        $this->writeFormattedAmount($pdf, 168.8, 195, 184, 195, $data->total_amount_payable, 25);
     }
     
     protected function fillSecondPageFields($pdf, $data)
@@ -171,7 +171,7 @@ class BIRPDF2550Q extends BaseController
         $pdf->SetFont($fontname, '', 12);
         $pdf->SetTextColor(0, 0, 0);
     
-        $letterSpacing = 2.3;
+        $letterSpacing = 2.5;
         $pdf->setFontSpacing($letterSpacing);
 
         $tin = explode("-", $data->txt2550q_tin);
@@ -183,76 +183,76 @@ class BIRPDF2550Q extends BaseController
         $this->writeStyledText($pdf, 77.7, 30, $data->txt2550q_taxpayer_name);  
     
         $this->writeFormattedAmount($pdf, 92, 45, 108, 45, $data->vatable_sales_A, 25);
-        $this->writeFormattedAmount($pdf, 168, 45, 183, 45, $data->vatable_sales_B, 25);
+        $this->writeFormattedAmount($pdf, 168.8, 45, 183, 45, $data->vatable_sales_B, 25);
 
         $this->writeFormattedAmount($pdf, 92, 50, 108, 50, $data->zero_rated_sales, 25);
 
         $this->writeFormattedAmount($pdf, 92, 56, 108, 56, $data->exempt_sales, 25);
 
         $this->writeFormattedAmount($pdf, 92, 62, 108, 62, $data->total_sales_output_tax_due_A, 25);
-        $this->writeFormattedAmount($pdf, 168, 62, 183, 62, $data->total_sales_output_tax_due_A, 25);
+        $this->writeFormattedAmount($pdf, 168.8, 62, 183, 62, $data->total_sales_output_tax_due_A, 25);
 
-        $this->writeFormattedAmount($pdf, 168, 68, 183, 68, $data->output_vat_on_uncollected_recievable, 25);
+        $this->writeFormattedAmount($pdf, 168.8, 68, 183, 68, $data->output_vat_on_uncollected_recievable, 25);
 
-        $this->writeFormattedAmount($pdf, 168, 74, 183, 74, $data->output_vat_on_recovered_uncollected_recievable, 25);
+        $this->writeFormattedAmount($pdf, 168.8, 74, 183, 74, $data->output_vat_on_recovered_uncollected_recievable, 25);
 
-        $this->writeFormattedAmount($pdf, 168, 79, 183, 79, $data->total_adjusted_output_tax_due, 25);
+        $this->writeFormattedAmount($pdf, 168.8, 79, 183, 79, $data->total_adjusted_output_tax_due, 25);
 
-        $this->writeFormattedAmount($pdf, 168, 89, 183, 89, $data->input_tax_carreid_over_from_previous_quarter, 25);
+        $this->writeFormattedAmount($pdf, 168.8, 89, 183, 89, $data->input_tax_carreid_over_from_previous_quarter, 25);
 
-        $this->writeFormattedAmount($pdf, 168, 94, 183, 94, $data->input_tax_deferred_on_capital_goods, 25);
+        $this->writeFormattedAmount($pdf, 168.8, 94, 183, 94, $data->input_tax_deferred_on_capital_goods, 25);
 
-        $this->writeFormattedAmount($pdf, 168, 100, 183, 100, $data->transitional_input_tax, 25);
+        $this->writeFormattedAmount($pdf, 168.8, 100, 183, 100, $data->transitional_input_tax, 25);
 
-        $this->writeFormattedAmount($pdf, 168, 106, 183, 106, $data->presumptive_input_tax, 25);
+        $this->writeFormattedAmount($pdf, 168.8, 106, 183, 106, $data->presumptive_input_tax, 25);
         
-        $this->writeFormattedAmount($pdf, 168, 111, 183, 111, $data->others_42_num, 25);
+        $this->writeFormattedAmount($pdf, 168.8, 111, 183, 111, $data->others_42_num, 25);
         $this->writeStyledText($pdf, 40, 110, $data->others_42_txt);
 
-        $this->writeFormattedAmount($pdf, 168, 117, 183, 117, $data->total_43, 25);
+        $this->writeFormattedAmount($pdf, 168.8, 117, 183, 117, $data->total_43, 25);
 
         $this->writeFormattedAmount($pdf, 92, 128, 108, 128, $data->domestic_purchases_A, 25);
-        $this->writeFormattedAmount($pdf, 168, 128, 183, 128, $data->domestic_purchases_B, 25);
+        $this->writeFormattedAmount($pdf, 168.8, 128, 183, 128, $data->domestic_purchases_B, 25);
 
         $this->writeFormattedAmount($pdf, 92, 133, 108, 133, $data->services_rendered_by_non_resident_A, 25);
-        $this->writeFormattedAmount($pdf, 168, 133, 183, 133, $data->services_rendered_by_non_resident_B, 25);
+        $this->writeFormattedAmount($pdf, 168.8, 133, 183, 133, $data->services_rendered_by_non_resident_B, 25);
        
         $this->writeFormattedAmount($pdf, 92, 139, 108, 139, $data->importations_A, 25);
-        $this->writeFormattedAmount($pdf, 168, 139, 183, 139, $data->importations_B, 25);
+        $this->writeFormattedAmount($pdf, 168.8, 139, 183, 139, $data->importations_B, 25);
 
         $this->writeStyledText($pdf, 35, 143, $data->others_47_A_txt);
         $this->writeFormattedAmount($pdf, 92, 144, 108, 144, $data->others_47_A_num, 25);
-        $this->writeFormattedAmount($pdf, 168, 144, 183, 144, $data->others_47_B_num, 25);
+        $this->writeFormattedAmount($pdf, 168.8, 144, 183, 144, $data->others_47_B_num, 25);
 
         $this->writeFormattedAmount($pdf, 92, 150, 108, 150, $data->domestic_purchases_with_no_input_tax, 25);
 
         $this->writeFormattedAmount($pdf, 92, 156, 108, 156, $data->vat_exempt_importations, 25);
 
         $this->writeFormattedAmount($pdf, 92, 161, 108, 161, $data->total_current_purchases_input_tax_A, 25);
-        $this->writeFormattedAmount($pdf, 168, 161, 183, 161, $data->total_current_purchases_input_tax_B, 25);
+        $this->writeFormattedAmount($pdf, 168.8, 161, 183, 161, $data->total_current_purchases_input_tax_B, 25);
 
-        $this->writeFormattedAmount($pdf, 168, 167, 183, 167, $data->total_available_input_tax, 25);
+        $this->writeFormattedAmount($pdf, 168.8, 167, 183, 167, $data->total_available_input_tax, 25);
 
-        $this->writeFormattedAmount($pdf, 168, 177, 183, 177, $data->input_tax_on_purchases, 25);
+        $this->writeFormattedAmount($pdf, 168.8, 177, 183, 177, $data->input_tax_on_purchases, 25);
 
-        $this->writeFormattedAmount($pdf, 168, 183, 183, 183, $data->input_tax_attributable_to_vat_exempt_sales, 25);
+        $this->writeFormattedAmount($pdf, 168.8, 183, 183, 183, $data->input_tax_attributable_to_vat_exempt_sales, 25);
 
-        $this->writeFormattedAmount($pdf, 168, 189, 183, 189, $data->vat_refund_tcc_claimed, 25);
+        $this->writeFormattedAmount($pdf, 168.8, 189, 183, 189, $data->vat_refund_tcc_claimed, 25);
 
-        $this->writeFormattedAmount($pdf, 168, 195, 183, 195, $data->input_vat_on_unpaid_payable, 25);
+        $this->writeFormattedAmount($pdf, 168.8, 195, 183, 195, $data->input_vat_on_unpaid_payable, 25);
 
         $this->writeStyledText($pdf, 38, 198.8, $data->others_56_txt);
-        $this->writeFormattedAmount($pdf, 168, 200, 183, 200, $data->others_56_num, 25);
+        $this->writeFormattedAmount($pdf, 168.8, 200, 183, 200, $data->others_56_num, 25);
 
-        $this->writeFormattedAmount($pdf, 168, 206, 183, 206, $data->total_deductions_from_input_tax, 25);
+        $this->writeFormattedAmount($pdf, 168.8, 206, 183, 206, $data->total_deductions_from_input_tax, 25);
 
-        $this->writeFormattedAmount($pdf, 168, 211, 183, 211, $data->input_vat_on_settled_unpaid_payables_previously_deducted, 25);
+        $this->writeFormattedAmount($pdf, 168.8, 211, 183, 211, $data->input_vat_on_settled_unpaid_payables_previously_deducted, 25);
 
-        $this->writeFormattedAmount($pdf, 168, 217, 183, 217, $data->adjusted_deductions_from_input_tax, 25);
+        $this->writeFormattedAmount($pdf, 168.8, 217, 183, 217, $data->adjusted_deductions_from_input_tax, 25);
 
-        $this->writeFormattedAmount($pdf, 168, 222, 183, 222, $data->total_allowable_input_tax, 25);
+        $this->writeFormattedAmount($pdf, 168.8, 222, 183, 222, $data->total_allowable_input_tax, 25);
 
-        $this->writeFormattedAmount($pdf, 168, 228, 183, 228, $data->net_vat_payable_excess_input_tax, 25);
+        $this->writeFormattedAmount($pdf, 168.8, 228, 183, 228, $data->net_vat_payable_excess_input_tax, 25);
     }
 
     protected function writeFormattedAmount($pdf, $xWhole, $yWhole, $xDecimal, $yDecimal, $amount, $fieldWidth)

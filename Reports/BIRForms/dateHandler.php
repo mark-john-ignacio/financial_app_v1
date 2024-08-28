@@ -14,8 +14,8 @@ include('../../include/access.php');
 $company = $_SESSION['companyid'];
 
 // Initialize variables
-$fromDate = "";
-$toDate = "";
+// $fromDate = "";
+// $toDate = "";
 
 // Check if 'fromDate' and 'toDate' are set in POST request
 if (isset($_POST['fromDate']) && isset($_POST['toDate'])) {
@@ -40,7 +40,10 @@ if (isset($_POST['fromDate']) && isset($_POST['toDate'])) {
     
     
 
-    $sql = "SELECT * from sales WHERE compcode = '$company' AND ddate BETWEEN '$formattedFromDate' AND '$formattedToDate'";
+    // $sql = "SELECT * from sales WHERE compcode = '$company' AND ddate BETWEEN '$formattedFromDate' AND '$formattedToDate'";
+    $sql = "SELECT * FROM sales WHERE compcode = '001' AND dcutdate BETWEEN '$formattedFromDate' AND '$formattedToDate'
+    AND ctranno IN ( SELECT receipt_sales_t.csalesno FROM receipt LEFT JOIN receipt_sales_t ON receipt.compcode = receipt_sales_t.compcode AND receipt.ctranno = receipt_sales_t.ctranno
+                WHERE receipt.compcode = '001' AND receipt.lapproved = 1 AND receipt.lvoid = 0 AND receipt.lcancelled = 0);";
 
     $result = $con->query($sql);
      // Check for query errors
@@ -53,10 +56,23 @@ if (isset($_POST['fromDate']) && isset($_POST['toDate'])) {
 
     // Fetch results
     $data = [];
-    $totalNvat = 0.00;  // Initialize total nvat to 0.0
+    
+    //A. Sales for the Quarter (Exclusive of VAT)
+    $totalVATableSalesA = 0.00;
+    $totalZeroRatedSales = 0.00;  
+    $totalExemptSales = 0.00;
+
+    //B. Output Tax for the Quarter
+    $totalVATableSalesB = 0.00;
+
     while ($row = $result->fetch_assoc()) {
         $data[] = $row;
-        $totalNvat += (float)$row['nvat'];  // Add nvat to the total
+
+        // $totalVATableSalesA += (float)$row['nnet'];
+        // $totalZeroRatedSales += (float)$row['nzerorated']; 
+        // $totalExemptSales += (float)$row['nexempt']; 
+
+        // $totalVATableSalesB  += (float)$row['nvat'];
     }
     // Return JSON response
     echo json_encode([
@@ -65,7 +81,14 @@ if (isset($_POST['fromDate']) && isset($_POST['toDate'])) {
         'company' => $company,
         'message' => 'Data received successfully',
         'data' => $data,
-        'totalNvat' => $totalNvat
+        
+         //A. Sales for the Quarter (Exclusive of VAT)
+        'totalVATableSalesA' => $totalVATableSalesA,
+        'totalZeroRatedSales' => $totalZeroRatedSales,
+        'totalExemptSales' => $totalExemptSales,
+
+         //B. Output Tax for the Quarter
+        'totalVATableSalesB' => $totalVATableSalesB,
     ]);
 } else {
     // Return error message in JSON format

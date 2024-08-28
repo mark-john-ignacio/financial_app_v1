@@ -132,7 +132,7 @@ $routes->post('bir-forms/submit-1601eq', 'BirForms::submit1601eq');
 $routes->post('api/pdf/0619e', 'API\\BIRPDF\\BIRPDF0619E::generatePdf');
 
 $routes->post('api/pdf2550q', 'API\\BIRPDF\\BIRPDF2550Q::generatePdf');
-$routes->post('api/pdfs', 'API\\BIRPDF\\BIRPDF2550Q::generatePdf');
+// $routes->post('api/pdfs', 'API\\BIRPDF\\BIRPDF2550Q::generatePdf');
 
 $routes->post('api/pdf/2550m', 'API\\BIRPDF\\BIRPDF2550M::generatePdf');
 // $routes->get('api/pdf/2550m', 'API\\BIRPDF\\BIRPDF2550M::generatePdf');

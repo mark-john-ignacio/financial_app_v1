@@ -146,7 +146,7 @@
                         $("#frmpos").serializeArray().forEach(function(item) {
                             formData[item.name] = item.value;
                         });
-                        console.log(JSON.stringify(formData));
+                        // console.log(JSON.stringify(formData));
 
                         // Send the JSON data to the specified URL using AJAX
                         $.ajax({
@@ -365,7 +365,7 @@
                                                         <label for="txt2550q_14Y" style="margin-left: 5px; margin-top: 6px">YES</label>
                                                     </li>
                                                     <li style="display: flex; align-items: center;">
-                                                        <input tabindex="3" type="radio" id="txt2550q_14N" name="txt2550q_14" value="N">
+                                                        <input tabindex="3" type="radio" id="txt2550q_14N" name="txt2550q_14" value="N" checked>
                                                         <label for="txt2550q_14N" style="margin-left: 5px; margin-top: 6px">NO</label>
                                                     </li>
                                                 </ul>
@@ -825,44 +825,6 @@
 
 <script type="text/javascript">
     var sawt = [];
-    $(document).ready(function(){
-        
-        $(".xcompute").autoNumeric('init', { 
-            mDec: 2, 
-            vMin: '-9999999999999999.99', 
-            vMax: '9999999999999999.99' 
-        });
-
-        // $(".xcompute").on("click", function () {
-        //     $(this).select();
-        // });
-
-        $(".ichecks input").iCheck({
-            checkboxClass: 'icheckbox_square-blue',
-            radioClass: 'iradio_square-blue',
-            increaseArea: '20%' // optional
-        });
-
-        $(document).ready(function() {
-            var currentYear = new Date().getFullYear();
-            var nextYear = currentYear + 1;
-
-            $(".yearpicker").datetimepicker({
-                viewMode: 'years',
-                format: 'YYYY',
-                defaultDate: false,
-                useCurrent: false,
-                minDate: moment(currentYear, 'YYYY'),
-                maxDate: moment(nextYear, 'YYYY')
-            });
-        });
-
-        $(".monthpicker").datetimepicker({
-            viewMode: 'months',
-            format: 'MM',
-            defaultDate: false,
-            useCurrent: false
-        })
 
         function getCleanedValue(selector) {
             var value = $(selector).val();
@@ -1032,8 +994,6 @@
             $("#net_vat_payable").autoNumeric('set', net_vat_payable_excess_input_tax);
         }
 
-
-       
         function calculateAll() {
             calculateTotalPenalties();
             calculateTotalTaxCredits_Payment();   
@@ -1052,22 +1012,57 @@
             calculateNetVATPayable();
         }
 
-      // Example of how to handle keyup events
+        function MonthYearPicker(){
+            var currentYear = new Date().getFullYear();
+            var nextYear = currentYear + 1;
+
+            $(".yearpicker").datetimepicker({
+                viewMode: 'years',
+                format: 'YYYY',
+                defaultDate: false,
+                useCurrent: false,
+                // minDate: moment(currentYear, 'YYYY'),
+                maxDate: moment(nextYear, 'YYYY').endOf('year')
+            });
+
+            $(".monthpicker").datetimepicker({
+                viewMode: 'months',
+                format: 'MM',
+                defaultDate: false,
+                useCurrent: false
+            })
+        }
+
+          
         $(document).ready(function() {
+
+            $(".xcompute").autoNumeric('init', { 
+                mDec: 2, 
+                vMin: '-999999999999.99', 
+                vMax: '999999999999.99'
+            });
+
+            $(".ichecks input").iCheck({
+                checkboxClass: 'icheckbox_square-blue',
+                radioClass: 'iradio_square-blue',
+                increaseArea: '20%' // optional
+            });
+
             $(".xcompute").on("keyup", function() {   
                 calculateAll();
             });
 
             // Trigger calculation on page load
             calculateAll();
+            MonthYearPicker()
         });
-    });
+        
 
 </script>
 
 <script>
 document.addEventListener('DOMContentLoaded', function() {
-
+    
     // default value
     var fromDate = '';
     var toDate = '';
@@ -1141,6 +1136,10 @@ document.addEventListener('DOMContentLoaded', function() {
                         fromDate = `${fiscalMonthInt + 10}/01/${fiscalYearInt - 1}`;
                         toDate = `${fiscalMonthInt}/31/${fiscalYearInt}`;
                         break;
+                    default:
+                        fromDate = '';
+                        toDate = '';
+                        break;
                 }
 
                 // Adjust month and year if they exceed 12
@@ -1148,6 +1147,12 @@ document.addEventListener('DOMContentLoaded', function() {
                 toDate = adjustDate(toDate);
             }
         }
+
+            // Validate the presence of fromDate and toDate
+            // if (!fromDate || !toDate) {
+            //     // console.warn('From Date or To Date is not set properly.');
+            //     return; // Prevent the AJAX request from being sent
+            // }
 
             document.getElementById('from').value = fromDate;
             document.getElementById('to').value = toDate;
@@ -1180,8 +1185,16 @@ document.addEventListener('DOMContentLoaded', function() {
                         console.log("Company: ", data.company)
                         console.log("Message:", data.message);
                         console.log("Data:", data.data);
-                        console.log("Data:", parseFloat(data.data[0].nvat).toFixed(2));
-                        console.log("Total Nvat:", parseFloat(data.totalNvat).toFixed(2));
+
+                        //A. Sales for the Quarter (Exclusive of VAT)
+                        console.log("total VATable Sales A:", data.totalVATableSalesA);
+                        console.log("Zero Rated Sales:", data.totalZeroRatedSales);
+                        console.log("Exempt Sales:", data.totalExemptSales);
+
+                         //B. Output Tax for the Quarter
+                        console.log("total VATable Sales B:", data.totalVATableSalesB);
+                        // console.log("Data:", parseFloat(data.data[0].nvat).toFixed(2));
+                        // console.log("Total Nvat:", parseFloat(data.totalNvat).toFixed(2));
                         // $('#creditable_vat_withhelding').val(parseFloat(data.totalNvat).toFixed(2));
 
                          // Format and set the value of the input field
@@ -1189,16 +1202,17 @@ document.addEventListener('DOMContentLoaded', function() {
                         // var formattedTotalNvat = formatCurrency(totalNvat);
                         // console.log(formattedTotalNvat);
                         // $('#creditable_vat_withhelding').val(formattedTotalNvat);
-                        $('#creditable_vat_withhelding').val(formatCurrency(data.totalNvat));
+                        // $('#creditable_vat_withhelding').val(formatCurrency(data.totalNvat));
 
+                        //A. Sales for the Quarter (Exclusive of VAT)
+                        $('#vatable_sales_A').val(formatCurrency(data.totalVATableSalesA));
+                        $('#zero_rated_sales').val(formatCurrency(data.totalZeroRatedSales));
+                        $('#exempt_sales').val(formatCurrency(data.totalExemptSales));
 
-                        // console.log("Data:", parseFloat(data[0].nvat).toFixed(2));
+                        //B. Output Tax for the Quarter
+                        $('#vatable_sales_B').val(formatCurrency(data.totalVATableSalesB));
 
-                        // var num = data.num || 0; // Default to 0 if undefined
-                        // var formattedNum = parseFloat(num).toFixed(2); // Format to 2 decimal places
-                        // $('#creditable_vat_withhelding').val(formattedNum);
-
-                         
+                        calculateAll();
                         if (data.error) {
                             console.error("Error:", data.error);
                         }
