@@ -76,12 +76,14 @@
         LEFT JOIN groupings d ON c.compcode = d.compcode AND c.csuppliertype = d.ccode AND d.ctype = 'SUPTYP'				
         WHERE a.compcode = '$company' AND MONTH(b.dapvdate) in ($months) AND YEAR(b.dapvdate) = '$year' AND  b.lapproved = 1 AND b.lvoid = 0 AND b.lcancelled = 0 and a.cacctno='$ewtpaydef' and IFNULL(a.cewtcode,'') <> '' Group By a.cewtcode, a.newtrate Order By a.cewtcode";
     
-    //echo $sql."<br>";
+    // echo $sql."<br>";
     $query = mysqli_query($con, $sql);               
     while($row = $query -> fetch_assoc()){
         $apv[] = $row;
     }
+
 ?>
+
 
 <!DOCTYPE html>
 <html lang="en">
@@ -110,58 +112,16 @@
 
     
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-    <!-- <title>MyxFinancials</title> -->
-    <title>BIR2550Q</title>
+    <title>MyxFinancials</title>
 </head>
 <body>
-
-<!-- <script>
-    function logFormValues() {
-        // Get the form element
-        var form = document.getElementById('frmpos');
-        var formValues = {};
-
-        // Loop through all form elements
-        for (var i = 0; i < form.elements.length; i++) {
-            var element = form.elements[i];
-
-            // Check if the element has a name attribute
-            if (element.name) {
-                if (element.type === 'radio') {
-                    // Store the checked radio button value
-                    if (element.checked) {
-                        formValues[element.name] = element.value;
-                    }
-                } else if (element.type === 'checkbox') {
-                    // Store values of checked checkboxes
-                    if (!formValues[element.name]) {
-                        formValues[element.name] = [];
-                    }
-                    if (element.checked) {
-                        formValues[element.name].push(element.value);
-                    }
-                } else if (element.tagName === 'SELECT') {
-                    // Store selected value from select menus
-                    formValues[element.name] = element.options[element.selectedIndex].value;
-                } else {
-                    // Store value of other input types
-                    formValues[element.name] = element.value;
-                }
-            }
-        }
-
-        // Log the form values to the console
-        console.log(formValues);
-    }
-
-    // Optional: Call the function for demonstration (e.g., on form submit)
-    document.querySelector('input[type="button"]').addEventListener('click', function(event) {
-        logFormValues();
-    });
-    
-</script> -->
-
-<form action="bir1601eq.php" name="frmpos" id="frmpos" method="post" target="_blank">
+<div id="result">
+    <?php
+        
+        // echo "test";
+    ?>
+</div>
+<form action="#" name="frmpos" id="frmpos" method="post" target="_blank">
 <!-- <input  class="btn btn-primary" type="button" value="Get Values" onclick="logFormValues()"> -->
         <div class="container">
             <br>
@@ -186,11 +146,11 @@
                         $("#frmpos").serializeArray().forEach(function(item) {
                             formData[item.name] = item.value;
                         });
-                        console.log("Form data:", formData);
+                        console.log(JSON.stringify(formData));
 
                         // Send the JSON data to the specified URL using AJAX
                         $.ajax({
-                            url: "<?= $UrlBase . 'system_management/api/pdfs' ?>",
+                            url: "<?= $UrlBase . 'system_management/api/pdf2550q' ?>",
                             type: "POST",
                             contentType: "application/json",
                             data: JSON.stringify(formData),
@@ -249,8 +209,9 @@
                                     <div style="display: flex; align-items: center; margin-top: 10px;"> 
                                         <b>2.</b> Year Ended (MM/YYYY)
                                         <div style="margin-left: 10px;">
-                                        <input type="text" class="form-control input-sm" name="txt2550q_yrend" id="txt2550q_yrend" value="" placeholder="MM/YYYY" style="text-align: center; Width: 150px">
-                                        <!-- <input type="month"  class="form-control input-sm" id="" name="" style="text-align: center; Width: 150px"> -->
+                                            <input type="text" class="form-control input-sm" name="txt2550q_year_end_M" id="txt2550q_year_end_M" value="" placeholder="MM" style="text-align: center; Width: 60px">
+                                            <input type="text" class="form-control input-sm" name="txt2550q_year_end_Y" id="txt2550q_year_end_Y" value="" placeholder="YYYY" style="text-align: center; Width: 100px">
+                                            <!-- <input type="month"  class="form-control input-sm" id="" name="" style="text-align: center; Width: 150px"> -->
                                         </div>
                                     </div>
                                 </div>
@@ -260,7 +221,6 @@
                                 <div class="input-group">
                                     <div style="margin-top: 5px">
                                         <ul class="ichecks list-inline" style="margin: 0px !important">
-
                                             <li><input tabindex="3" type="radio" id="txt2550q_qrtr1" name="txt2550q_qrtr" <?=($_POST['selqrtr']==1) ? "checked" : "disabled"?> value="1"><label for="txt2550q_qrtr1">&nbsp;1st</li>
 
                                             <li><input tabindex="3" type="radio" id="txt2550q_qrtr2" name="txt2550q_qrtr" <?=($_POST['selqrtr']==2) ? "checked" : "disabled"?> value="2"><label for="txt2550q_qrtr2">&nbsp;2nd</li>
@@ -288,9 +248,9 @@
                                         <span style="margin-right: 10px;">Return Period (MM/DD/YYYY)</span>
                                         <div style="display: flex; align-items: center;">
                                             <label for="from" style="margin-right: 5px;">From:</label>
-                                            <input type="text" class="form-control input-sm" name="from" id="from" value="" placeholder="MM/DD/YYYY" style="text-align: center; width: 150px; margin-right: 10px;">
+                                            <input type="text" class="form-control input-sm" name="return_preiod_from" id="from" value="" placeholder="MM/DD/YYYY" style="text-align: center; width: 150px; margin-right: 10px;" readonly>
                                             <label for="to" style="margin-right: 5px;">to:</label>
-                                            <input type="text" class="form-control input-sm" name="to" id="to" value="" placeholder="MM/DD/YYYY" style="text-align: center; width: 150px;">
+                                            <input type="text" class="form-control input-sm" name="return_preiod_to" id="to" value="" placeholder="MM/DD/YYYY" style="text-align: center; width: 150px;" readonly>
                                         </div>
                                     </div>
                                 </div>
@@ -302,7 +262,7 @@
                                         <ul class="ichecks list-inline" style="margin: 0px !important">
                                             <li><input tabindex="3" type="radio" id="txt2550q_amndY" name="txt2550q_amnd" value="Y"><label for="txt2550q_amndY">&nbsp;YES</li>
                                             
-                                            <li><input tabindex="3" type="radio" id="txt2550q_amndN" name="txt2550q_amnd" value="N"><label for="txt2550q_amndN">&nbsp;NO</li>
+                                            <li><input tabindex="3" type="radio" id="txt2550q_amndN" name="txt2550q_amnd" value="N" checked><label for="txt2550q_amndN">&nbsp;NO</li>
 
                                         </ul>
                                     </div>
@@ -313,8 +273,8 @@
                                 <div class="input-group">
                                     <div style="margin-top: 5px">
                                         <ul class="ichecks list-inline" style="margin: 0px !important">
-                                            <li><input tabindex="3" type="radio" id="txt2550q_sprY" name="txt2550q_spr" value="Y"><label for="txt2550q_srpY">&nbsp;YES</li>
-                                            <li><input tabindex="3" type="radio" id="txt2550q_srpN" name="txt2550q_spr" value="N"><label for="txt2550q_sprN">&nbsp;NO</li>
+                                            <li><input tabindex="3" type="radio" id="txt2550q_sprY" name="txt2550q_spr" value="Y"><label for="txt2550q_sprY">&nbsp;YES</li>
+                                            <li><input tabindex="3" type="radio" id="txt2550q_srpN" name="txt2550q_spr" value="N" checked><label for="txt2550q_srpN">&nbsp;NO</li>
                                         </ul>
                                     </div>
                                 </div>
@@ -339,15 +299,19 @@
                             <td width="100"><input type="text" class="form-control input-sm" name="txt2550q_rdo" id="txt2550q_rdo" value="<?=$comprdo['comprdo']?>" readonly></td>
                         </tr>
                         <tr>
-                            <td colspan="4"> <b> 8 </b> Taxpayer’s Name  (Last Name, First Name, Middle Name for Individual OR Registered Name for Non-Individual) <input type="text" class="form-control input-sm" name="txt2550q_nme" id="txt2550q_nme" value="<?=$comprdo['compname']?>" readonly>
+                            <td colspan="4"> <b> 8 </b> Taxpayer’s Name  (Last Name, First Name, Middle Name for Individual OR Registered Name for Non-Individual) <input type="text" class="form-control input-sm" name="txt2550q_taxpayer_name" id="txt2550q_taxpayer_name" value="<?=$comprdo['compname']?>" readonly>
                         </tr>
                         <tr>
-                            <td colspan="4"> <b> 9 </b> Registered Address <small>(Indicate complete address. If branch, indicate the branch address. If registered address is different from the current address, go to the RDO to update
-                            registered address by using BIR Form No. 1905)</small> <input type="text" class="form-control input-sm" name="txt2550q_add" id="txt2550q_add" value="<?=substr($comprdo['compadd'],0,40)?>" readonly>
-                            
+                            <td colspan="4">
+                                 <b> 9 </b> Registered Address 
+                                 <small>(Indicate complete address. If branch, indicate the branch address. If registered address is different from the current address, go to the RDO to update registered address by using BIR Form No. 1905)</small>
+                                <input type="text" class="form-control input-sm" name="txt2550q_add" id="txt2550q_add" value="<?=substr($comprdo['compadd'],0,40)?>" readonly>
+                            </td>
                         </tr>
                         <tr>
-                            <td colspan="2"> <input type="text" class="form-control input-sm" name="txt2550q_add2" id="txt2550q_add2" value="<?=(strlen($comprdo['compadd']) > 40) ? substr($comprdo['compadd'],40,71) : ""?>" readonly> </td>
+                            <td colspan="2"> 
+                                <input type="text" class="form-control input-sm" name="txt2550q_add2" id="txt2550q_add2" value="<?=(strlen($comprdo['compadd']) > 40) ? substr($comprdo['compadd'],40,71) : ""?>" readonly> 
+                            </td>
                             <td align="right" style="vertical-align: middle"> <b> 10A </b> ZIP Code</td>
                             <td> <input type="text" class="form-control input-sm" name="txt2550q_zip" id="txt2550q_zip" value="<?=$comprdo['compzip']?>" readonly> </td>
                         </tr>
@@ -374,13 +338,13 @@
                                         <b> 13 </b> Tax Payer Classification
                                         <div style="margin-left: 10px;">
                                             <ul class="ichecks list-inline" style="margin: 0px !important">
-                                                <li><input tabindex="3" type="radio" id="txt2550q_tpc1" name="txt2550q_tpc" value=""><label for="txt2550q_tpc1">&nbsp;Mirco</li>
+                                                <li><input tabindex="3" type="radio" id="txt2550q_tax_payer_classification1" name="txt2550q_tax_payer_classification" value="micro"><label for="txt2550q_tax_payer_classification1">&nbsp;Mirco</li>
 
-                                                <li><input tabindex="3" type="radio" id="txt2550q_tpc2" name="txt2550q_tpc" value=""><label for="txt2550q_tpc2">&nbsp;Small</li>
+                                                <li><input tabindex="3" type="radio" id="txt2550q_tax_payer_classification2" name="txt2550q_tax_payer_classification" value="small"><label for="txt2550q_tax_payer_classification2">&nbsp;Small</li>
 
-                                                <li><input tabindex="3" type="radio" id="txt2550q_tpc3" name="txt2550q_tpc" value=""><label for="txt2550q_tpc3">&nbsp;Medium</li>
+                                                <li><input tabindex="3" type="radio" id="txt2550q_tax_payer_classification3" name="txt2550q_tax_payer_classification" value="medium"><label for="txt2550q_tax_payer_classification3">&nbsp;Medium</li>
 
-                                                <li><input tabindex="3" type="radio" id="txt2550q_tpc4" name="txt2550q_tpc" value=""><label for="txt2550q_tpc4">&nbsp;Large</li>
+                                                <li><input tabindex="3" type="radio" id="txt2550q_tax_payer_classification4" name="txt2550q_tax_payer_classification" value="Large"><label for="txt2550q_tax_payer_classification4">&nbsp;Large</li>
                                             </ul>
                                         </div>
                                     </div>
@@ -468,62 +432,63 @@
 
                                         <tr>
                                             <td colspan="4" style="vertical-align: middle;"><b> 15 </b> Net VAT Payable/(Excess Input Tax) <i>(From Part IV, Item 61) </i></td>                                       
-                                            <td>  <input type="text" class="form-control input-sm text-right" name="txt1601eq_totewt" id="txt1601eq_totewt" value="<?=number_format($totEWT,2)?>" readonly> </td>
+                                            <td>  <input type="text" class="form-control input-sm text-right xcompute" name="net_vat_payable" id="net_vat_payable" value="" readonly> </td>
                                         </tr>
                                         <tr>
                                             <td colspan="5" style="vertical-align: middle;">&emsp; &emsp;Less: Tax Credits/Payments</td>                                       
                                         </tr>
                                         <tr>
                                             <td colspan="4" style="vertical-align: middle;"><b> 16 </b>  Creditable VAT Withheld <i>(From Part V - Schedule 3, Column D)</i></td>                                       
-                                            <td>  <input type="text" class="xcompute form-control input-sm text-right" name="txt1601eq_less1" id="txt1601eq_less1" value="0.00"> </td>
+                                            <td>  <input type="text" class="xcompute form-control input-sm text-right" name="creditable_vat_withhelding" id="creditable_vat_withhelding" value="0.00"> </td>
                                         </tr>
                                         <tr>
                                             <td colspan="4" style="vertical-align: middle;"><b> 17 </b>  Advance VAT Payments <i> (From Part V - Schedule 4)</i></td>
-                                            <td>  <input type="text" class="xcompute form-control input-sm text-right" name="txt1601eq_less2" id="txt1601eq_less2" value="0.00"> </td>
+                                            <td>  <input type="text" class="xcompute form-control input-sm text-right" name="advance_vat_payments" id="advance_vat_payments" value="0.00"> </td>
                                         </tr>
                                         <tr>
-                                            <td colspan="4" style="vertical-align: middle;"><b> 18 </b>  Advance VAT Payments <i> (From Part V - Schedule 4)</i></td>
-                                            <td>  <input type="text" class="xcompute form-control input-sm text-right" name="txt1601eq_less2" id="txt1601eq_less2" value="0.00"> </td>
+                                            <td colspan="4" style="vertical-align: middle;"><b> 18 </b>   VAT paid in return previously filed, if this is an amended return </td>
+                                            <td>  <input type="text" class="xcompute form-control input-sm text-right" name="txt2550q_18" id="txt2550q_18" value="0.00"> </td>
                                         </tr>
                                         <tr>
                                             <td colspan="4" style="vertical-align: middle; ">
                                                 <div style="display: flex; align-items: center;">
                                                     <b style="margin-right: 2px;">19</b> Other Credits/Payment (Specify)
-                                                    <input type="text" class="form-control input-sm text-right" name="txt1601eq_less2" id="txt1601eq_less2" value="0.00" style=" margin: 3px 3px 3px 10px; width: 70%;">
+                                                    <input type="text" class="form-control input-sm" name="specify" id="specify" value="" style=" margin: 3px 3px 3px 10px; width: 70%;">
+        
                                                 </div>
                                             </td>                                    
                                             <td  style="vertical-align: middle;;">  
-                                                <input type="text" class="xcompute form-control input-sm text-right" name="txt1601eq_prev" id="txt1601eq_prev" value="0.00"> 
+                                                <input type="text" class="xcompute form-control input-sm text-right" name="other_credits_payment" id="other_credits_payment" value="0.00"> 
                                             </td>
                                         </tr>
                                         <tr>
                                             <td colspan="4" style="vertical-align: middle;"><b> 20 </b> Total Tax Credits/Payment <i> (Sum of Items 16 to 19)</i></td>                                       
-                                            <td>  <input type="text" class="xcompute form-control input-sm text-right" name="txt1601eq_overr" id="txt1601eq_overr" value="0.00"> </td>
+                                            <td>  <input type="text" class="xcompute form-control input-sm text-right" name="total_tax_credits_payments" id="total_tax_credits_payments" value="0.00" readonly> </td>
                                         </tr>
                                         <tr>
                                             <td colspan="4" style="vertical-align: middle;"><b> 21 </b> Tax Still Payable/(Excess Credits) <i>(Item 15 Less Item 20)</i></td>                                       
-                                            <td>  <input type="text" class="xcompute form-control input-sm text-right" name="txt1601eq_otrpay" id="txt1601eq_otrpay" value="0.00"> </td>
+                                            <td>  <input type="text" class="xcompute form-control input-sm text-right" name="tax_still_payable" id="tax_still_payable" value="0.00" readonly> </td>
                                         </tr>
             
                                         <tr>
                                             <td colspan="4" style="vertical-align: middle;">Add: Penalties <b> 22 </b> Surcharge</td>                                       
-                                            <td>  <input type="text" class="xcompute form-control input-sm text-right" name="txt1601eq_pensur" id="txt1601eq_pensur" value="0.00"> </td>
+                                            <td>  <input type="text" class="xcompute form-control input-sm text-right" name="surcharge" id="surcharge" value="0.00"> </td>
                                         </tr>
                                         <tr>
                                             <td colspan="4" style="vertical-align: middle;"><font color="white">Add: Penalties </font><b> 23 </b> Interest</td>                                       
-                                            <td>  <input type="text" class="xcompute form-control input-sm text-right" name="txt1601eq_penint" id="txt1601eq_penint" value="0.00"> </td>
+                                            <td>  <input type="text" class="xcompute form-control input-sm text-right" name="interest" id="interest" value="0.00"> </td>
                                         </tr>
                                         <tr>
                                             <td colspan="4" style="vertical-align: middle;"><font color="white">Add: Penalties </font><b> 24 </b> Compromise</td>                                       
-                                            <td>  <input type="text" class="xcompute form-control input-sm text-right" name="txt1601eq_pencom" id="txt1601eq_pencom" value="0.00"> </td>
+                                            <td>  <input type="text" class="xcompute form-control input-sm text-right" name="compromise" id="compromise" value="0.00"> </td>
                                         </tr>
                                         <tr>
-                                            <td colspan="4" style="vertical-align: middle;"><font color="white">Add: Penalties </font><b> 35 </b> Total Penalties <i>(Sum of Items 22 to 24)</i></td>                                       
-                                            <td>  <input type="text" class="xcompute form-control input-sm text-right" name="txt1601eq_pentot" id="txt1601eq_pentot" value="0.00" readonly> </td>
+                                            <td colspan="4" style="vertical-align: middle;"><font color="white">Add: Penalties </font><b> 25 </b> Total Penalties <i>(Sum of Items 22 to 24)</i></td>                                       
+                                            <td>  <input type="text" class="xcompute form-control input-sm text-right" name="total_penalties" id="total_penalties" value="0.00" readonly> </td>
                                         </tr> 
                                         <tr> 
                                             <td colspan="4" style="vertical-align: middle;"><b> 26 TOTAL AMOUNT PAYABLE/(Excess Credits)</b> <i>(Sum of Items 21 and 25)</i></td>                                       
-                                            <td>  <input type="text" class="xcompute form-control input-sm text-right" name="txt1601eq_gtot" id="txt1601eq_gtot" value="<?=number_format($totEWT,2)?>" readonly> </td>
+                                            <td>  <input type="text" class="xcompute form-control input-sm text-right" name="total_amount_payable" id="total_amount_payable" value="0.00" readonly> </td>
                                         </tr>
                                     
                                 </table>
@@ -672,35 +637,35 @@
                         </tr>
                         <tr>
                             <td style="vertical-align: middle;"><b> 31 </b> VATable Sales </td>
-                            <td><input type="text" class="form-control input-sm" name="txt1601eq_zip" id="txt1601eq_zip" value="<?=$comprdo['compzip']?>" readonly></td>
-                            <td><input type="text" class="form-control input-sm" name="txt1601eq_zip" id="txt1601eq_zip" value="<?=$comprdo['compzip']?>" readonly></td>
+                            <td><input type="text" class="form-control input-sm text-right xcompute" name="vatable_sales_A" id="vatable_sales_A" value="0.00" ></td>
+                            <td><input type="text" class="form-control input-sm text-right xcompute" name="vatable_sales_B" id="vatable_sales_B" value="0.00" ></td>
                         </tr>
                         <tr>
                             <td style="vertical-align: middle;"><b> 32 </b> Zero-Rated Sales </td>
-                            <td><input type="text" class="form-control input-sm" name="txt1601eq_zip" id="txt1601eq_zip" value="<?=$comprdo['compzip']?>" readonly></td>
+                            <td><input type="text" class="form-control input-sm text-right xcompute" name="zero_rated_sales" id="zero_rated_sales" value="0.00"></td>
                             <td>&nbsp;</td>
                         </tr>
                         <tr>
                             <td style="vertical-align: middle;"><b> 33 </b> Exempt Sales </td>
-                            <td><input type="text" class="form-control input-sm" name="txt1601eq_zip" id="txt1601eq_zip" value="<?=$comprdo['compzip']?>" readonly></td>
+                            <td><input type="text" class="form-control input-sm text-right xcompute" name="exempt_sales" id="exempt_sales" value="0.00"></td>
                             <td>&nbsp;</td>
                         </tr>
                         <tr>
                             <td style="vertical-align: middle; line-height:12px"><b> 34 Total Sales & Output Tax Due </b><br><small><i>(Sum of Items 31A to 33A) / (Item 31B)</i></small></td>
-                            <td><input type="text" class="form-control input-sm" name="txt1601eq_zip" id="txt1601eq_zip" value="<?=$comprdo['compzip']?>" readonly></td>
-                            <td><input type="text" class="form-control input-sm" name="txt1601eq_zip" id="txt1601eq_zip" value="<?=$comprdo['compzip']?>" readonly></td>
+                            <td><input type="text" class="form-control input-sm text-right xcompute" name="total_sales_output_tax_due_A" id="total_sales_output_tax_due_A" value="0.00" readonly></td>
+                            <td><input type="text" class="form-control input-sm text-right xcompute" name="total_sales_output_tax_due_B" id="total_sales_output_tax_due_B" value="0.00" readonly></td>
                         </tr>
                         <tr>
                             <td style="vertical-align: middle;" colspan="2"><b> 35 </b> Less: Output VAT on Uncollected Receivable</td>                                       
-                            <td>  <input type="text" class="xcompute form-control input-sm text-right" name="txt1601eq_less1" id="txt1601eq_less1" value="0.00"> </td>
+                            <td>  <input type="text" class="xcompute form-control input-sm text-right" name="output_vat_on_uncollected_recievable" id="output_vat_on_uncollected_recievable" value="0.00"> </td>
                         </tr>
                         <tr>
                             <td style="vertical-align: middle;" colspan="2"><b> 36 </b> Add: Output VAT on Recovered Uncollected Receivables Previously Deducted</td>
-                            <td>  <input type="text" class="xcompute form-control input-sm text-right" name="txt1601eq_less2" id="txt1601eq_less2" value="0.00"> </td>
+                            <td>  <input type="text" class="xcompute form-control input-sm text-right" name="output_vat_on_recovered_uncollected_recievable" id="output_vat_on_recovered_uncollected_recievable" value="0.00"> </td>
                         </tr>
                         <tr>
                             <td style="vertical-align: middle;" colspan="2"><b> 37 Total Adjusted Output Tax Due </b> <i>(Item 34B Less Item 35B Add Item 36B)</i></td>                                       
-                            <td>  <input type="text" class="xcompute form-control input-sm text-right" name="txt1601eq_prev" id="txt1601eq_prev" value="0.00"> </td>
+                            <td>  <input type="text" class="xcompute form-control input-sm text-right" name="total_adjusted_output_tax_due" id="total_adjusted_output_tax_due" value="0.00" readonly> </td>
                         </tr>
                         <tr>
                             <td colspan="2"> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<b> Less: Allowable Input Tax </b></td>
@@ -708,27 +673,32 @@
                         </tr>
                         <tr>
                             <td style="vertical-align: middle;" colspan="2"><b> 38 </b> Input Tax Carried Over from Previous Quarter </td>                                       
-                            <td>  <input type="text" class="xcompute form-control input-sm text-right" name="txt1601eq_less1" id="txt1601eq_less1" value="0.00"> </td>
+                            <td>  <input type="text" class="xcompute form-control input-sm text-right" name="input_tax_carreid_over_from_previous_quarter" id="input_tax_carreid_over_from_previous_quarter" value="0.00"> </td>
                         </tr>
                         <tr>
                             <td style="vertical-align: middle;" colspan="2"><b> 39 </b> Input Tax Deferred on Capital Goods Exceeding P1 Million from Previous Quarter <i>(From Part V - Schedule 1 Col E)</i></td>                                       
-                            <td>  <input type="text" class="xcompute form-control input-sm text-right" name="txt1601eq_less1" id="txt1601eq_less1" value="0.00"> </td>
+                            <td>  <input type="text" class="xcompute form-control input-sm text-right" name="input_tax_deferred_on_capital_goods" id="input_tax_deferred_on_capital_goods" value="0.00"> </td>
                         </tr>
                         <tr>
                             <td style="vertical-align: middle;" colspan="2"><b> 40 </b> Transitional Input Tax</td>                                       
-                            <td>  <input type="text" class="xcompute form-control input-sm text-right" name="txt1601eq_less1" id="txt1601eq_less1" value="0.00"> </td>
+                            <td>  <input type="text" class="xcompute form-control input-sm text-right" name="transitional_input_tax" id="transitional_input_tax" value="0.00"></td>
                         </tr>
                         <tr>
                             <td style="vertical-align: middle;" colspan="2"><b> 41 </b> Presumptive Input Tax</td>                                       
-                            <td>  <input type="text" class="xcompute form-control input-sm text-right" name="txt1601eq_less1" id="txt1601eq_less1" value="0.00"> </td>
+                            <td>  <input type="text" class="xcompute form-control input-sm text-right" name="presumptive_input_tax" id="presumptive_input_tax" value="0.00"> </td>
                         </tr>
                         <tr>
-                            <td style="vertical-align: middle;" colspan="2"><b> 42 </b> Others <i>(Specify)</i></td>                                       
-                            <td>  <input type="text" class="xcompute form-control input-sm text-right" name="txt1601eq_less1" id="txt1601eq_less1" value="0.00"> </td>
+                            <td style="vertical-align: middle;" colspan="2">
+                                <div style="display: flex; align-items: center;">
+                                    <b style="margin-right: 2px;"> 42 </b> Others <i>(Specify)</i>
+                                    <input type="text" class="form-control input-sm" name="others_42_txt" id="others_42" value="" style=" margin: 3px 3px 3px 10px; width: 80%;">
+                                </div>
+                            </td>                                       
+                            <td>  <input type="text" class="xcompute form-control input-sm text-right" name="others_42_num" id="others_42_num" value="0.00"> </td>
                         </tr>
                         <tr>
                             <td style="vertical-align: middle;" colspan="2"><b> 43 Total</b> <i>(Sum of Items 38B to 42B)</i></td>                                       
-                            <td>  <input type="text" class="xcompute form-control input-sm text-right" name="txt1601eq_less1" id="txt1601eq_less1" value="0.00"> </td>
+                            <td>  <input type="text" class="xcompute form-control input-sm text-right" name="total_43" id="total_43" value="0.00" readonly> </td>
                         </tr>
                     </table>
                 </div>
@@ -741,42 +711,47 @@
                         </tr>
                         <tr>
                             <td style="vertical-align: middle;"><b> 44 </b> Domestic Purchases </td>
-                            <td><input type="text" class="form-control input-sm" name="txt1601eq_zip" id="txt1601eq_zip" value="<?=$comprdo['compzip']?>" readonly></td>
-                            <td><input type="text" class="form-control input-sm" name="txt1601eq_zip" id="txt1601eq_zip" value="<?=$comprdo['compzip']?>" readonly></td>
+                            <td><input type="text" class="form-control input-sm text-right xcompute" name="domestic_purchases_A" id="domestic_purchases_A" value="0.00" ></td>
+                            <td><input type="text" class="form-control input-sm text-right xcompute" name="domestic_purchases_B" id="domestic_purchases_B" value="0.00" ></td>
                         </tr>
                         <tr>
                             <td style="vertical-align: middle;"><b> 45 </b> Services Rendered by Non-Residents </td>
-                            <td><input type="text" class="form-control input-sm" name="txt1601eq_zip" id="txt1601eq_zip" value="<?=$comprdo['compzip']?>" readonly></td>
-                            <td><input type="text" class="form-control input-sm" name="txt1601eq_zip" id="txt1601eq_zip" value="<?=$comprdo['compzip']?>" readonly></td>
+                            <td><input type="text" class="form-control input-sm text-right xcompute" name="services_rendered_by_non_resident_A" id="services_rendered_by_non_resident_A" value="0.00" ></td>
+                            <td><input type="text" class="form-control input-sm text-right xcompute" name="services_rendered_by_non_resident_B" id="services_rendered_by_non_resident_B" value="0.00" ></td>
                         </tr>
                         <tr>
                             <td style="vertical-align: middle;"><b> 46 </b> Importations </td>
-                            <td><input type="text" class="form-control input-sm" name="txt1601eq_zip" id="txt1601eq_zip" value="<?=$comprdo['compzip']?>" readonly></td>
-                            <td><input type="text" class="form-control input-sm" name="txt1601eq_zip" id="txt1601eq_zip" value="<?=$comprdo['compzip']?>" readonly></td>
+                            <td><input type="text" class="form-control input-sm text-right xcompute" name="importations_A" id="importations_A" value="0.00" ></td>
+                            <td><input type="text" class="form-control input-sm text-right xcompute" name="importations_B" id="importations_B" value="0.00" ></td>
                         </tr>
                         <tr>
-                            <td style="vertical-align: middle;"><b> 47 </b> Others <i>(Specify)</i></td>
-                            <td><input type="text" class="form-control input-sm" name="txt1601eq_zip" id="txt1601eq_zip" value="<?=$comprdo['compzip']?>" readonly></td>
-                            <td><input type="text" class="form-control input-sm" name="txt1601eq_zip" id="txt1601eq_zip" value="<?=$comprdo['compzip']?>" readonly></td>
+                            <td style="vertical-align: middle;">
+                                <div style="display: flex; align-items: center;">
+                                    <b style="margin-right: 2px;"> 47 </b> Others <i>(Specify)</i>
+                                    <input type="text" class="form-control input-sm" name="others_47_A_txt" id="others_47_A_txt" value="" style=" margin: 3px 3px 3px 10px; width: 70%;">
+                                </div>
+                            </td>
+                            <td><input type="text" class="form-control input-sm text-right xcompute" name="others_47_A_num" id="others_47_A_num" value="0.00" ></td>
+                            <td><input type="text" class="form-control input-sm text-right xcompute" name="others_47_B_num" id="others_47_B_num" value="0.00" ></td>
                         </tr>
                         <tr>
                             <td style="vertical-align: middle;"><b> 48 </b> Domestic Purchases with No Input Tax </td>
-                            <td><input type="text" class="form-control input-sm" name="txt1601eq_zip" id="txt1601eq_zip" value="<?=$comprdo['compzip']?>" readonly></td>
+                            <td><input type="text" class="form-control input-sm text-right xcompute" name="domestic_purchases_with_no_input_tax" id="domestic_purchases_with_no_input_tax" value="0.00"></td>
                             <td>&nbsp;</td>
                         </tr>
                         <tr>
                             <td style="vertical-align: middle;"><b> 49 </b> VAT- Exempt Importations </td>
-                            <td><input type="text" class="form-control input-sm" name="txt1601eq_zip" id="txt1601eq_zip" value="<?=$comprdo['compzip']?>" readonly></td>
+                            <td><input type="text" class="form-control input-sm text-right xcompute" name="vat_exempt_importations" id="vat_exempt_importations" value="0.00"></td>
                             <td>&nbsp;</td>
                         </tr>
                         <tr>
                             <td style="vertical-align: middle; line-height:12px"><b> 50 </b> Total Current Purchases/Input Tax<br><small><i>(Sum of Items 44A to 49A)/(Sum of Items 44B to 47B)</i></small></td>
-                            <td><input type="text" class="form-control input-sm" name="txt1601eq_zip" id="txt1601eq_zip" value="<?=$comprdo['compzip']?>" readonly></td>
-                            <td><input type="text" class="form-control input-sm" name="txt1601eq_zip" id="txt1601eq_zip" value="<?=$comprdo['compzip']?>" readonly></td>
+                            <td><input type="text" class="form-control input-sm text-right xcompute" name="total_current_purchases_input_tax_A" id="total_current_purchases_input_tax_A" value="0.00" readonly></td>
+                            <td><input type="text" class="form-control input-sm text-right xcompute" name="total_current_purchases_input_tax_B" id="total_current_purchases_input_tax_B" value="0.00" readonly></td>
                         </tr>
                         <tr>
                             <td style="vertical-align: middle; line-height:12px" colspan="2"><b> 51 Total Available Input Tax </b><i>(Sum of Items 43B and 50B)</i></td>
-                            <td><input type="text" class="form-control input-sm" name="txt1601eq_zip" id="txt1601eq_zip" value="<?=$comprdo['compzip']?>" readonly></td>
+                            <td><input type="text" class="form-control input-sm text-right xcompute" name="total_available_input_tax" id="total_available_input_tax" value="0.00" readonly></td>
                            
                         </tr>
                         <tr>
@@ -785,43 +760,50 @@
                         </tr>
                         <tr>
                             <td style="vertical-align: middle; line-height:12px" colspan="2"><b> 52 </b> Input Tax on Purchases/Importation of Capital Goods exceeding P1 Million deferred for the succeeding period<br><small><i>(From Part V Schedule 1, Column I)</i></small> </td>                                       
-                            <td>  <input type="text" class="xcompute form-control input-sm text-right" name="txt1601eq_less1" id="txt1601eq_less1" value="0.00"> </td>
+                            <td>  <input type="text" class="xcompute form-control input-sm text-right" name="input_tax_on_purchases" id="input_tax_on_purchases" value="0.00"> </td>
                         </tr>
                         <tr>
                             <td style="vertical-align: middle;" colspan="2"><b> 53 </b> Input Tax Attributable to VAT Exempt Sales <i>(From Part V - Schedule 2)</i></td>                                       
-                            <td>  <input type="text" class="xcompute form-control input-sm text-right" name="txt1601eq_less1" id="txt1601eq_less1" value="0.00"> </td>
+                            <td>  <input type="text" class="xcompute form-control input-sm text-right" name="input_tax_attributable_to_vat_exempt_sales" id="input_tax_attributable_to_vat_exempt_sales" value="0.00"> </td>
                         </tr>
                         <tr>
                             <td style="vertical-align: middle;" colspan="2"><b> 54 </b> VAT Refund/TCC Claimed </td>                                       
-                            <td>  <input type="text" class="xcompute form-control input-sm text-right" name="txt1601eq_less1" id="txt1601eq_less1" value="0.00"> </td>
+                            <td>  <input type="text" class="xcompute form-control input-sm text-right" name="vat_refund_tcc_claimed" id="vat_refund_tcc_claimed" value="0.00"> </td>
                         </tr>
                         <tr>
-                            <td style="vertical-align: middle;" colspan="2"><b> 55 </b> Input VAT on Unpaid Payables </td>                                       
-                            <td>  <input type="text" class="xcompute form-control input-sm text-right" name="txt1601eq_less1" id="txt1601eq_less1" value="0.00"> </td>
+                            <td style="vertical-align: middle;" colspan="2">
+                                <b> 55 </b> Input VAT on Unpaid Payables 
+                            </td>                                       
+                            <td>  <input type="text" class="xcompute form-control input-sm text-right" name="input_vat_on_unpaid_payable" id="input_vat_on_unpaid_payable" value="0.00"> </td>
                         </tr>
                         <tr>
-                            <td style="vertical-align: middle;" colspan="2"><b> 56 </b> Others <i>(Specify)</i></td>                                       
-                            <td>  <input type="text" class="xcompute form-control input-sm text-right" name="txt1601eq_less1" id="txt1601eq_less1" value="0.00"> </td>
+                            <td style="vertical-align: middle;" colspan="2">
+                                <div style="display: flex; align-items: center;">
+                                    <b style="margin-right: 2px;"> 56 </b> Others <i>(Specify)</i>
+                                    <input type="text" class="form-control input-sm" name="others_56_txt" id="others_56_txt" value="" style=" margin: 3px 3px 3px 10px; width: 80%;">
+                                </div>
+                            </td>                                       
+                            <td>  <input type="text" class="xcompute form-control input-sm text-right" name="others_56_num" id="others_56_num" value="0.00"> </td>
                         </tr>
                         <tr>
                             <td style="vertical-align: middle;" colspan="2"><b> 57 </b> Total Deductions from Input Tax <i>(Sum of Items 52B to 56B)</i></td>                                       
-                            <td>  <input type="text" class="xcompute form-control input-sm text-right" name="txt1601eq_less1" id="txt1601eq_less1" value="0.00"> </td>
+                            <td>  <input type="text" class="xcompute form-control input-sm text-right" name="total_deductions_from_input_tax" id="total_deductions_from_input_tax" value="0.00" readonly> </td>
                         </tr>
                         <tr>
                             <td style="vertical-align: middle;" colspan="2"><b> 58 </b> Add: Input VAT on Settled Unpaid Payables Previously Deducted</td>                                       
-                            <td>  <input type="text" class="xcompute form-control input-sm text-right" name="txt1601eq_less1" id="txt1601eq_less1" value="0.00"> </td>
+                            <td>  <input type="text" class="xcompute form-control input-sm text-right" name="input_vat_on_settled_unpaid_payables_previously_deducted" id="input_vat_on_settled_unpaid_payables_previously_deducted" value="0.00"> </td>
                         </tr>
                         <tr>
                             <td style="vertical-align: middle;" colspan="2"><b> 59 </b> Adjusted Deductions from Input Tax <i>(Sum of Items 57B and 58B)</i></td>                                       
-                            <td>  <input type="text" class="xcompute form-control input-sm text-right" name="txt1601eq_less1" id="txt1601eq_less1" value="0.00"> </td>
+                            <td>  <input type="text" class="xcompute form-control input-sm text-right" name="adjusted_deductions_from_input_tax" id="adjusted_deductions_from_input_tax" value="0.00" readonly> </td>
                         </tr>
                         <tr>
                             <td style="vertical-align: middle;" colspan="2"><b> 60 </b> Total Allowable Input Tax <i>(Item 51B Less Item 59B)</i></td>                                       
-                            <td>  <input type="text" class="xcompute form-control input-sm text-right" name="txt1601eq_less1" id="txt1601eq_less1" value="0.00"> </td>
+                            <td>  <input type="text" class="xcompute form-control input-sm text-right" name="total_allowable_input_tax" id="total_allowable_input_tax" value="0.00" readonly> </td>
                         </tr>
                         <tr>
                             <td style="vertical-align: middle;" colspan="2"><b> 61 Net VAT Payable/(Excess Input Tax)</b> <i>(Item 37B Less Item 60B) (To Part II, Item 15)</i></td>                                       
-                            <td>  <input type="text" class="xcompute form-control input-sm text-right" name="txt1601eq_less1" id="txt1601eq_less1" value="0.00"> </td>
+                            <td>  <input type="text" class="xcompute form-control input-sm text-right" name="net_vat_payable_excess_input_tax" id="net_vat_payable_excess_input_tax" value="0.00" readonly> </td>
                         </tr>
                     </table>
                 </div>
@@ -844,98 +826,435 @@
 <script type="text/javascript">
     var sawt = [];
     $(document).ready(function(){
-
-        $(".xcompute").autoNumeric('init',{mDec:2});
-        $(".xcompute").on("click", function () {
-            $(this).select();
+        
+        $(".xcompute").autoNumeric('init', { 
+            mDec: 2, 
+            vMin: '-9999999999999999.99', 
+            vMax: '9999999999999999.99' 
         });
+
+        // $(".xcompute").on("click", function () {
+        //     $(this).select();
+        // });
 
         $(".ichecks input").iCheck({
             checkboxClass: 'icheckbox_square-blue',
             radioClass: 'iradio_square-blue',
             increaseArea: '20%' // optional
         });
-       // $(".birforms").hide();
 
-        $(".yearpicker").datetimepicker({
-            defaultDate: moment(),
-            viewMode: 'years',
-            format: 'YYYY'
+        $(document).ready(function() {
+            var currentYear = new Date().getFullYear();
+            var nextYear = currentYear + 1;
+
+            $(".yearpicker").datetimepicker({
+                viewMode: 'years',
+                format: 'YYYY',
+                defaultDate: false,
+                useCurrent: false,
+                minDate: moment(currentYear, 'YYYY'),
+                maxDate: moment(nextYear, 'YYYY')
+            });
+        });
+
+        $(".monthpicker").datetimepicker({
+            viewMode: 'months',
+            format: 'MM',
+            defaultDate: false,
+            useCurrent: false
         })
 
-        $("#selfrmname").select2({
-            placeholder: "Please select a form"
-        }); 
+        function getCleanedValue(selector) {
+            var value = $(selector).val();
+            // return (value === "" || value === undefined) ? 0 : value.replace(/,/g, '');
+            return value ? parseFloat(value.replace(/,/g, '')) || 0 : 0;
+        }
 
-        $("#selfil").on("change", function(){
-            $x = $(this).val();
-            if($x=="Monthly"){
-                $("#divqr").hide();
-                $("#divmn").show();
-            }else if($x=="Quarterly"){
-                $("#divqr").show();
-                $("#divmn").hide();
-            }else if($x=="Annually"){
-                $("#divqr").hide();
-                $("#divmn").hide();
-            }
+        // Function to calculate total penalties
+        function calculateTotalPenalties() {
+            var penaltySurcharge = getCleanedValue("#surcharge");
+            var penaltyInterest = getCleanedValue("#interest");
+            var penaltyCompromise = getCleanedValue("#compromise");
+
+            var totalPenalties = penaltySurcharge + penaltyInterest + penaltyCompromise;
+
+            $("#total_penalties").autoNumeric('set', totalPenalties);  
+        }
+
+        // Function to calculate Total Tax Credits/Payment
+        function calculateTotalTaxCredits_Payment(){
+            var creditable_vat_withhelding = getCleanedValue("#creditable_vat_withhelding");
+            var advance_vat_payments = getCleanedValue("#advance_vat_payments");
+            var txt2550q_18 = getCleanedValue("#txt2550q_18");
+            var other_credits_payment = getCleanedValue("#other_credits_payment");
+
+            var TotalTaxCredits_Payment = creditable_vat_withhelding + advance_vat_payments + txt2550q_18 + other_credits_payment;
+
+            $("#total_tax_credits_payments").autoNumeric('set', TotalTaxCredits_Payment);
+        }
+
+        // Function to calculate tax still payable
+        function calculateTaxStillPayable(){
+            var net_vat_payable = getCleanedValue("#net_vat_payable");
+            var total_tax_credits_payments = getCleanedValue("#total_tax_credits_payments");
+
+            var tax_still_payable = net_vat_payable - total_tax_credits_payments;
+
+            $("#tax_still_payable").autoNumeric('set', tax_still_payable);
+        }
+
+        // Function to calculate total amount payable
+        function calculateTotalAmountPayable(){
+            var tax_still_payable = getCleanedValue("#tax_still_payable");
+            var total_penalties = getCleanedValue("#total_penalties");
+
+            var total_amount_payable = tax_still_payable + total_penalties;
+
+            $("#total_amount_payable").autoNumeric('set', total_amount_payable);
+        }
+
+         // Function to calculate total sales
+         function calculateTotalSales(){
+            var vatable_sales_A = getCleanedValue("#vatable_sales_A");
+            var zero_rated_sales = getCleanedValue("#zero_rated_sales");
+            var exempt_sales = getCleanedValue("#exempt_sales");
+
+            var total_sales_output_tax_due_A = vatable_sales_A + zero_rated_sales + exempt_sales;
+
+            $("#total_sales_output_tax_due_A").autoNumeric('set', total_sales_output_tax_due_A);
+        }
+
+        // Function to calculate output tax due
+        function calculateOutputTaxDue(){
+            var vatable_sales_B = getCleanedValue("#vatable_sales_B"); 
+
+            $("#total_sales_output_tax_due_B").autoNumeric('set', vatable_sales_B);
+        }
+
+        // Function to calculate total adjusted output tax due
+        function calculateTotalAdjustedOutputTaxDue(){
+            var total_sales_output_tax_due_B = getCleanedValue("#total_sales_output_tax_due_B"); 
+            var output_vat_on_uncollected_recievable = getCleanedValue("#output_vat_on_uncollected_recievable");
+            var output_vat_on_recovered_uncollected_recievable = getCleanedValue("#output_vat_on_recovered_uncollected_recievable"); 
+
+            var total_adjusted_output_tax_due = total_sales_output_tax_due_B - output_vat_on_uncollected_recievable + output_vat_on_recovered_uncollected_recievable;
+
+            $("#total_adjusted_output_tax_due").autoNumeric('set', total_adjusted_output_tax_due);
+        }
+
+         // Function to calculate 43. total
+         function calculateTotal_43(){
+            var input_tax_carreid_over_from_previous_quarter = getCleanedValue("#input_tax_carreid_over_from_previous_quarter"); 
+            var input_tax_deferred_on_capital_goods = getCleanedValue("#input_tax_deferred_on_capital_goods");
+            var transitional_input_tax = getCleanedValue("#transitional_input_tax"); 
+            var presumptive_input_tax = getCleanedValue("#presumptive_input_tax"); 
+            var others_42_num = getCleanedValue("#others_42_num"); 
+
+            var total_43 =  input_tax_carreid_over_from_previous_quarter + 
+                            input_tax_deferred_on_capital_goods + 
+                            transitional_input_tax + 
+                            presumptive_input_tax + 
+                            others_42_num;
+
+            $("#total_43").autoNumeric('set', total_43);
+        }
+        
+          // Function to calculate total current purchases/input tax A
+          function calculateTotalCurrentPurchasesInputTax_A(){
+            var domestic_purchases_A = getCleanedValue("#domestic_purchases_A"); 
+            var services_rendered_by_non_resident_A = getCleanedValue("#services_rendered_by_non_resident_A");
+            var importations_A = getCleanedValue("#importations_A"); 
+            var others_47_A_num = getCleanedValue("#others_47_A_num"); 
+            var domestic_purchases_with_no_input_tax = getCleanedValue("#domestic_purchases_with_no_input_tax"); 
+            var vat_exempt_importations = getCleanedValue("#vat_exempt_importations"); 
+
+            var total_current_purchases_input_tax_A =   domestic_purchases_A + 
+                                                        services_rendered_by_non_resident_A + 
+                                                        importations_A + 
+                                                        others_47_A_num + 
+                                                        domestic_purchases_with_no_input_tax +
+                                                        vat_exempt_importations;
+
+            $("#total_current_purchases_input_tax_A").autoNumeric('set', total_current_purchases_input_tax_A);
+        }
+
+         // Function to calculate total current purchases/input tax A
+         function calculateTotalCurrentPurchasesInputTax_B(){
+            var total_current_purchases_input_tax_B =   getCleanedValue("#domestic_purchases_B") + 
+                                                        getCleanedValue("#services_rendered_by_non_resident_B") + 
+                                                        getCleanedValue("#importations_B") + 
+                                                        getCleanedValue("#others_47_B_num");
+
+            $("#total_current_purchases_input_tax_B").autoNumeric('set', total_current_purchases_input_tax_B);
+        }
+
+        // Function to calculate Total Available Input Tax
+        function calculateTotalAvailableInputTax(){
+            var total_available_input_tax = getCleanedValue("#total_43") + 
+                                            getCleanedValue("#total_current_purchases_input_tax_B");
+
+            $("#total_available_input_tax").autoNumeric('set', total_available_input_tax);
+        }
+
+        // Function to calculate Total Deductions from Input Tax
+        function calculateTotalDeductionsFromInputTax(){
+            var total_deductions_from_input_tax = getCleanedValue("#input_tax_on_purchases") + 
+                                                  getCleanedValue("#input_tax_attributable_to_vat_exempt_sales") + 
+                                                  getCleanedValue("#vat_refund_tcc_claimed") + 
+                                                  getCleanedValue("#input_vat_on_unpaid_payable") + 
+                                                  getCleanedValue("#others_56_num");
+
+            $("#total_deductions_from_input_tax").autoNumeric('set', total_deductions_from_input_tax);
+        }
+
+         // Function to calculate Adjusted Deductions from Input Tax 
+         function calculateAdjustedDeductionsFromInputTax(){
+            var adjusted_deductions_from_input_tax = getCleanedValue("#total_deductions_from_input_tax") + 
+                                                     getCleanedValue("#input_vat_on_settled_unpaid_payables_previously_deducted"); 
+                                    
+            $("#adjusted_deductions_from_input_tax").autoNumeric('set', adjusted_deductions_from_input_tax);
+        }
+        
+         // Function to calculate Total Allowable Input Tax
+         function calculateTotalAllowableInputTax(){
+            var total_allowable_input_tax = getCleanedValue("#total_available_input_tax") - 
+                                            getCleanedValue("#adjusted_deductions_from_input_tax"); 
+                                    
+            $("#total_allowable_input_tax").autoNumeric('set', total_allowable_input_tax);
+        }
+        
+        // Function to calculate Net VAT Payable/(Excess Input Tax)
+        function calculateNetVATPayable(){
+            var net_vat_payable_excess_input_tax = getCleanedValue("#total_adjusted_output_tax_due") - 
+                                            getCleanedValue("#total_allowable_input_tax"); 
+                                    
+            $("#net_vat_payable_excess_input_tax").autoNumeric('set', net_vat_payable_excess_input_tax);
+            $("#net_vat_payable").autoNumeric('set', net_vat_payable_excess_input_tax);
+        }
+
+
+       
+        function calculateAll() {
+            calculateTotalPenalties();
+            calculateTotalTaxCredits_Payment();   
+            calculateTaxStillPayable();
+            calculateTotalAmountPayable();
+            calculateTotalSales();
+            calculateOutputTaxDue();
+            calculateTotalAdjustedOutputTaxDue();
+            calculateTotal_43();
+            calculateTotalCurrentPurchasesInputTax_A();
+            calculateTotalCurrentPurchasesInputTax_B();
+            calculateTotalAvailableInputTax();
+            calculateTotalDeductionsFromInputTax();
+            calculateAdjustedDeductionsFromInputTax();
+            calculateTotalAllowableInputTax();
+            calculateNetVATPayable();
+        }
+
+      // Example of how to handle keyup events
+        $(document).ready(function() {
+            $(".xcompute").on("keyup", function() {   
+                calculateAll();
+            });
+
+            // Trigger calculation on page load
+            calculateAll();
         });
+    });
 
-        $("#selfrmname").on("change", function(){
-            $xc = $(this).find(':selected').attr('data-param')
+</script>
 
-            $('.birforms').each(function(i, obj) {
-                if($(this).attr("id")==$xc){
-                    $(this).show();
-                }else{
-                    $(this).hide();
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+
+    // default value
+    var fromDate = '';
+    var toDate = '';
+
+    // Function to update year end and return period based on period type and quarter
+    function updateFields() {
+        var periodType = document.querySelector('input[name="txt2550q_accountingperiods"]:checked').value;
+        var quarter = document.querySelector('input[name="txt2550q_qrtr"]:checked') ? document.querySelector('input[name="txt2550q_qrtr"]:checked').value : null;
+        var now = new Date();
+        var year = periodType === 'C' ? now.getFullYear() : ''; // Use the current year for Calendar, empty for Fiscal
+        var month = periodType === 'C' ? '12' : ''; // Default to December for Calendar, empty for Fiscal
+
+
+        if (periodType === 'C') {
+
+            document.getElementById('txt2550q_year_end_M').value = month;
+            document.getElementById('txt2550q_year_end_Y').value = year;
+
+            document.getElementById('txt2550q_year_end_M').readOnly = true;
+            document.getElementById('txt2550q_year_end_Y').readOnly = true;
+
+            switch (quarter) {
+                case '1':
+                    fromDate = `01/01/${year}`;
+                    toDate = `03/31/${year}`;
+                    break;
+                case '2':
+                    fromDate = `04/01/${year}`;
+                    toDate = `06/30/${year}`;
+                    break;
+                case '3':
+                    fromDate = `07/01/${year}`;
+                    toDate = `09/30/${year}`;
+                    break;
+                case '4':
+                    fromDate = `10/01/${year}`;
+                    toDate = `12/31/${year}`;
+                    break;
+            }
+        } else if (periodType === 'F' && quarter) {
+            
+            document.getElementById("txt2550q_year_end_M").classList.add("monthpicker")
+            document.getElementById("txt2550q_year_end_Y").classList.add("yearpicker")
+            
+            var fiscalMonth = $('#txt2550q_year_end_M').data("DateTimePicker") ? $('#txt2550q_year_end_M').data("DateTimePicker").date() : null;
+            var fiscalYear = $('#txt2550q_year_end_Y').data("DateTimePicker") ? $('#txt2550q_year_end_Y').data("DateTimePicker").date() : null;
+
+            // Convert moment objects to regular date parts
+            fiscalMonth = fiscalMonth ? fiscalMonth.format('MM') : '';
+            fiscalYear = fiscalYear ? fiscalYear.format('YYYY') : '';
+            
+
+            if (fiscalMonth && fiscalYear) {
+                var fiscalYearInt = parseInt(fiscalYear);
+                var fiscalMonthInt = parseInt(fiscalMonth);
+
+                switch (quarter) {
+                    case '1':
+                        fromDate = `${fiscalMonthInt + 1}/01/${fiscalYearInt - 1}`;
+                        toDate = `${fiscalMonthInt + 3}/31/${fiscalYearInt - 1}`;
+                        break;
+                    case '2':
+                        fromDate = `${fiscalMonthInt + 4}/01/${fiscalYearInt - 1}`;
+                        toDate = `${fiscalMonthInt + 6}/30/${fiscalYearInt - 1}`;
+                        break;
+                    case '3':
+                        fromDate = `${fiscalMonthInt + 7}/01/${fiscalYearInt - 1}`;
+                        toDate = `${fiscalMonthInt + 9}/30/${fiscalYearInt - 1}`;
+                        break;
+                    case '4':
+                        fromDate = `${fiscalMonthInt + 10}/01/${fiscalYearInt - 1}`;
+                        toDate = `${fiscalMonthInt}/31/${fiscalYearInt}`;
+                        break;
+                }
+
+                // Adjust month and year if they exceed 12
+                fromDate = adjustDate(fromDate) ;
+                toDate = adjustDate(toDate);
+            }
+        }
+
+            document.getElementById('from').value = fromDate;
+            document.getElementById('to').value = toDate;
+
+            // console.log(fromDate);
+            // console.log(toDate);
+            
+            $.ajax({
+                url: "dateHandler.php", // Ensure this points to the correct PHP file
+                type: 'POST',
+                data: {
+                    fromDate: fromDate,
+                    toDate: toDate
+                },
+                headers: {
+                    'X-Requested-With': 'XMLHttpRequest'
+                },
+                success: function(response) {
+                    try {
+                        // Parse JSON response if not automatically parsed
+                        var data = typeof response === 'string' ? JSON.parse(response) : response;
+                        
+                        console.log("Data sent fromDate:", fromDate);
+                        console.log("Data sent toDate:", toDate);
+                        console.log("Response data:", data);
+                        
+                        // Access response properties
+                        console.log("Received fromDate:", data.receivedFromDate);
+                        console.log("Received fromDate:", data.receivedToDate);
+                        console.log("Company: ", data.company)
+                        console.log("Message:", data.message);
+                        console.log("Data:", data.data);
+                        console.log("Data:", parseFloat(data.data[0].nvat).toFixed(2));
+                        console.log("Total Nvat:", parseFloat(data.totalNvat).toFixed(2));
+                        // $('#creditable_vat_withhelding').val(parseFloat(data.totalNvat).toFixed(2));
+
+                         // Format and set the value of the input field
+                        // var totalNvat = parseFloat(data.totalNvat);
+                        // var formattedTotalNvat = formatCurrency(totalNvat);
+                        // console.log(formattedTotalNvat);
+                        // $('#creditable_vat_withhelding').val(formattedTotalNvat);
+                        $('#creditable_vat_withhelding').val(formatCurrency(data.totalNvat));
+
+
+                        // console.log("Data:", parseFloat(data[0].nvat).toFixed(2));
+
+                        // var num = data.num || 0; // Default to 0 if undefined
+                        // var formattedNum = parseFloat(num).toFixed(2); // Format to 2 decimal places
+                        // $('#creditable_vat_withhelding').val(formattedNum);
+
+                         
+                        if (data.error) {
+                            console.error("Error:", data.error);
+                        }
+                    } catch (e) {
+                        console.error('Error parsing JSON response:', e);
+                    }
+                },
+                error: function(xhr, status, error) {
+                    console.error('Error sending data to the server:', error);
                 }
             });
-            
+
+           
+    }
+
+     // Define the formatCurrency function
+    function formatCurrency(amount, locale = 'en-PH') {
+        // Ensure amount is a number
+        amount = parseFloat(amount);
+
+        // Check if amount is valid
+        if (isNaN(amount)) {
+            console.error('Invalid amount');
+            return '';
+        }
+
+            // Format the amount without currency symbol
+        return amount.toLocaleString(locale, {
+            style: 'decimal',
+            minimumFractionDigits: 2,
+            maximumFractionDigits: 2
         });
-        
+    }
 
-        $("#btnView").on("click", function(){
-            $("#frmBIRForm").attr("action", $("#selfrmname").val());
-            $("#frmBIRForm").submit();
-        });
+    // Function to adjust dates if months exceed 12
+    function adjustDate(dateString) {
+        var parts = dateString.split('/');
+        var month = parseInt(parts[0]);
+        var day = parts[1];
+        var year = parseInt(parts[2]);
 
-        $(".xcompute").on("keyup", function(){   
-            $TotalTaxesWithheld = $("#txt1601eq_totewt").val().replace(/,/g,'');
+        if (month > 12) {
+            month -= 12;
+            year += 1;
+        }
 
-            $less1 = ($("#txt1601eq_less1").val()=="") ? 0 : $("#txt1601eq_less1").val().replace(/,/g,'');
-            $less2 = ($("#txt1601eq_less2").val()=="") ? 0 : $("#txt1601eq_less2").val().replace(/,/g,'');
-            $taxrmmited = ($("#txt1601eq_prev").val()=="") ? 0 : $("#txt1601eq_prev").val().replace(/,/g,'');
-            $overremit = ($("#txt1601eq_overr").val()=="") ? 0 : $("#txt1601eq_overr").val().replace(/,/g,''); 
-            $othrpay = ($("#txt1601eq_otrpay").val()=="") ? 0 : $("#txt1601eq_otrpay").val().replace(/,/g,'');
+        return `${month.toString().padStart(2, '0')}/${day}/${year}`;
+    }
 
-            $totrem = parseFloat($less1) + parseFloat($less2) + parseFloat($taxrmmited) + parseFloat($overremit) + parseFloat($othrpay);
-            $("#txt1601eq_totrem").val($totrem);
-            $("#txt1601eq_totrem").autoNumeric('destroy');
-			$("#txt1601eq_totrem").autoNumeric('init',{mDec:2});
+    // Attach event listeners to year-end inputs for Fiscal calendar
+    $('#txt2550q_year_end_M').on('dp.change input', updateFields);
+    $('#txt2550q_year_end_Y').on('dp.change input', updateFields);
 
+    // Set initial values on page load
+    updateFields();
 
-            $totsdue = parseFloat($TotalTaxesWithheld) - parseFloat($totrem);
-            $("#txt1601eq_taxdue").val($totsdue);
-            $("#txt1601eq_taxdue").autoNumeric('destroy');
-			$("#txt1601eq_taxdue").autoNumeric('init',{mDec:2});
-
-
-            $penaltysur = ($("#txt1601eq_pensur").val()=="") ? 0 : $("#txt1601eq_pensur").val().replace(/,/g,'');
-            $penaltyint = ($("#txt1601eq_penint").val()=="") ? 0 : $("#txt1601eq_penint").val().replace(/,/g,'');
-            $penaltycom = ($("#txt1601eq_pencom").val()=="") ? 0 : $("#txt1601eq_pencom").val().replace(/,/g,'');
-
-            $totpenalty = parseFloat($penaltysur) + parseFloat($penaltyint) + parseFloat($penaltycom);
-            $("#txt1601eq_pentot").val($totpenalty);
-            $("#txt1601eq_pentot").autoNumeric('destroy');
-			$("#txt1601eq_pentot").autoNumeric('init',{mDec:2});
-
-            txt1601eq_gtot = $totsdue + $totpenalty;
-            $("#txt1601eq_gtot").val(txt1601eq_gtot);
-            $("#txt1601eq_gtot").autoNumeric('destroy');
-			$("#txt1601eq_gtot").autoNumeric('init',{mDec:2});
-        });
-        
-    })
+});
 
 </script>
