@@ -60,24 +60,31 @@
         const $xcompute = $('.xcompute');
 
         // Event Listeners
-        $part2_17a.add($part2_17b).add($part2_17c).add($part2_17d).add($part2_17e).on('input', calculateTotalLess);
+        $part2_17a.add($part2_17b).add($part2_17c).add($part2_17d).add($part2_17e).on('input', calculate17f);
 
-        $part2_18a.add($part2_18c).add($part2_18e).add($part2_18g).add($part2_18i).add($part2_18k).add($part2_18m).add($part2_18n).on('input', calculateTotalCurrentPurchases);
+        $part2_18a.add($part2_18c).add($part2_18e).add($part2_18g).add($part2_18i).add($part2_18k).add($part2_18m).add($part2_18n).on('input', calculate18p);
 
-        $part2_17f.add($part2_18b).add($part2_18d).add($part2_18f).add($part2_18h).add($part2_18j).add($part2_18l).add($part2_18o).on('input', calculateTotalAvailableInputTax);
+        $part2_17f.add($part2_18b).add($part2_18d).add($part2_18f).add($part2_18h).add($part2_18j).add($part2_18l).add($part2_18o).on('input', calculate19);
+
+        $part2_20a.add($part2_20b).add($part2_20c).add($part2_20d).add($part2_20e).on('input', calculate20f);
+
+        $part2_23a.add($part2_23b).add($part2_23c).add($part2_23d).add($part2_23e).add($part2_23f).on('input', calculate23g);
+
+        $part2_25a.add($part2_25b).add($part2_25c).on('input', calculate25d);
+
 
         // Functions
-        function calculateTotalLess() {
+        function calculate17f() {
             const part2_17a = parseFloat($part2_17a.val()) || 0;
             const part2_17b = parseFloat($part2_17b.val()) || 0;
             const part2_17c = parseFloat($part2_17c.val()) || 0;
             const part2_17d = parseFloat($part2_17d.val()) || 0;
             const part2_17e = parseFloat($part2_17e.val()) || 0;
-            const totalLess = part2_17a + part2_17b + part2_17c + part2_17d + part2_17e;
-            $part2_17f.val(totalLess.toFixed(2));
+            const calculated_17f = part2_17a + part2_17b + part2_17c + part2_17d + part2_17e;
+            $part2_17f.val(calculated_17f.toFixed(2));
         }
 
-        function calculateTotalCurrentPurchases(){
+        function calculate18p(){
             const part2_18a = parseFloat($part2_18a.val()) || 0;
             const part2_18c = parseFloat($part2_18c.val()) || 0;
             const part2_18e = parseFloat($part2_18e.val()) || 0;
@@ -86,11 +93,11 @@
             const part2_18k = parseFloat($part2_18k.val()) || 0;
             const part2_18m = parseFloat($part2_18m.val()) || 0;
             const part2_18n = parseFloat($part2_18n.val()) || 0;
-            const totalCurrentPurchases18p = part2_18a + part2_18c + part2_18e + part2_18g + part2_18i + part2_18k + part2_18m + part2_18n;
-            $part2_18p.val(totalCurrentPurchases18p.toFixed(2));
+            const calculated_18p = part2_18a + part2_18c + part2_18e + part2_18g + part2_18i + part2_18k + part2_18m + part2_18n;
+            $part2_18p.val(calculated_18p.toFixed(2));
         }
 
-        function calculateTotalAvailableInputTax() {
+        function calculate19() {
             const part2_17f = parseFloat($part2_17f.val()) || 0;
             const part2_18b = parseFloat($part2_18b.val()) || 0;
             const part2_18d = parseFloat($part2_18d.val()) || 0;
@@ -99,8 +106,65 @@
             const part2_18j = parseFloat($part2_18j.val()) || 0;
             const part2_18l = parseFloat($part2_18l.val()) || 0;
             const part2_18o = parseFloat($part2_18o.val()) || 0;
-            const totalAvailableInputTax = part2_17f + part2_18b + part2_18d + part2_18f + part2_18h + part2_18j + part2_18l + part2_18o;
-            $part2_19.val(totalAvailableInputTax.toFixed(2));
+            const calculated_19 = part2_17f + part2_18b + part2_18d + part2_18f + part2_18h + part2_18j + part2_18l + part2_18o;
+            $part2_19.val(calculated_19.toFixed(2));
+        }
+
+        function calculate20f(){
+            const part2_20a = parseFloat($part2_20a.val()) || 0;
+            const part2_20b = parseFloat($part2_20b.val()) || 0;
+            const part2_20c = parseFloat($part2_20c.val()) || 0;
+            const part2_20d = parseFloat($part2_20d.val()) || 0;
+            const part2_20e = parseFloat($part2_20e.val()) || 0;
+            const calculated_20f = part2_20a + part2_20b + part2_20c + part2_20d + part2_20e;
+            $part2_20f.val(calculated_20f.toFixed(2));
+        }
+
+        function calculate21() {
+            const part2_19 = parseFloat($part2_19.val()) || 0;
+            const part2_20f = parseFloat($part2_20f.val()) || 0;
+            const calculated_21 = part2_19 - part2_20f;
+            $part2_21.val(calculated_21.toFixed(2));
+        }
+
+        function calculate22() {
+            const part2_16b = parseFloat($part2_16b.val()) || 0;
+            const part2_21 = parseFloat($part2_21.val()) || 0;
+            const calculated_22 = part2_16b - part2_21;
+            $part2_22.val(calculated_22.toFixed(2));
+        }
+
+        function calculate23g() {
+            const part2_23a = parseFloat($part2_23a.val()) || 0;
+            const part2_23b = parseFloat($part2_23b.val()) || 0;
+            const part2_23c = parseFloat($part2_23c.val()) || 0;
+            const part2_23d = parseFloat($part2_23d.val()) || 0;
+            const part2_23e = parseFloat($part2_23e.val()) || 0;
+            const part2_23f = parseFloat($part2_23f.val()) || 0;
+            const calculated_23g = part2_23a + part2_23b + part2_23c + part2_23d + part2_23e + part2_23f;
+            $part2_23g.val(calculated_23g.toFixed(2));
+        }
+
+        function calculate24() {
+            const part2_22 = parseFloat($part2_22.val()) || 0;
+            const part2_23g = parseFloat($part2_23g.val()) || 0;
+            const calculated_24 = part2_22 - part2_23g;
+            $part2_24.val(calculated_24.toFixed(2));
+        }
+
+        function calculate25d() {
+            const part2_25a = parseFloat($part2_25a.val()) || 0;
+            const part2_25b = parseFloat($part2_25b.val()) || 0;
+            const part2_25c = parseFloat($part2_25c.val()) || 0;
+            const calculated_25d = part2_25a + part2_25b + part2_25c;
+            $part2_25d.val(calculated_25d.toFixed(2));
+        }
+
+        function calculate26() {
+            const part2_24 = parseFloat($part2_24.val()) || 0;
+            const part2_25d = parseFloat($part2_25d.val()) || 0;
+            const calculated_26 = part2_24 + part2_25d;
+            $part2_26.val(calculated_26.toFixed(2));
         }
     });
     document.addEventListener('DOMContentLoaded', function() {
