@@ -98,38 +98,38 @@ abstract class BIRPDFBase extends BaseController
     // TODO: Move image inside the ci4 project to make it secure
     // TODO: Create an API for fetching the image
     // TODO: Create a module for setting signature image
-    protected function processSignatureImage($x, $y, $imageRelativePath)
-    {
-        $imageRelativePath = preg_replace('/^\.\.\//', '', $imageRelativePath);
-        $baseURL = base_url();
-        $trimmedBaseURL = str_replace('/system_management/public', '', $baseURL);
-        $signatureImageUrl = $trimmedBaseURL . $imageRelativePath;
+    // protected function processSignatureImage($x, $y, $imageRelativePath)
+    // {
+    //     $imageRelativePath = preg_replace('/^\.\.\//', '', $imageRelativePath);
+    //     $baseURL = base_url();
+    //     $trimmedBaseURL = str_replace('/system_management/public', '', $baseURL);
+    //     $signatureImageUrl = $trimmedBaseURL . $imageRelativePath;
         
-        // Create a stream context to bypass SSL verification
-        $contextOptions = [
-            "ssl" => [
-                "verify_peer" => false,
-                "verify_peer_name" => false,
-            ],
-        ];
-        $context = stream_context_create($contextOptions);
+    //     // Create a stream context to bypass SSL verification
+    //     $contextOptions = [
+    //         "ssl" => [
+    //             "verify_peer" => false,
+    //             "verify_peer_name" => false,
+    //         ],
+    //     ];
+    //     $context = stream_context_create($contextOptions);
         
-        // Fetch the image from the URL with the context
-        $imageContent = file_get_contents($signatureImageUrl, false, $context);
+    //     // Fetch the image from the URL with the context
+    //     $imageContent = file_get_contents($signatureImageUrl, false, $context);
         
-        if ($imageContent !== false) {
-            // Save the image to a temporary file
-            $tempImagePath = tempnam(sys_get_temp_dir(), 'signature_') . '.png';
-            file_put_contents($tempImagePath, $imageContent);
+    //     if ($imageContent !== false) {
+    //         // Save the image to a temporary file
+    //         $tempImagePath = tempnam(sys_get_temp_dir(), 'signature_') . '.png';
+    //         file_put_contents($tempImagePath, $imageContent);
         
-            // Add the image to the PDF
-            $this->pdf->Image($tempImagePath, $x, $y, 80, 0, 'PNG'); // (file, x, y, width, height, type)
+    //         // Add the image to the PDF
+    //         $this->pdf->Image($tempImagePath, $x, $y, 80, 0, 'PNG'); // (file, x, y, width, height, type)
         
-            // Clean up the temporary file
-            unlink($tempImagePath);
-        } else {
-            // Handle the error if the image could not be fetched
-            echo 'Image could not be fetched from URL: ' . $signatureImageUrl;
-        }
-    }
+    //         // Clean up the temporary file
+    //         unlink($tempImagePath);
+    //     } else {
+    //         // Handle the error if the image could not be fetched
+    //         echo 'Image could not be fetched from URL: ' . $signatureImageUrl;
+    //     }
+    // }
 }

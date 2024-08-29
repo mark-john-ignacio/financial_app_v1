@@ -28,6 +28,7 @@
     $month = str_pad($_POST['selmonth'], 2, "0", STR_PAD_LEFT);
     $year = $_POST['years'];
 
+    $UrlBase = str_replace("Components/assets/","",$AttachUrlBase);
 ?>
 
 <!DOCTYPE html>
