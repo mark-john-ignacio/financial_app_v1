@@ -81,6 +81,7 @@
     while($row = $query -> fetch_assoc()){
         $apv[] = $row;
     }
+    $UrlBase = str_replace("Components/assets/","",$AttachUrlBase);
 
 ?>
 
@@ -146,7 +147,7 @@
                         $("#frmpos").serializeArray().forEach(function(item) {
                             formData[item.name] = item.value;
                         });
-                        console.log(JSON.stringify(formData));
+                         console.log(JSON.stringify(formData));
 
                         // Send the JSON data to the specified URL using AJAX
                         $.ajax({
