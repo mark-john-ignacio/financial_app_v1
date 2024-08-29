@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Controllers;
+namespace App\Controllers\Testing;
 
 use App\Controllers\BaseController;
 use CodeIgniter\HTTP\ResponseInterface;
@@ -13,9 +13,6 @@ class SeederController extends BaseController
     public function seedMigration(){
         $seeder = \Config\Database::seeder();
         $seeder->call("MigrationSeeder");
-        if ($seeder->hasError()) {
-            return $this->fail($seeder->getError());
-        }
         return $this->respond(["message" => "Migration Seeder has been executed"], 200);
     }
 }

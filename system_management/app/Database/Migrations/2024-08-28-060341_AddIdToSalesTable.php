@@ -15,8 +15,17 @@ class AddIdToSalesTable extends Migration
 
     public function down()
     {
-        $this->db->query('ALTER TABLE sales DROP COLUMN id');
+        $columnExists = $this->db->query("SELECT COUNT(*) AS count 
+                                          FROM information_schema.columns 
+                                          WHERE table_name = 'sales' 
+                                          AND column_name = 'id'")
+                                 ->getRow()
+                                 ->count;
 
-        $this->db->query('ALTER TABLE sales ADD PRIMARY KEY(compcode, ctrano)');
+        if ($columnExists > 0) {
+            // Drop the 'id' column if it exists
+            $this->db->query('ALTER TABLE sales DROP COLUMN id');
+        }
+        $this->db->query('ALTER TABLE sales ADD PRIMARY KEY(compcode, ctranno)');
     }
 }

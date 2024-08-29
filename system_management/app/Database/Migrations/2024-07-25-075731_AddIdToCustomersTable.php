@@ -15,7 +15,17 @@ class AddIdToCustomersTable extends Migration
 
     public function down()
     {
-        $this->db->query('ALTER TABLE customers DROP COLUMN id');
+        $columnExists = $this->db->query("SELECT COUNT(*) AS count 
+                                          FROM information_schema.columns 
+                                          WHERE table_name = 'customers' 
+                                          AND column_name = 'id'")
+                                 ->getRow()
+                                 ->count;
+
+        if ($columnExists > 0) {
+            // Drop the 'id' column if it exists
+            $this->db->query('ALTER TABLE customers DROP COLUMN id');
+        }
 
         $this->db->query('ALTER TABLE customers ADD PRIMARY KEY(compcode, cempid)');
     }

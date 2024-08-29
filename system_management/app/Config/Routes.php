@@ -61,9 +61,10 @@ $routes->group('', ['filter' => 'pin_verified'], function ($routes) {
 
     //TODO: Remove this route
     $routes->group('testing', function ($routes) {
-        $con_path = 'Testing\\AddId';
-        $routes->get('run-migration', $con_path . '::runMigration');
-        $routes->get('rollback-migration', $con_path . '::rollbackMigration');
+        $con_path = 'Testing\\MigrationController';
+        $routes->get('run-migrations', $con_path . '::runMigrations');
+        $routes->get('rollback-last-migration', $con_path . '::rollbackLastMigration');
+        $routes->get('rollback-all-migrations', $con_path . '::rollbackAllMigrations');
         $routes->get('seed-migration', 'Testing\\SeederController::seedMigration');
     });
 

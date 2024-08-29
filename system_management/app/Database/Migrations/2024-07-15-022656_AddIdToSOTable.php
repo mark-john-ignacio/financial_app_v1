@@ -18,8 +18,17 @@ class AddIdToSOTable extends Migration
 
     public function down()
     {
-        // Remove id field from banks table
-        $this->db->query('ALTER TABLE so DROP COLUMN id');
+        $columnExists = $this->db->query("SELECT COUNT(*) AS count 
+                                          FROM information_schema.columns 
+                                          WHERE table_name = 'so' 
+                                          AND column_name = 'id'")
+                                 ->getRow()
+                                 ->count;
+
+        if ($columnExists > 0) {
+            // Drop the 'id' column if it exists
+            $this->db->query('ALTER TABLE so DROP COLUMN id');
+        }
 
         // Restore primary key of banks table
         $this->db->query('ALTER TABLE so ADD PRIMARY KEY(compcode, ctranno)');
