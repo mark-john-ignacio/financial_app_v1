@@ -3,7 +3,7 @@
         'name' => 'codeigniter4/appstarter',
         'pretty_version' => 'dev-myxfinjr',
         'version' => 'dev-myxfinjr',
-        'reference' => 'b9e768cea0b7315c7281d1b0289d4d057ef2d568',
+        'reference' => '8a5876d662dded2d9e72107c60522939af703ccf',
         'type' => 'project',
         'install_path' => __DIR__ . '/../../',
         'aliases' => array(),
@@ -13,7 +13,7 @@
         'codeigniter4/appstarter' => array(
             'pretty_version' => 'dev-myxfinjr',
             'version' => 'dev-myxfinjr',
-            'reference' => 'b9e768cea0b7315c7281d1b0289d4d057ef2d568',
+            'reference' => '8a5876d662dded2d9e72107c60522939af703ccf',
             'type' => 'project',
             'install_path' => __DIR__ . '/../../',
             'aliases' => array(),
