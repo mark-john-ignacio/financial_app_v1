@@ -22,12 +22,7 @@
 		$compname =  $row['compname'];
 		$compadd = $row['compadd'];
 		$comptin = $row['comptin'];
-	}
-
-	$dteyr = $_POST["selyr"];
-
-	$date1 = "01/01/".$dteyr;
-	$date2 = "12/31/".$dteyr;
+	}	
 
 	//getall accounts
 	$allaccounts = array();
@@ -37,15 +32,29 @@
 		$allaccounts[] = $row;
 	}
 
+	$qrydte = "";
+	if($_POST['seldte']==1){
+		$date1 = $_POST["date1"];
+		$date2 = $_POST["date2"];
+
+		$qrydte = "and A.ddate between STR_TO_DATE('$date1', '%m/%d/%Y') and STR_TO_DATE('$date2', '%m/%d/%Y')";
+	}else{
+		$dteyr = $_POST["selyr"];
+		$qrydte = "and YEAR(A.ddate) = '$dteyr'";	
+
+		$date1 = "01/01/".$dteyr;
+		$date2 = "12/31/".$dteyr;
+	}
+
 	//glactivity
 		$arrallwithbal = array();
-            $sql = "Select MONTH(ddate) as dmonth, A.acctno, B.cacctdesc, sum(A.ndebit) as ndebit, sum(A.ncredit) as ncredit
-                    From glactivity A left join accounts B on A.compcode=B.compcode and A.acctno=B.cacctid
-                    where A.compcode='$company' and YEAR(A.ddate) = '$dteyr' and IFNULL(B.cacctdesc,'') <> ''
-                    and B.cFinGroup = 'Income Statement'
-                    Group By MONTH(ddate), A.acctno, B.cacctdesc
-                    Having sum(A.ndebit)<>0 or sum(A.ncredit)<>0
-                    Order By A.acctno, MONTH(ddate)";
+		$sql = "Select MONTH(ddate) as dmonth, A.acctno, B.cacctdesc, sum(A.ndebit) as ndebit, sum(A.ncredit) as ncredit
+				From glactivity A left join accounts B on A.compcode=B.compcode and A.acctno=B.cacctid
+				where A.compcode='$company' ".$qrydte." and IFNULL(B.cacctdesc,'') <> ''
+				and B.cFinGroup = 'Income Statement'
+				Group By MONTH(ddate), A.acctno, B.cacctdesc
+				Having sum(A.ndebit)<>0 or sum(A.ncredit)<>0
+				Order By A.acctno, MONTH(ddate)";
 
 		$result=mysqli_query($con,$sql);
 
@@ -204,7 +213,18 @@
 	<h3><b>Company Address: <?php echo strtoupper($compadd);  ?></b></h3>
 	<h3><b>Vat Registered Tin: <?php echo $comptin;  ?></b></h3>
 	<h3><b>Profit &amp; Lost Statement</b></h3>
-	<h3>For the Year <?=$dteyr?></h3>
+	<?php
+		if($_POST['seldte']==1){
+	?>
+		<h3>For the Period <?php echo date_format(date_create($_POST["date1"]),"F d, Y");?> to <?php echo date_format(date_create($_POST["date2"]),"F d, Y");?></h3>
+	<?php
+		}else{
+	?>
+		<h3>For the Year <?=$_POST["selyr"]?></h3>
+	<?php
+		}
+	?>
+
 
 <br><br>
 <table width="100%" border="0" align="center" cellpadding="3" class="my-table">

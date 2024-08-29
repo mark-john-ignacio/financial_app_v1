@@ -165,6 +165,7 @@
 										<select id="selaptyp" name="selaptyp" class="form-control input-sm selectpicker" tabindex="2">
 											<option value="Purchases">Purchases (Credit)</option>
 											<option value="PurchAdv">Purchases (Advance Payment)</option>
+											<option value="EWT">EWT Remittance</option>
 											<option value="PettyCash">Petty Cash Replenishment</option>
 											<option value="Others">Others</option>
 										</select>
@@ -244,8 +245,12 @@
 									</div>
 								</div>
 							</td>
-							<tH style="padding:2px">&nbsp;</tH>
-							<td style="padding:2px">&nbsp;</td>
+							<tH style="padding:2px"><div class="ewtmonlabel">Month/Yr</div></tH>
+							<td style="padding:2px">
+								<div class="ewtmonflds">
+												
+								</div>
+							</td>
 						</tr>
 					</table>
 
@@ -369,6 +374,10 @@
 							Loans<br> (Insert)
 						</button>
 						nacct,ntitle,ndr,ncr,namount,nvcode,nvrate -->
+						<button type="button" class="btn btn-info btn-sm" tabindex="6" onClick="openinv('APEWT','supplier','MyDRDetList','DRListHeader','th_ewtlistings','APV','mySIModal');" id="btnewt" style="display:none">
+							APV<br> (EWT List)
+						</button>
+
 						<button type="button" class="btn btn-info btn-sm" tabindex="6" onClick="addacct('','',0,0,'',0);" id="btnacc" style="display:none">
 							New Line<br> (Accounting)
 						</button>
@@ -606,6 +615,8 @@
 	  else if(e.keyCode == 45) { //F1
 			if($("#selaptyp").val()=="Purchases"){
 				$('#btnqo').trigger('click');
+			}else if($("#selaptyp").val()=="EWT"){
+				$('#btnewt').trigger('click');
 			}else if($("#selaptyp").val()=="PurchAdv"){
 				$('#btnpo').trigger('click');
 			}
@@ -688,7 +699,7 @@
 				
 				$("#btnqo").css("display", "inline");
 				$("#btnpo").css("display", "none");
-				//$("#btnlo").css("display", "none");
+				$("#btnewt").css("display", "none");
 				$("#btnacc").css("display", "none");
 				
 				$("#lidet").attr("class", "active");
@@ -703,7 +714,22 @@
 
 				$("#btnqo").css("display", "none");
 				$("#btnpo").css("display", "inline");
-				//$("#btnlo").css("display", "none");
+				$("#btnewt").css("display", "none");
+				$("#btnacc").css("display", "none");
+
+				$("#lidet").attr("class", "active");
+				$("#liacct").attr("class", "");
+
+				$("#1Det").attr("class", "tab-pane active");
+				$("#2Acct").attr("class", "tab-pane");
+
+				$("#btnproforma").hide();
+
+			}else if($(this).val()=="EWT"){	
+
+				$("#btnqo").css("display", "none");
+				$("#btnpo").css("display", "none");
+				$("#btnewt").css("display", "inline");
 				$("#btnacc").css("display", "none");
 
 				$("#lidet").attr("class", "active");
@@ -718,7 +744,7 @@
 
 				$("#btnqo").css("display", "none");
 				$("#btnpo").css("display", "none");
-				//$("#btnlo").css("display", "none");
+				$("#btnewt").css("display", "none");
 				$("#btnacc").css("display", "inline");
 
 				$("#lidet").attr("class", "");
@@ -733,7 +759,7 @@
 
 				$("#btnqo").css("display", "none");
 				$("#btnpo").css("display", "none");
-				//$("#btnlo").css("display", "none");
+				$("#btnewt").css("display", "none");
 				$("#btnacc").css("display", "inline");
 
 				$("#lidet").attr("class", "");

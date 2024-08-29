@@ -6,14 +6,14 @@
 	require_once('../../Model/helper.php');
 
 	$company = $_SESSION['companyid'];
-	$tranno = $_REQUEST['cemailtranno'];
+	$tranno = $_POST['cemailtranno'];
 	$preparedby = $_SESSION['employeeid'];
 
-	$emailto = $_REQUEST['cemailto'];
-	$emailcc = $_REQUEST['cemailcc'];
-	$emailbcc = $_REQUEST['cemailbcc'];
-	$emailsbj = mysqli_real_escape_string($con, $_REQUEST['cemailsubject']);
-	$emailbod = mysqli_real_escape_string($con, $_REQUEST['txtemailremarks']);
+	$emailto = $_POST['cemailto'];
+	$emailcc = $_POST['cemailcc'];
+	$emailbcc = $_POST['cemailbcc'];
+	$emailsbj = mysqli_real_escape_string($con, $_POST['cemailsubject']);
+	$emailbod = mysqli_real_escape_string($con, $_POST['txtemailremarks']);
 
 
 	if (!mysqli_query($con, "UPDATE quote set cemailto='$emailto', cemailcc='$emailcc', cemailbcc='$emailbcc', cemailsubject='$emailsbj', cemailbody='$emailbod', cemailsentby='$preparedby', demailsent=NOW() Where compcode='$company' and ctranno='$tranno'")){
@@ -38,7 +38,7 @@
 
 		//echo $xtranno ;
 
-		if($_REQUEST['cemailtrantyp']=="billing"){
+		if($_POST['cemailtrantyp']=="billing"){
 			header("refresh:5;url=PrintBilling_Email.php?id=".$tranno);
 		}else{
 			header("refresh:5;url=PrintQuote_Email.php?id=".$tranno);

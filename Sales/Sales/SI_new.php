@@ -855,7 +855,7 @@
 			$(".chklimit").show();
 		}
 
-		if($("#incmracct").val()=="custom"){
+		if($("#incmracct").val()=="item"){
 			$(".chkinctype").show();
 		}else{
 			$(".chkinctype").hide();
@@ -1662,7 +1662,7 @@
 
 		var tditmamount = "<td nowrap> <input type='text' value='"+baseprice+"' class='numeric form-control input-xs' style='text-align:right' name=\"txtnamount\" id='txtnamount"+lastRow+"' readonly> </td>";
 
-		if($("#incmracct").val()=="custom"){
+		if($("#incmracct").val()=="item"){
 			var tdglaccount = "<td nowrap><input type='text' value='"+itmacctid+"' class='form-control input-xs' name=\"txtacctcode\" id='txtacctcode"+lastRow+"' readonly> <input type='hidden' value='"+itmacctno+"' name=\"txtacctno\" id='txtacctno"+lastRow+"'> </td>";
 
 			var tdgltitle = "<td nowrap><input type='text' value='"+itmacctnm+"' class='cacctdesc form-control input-xs' name=\"txtacctname\" id='txtacctname"+lastRow+"'></td>";
@@ -2652,24 +2652,36 @@
 		var VARHDRSTAT = "";
 		var VARHDRERR = "";
 		
-			//Saving the header
-			var ccode = $("#txtcustid").val();
-			var crem = $("#txtremarks").val();
-			var ddate = $("#date_delivery").val();
-			var ngross = $("#txtnGross").val();
-			var selreinv = $("#selreinv").val(); 
-			var selsitypz = $("#selsityp").val(); 
-			var siprintno = $("#csiprintno").val();  
-			var nnetvat = $("#txtnNetVAT").val(); 
-			var nvat = $("#txtnVAT").val(); 
-			
-			//alert("SO_newsavehdr.php?ccode=" + ccode + "&crem="+ crem + "&ddate="+ ddate + "&ngross="+ngross);
-			var myform = $("#frmpos").serialize();
-			//alert(myform);
-
-			var formdata = new FormData($('#frmpos')[0]);
+			//Saving the header		
+			var formdata = new FormData();
 			formdata.delete('upload[]')
-			
+			var input_data = [
+				{	code: "txtcustid", values: $("#txtcustid").val()	},
+				{	code: "date_delivery", values: $("#date_delivery").val()	},
+				{	code: "txtremarks", values: $("#txtremarks").val()	},
+				{	code: "selsityp", values: $("#selsityp").val()	},
+				{	code: "selpaytyp", values: $("#selpaytyp").val()	},
+				{	code: "csiprintno", values: $("#csiprintno").val()	},
+				{	code: "selcterms", values: $("#selcterms").val()	},
+				{	code: "selbasecurr", values: $("#selbasecurr").val()	},
+				{	code: "hidcurrvaldesc", values: $("#hidcurrvaldesc").val()	},
+				{	code: "basecurrval", values: $("#basecurrval").val()	},
+				{	code: "txtnNetVAT", values: $("#txtnNetVAT").val()	},
+				{	code: "txtnVAT", values: $("#txtnVAT").val()	}, 
+				{	code: "txtnExemptVAT", values: $("#txtnExemptVAT").val()	},
+				{	code: "txtnZeroVAT", values: $("#txtnZeroVAT").val()	}, 
+				{	code: "txtnGrossBef", values: $("#txtnGrossBef").val()	},  				
+				{	code: "txtnEWT", values: $("#txtnEWT").val()	}, 
+				{	code: "txtnGrossDisc", values: $("#txtnGrossDisc").val()	}, 
+				{	code: "txtnGross", values: $("#txtnGross").val()	}, 
+				{	code: "txtnBaseGross", values: $("#txtnBaseGross").val()	}, 
+				{	code: "selewt", values: $("#selewt").val()	},
+				{	code: "txtrefmod", values: $("#txtrefmod").val()	},
+				{	code: "txtrefmodnos", values: $("#txtrefmodnos").val()	},		
+			] 
+			jQuery.each(input_data, function(i, {code, values}){
+				formdata.append(code, values);
+			})
 			jQuery.each($("#file-0")[0].files, function(i, file){
 				formdata.append("file-"+i, file);
 			})
@@ -2835,6 +2847,18 @@
 						}
 					});
 					
+				});
+
+				//generate GLEntry
+				$.ajax ({
+					url: "SI_saveacctentry.php",
+					data: { trancode: trancode },
+					async: false,
+					success: function( data ) {
+						if(data.trim()=="False"){
+							isDone = "False";
+						}
+					}
 				});
 				
 				if(isDone=="True"){

@@ -9,14 +9,14 @@ function getBaseURL() {
     $baseURL = isset($_SERVER['HTTP_HOST']) ? $protocol . "://" . $_SERVER['HTTP_HOST'] : $protocol . "://localhost";
     $baseURL .= "/" . $first_part_of_path;
 
-    if (getenv('CI_ENVIRONMENT') === 'development' || $isLocalhost) { 
-        $second_part_of_path = $folder_path[2] ?? '';
-        $baseURL .= "/" . $second_part_of_path;
+    // if (getenv('CI_ENVIRONMENT') === 'development' || $isLocalhost) { 
+    //     $second_part_of_path = $folder_path[2] ?? '';
+    //     $baseURL .= "/" . $second_part_of_path;
 
-        if (!preg_match("/public\/?$/", $baseURL)) {
-            $baseURL .= '/public';
-        }
-    }
+    //     if (!preg_match("/public\/?$/", $baseURL)) {
+    //         $baseURL .= '/public';
+    //     }
+    // }
 
     $baseURL = rtrim($baseURL, '/') . '/';
 

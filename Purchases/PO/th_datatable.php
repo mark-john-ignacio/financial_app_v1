@@ -75,7 +75,11 @@
 	
 	if($_POST["length"] != -1)
 	{
-		$query1 = 'LIMIT ' . $_POST['start'] . ', ' . $_POST['length'];
+		if($filters != ''){
+			$query1 = 'LIMIT 0, ' . $_POST['length'];
+		}else{
+			$query1 = 'LIMIT ' . $_POST['start'] . ', ' . $_POST['length'];
+		}
 	}
 	
 	

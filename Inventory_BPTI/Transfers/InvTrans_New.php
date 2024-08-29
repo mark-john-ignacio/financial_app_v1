@@ -215,17 +215,17 @@
 		<table width="100%" border="0" cellpadding="3">
 			<tr>
 				<td>
-				<button type="button" class="btn btn-primary btn-sm" tabindex="6" onClick="window.location.href='Inv.php';" id="btnMain" name="btnMain">
+				<button type="button" class="btn btn-primary btn-sm" tabindex="6" onClick="window.location.href='Inv.php';" id="btnMain">
 					Back to Main<br>(ESC)
 				</button>
 
-				<!--
-				<button type="button" class="btn btn-info btn-sm" tabindex="6" onClick="loadItms();" id="btnMain" name="btnMain">
-					Load Template<br>(Insert)
+				
+				<button type="button" class="btn btn-info btn-sm" tabindex="6" id="btnJO">
+					Pick JO<br>(Insert)
 				</button>
-				-->
+				
 
-				<button type="button" class="btn btn-success btn-sm" tabindex="6" onClick="return chkform();" id="btnSave" name="btnSave">SAVE<br> (CTRL+S)</button></td>
+				<button type="button" class="btn btn-success btn-sm" tabindex="6" onClick="return chkform();" id="btnSave">SAVE<br> (CTRL+S)</button></td>
 
 				</tr>
 		</table>
@@ -262,16 +262,16 @@
 	$(document).keydown(function(e) {	 
 
 	  if(e.keyCode == 83 && e.ctrlKey){//CTRL S
-			if($("#btnSave").is(":disabled")==false){
-				e.preventDefault();
-				return chkform();
-			}
+		if($("#btnSave").is(":disabled")==false){
+			e.preventDefault();
+			return chkform();
+		}
 	  }
 	  else if(e.keyCode == 27){//ESC
-			if($("#btnMain").is(":disabled")==false){
-				e.preventDefault();
-				window.location.href='Inv.php';
-			}
+		if($("#btnMain").is(":disabled")==false){
+			e.preventDefault();
+			window.location.href='Inv.php';
+		}
 	  }
 
 	});
@@ -322,6 +322,10 @@
 				}else{
 					$("#secfrom").html("<b>Issuing Section</b>");
 					$("#secto").html("<b>Receiving Section</b>");
+
+					if($(this).val()=="fg_transfer"){
+
+					}
 				}
 			});
 		
@@ -412,13 +416,13 @@
 
 			
 			$("<tr>").append( 
-				$("<td>").html(sornum), 
+				$("<td id=\"tdx"+sornum+"\">").html(sornum), 
 				$("<td>").html("<input type='hidden' value='"+itmid+"' name=\"txtitmcode\" id=\"txtitmcode"+sornum+"\">"+itmid),  
 				$("<td>").html("<input type='hidden' value='"+itmdesc+"' name=\"txtitmdesc\" id=\"txtitmdesc"+sornum+"\">"+itmdesc),
 				$("<td>").html("<input type='hidden' value='"+itmunit+"' name=\"txtcunit\" id=\"txtcunit"+sornum+"\">"+itmunit),
 				$("<td>").html("<input type='text' class=\"numeric form-control input-xs text-center\" name=\"txtnqty\" id=\"txtnqty"+sornum+"\" value=\"0\">"),
 				$("<td>").html("<input type='text' class=\"form-control input-xs text-center\" name=\"txtcrems\" id=\"txtcrems"+sornum+"\" value=\"\">"),
-				$("<td align=\"center\">").html("<button type=\"button\" class=\"btn btn-danger btn-xs\" id=\"btnDel\" id=\"btnDel"+sornum+"\"><i class=\"fa fa-times\"></i></button>")
+				$("<td align=\"center\">").html("<button type=\"button\" class=\"btn btn-danger btn-xs\" id=\"btnDel"+sornum+"\"><i class=\"fa fa-times\"></i></button>")
 			).appendTo("#MyTbl tbody");
 
 			$("#btnDel"+sornum).on('click', function() {
@@ -439,11 +443,15 @@
 		$("#MyTbl > tbody > tr").each(function(index) {
 				$newval = index+1;
 
+				$(this).find('td').attr('id','tdx'+$newval);
+
 				$(this).find('input:hidden[name="txtitmcode"]').attr('id','txtitmcode'+$newval);
 				$(this).find('input:hidden[name="txtitmdesc"]').attr('id','txtitmdesc'+$newval);
 				$(this).find('input:hidden[name="txtcunit"]').attr('id','txtcunit'+$newval); 
 				$(this).find('input[name="txtnqty"]').attr('id','txtnqty'+$newval);  
 				$(this).find('input[name="txtcrems"]').attr('id','txtcrems'+$newval); 
+
+				$('#tdx'+$newval).html($newval);
 			});
 	}
 

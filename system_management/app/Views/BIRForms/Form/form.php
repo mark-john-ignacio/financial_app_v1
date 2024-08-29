@@ -22,6 +22,14 @@
                     <option value="INACTIVE" <?= old('cstatus',esc($form->cstatus ?? "")) == "INACTIVE" ? 'selected' : "" ?>>Inactive</option>
                 </select>
             </div>
+            <div class="mb-3">
+                <label for="form_link" class="form-label">Form Link</label>
+                <input type="text" class="form-control" id="form_link" name="form_link" required value="<?= old("form_link", esc($form->form_link)) ?>">
+            </div>
+            <div class="mb-3">
+                <label for="params" class="form-label">Parameters</label>
+                <textarea class="form-control" id="params" name="params"><?= old("params", esc($form->params)) ?></textarea>
+            </div>
             <!-- <div class="mb-3">
                 <label for="image" class="form-label">Image</label>
                 <input type="file" class="form-control" id="image" name="image" required>

@@ -1,0 +1,11 @@
+.inline-block {
+    display: inline-block;
+    vertical-align: middle;
+}
+.input-auto-width {
+    width: auto;
+}
+
+.padded-label {
+    padding-left: 30px;
+}

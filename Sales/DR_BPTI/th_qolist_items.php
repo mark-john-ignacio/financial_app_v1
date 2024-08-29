@@ -7,6 +7,7 @@ require_once "../../Connection/connection_string.php";
 	$company = $_SESSION['companyid'];
 
 	//get all SO
+	@$arrresq = array();
 	$resq = mysqli_query ($con, "Select ctranno, nident,citemno,nqty From so_t where compcode='$company' and citemno='".$_REQUEST['itm']."'");
 	if (mysqli_num_rows($resq)!=0){
 		while($row = mysqli_fetch_array($resq, MYSQLI_ASSOC)){

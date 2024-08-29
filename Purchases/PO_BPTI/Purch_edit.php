@@ -58,7 +58,7 @@
 		}
 	}
 
-	$sqlhead = mysqli_query($con,"select a.cpono, a.ccode, a.cremarks, DATE_FORMAT(a.ddate,'%m/%d/%Y') as ddate, DATE_FORMAT(a.dneeded,'%m/%d/%Y') as dneeded, a.ngross, a.cpreparedby, a.nbasegross, a.ccurrencycode, a.ccurrencydesc, a.nexchangerate, a.lcancelled, a.lapproved, a.lprintposted, a.lvoid, a.ccustacctcode, b.cname, a.ccontact, a.ccontactemail, a.ccontactphone, a.ccontactfax, a.ladvancepay, a.cterms, a.cdelto, a.ddeladd, a.ddelemail, a.ddelphone, a.ddelfax, a.ddelinfo, a.cbillto, a.cewtcode, a.cemailto, a.cemailcc, a.cemailbcc, a.cemailsubject, a.cemailbody, a.cemailsentby, a.demailsent, a.capprovedby, a.ccheckedby, a.cprepby from purchase a left join suppliers b on a.compcode=b.compcode and a.ccode=b.ccode where a.compcode='$company' and a.cpono = '$cpono'");
+	$sqlhead = mysqli_query($con,"select a.cpono, a.ccode, a.cremarks, DATE_FORMAT(a.ddate,'%m/%d/%Y') as ddate, DATE_FORMAT(a.dpodate,'%m/%d/%Y') as dpodate, DATE_FORMAT(a.dneeded,'%m/%d/%Y') as dneeded, a.ngross, a.cpreparedby, a.nbasegross, a.ccurrencycode, a.ccurrencydesc, a.nexchangerate, a.lcancelled, a.lapproved, a.lprintposted, a.lvoid, a.ccustacctcode, b.cname, a.ccontact, a.ccontactemail, a.ccontactphone, a.ccontactfax, a.ladvancepay, a.cterms, a.cdelto, a.ddeladd, a.ddelemail, a.ddelphone, a.ddelfax, a.ddelinfo, a.cbillto, a.cewtcode, a.cemailto, a.cemailcc, a.cemailbcc, a.cemailsubject, a.cemailbody, a.cemailsentby, a.demailsent, a.capprovedby, a.ccheckedby, a.cprepby from purchase a left join suppliers b on a.compcode=b.compcode and a.ccode=b.ccode where a.compcode='$company' and a.cpono = '$cpono'");
 
 
 	@$arrname = array();
@@ -140,7 +140,7 @@ if (mysqli_num_rows($sqlhead)!=0) {
 		$CustCode = $row['ccode'];
 		$CustName = $row['cname'];
 		$Remarks = ($row['cremarks']!="" && $row['cremarks']!=null) ? $row['cremarks'] : "";
-		$Date = $row['ddate'];
+		$Date = $row['dpodate'];
 		$DateNeeded = $row['dneeded'];
 		$Gross = $row['ngross'];
 
@@ -603,7 +603,7 @@ if (mysqli_num_rows($sqlhead)!=0) {
 									if($poststat=="True"){
 								?>
 
-								<button type="button" class="btn btn-primary btn-sm" tabindex="6" onClick="window.location.href='Purch.php?ix=<?=isset($_REQUEST['hdnsrchval']) ? $_REQUEST['hdnsrchval'] : ""?>&st=<?=isset($_REQUEST['hdnsrchsta']) ? $_REQUEST['hdnsrchsta'] : ""?>';" id="btnMain" name="btnMain">
+								<button type="button" class="btn btn-primary btn-sm" tabindex="6" onClick="window.location.href='Purch.php?ix=<?=isset($_REQUEST['hdnsrchval']) ? $_REQUEST['hdnsrchval'] : ""?>&st=<?=isset($_REQUEST['hdnsrchsta']) ? $_REQUEST['hdnsrchsta'] : ""?>&stype=<?=isset($_REQUEST['hdnsrchtyp']) ? $_REQUEST['hdnsrchtyp'] : ""?>&sdtf=<?=isset($_REQUEST['hdnsrchdte']) ? $_REQUEST['hdnsrchdte'] : ""?>&dtfr=<?=isset($_REQUEST['hdnsrchdtef']) ? $_REQUEST['hdnsrchdtef'] : ""?>&dtto=<?=isset($_REQUEST['hdnsrchdtet']) ? $_REQUEST['hdnsrchdtet'] : ""?>';" id="btnMain" name="btnMain">
 									Back to Main<br>(ESC)
 								</button>
 							
@@ -975,6 +975,12 @@ else{
 
 <form method="post" name="frmedit" id="frmedit" action="Purch_edit.php">
 	<input type="hidden" name="txtctranno" id="txtctranno" value="">
+	<input type="hidden" name="hdnsrchval" id="hdnsrchval" value="<?=isset($_REQUEST['hdnsrchval']) ? $_REQUEST['hdnsrchval'] : ""?>"/>
+	<input type="hidden" name="hdnsrchsta" id="hdnsrchsta" value="<?=isset($_REQUEST['hdnsrchsta']) ? $_REQUEST['hdnsrchsta'] : ""?>"/>
+	<input type="hidden" name="hdnsrchtyp" id="hdnsrchtyp" value="<?=isset($_REQUEST['hdnsrchtyp']) ? $_REQUEST['hdnsrchtyp'] : ""?>"/>
+	<input type="hidden" name="hdnsrchdte" id="hdnsrchdte" value="<?=isset($_REQUEST['hdnsrchdte']) ? $_REQUEST['hdnsrchdte'] : ""?>"/>
+	<input type="hidden" name="hdnsrchdtef" id="hdnsrchdtef" value="<?=isset($_REQUEST['hdnsrchdtef']) ? $_REQUEST['hdnsrchdtef'] : ""?>"/>
+	<input type="hidden" name="hdnsrchdtet" id="hdnsrchdtet" value="<?=isset($_REQUEST['hdnsrchdtet']) ? $_REQUEST['hdnsrchdtet'] : ""?>"/>
 </form>
 
 <form action="PrintPO.php" method="post" name="frmQPrint" id="frmQprint" target="_blank">
@@ -1180,9 +1186,11 @@ else{
 			
 			//convertCurrency($(this).val());
 	
-			var dval = $(this).find(':selected').attr('data-val');
+			var dval = $(this).find(':selected').data('val');
 	
 			$("#basecurrval").val(dval);
+			$("#hidcurrvaldesc").val($( "#selbasecurr option:selected" ).text());
+
 			$("#statgetrate").html("");
 			recomputeCurr();
 		
@@ -1217,7 +1225,7 @@ else{
 				$("#txtcustid").val(item.id);
 
 				$("#selbasecurr").val(item.cdefaultcurrency).change(); //val
-				$("#basecurrvalmain").val($("#selbasecurr").data("val"));
+				//$("#basecurrvalmain").val($("#selbasecurr").data("val"));
 
 				$("#selterms").val(item.cterms).change();
 			}

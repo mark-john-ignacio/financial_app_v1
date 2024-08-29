@@ -395,6 +395,7 @@
 <?php
 	}
 ?>
+
 <br><br><br><br>
 <form action="TBal_Det.php" name="frmdet" id="frmdet" target="_blank" method="POST">
 	<input type="hidden" name="ccode" id="ccode" value="">

@@ -131,7 +131,15 @@ if (mysqli_num_rows($sqlhead)!=0) {
 		$lVoid = $row['lvoid'];
 	}
 ?>
-	<form action="PR_editsave.php?hdnsrchval=<?=(isset($_REQUEST['hdnsrchval'])) ? $_REQUEST['hdnsrchval'] : ""?>" name="frmpos" id="frmpos" method="post"  enctype="multipart/form-data">
+	<form action="PR_editsave.php" name="frmpos" id="frmpos" method="post"  enctype="multipart/form-data">
+
+		<input type="hidden" name="hdnsrchval" id="hdnsrchval" value="<?=isset($_REQUEST['hdnsrchval']) ? $_REQUEST['hdnsrchval'] : ""?>" />
+		<input type="hidden" name="hdnsrchsta" id="hdnsrchsta" value="<?=isset($_REQUEST['hdnsrchsta']) ? $_REQUEST['hdnsrchsta'] : ""?>" />
+		<input type="hidden" name="hdnsrchsec" id="hdnsrchsec" value="<?=isset($_REQUEST['hdnsrchsec']) ? $_REQUEST['hdnsrchsec'] : ""?>" />
+		<input type="hidden" name="hdnsrchdte" id="hdnsrchdte" value="<?=isset($_REQUEST['hdnsrchdte']) ? $_REQUEST['hdnsrchdte'] : ""?>" />
+		<input type="hidden" name="hdnsrchdtef" id="hdnsrchdtef" value="<?=isset($_REQUEST['hdnsrchdtef']) ? $_REQUEST['hdnsrchdtef'] : ""?>" />
+		<input type="hidden" name="hdnsrchdtet" id="hdnsrchdtet" value="<?=isset($_REQUEST['hdnsrchdtet']) ? $_REQUEST['hdnsrchdtet'] : ""?>" />
+
 		<fieldset>
     	<legend>
 

@@ -43,9 +43,6 @@
 		$compname =  $row['compname'];
 	}
 
-	$date1 = $_POST["date1"];
-	$date2 = $_POST["date2"];
-
 	//getall accounts
 	$allaccounts = array();
 	$result=mysqli_query($con,"SELECT A.cacctno, A.cacctid, A.cacctdesc, A.nlevel, A.mainacct, A.ctype FROM `accounts` A where A.compcode='$company' and A.cFinGroup='Income Statement' ORDER BY CASE WHEN A.ccategory='REVENUE' THEN 1 WHEN A.ccategory='COST OF SALES' THEN 2 WHEN A.ccategory='EXPENSES' THEN 3 END, A.nlevel, A.cacctid");
@@ -54,11 +51,22 @@
 		$allaccounts[] = $row;
 	}
 
+	$qrydte = "";
+	if($_POST['seldte']==1){
+		$date1 = $_POST["date1"];
+		$date2 = $_POST["date2"];
+
+		$qrydte = " and A.ddate between STR_TO_DATE('$date1', '%m/%d/%Y') and STR_TO_DATE('$date2', '%m/%d/%Y')";
+	}else{
+		$date1 = $_POST["selyr"];
+		$qrydte = " and YEAR(A.ddate) = '$date1'";	
+	}
+
 	//glactivity
 		$arrallwithbal = array();
 		$sql = "Select A.acctno, B.cacctdesc, sum(A.ndebit) as ndebit, sum(A.ncredit) as ncredit
 				From glactivity A left join accounts B on A.compcode=B.compcode and A.acctno=B.cacctid
-				where A.compcode='$company' and A.ddate between STR_TO_DATE('$date1', '%m/%d/%Y') and STR_TO_DATE('$date2', '%m/%d/%Y')
+				where A.compcode='$company'".$qrydte."
 				and B.cFinGroup = 'Income Statement'
 				Group By A.acctno, B.cacctdesc
 				Having sum(A.ndebit)<>0 or sum(A.ncredit)<>0

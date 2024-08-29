@@ -4,6 +4,18 @@
 	}
 	include('../../Connection/connection_string.php');
 	include('../../include/denied.php');
+	
+	$company = $_SESSION['companyid'];
+
+	$cvalcracct = "";
+  	$result = mysqli_query($con,"SELECT * FROM `parameters` WHERE compcode='$company' and ccode='INCOME_ACCOUNT'");
+	if (mysqli_num_rows($result)!=0) {
+		$all_course_data = mysqli_fetch_array($result, MYSQLI_ASSOC);																				
+		$cvalcracct = $all_course_data['cvalue']; 																					
+	}
+	else{
+		$cvalcracct = "";
+	}
 
 	function chkgrp($valz) {
 		global $con;
@@ -16,7 +28,6 @@
 	}
 
 	$cCustCode = strtoupper($_REQUEST['txtccode']);
-	$company = $_SESSION['companyid'];
 	$mymsg = "True";
 	$myerror = "True";
 	
@@ -56,10 +67,19 @@
 	$cGrp10 = chkgrp($_REQUEST['txtCustGroup10D']);
 
 
-	if($SalesCodeType=="single") {
+	//if($SalesCodeType=="single") {
 		$SalesCode = $_REQUEST['txtsalesacctDID'];
+		$SalesEXCode = $_REQUEST['txtsalesacctEXDID'];
+	//}else{
+	//	$SalesCode = "";
+	//}
+
+	if($cvalcracct=="customer"){
+		$SalesCodeCR = $_REQUEST['txtsalesacctDIDCR'];
+		$SalesRetCodeCR = $_REQUEST['txtsalesacctRetDIDCR'];
 	}else{
-		$SalesCode = "";
+		$SalesCodeCR = "";
+		$SalesRetCodeCR = "";
 	}
 
 	$SelCurr = $_REQUEST['selcurrncy'];
@@ -67,7 +87,7 @@
 	//$SalesCodeCR = $_REQUEST['txtsalesacctDIDCR']; , `cacctcodesalescr` = '$SalesCodeCR' , `cparentcode` = $PrentCode
 
 	//IUPDATE ITEM
-	if (!mysqli_query($con,"UPDATE `customers` set `cname`='$cCustName', `ctradename` = '$cTradeName', `ctin` = '$Tin', `cacctcodesales` = '$SalesCode', `cacctcodetype` = '$SalesCodeType', `ccustomertype`='$CustTyp', `ccustomerclass`='$CustCls', `cpricever` = '$PriceVer', `cvattype`='$VatType', `cterms` = '$Terms', `nlimit` = $CreditLimit, `chouseno` = $HouseNo, `ccity` = $City, `cstate` = $State, `ccountry` = $Country, `czip` = $ZIP, `csman` = $csman, `cGroup1` = $cGrp1, `cGroup2` = $cGrp2, `cGroup3` = $cGrp3, `cGroup4` = $cGrp4, `cGroup5` = $cGrp5, `cGroup6` = $cGrp6, `cGroup7` = $cGrp7, `cGroup8` = $cGrp8, `cGroup9` = $cGrp9, `cGroup10` = $cGrp10, `cdefaultcurrency` = '$SelCurr' Where compcode='$company' and `cempid`='$cCustCode'")){
+	if (!mysqli_query($con,"UPDATE `customers` set `cname`='$cCustName', `ctradename` = '$cTradeName', `ctin` = '$Tin', `cacctcodesales` = '$SalesCode', `cacctcodetype` = '$SalesCodeType', `ccustomertype`='$CustTyp', `ccustomerclass`='$CustCls', `cpricever` = '$PriceVer', `cvattype`='$VatType', `cterms` = '$Terms', `nlimit` = $CreditLimit, `chouseno` = $HouseNo, `ccity` = $City, `cstate` = $State, `ccountry` = $Country, `czip` = $ZIP, `csman` = $csman, `cGroup1` = $cGrp1, `cGroup2` = $cGrp2, `cGroup3` = $cGrp3, `cGroup4` = $cGrp4, `cGroup5` = $cGrp5, `cGroup6` = $cGrp6, `cGroup7` = $cGrp7, `cGroup8` = $cGrp8, `cGroup9` = $cGrp9, `cGroup10` = $cGrp10, `cdefaultcurrency` = '$SelCurr', `cacctcodesalesex` = '$SalesEXCode', `cacctcodesalescr` = '$SalesCodeCR', `cacctcodesalescreturn` = '$SalesRetCodeCR' Where compcode='$company' and `cempid`='$cCustCode'")){
 
 		if(mysqli_error($con)!=""){
 			$myerror = "Update Error: ". mysqli_error($con)."<br/><br/>";

@@ -9,9 +9,11 @@
   include('../../include/denied.php');
   include('../../include/access2.php');
 
+  $company = $_SESSION['companyid'];
+
   $nvaluecurrbase = "";	
 	$nvaluecurrbasedesc = "";	
-	$result = mysqli_query($con,"SELECT * FROM `parameters` WHERE ccode='DEF_CURRENCY'"); 
+	$result = mysqli_query($con,"SELECT * FROM `parameters` WHERE compcode='$company' and ccode='DEF_CURRENCY'"); 
 																		
 	if (mysqli_num_rows($result)!=0) {
 		$all_course_data = mysqli_fetch_array($result, MYSQLI_ASSOC);																				
@@ -19,6 +21,16 @@
 	}
 	else{
 		$nvaluecurrbase = "";
+	}
+
+  $cvalcracct = "";
+  $result = mysqli_query($con,"SELECT * FROM `parameters` WHERE compcode='$company' and ccode='INCOME_ACCOUNT'");
+	if (mysqli_num_rows($result)!=0) {
+		$all_course_data = mysqli_fetch_array($result, MYSQLI_ASSOC);																				
+		$cvalcracct = $all_course_data['cvalue']; 																					
+	}
+	else{
+		$cvalcracct = "";
 	}
 ?>
 <!DOCTYPE html>
@@ -450,21 +462,17 @@
 
               <div class="row nopadwtop">
                 <div class="col-xs-2 nopadding">
-                  <b>AR Code</b>
+                  <b>AR Code (Dr)</b>
+                  <input type="hidden" id="selaccttyp" name="selaccttyp" value="single">
                 </div>                    
-                <div class="col-xs-3 nopadwleft">                    
-                  <select name="selaccttyp" id="selaccttyp" class="form-control input-sm" tabindex="22">
+                <div class="col-xs-10 nopadwleft">                    
+                  <!--<select name="selaccttyp" id="selaccttyp" class="form-control input-sm" tabindex="22">
                     <option value="single" selected>Single Account</option>
                     <option value="multiple">Per Item Type</option>
-                  </select>                    
-                </div>                   
-              </div>
-
-              <div class="row nopadwtop">
-                <div class="col-xs-2 nopadding">&nbsp; </div>  
-                <div class="col-xs-10 nopadwleft" id="accttypsingle">
+                  </select>    -->
+                  
                   <div class="row nopadding">
-                    <div class="col-xs-3 nopadding">
+                    <div class="col-xs-4 nopadding">
                       <input type="text" class="required form-control input-sm" id="txtsalesacct" name="txtsalesacct" tabindex="23" placeholder="Search Acct Title.." autocomplete="off" required/>
                     </div>          
                     <div class="col-xs-2 nopadwleft">
@@ -472,6 +480,31 @@
                       <input type="hidden" id="txtsalesacctDID" name="txtsalesacctDID">
                     </div>	
                   </div>
+                </div>                   
+              </div>
+
+              <div class="row nopadwtop">
+                <div class="col-xs-2 nopadding">
+                  <b>AR Code Exchange Rate (Dr)</b>
+                  <input type="hidden" id="selaccttyp" name="selaccttyp" value="single">
+                </div>                    
+                <div class="col-xs-10 nopadwleft">                 
+                  <div class="row nopadding">
+                    <div class="col-xs-4 nopadding">
+                      <input type="text" class="form-control input-sm" id="txtsalesacctEX" name="txtsalesacctEX" tabindex="23" placeholder="Search Acct Title.." autocomplete="off"/>
+                    </div>          
+                    <div class="col-xs-2 nopadwleft">
+                      <input type="text" id="txtsalesacctEXD" name="txtsalesacctEXD" class="form-control input-sm" readonly>
+                      <input type="hidden" id="txtsalesacctEXDID" name="txtsalesacctEXDID">
+                    </div>	
+                  </div>
+                </div>                   
+              </div>
+
+              <!--<div class="row nopadwtop">
+                <div class="col-xs-2 nopadding">&nbsp; </div>  
+                <div class="col-xs-10 nopadwleft" id="accttypsingle">
+                 
                 </div>   
                 <div class="col-xs-7 nopadwleft" id="accttypmulti" style="display:none">
                   <table class="table table-condensed table-hover">
@@ -480,7 +513,7 @@
                       <th>Account</th>
                     </tr>
                     <?php
-                      $sql = "select * from groupings where compcode='$company' and ctype='ITEMTYP' and cstatus='ACTIVE' order by cdesc";
+                     /* $sql = "select * from groupings where compcode='$company' and ctype='ITEMTYP' and cstatus='ACTIVE' order by cdesc";
                       $result=mysqli_query($con,$sql);
                       if (!mysqli_query($con, $sql)) {
                         printf("Errormessage: %s\n", mysqli_error($con));
@@ -502,12 +535,52 @@
                       </td>
                     </tr>
                     <?php
-                        }
+                        }*/
                     ?>                 
                   </table>
                 </div>                 
+              </div>-->
+
+              <?php
+                if($cvalcracct=="customer"){
+              ?>
+              <div class="row nopadwtop">
+                <div class="col-xs-2 nopadding">
+                  <b>Sales Code</b>
+                </div>
+
+                <div class="col-xs-10 nopadwleft" id="accttypsingle">
+                  <div class="col-xs-4 nopadding">
+                    <input type="text" class="form-control input-sm border-danger" id="txtsalesacctCR" name="txtsalesacctCR" tabindex="23" placeholder="Search Acct Title.." autocomplete="off" required/>
+                  </div>
+                                  
+                  <div class="col-xs-2 nopadwleft">
+                    <input type="text" id="txtsalesacctCRD" name="txtsalesacctCRD" class="form-control input-sm" readonly>
+                    <input type="hidden" id="txtsalesacctDIDCR" name="txtsalesacctDIDCR">
+                  </div>                                                                          
+                </div>
               </div>
-          
+              
+              <div class="row nopadwtop">
+                <div class="col-xs-2 nopadding">
+                  <b>Sales Return Code</b>
+                </div>
+
+                <div class="col-xs-10 nopadwleft" id="accttypsingle">
+                  <div class="col-xs-4 nopadding">
+                    <input type="text" class="form-control input-sm border-danger" id="txtsalesacctRetCR" name="txtsalesacctRetCR" tabindex="23" placeholder="Search Acct Title.." autocomplete="off" required/>
+                  </div>
+                                  
+                  <div class="col-xs-2 nopadwleft">
+                    <input type="text" id="txtsalesacctRetCRD" name="txtsalesacctRetCRD" class="form-control input-sm" readonly>
+                    <input type="hidden" id="txtsalesacctRetDIDCR" name="txtsalesacctRetDIDCR"> 
+                  </div>                                                                          
+                </div>
+              </div>
+              <?php
+                }
+              ?>
+
               <div class="row nopadwtop">
                 <div class="col-xs-2 nopadding">
                   <b>Price Version</b>
@@ -699,9 +772,9 @@
   $(document).ready(function() {
     $(".nav-tabs a").click(function(){
           $(this).tab('show');
-      });
+    });
     
-      $("#addGrp_err").hide();
+    $("#addGrp_err").hide();
     $("#itmcode_err").hide();
     $("#txtccode").focus();
     $("input.numeric").numeric();
@@ -710,66 +783,101 @@
     loadgroupnmes();
     chkGroupVal();	
         
-      $(".selsalesacctz").typeahead({						 
-        autoSelect: true,
-        source: function(request, response) {	
-                  
-            $.ajax({
-              url: "../th_accounts.php",
-              dataType: "json",
-              data: { query: request },
-              success: function (data) {
-                response(data);
-              }
-            });
-          },
-          displayText: function (item) {
-            return item.id + " : " + item.name;
-          },
-          highlighter: Object,
-          afterSelect: function(item) { 					
-            var zelectionid = this.$element.attr('data-id');	
-            //alert(zelectionid+":"+item.name);
-            
-            $('#txtsalesacct'+zelectionid).val(item.name).change(); 
-            $('#txtsalesacctD'+zelectionid).val(item.id); 
-            $('#txtsalesacctDID'+zelectionid).val(item.idcode);
+    $(".selsalesacctz").typeahead({						 
+      autoSelect: true,
+      source: function(request, response) {	
                 
-          }
-      });
-    
-      $("#txtsalesacct").typeahead({						 
-        autoSelect: true,
-        source: function(request, response) {							
           $.ajax({
             url: "../th_accounts.php",
             dataType: "json",
-            data: { query: request, typ: "ASSETS" },
+            data: { query: request },
             success: function (data) {
               response(data);
             }
           });
-          },
-          displayText: function (item) {
-            return item.id + " : " + item.name;
-          },
-          highlighter: Object,
-          afterSelect: function(item) { 					
-            $('#txtsalesacct').val(item.name).change(); 
-            $('#txtsalesacctD').val(item.id); 
-            $('#txtsalesacctDID').val(item.idcode);
-                
-          }
-      });
-      
-      $("#txtsalesacct").on("blur", function() {
-        if($('#txtsalesacctD').val()==""){
-          $('#txtsalesacct').val("").change();
-          $('#txtsalesacctDID').val()==""
-          $('#txtsalesacct').focus();
+        },
+        displayText: function (item) {
+          return item.id + " : " + item.name;
+        },
+        highlighter: Object,
+        afterSelect: function(item) { 					
+          var zelectionid = this.$element.attr('data-id');	
+          //alert(zelectionid+":"+item.name);
+          
+          $('#txtsalesacct'+zelectionid).val(item.name).change(); 
+          $('#txtsalesacctD'+zelectionid).val(item.id); 
+          $('#txtsalesacctDID'+zelectionid).val(item.idcode);
+              
         }
-      });
+    });
+  
+    $("#txtsalesacct").typeahead({						 
+      autoSelect: true,
+      source: function(request, response) {							
+        $.ajax({
+          url: "../th_accounts.php",
+          dataType: "json",
+          data: { query: request, typ: "ASSETS" },
+          success: function (data) {
+            response(data);
+          }
+        });
+        },
+        displayText: function (item) {
+          return item.id + " : " + item.name;
+        },
+        highlighter: Object,
+        afterSelect: function(item) { 					
+          $('#txtsalesacct').val(item.name).change(); 
+          $('#txtsalesacctD').val(item.id); 
+          $('#txtsalesacctDID').val(item.idcode);
+              
+        }
+    });
+    
+    $("#txtsalesacct").on("blur", function() {
+      if($('#txtsalesacctD').val()==""){
+        $('#txtsalesacct').val("").change();
+        $('#txtsalesacctDID').val()==""
+        $('#txtsalesacct').focus();
+      }
+    });
 
+    $("#txtsalesacctEX").typeahead({						 
+      autoSelect: true,
+      source: function(request, response) {							
+        $.ajax({
+          url: "../th_accounts.php",
+          dataType: "json",
+          data: { query: request, typ: "ASSETS" },
+          success: function (data) {
+            response(data);
+          }
+        });
+        },
+        displayText: function (item) {
+          return item.id + " : " + item.name;
+        },
+        highlighter: Object,
+        afterSelect: function(item) { 					
+          $('#txtsalesacctEX').val(item.name).change(); 
+          $('#txtsalesacctEXD').val(item.id); 
+          $('#txtsalesacctEXDID').val(item.idcode);
+              
+        }
+    });
+    
+    $("#txtsalesacctEX").on("blur", function() {
+      if($('#txtsalesacctEXD').val()==""){
+        $('#txtsalesacctEX').val("").change();
+        $('#txtsalesacctEXDID').val()==""
+        $('#txtsalesacctEX').focus();
+      }
+    });
+
+    <?php
+      if($cvalcracct=="customer"){
+    ?>
       $("#txtsalesacctCR").typeahead({						 
         autoSelect: true,
         source: function(request, response) {							
@@ -802,284 +910,317 @@
         }
       });
 
+      $("#txtsalesacctRetCR").typeahead({						 
+				autoSelect: true,
+				source: function(request, response) {							
+					$.ajax({
+						url: "../th_accounts.php",
+						dataType: "json",
+						data: { query: request },
+						success: function (data) {
+							response(data);
+						}
+					});
+				},
+				displayText: function (item) {
+					return item.id + " : " + item.name;
+				},
+				highlighter: Object,
+				afterSelect: function(item) { 					
+					$('#txtsalesacctRetCR').val(item.name).change(); 
+					$('#txtsalesacctRetCRD').val(item.id); 
+					$('#txtsalesacctRetDIDCR').val(item.idcode);
+							
+				}
+			});
+			
+			$("#txtsalesacctRetCR").on("blur", function() {
+				if($('#txtsalesacctRetCRD').val()==""){
+					$('#txtsalesacctRetCR').val("").change();
+					$('#txtsalesacctRetDIDCR').val()==""
+					$('#txtsalesacctRetCR').focus();
+				}
+			});
+    <?php
+      }
+    ?>
 
-      $("#txtcparent").typeahead({						 
-        autoSelect: true,
-        source: function(request, response) {							
-          $.ajax({
-            url: "th_customers.php",
-            dataType: "json",
-            data: { query: request },
-            success: function (data) {
-              response(data);
-            }
-          });
-          },
-          displayText: function (item) {
-            return item.id + " : " + item.name;
-          },
-          highlighter: Object,
-          afterSelect: function(item) { 					
-            $('#txtcparent').val(item.name).change(); 
-            $('#txtcparentD').val(item.id); 
-                
+    $("#txtcparent").typeahead({						 
+      autoSelect: true,
+      source: function(request, response) {							
+        $.ajax({
+          url: "th_customers.php",
+          dataType: "json",
+          data: { query: request },
+          success: function (data) {
+            response(data);
           }
-      });
-      
-      $("#txtcparent").on("blur", function() {
-        if($('#txtcparentD').val()==""){
-          $('#txtcparent').val("").change();
-          $('#txtcparent').focus();
-        }
-      });
-      
-      $("#txtsman").typeahead({						 
-        autoSelect: true,
-        source: function(request, response) {							
-          $.ajax({
-            url: "th_salesman.php",
-            dataType: "json",
-            data: { query: request },
-            success: function (data) {
-              response(data);
-            }
-          });
-          },
-          displayText: function (item) {
-            return item.id + " : " + item.name;
-          },
-          highlighter: Object,
-          afterSelect: function(item) { 					
-            $('#txtsman').val(item.name).change(); 
-            $('#txtsmanD').val(item.id); 
-                
-          }
-      });
-      
-      $("#txtsman").on("blur", function() {
-        if($('#txtsmanD').val()==""){
-          $('#txtsman').val("").change();
-          $('#txtsman').focus();
-        }
-      });
-            
-      var $inputgrp = $(".txtCustGroup");
-      $inputgrp.typeahead({						 
-        autoSelect: true,
-        source: function(request, response) {	
-          $.ajax({								
-            url: "th_custgroupdetails.php?id=CustGroup"+$(document.activeElement).attr('id').replace( /^\D+/g, ''),
-            dataType: "json",
-            data: { query: request },
-            success: function (data) {
-              response(data);
-            }
-          });
+        });
+        },
+        displayText: function (item) {
+          return item.id + " : " + item.name;
         },
         highlighter: Object,
         afterSelect: function(item) { 					
-                    
-          var id = $(document.activeElement).attr('id');
-                
-          $('#'+id).val(item.name).change(); 
-          $('#'+id+'D').val(item.id); 
-                
-        }
-      });
-            
-      $(".btncgroup").on("click", function() {
-        var id = $(this).attr("id");
-        var r = id.replace( /^\D+/g, '');
+          $('#txtcparent').val(item.name).change(); 
+          $('#txtcparentD').val(item.id); 
               
-        $("#myModalLabel").html("<b>Group "+r+"</b>");
-        $("#TblItmGrpDet").html("");
-        $("#myGrpModal").modal('show');
-                            
-        var nme = "CustGroup"+r;
-                
-        $.ajax ({
-          url: "th_loadcustgrpdetails.php",
-          data: { id: nme },
-          async: false,
-          dataType: 'json',
-          success: function( data ) {
-            console.log(data);
-             $.each(data,function(index,item){
-                      
-              var divhead = "<div class=\"col-xs-12 nopadding\">";
-              var divcode = "<div class=\"col-xs-2 nopadding\"><a href=\"javascript:;\" onclick=\"setgrpvals('"+item.id+"','"+item.name+"','"+r+"');\">"+item.id+"</a></div>";
-              var divdesc = "<div class=\"col-xs-8 nopadding\">"+item.name+"</div>";
-              var divend = "</div>";
-                      
-              $("#TblItmGrpDet").append(divhead + divcode + divdesc + divend);
-                      
-                
-            });
-          }
-        });
-                            
-      });
-
-      $("#frmITEM").on('submit', function (e) {
-        e.preventDefault();
-        
-        var tbl = document.getElementById('myContactDetTable').getElementsByTagName('tr');
-        var lastRow = tbl.length-1;											
-        document.getElementById('hdncontlistcnt').value = lastRow;
-
-        var tbldl = document.getElementById('myDelAddTable').getElementsByTagName('tr');
-        var lastRowdl = tbldl.length-1;
-        document.getElementById('hdnaddresscnt').value = lastRowdl;	
-
-        var tbld2 = document.getElementById('myChildAddTable').getElementsByTagName('tr');
-        var lastRowdl2= tbld2.length-1;
-        document.getElementById('hdnchildcnt').value = lastRowdl2;
-                                                  
-        var form = $("#frmITEM");
-        var formdata = form.serialize();
-        $.ajax({
-          url: 'Customers_newsave.php',
-          type: 'POST',
-          async: false,
-          data: formdata,
-          beforeSend: function(){
-            $("#AlertMsg").html("<b>SAVING NEW CUSTOMER: </b> Please wait a moment...");
-            $("#AlertModal").modal('show');
-          },
-          success: function(data) {
-            if(data.trim()=="True"){
-              $("#AlertMsg").html("<b>SUCCESS: </b>Succesfully saved! <br><br> Loading new customer... <br> Please wait!");
-                            
-              setTimeout(function() {
-                $("#AlertMsg").html("");
-                  $('#AlertModal').modal('hide');
-                              
-                  $("#txtcitemno").val($("#txtccode").val());
-                    $("#frmedit").submit();
-                  }, 3000); // milliseconds = 3seconds
-                            
-              }
-            else{
-              $("#AlertMsg").html(data);	
-            }
-          },
-          error: function(){
-            $("#AlertMsg").html("");
-            $("#AlertModal").modal('hide');
-                      
-            $("#itmcode_err").html("<b><font color='red'>ERROR: </font></b> Unable to save new customer!");
-            $("#itmcode_err").show();
-                      
-          }
-        });							
+        }
     });
     
-      $("#txtcEmail").on("blur", function() {
-        var sEmail = $(this).val();
-        
-        var filter = /^[\w\-\.\+]+\@[a-zA-Z0-9\.\-]+\.[a-zA-z0-9]{2,4}$/;
-        
-        if(sEmail!=""){
-          if (filter.test(sEmail)) {
-            //wlang gagawin
+    $("#txtcparent").on("blur", function() {
+      if($('#txtcparentD').val()==""){
+        $('#txtcparent').val("").change();
+        $('#txtcparent').focus();
+      }
+    });
+    
+    $("#txtsman").typeahead({						 
+      autoSelect: true,
+      source: function(request, response) {							
+        $.ajax({
+          url: "th_salesman.php",
+          dataType: "json",
+          data: { query: request },
+          success: function (data) {
+            response(data);
           }
-          else {
-            $("#txtcEmail").val("").change();
-            $("#txtcEmail").attr("placeholder","You entered and invalid email!");
-            $("#txtcEmail").focus();
+        });
+        },
+        displayText: function (item) {
+          return item.id + " : " + item.name;
+        },
+        highlighter: Object,
+        afterSelect: function(item) { 					
+          $('#txtsman').val(item.name).change(); 
+          $('#txtsmanD').val(item.id); 
+              
+        }
+    });
+    
+    $("#txtsman").on("blur", function() {
+      if($('#txtsmanD').val()==""){
+        $('#txtsman').val("").change();
+        $('#txtsman').focus();
+      }
+    });
+          
+    var $inputgrp = $(".txtCustGroup");
+    $inputgrp.typeahead({						 
+      autoSelect: true,
+      source: function(request, response) {	
+        $.ajax({								
+          url: "th_custgroupdetails.php?id=CustGroup"+$(document.activeElement).attr('id').replace( /^\D+/g, ''),
+          dataType: "json",
+          data: { query: request },
+          success: function (data) {
+            response(data);
+          }
+        });
+      },
+      highlighter: Object,
+      afterSelect: function(item) { 					
+                  
+        var id = $(document.activeElement).attr('id');
+              
+        $('#'+id).val(item.name).change(); 
+        $('#'+id+'D').val(item.id); 
+              
+      }
+    });
+          
+    $(".btncgroup").on("click", function() {
+      var id = $(this).attr("id");
+      var r = id.replace( /^\D+/g, '');
+            
+      $("#myModalLabel").html("<b>Group "+r+"</b>");
+      $("#TblItmGrpDet").html("");
+      $("#myGrpModal").modal('show');
+                          
+      var nme = "CustGroup"+r;
+              
+      $.ajax ({
+        url: "th_loadcustgrpdetails.php",
+        data: { id: nme },
+        async: false,
+        dataType: 'json',
+        success: function( data ) {
+          console.log(data);
+            $.each(data,function(index,item){
+                    
+            var divhead = "<div class=\"col-xs-12 nopadding\">";
+            var divcode = "<div class=\"col-xs-2 nopadding\"><a href=\"javascript:;\" onclick=\"setgrpvals('"+item.id+"','"+item.name+"','"+r+"');\">"+item.id+"</a></div>";
+            var divdesc = "<div class=\"col-xs-8 nopadding\">"+item.name+"</div>";
+            var divend = "</div>";
+                    
+            $("#TblItmGrpDet").append(divhead + divcode + divdesc + divend);
+                    
+              
+          });
+        }
+      });
+                          
+    });
+
+    $("#frmITEM").on('submit', function (e) {
+      e.preventDefault();
+      
+      var tbl = document.getElementById('myContactDetTable').getElementsByTagName('tr');
+      var lastRow = tbl.length-1;											
+      document.getElementById('hdncontlistcnt').value = lastRow;
+
+      var tbldl = document.getElementById('myDelAddTable').getElementsByTagName('tr');
+      var lastRowdl = tbldl.length-1;
+      document.getElementById('hdnaddresscnt').value = lastRowdl;	
+
+      var tbld2 = document.getElementById('myChildAddTable').getElementsByTagName('tr');
+      var lastRowdl2= tbld2.length-1;
+      document.getElementById('hdnchildcnt').value = lastRowdl2;
+                                                
+      var form = $("#frmITEM");
+      var formdata = form.serialize();
+      $.ajax({
+        url: 'Customers_newsave.php',
+        type: 'POST',
+        async: false,
+        data: formdata,
+        beforeSend: function(){
+          $("#AlertMsg").html("<b>SAVING NEW CUSTOMER: </b> Please wait a moment...");
+          $("#AlertModal").modal('show');
+        },
+        success: function(data) {
+          if(data.trim()=="True"){
+            $("#AlertMsg").html("<b>SUCCESS: </b>Succesfully saved! <br><br> Loading new customer... <br> Please wait!");
+                          
+            setTimeout(function() {
+              $("#AlertMsg").html("");
+                $('#AlertModal').modal('hide');
+                            
+                $("#txtcitemno").val($("#txtccode").val());
+                  $("#frmedit").submit();
+                }, 3000); // milliseconds = 3seconds
+                          
+            }
+          else{
+            $("#AlertMsg").html(data);	
+          }
+        },
+        error: function(){
+          $("#AlertMsg").html("");
+          $("#AlertModal").modal('hide');
+                    
+          $("#itmcode_err").html("<b><font color='red'>ERROR: </font></b> Unable to save new customer!");
+          $("#itmcode_err").show();
+                    
+        }
+      });							
+    });
+  
+    $("#txtcEmail").on("blur", function() {
+      var sEmail = $(this).val();
+      
+      var filter = /^[\w\-\.\+]+\@[a-zA-Z0-9\.\-]+\.[a-zA-z0-9]{2,4}$/;
+      
+      if(sEmail!=""){
+        if (filter.test(sEmail)) {
+          //wlang gagawin
+        }
+        else {
+          $("#txtcEmail").val("").change();
+          $("#txtcEmail").attr("placeholder","You entered and invalid email!");
+          $("#txtcEmail").focus();
+        }
+      }
+      else{
+        $("#txtcEmail").attr("placeholder","Email Address...");
+      }
+
+    });
+
+    
+    $("#txtccode").on("keyup", function() {
+      
+      //	$.post('itemcode_checker.php', {'id': $(this).val() }, function(data) {
+      if($(this).val()!=""){
+        $.ajax ({
+        url: "customers_codechecker.php",
+        data: { id: $(this).val() },
+        async: false,
+        dataType: 'text',
+        success: function( data ) {
+
+          if(data.trim()=="True"){
+
+              $("#itmcode_err").html("<b><font color='red'>ERROR: </font></b> Code Already In Use!");
+            
+            $("#itmcode_err").show();
+          }
+          else if(data.trim()=="False") {
+
+              $("#itmcode_err").html("<b><font color='green'>VALID: </font></b> Valid Code!");
+            
+            $("#itmcode_err").show();
           }
         }
-        else{
-          $("#txtcEmail").attr("placeholder","Email Address...");
-        }
+        });
+      }
+      else{
+        $("#itmcode_err").html("");
+        $("#itmcode_err").hide();
+      }
 
-      });
+    });
 
+
+    $("#txtccode").on("blur", function() {
       
-              $("#txtccode").on("keyup", function() {
-              
-              //	$.post('itemcode_checker.php', {'id': $(this).val() }, function(data) {
-              if($(this).val()!=""){
-                $.ajax ({
-                url: "customers_codechecker.php",
-                data: { id: $(this).val() },
-                async: false,
-                dataType: 'text',
-                success: function( data ) {
-
-                  if(data.trim()=="True"){
-
-                      $("#itmcode_err").html("<b><font color='red'>ERROR: </font></b> Code Already In Use!");
-                    
-                    $("#itmcode_err").show();
-                  }
-                  else if(data.trim()=="False") {
-
-                      $("#itmcode_err").html("<b><font color='green'>VALID: </font></b> Valid Code!");
-                    
-                    $("#itmcode_err").show();
-                  }
-                }
-                });
-              }
-              else{
-                $("#itmcode_err").html("");
-                $("#itmcode_err").hide();
-              }
-
-            });
-
-
-            $("#txtccode").on("blur", function() {
-              
-              //	$.post('itemcode_checker.php', {'id': $(this).val() }, function(data) {
-                
-                $.ajax ({
-                url: "customers_codechecker.php",
-                data: { id: $(this).val() },
-                async: false,
-                success: function( data ) {
-                  if(data.trim()=="True"){
-                    $("#txtccode").val("").change();
-                    $("#txtccode").focus();
-                  }
-                }
-                });
-                
-                $("#itmcode_err").html("");
-                $("#itmcode_err").hide();
-
-
-
-            });
-
-      $("#selaccttyp").on("change", function() {
-        if($(this).val()=="single"){				
-          $("#accttypsingle").show();
-
-          $('#txtsalesacct').prop('required',true);
-
-            $('.selsalesacctz').each(function(i, obj) {
-              $(this).prop('required',false);
-            });
-
-          $("#accttypmulti").hide();	 			
-
-        }else{
-          
-          $("#accttypmulti").show();	
+      //	$.post('itemcode_checker.php', {'id': $(this).val() }, function(data) {
         
-          $('#txtsalesacct').prop('required',false);
-            $('.selsalesacctz').each(function(i, obj) {
-              $(this).prop('required',true);
-            });
-          
-          $("#accttypsingle").hide();	 		
+        $.ajax ({
+        url: "customers_codechecker.php",
+        data: { id: $(this).val() },
+        async: false,
+        success: function( data ) {
+          if(data.trim()=="True"){
+            $("#txtccode").val("").change();
+            $("#txtccode").focus();
+          }
         }
+        });
+        
+        $("#itmcode_err").html("");
+        $("#itmcode_err").hide();
 
-      });
+
+
+    });
+
+    $("#selaccttyp").on("change", function() {
+      if($(this).val()=="single"){				
+        $("#accttypsingle").show();
+
+        $('#txtsalesacct').prop('required',true);
+
+          $('.selsalesacctz').each(function(i, obj) {
+            $(this).prop('required',false);
+          });
+
+        $("#accttypmulti").hide();	 			
+
+      }else{
+        
+        $("#accttypmulti").show();	
       
-      
+        $('#txtsalesacct').prop('required',false);
+          $('.selsalesacctz').each(function(i, obj) {
+            $(this).prop('required',true);
+          });
+        
+        $("#accttypsingle").hide();	 		
+      }
+
+    });
+            
   });
 
   $(document).keydown(function(e) {

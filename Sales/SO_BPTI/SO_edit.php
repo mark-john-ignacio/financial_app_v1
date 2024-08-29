@@ -459,7 +459,7 @@ if (mysqli_num_rows($sqlhead)!=0) {
 					</div>
 				</div>
 				<div class="portlet-body" style="overflow: auto">
-					<div style="min-height: 30vh; width: 1500px;">
+					<div style="height: 250px; width: 1500px; overflow-y:auto;" id="div1det">
 		
 						<table id="MyTable" class="MyTable table-sm table-bordered" border="1">
 							<thead>
@@ -591,11 +591,7 @@ if (mysqli_num_rows($sqlhead)!=0) {
 		
 		</div>
 	</div>
-
-		
-</fieldset>
     
-   
 	<!-- Add Info -->
     <div class="modal fade" id="MyDetModal" role="dialog">
     	<div class="modal-dialog modal-lg">
@@ -693,6 +689,10 @@ if (mysqli_num_rows($sqlhead)!=0) {
 	</div><!-- /.modal -->
 	<!-- End FULL INVOICE LIST -->
 
+</form>
+
+<form action="SO_edit.php" name="frmedit" id="frmedit" method="post">
+	<input type="hidden" name="txtctranno" value="">
 </form>
 
 <?php
@@ -1707,6 +1707,10 @@ else{
 
 		$('#MyTable > tbody:last-child').append('<tr>'+tditmcode + tditmdesc + tditmavail + tditmvats + tditmunit + tditmfactor + tditmqty + tditmprice + tditmbaseamount + tditmrempo + tddneed + tditmremx + tditmdel + '</tr>');
 
+		//$("#div1det").animate({ scrollTop: $('#div1det').prop("scrollHeight")}, 1000);
+		var offTop = $('#div1det').prop("scrollHeight");
+		$("#div1det").scrollTop(offTop);
+
 		$("#del"+lastRow).on('click', function() {
 			$(this).closest('tr').remove();
 
@@ -2481,12 +2485,33 @@ else{
 			var delcountry = $("#txtcCountry").val();
 			var delzip = $("#txtcZip").val();
 			
-			//alert("SO_updatehdr.php?ccode=" + ccode + "&crem="+ crem + "&ddate="+ ddate + "&ngross="+ngross + "&selsityp="+csitype+"&ccpono="+ ccpono+"&salesman="+ salesman+"&delcodes="+ delcodes+"&delhousno="+ delhousno+"&delcity="+ delcity+"&delstate="+ delstate+"&delcountry="+ delcountry+"&delzip="+ delzip+"&specins="+ specins);
-			//data: { id:trancode, ccode: ccode, crem: crem, ddate: ddate, ngross: ngross, selsityp: csitype, ccpono:ccpono, salesman:salesman, delcodes:delcodes, delhousno:delhousno, delcity:delcity, delstate:delstate, delcountry:delcountry, delzip:delzip, specins:specins },
-			var myform = $("#frmpos").serialize();
+			var input_data = [
+			{	key: 'txtcsalesno', input: $("#txtcsalesno").val()	},
+			{	key: 'txtcustid', input: $("#txtcustid").val()	},
+			{	key: 'date_delivery', input: $("#date_delivery").val()	},
+			{	key: 'date_PO', input: $("#date_PO").val()	},
+			{	key: 'txtremarks', input: $("#txtremarks").val()	},
+			{	key: 'txtnGross', input: $("#txtnGross").val()	},
+			{	key: 'selsityp', input: $("#selsityp").val()	},
+			{	key: 'txtcPONo', input: $("#txtcPONo").val()	},
+			{	key: 'txtdelcustid', input: $("#txtdelcustid").val()	},
+			{	key: 'txtchouseno', input: $("#txtchouseno").val()	},
+			{	key: 'txtcCity', input: $("#txtcCity").val()	},
+			{	key: 'txtcState', input: $("#txtcState").val()	},
+			{	key: 'txtcCountry', input: $("#txtcCountry").val()	},
+			{	key: 'txtcZip', input: $("#txtcZip").val()	},
+			{	key: 'txtSpecIns', input: $("#txtSpecIns").val()	},
+			{	key: 'selbasecurr', input: $("#selbasecurr").val()	},
+			{	key: 'hidcurrvaldesc', input: $("#hidcurrvaldesc").val()	},
+			{	key: 'basecurrval', input: $("#basecurrval").val()	},
+			{	key: 'txtnBaseGross', input: $("#txtnBaseGross").val()	},
+			{	key: 'txtsalesmanid', input: $("#txtsalesmanid").val()	}
+		];
 
-			var formdata = new FormData($('#frmpos')[0]);
-
+			var formdata = new FormData();
+			jQuery.each(input_data, function(i, { key, input }){
+				formdata.append(key, input)
+			});
 			formdata.delete('upload[]');
 			jQuery.each($('#file-0')[0].files, function(i, file){
 				formdata.append('file-'+i, file);
@@ -2591,11 +2616,11 @@ else{
 					$("#alertbtnOK").hide();
 
 						setTimeout(function() {
-							$("#AlertMsg").html("");
-							$('#AlertModal').modal('hide');
-				
-							$("#txtcsalesno").val(trancode);
-							$("#frmpos").submit();
+						$("#AlertMsg").html("");
+						$('#AlertModal').modal('hide');
+						
+						$("#frmedit input[name=txtctranno]").val(trancode);
+						$("#frmedit").submit();
 				
 						}, 3000); // milliseconds = 3seconds
 

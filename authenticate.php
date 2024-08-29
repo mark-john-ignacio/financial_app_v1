@@ -38,13 +38,18 @@
                     $dateNow = date('Y-m-d h:i:s');
                     $hashedIP = getMyIP();
 
+                    $MAC = exec('getmac');
+                    $MAC = strtok($MAC, ' ');
+
+                    $hashedMAC = $MAC;
+
                     //check if user is currently logged sa ibang PC
                     if($row['session_ID']!="0"){
-                        //check if sa same PC nakalogin (or naiwan ang login)
-                        if($row['machine_last_log']==$hashedIP){ // pag same PC go with login
+                        //check if sa same PC nakalogin (or naiwan ang login) 
+                        if($row['machine_last_log']==$hashedIP){ // pag same PC go with login || $row['mac_last_log']==$hashedMAC
                             $GOYes="True";
                             $xmessage = "";
-                        }else{ // pag nde check if more than 24hrs na ung last log... pag 24hrs or more na go with log na
+                        }else{ // pag nde check if more than 2hrs na ung last log... pag 24hrs or more na go with log na
                             $date1 = date("Y-m-d H:i:s");
                             $date2 = Date("Y-m-d H:i:s", strtotime($row['date_last_log']));;
 
@@ -52,7 +57,7 @@
                             $timestamp2 = strtotime($date2);
 
                             $xhrs = abs($timestamp2 - $timestamp1)/(60*60);
-                            if($xhrs >= 24){
+                            if($xhrs >= 2){
                                 $GOYes="True";
                                 $xmessage = ""; 
                             }else{
@@ -112,8 +117,8 @@
 
         if($GOYes=="True"){
 
-            $stmtlog = $con->prepare("UPDATE users set `session_ID` = ?, `date_last_log` = ?, `machine_last_log` = ? WHERE `userid` = ?");
-            $stmtlog->bind_param("ssss", $xsessionid, $dateNow, $hashedIP, $username);
+            $stmtlog = $con->prepare("UPDATE users set `session_ID` = ?, `date_last_log` = ?, `machine_last_log` = ?, `machine_last_log` = ? WHERE `userid` = ?");
+            $stmtlog->bind_param("sssss", $xsessionid, $dateNow, $hashedIP, $hashedMAC, $username);
             $stmtlog->execute();
             $stmtlog->close();
 

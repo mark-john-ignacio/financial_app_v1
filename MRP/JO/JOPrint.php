@@ -130,15 +130,17 @@
 				<th> Setup Time</th>
 				<th> Cycle Time</th>
 				<th> Total Time</th>
+				<th> LOT No.</th>
 			</tr>
 
 			<tr>
-				<td align="center"> '.$arrmrpjo[0]['citemdesc'].' </td>
+				<td align="center"> <b>'.$arrmrpjo[0]['citemdesc'].'<br>'.$arrmrpjo[0]['citemno'].'</b></td>
 				<td align="center"> '.number_format($arrmrpjo[0]['nqty']).' </td>
 				<td align="center"> '.number_format($arrmrpjo[0]['nworkhrs'],2).' </td>
 				<td align="center"> '.number_format($arrmrpjo[0]['nsetuptime'],2).' </td>
 				<td align="center"> '.number_format($arrmrpjo[0]['ncycletime'],2).' </td>
 				<td align="center"> '.number_format($arrmrpjo[0]['ntottime'],2).' </td>
+				<td align="center"> &nbsp; </td>
 			</tr>
 		</table>
 		<hr>
@@ -313,15 +315,17 @@
 					<th> Setup Time</th>
 					<th> Cycle Time</th>
 					<th> Total Time</th>
+					<th> LOT No.</th>
 				</tr>
 
 				<tr>
-					<td align="center"> '.$rsc['citemdesc'].' </td>
+					<td align="center"> <b>'.$rsc['citemdesc'].'<br>'.$rsc['citemno'].'</b></td>
 					<td align="center"> '.number_format($rsc['nqty']).' </td>
 					<td align="center"> '.number_format($rsc['nworkhrs'],2).' </td>
 					<td align="center"> '.number_format($rsc['nsetuptime'],2).' </td>
 					<td align="center"> '.number_format($rsc['ncycletime'],2).' </td>
 					<td align="center"> '.number_format($rsc['ntottime'],2).' </td>
+					<td align="center"> &nbsp; </td>
 				</tr>
 			</table>
 			<hr>

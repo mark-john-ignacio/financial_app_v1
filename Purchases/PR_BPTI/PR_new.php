@@ -438,6 +438,14 @@
 			
 		});
 
+		$("#selwhfrom").on("change", function(){
+			$selval = $(this).val();
+			$("#MyTable > tbody > tr").each(function(index) {  
+				tx = index + 1;  			
+				$(this).find('select[name="txtnSub"]').val($selval);
+			});
+		});
+
 	});
 
 function addItemName(){
@@ -491,11 +499,17 @@ function myFunctionadd(){
 
 		var xz = $("#costcenters").val();
 		taxoptions = "";
+		$isslctd = "";
 		$.each(jQuery.parseJSON(xz), function() { 
-			taxoptions = taxoptions + "<option value='"+this['nid']+"' data-cdesc='"+this['cdesc']+"'>"+this['cdesc']+"</option>";
+			if($("#selwhfrom").val()==this['nid']){
+				$isslctd = "selected";
+			}else{
+				$isslctd = "";
+			}
+			taxoptions = taxoptions + "<option value='"+this['nid']+"' data-cdesc='"+this['cdesc']+"' "+$isslctd+">"+this['cdesc']+"</option>";
 		});
-
-		var costcntr = "<select class='form-control input-xs' name='txtnSub' id='txtnSub"+lastRow+"'>  <option value='0' data-cdesc=''>NONE</option> " + taxoptions + " </select>"; 
+		// <option value='0' data-cdesc=''>NONE</option>
+		var costcntr = "<select class='form-control input-xs' name='txtnSub' id='txtnSub"+lastRow+"'> " + taxoptions + " </select>"; 
 		
 		$('#MyTable > tbody:last-child').append( 
 			"<tr>"

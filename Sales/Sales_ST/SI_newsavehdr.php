@@ -19,7 +19,7 @@ function chkgrp($valz) {
 }
 
 ////echo "<pre>";
-////print_r($_REQUEST);
+////print_r($_POST);
 ////echo "</pre>";
 
 
@@ -50,43 +50,45 @@ else {
 	}
 }
 
-	$cCustID = $_REQUEST['txtcustid'];
-	$dDelDate = $_REQUEST['date_delivery'];
-	$cRemarks = chkgrp($_REQUEST['txtremarks']); 
+	$cCustID = $_POST['txtcustid'];
+	$dDelDate = $_POST['date_delivery'];
+	$cRemarks = chkgrp($_POST['txtremarks']); 
 	
-	//$selreinv = $_REQUEST['selreinv'];	
-	$selsitypz = $_REQUEST['selsityp']; 
-	$selpaytyp = $_REQUEST['selpaytyp']; 
-	$selsiseries = chkgrp($_REQUEST['csiprintno']);  
-	$cterms = $_REQUEST['selcterms'];
-	$CurrCode = $_REQUEST['selbasecurr']; 
-	$CurrDesc = $_REQUEST['hidcurrvaldesc'];  
-	$CurrRate= $_REQUEST['basecurrval'];
+	//$selreinv = $_POST['selreinv'];	
+	$selsitypz = $_POST['selsityp']; 
+	$selpaytyp = $_POST['selpaytyp']; 
+	$selsiseries = chkgrp($_POST['csiprintno']);  
+	$cterms = $_POST['selcterms'];
+	$CurrCode = $_POST['selbasecurr']; 
+	$CurrDesc = $_POST['hidcurrvaldesc'];  
+	$CurrRate= $_POST['basecurrval'];
 
-	$nnetvat = $_REQUEST['txtnNetVAT']; //VATABLE SALES   nnet
-	$nexempt = $_REQUEST['txtnExemptVAT']; //VAT EXEMPT SALES   nexempt
-	$nzeror = $_REQUEST['txtnZeroVAT']; // ZERO RATED SALES  nzerorated
-	$nvat = $_REQUEST['txtnVAT']; //VAT   nvat
-	$nGrossBefore = $_REQUEST['txtnGrossBef']; //TOTAL GROSS  BEFORE DISCOUNT ngrossbefore
+	$nnetvat = $_POST['txtnNetVAT']; //VATABLE SALES   nnet
+	$nexempt = $_POST['txtnExemptVAT']; //VAT EXEMPT SALES   nexempt
+	$nzeror = $_POST['txtnZeroVAT']; // ZERO RATED SALES  nzerorated
+	$nvat = $_POST['txtnVAT']; //VAT   nvat
+	$nGrossBefore = $_POST['txtnGrossBef']; //TOTAL GROSS  BEFORE DISCOUNT ngrossbefore
 
-	if(isset($_REQUEST['txtnEWT'])){
-		$nLessEWT = $_REQUEST['txtnEWT']; //EWT
+	if(isset($_POST['txtnEWT'])){
+		$nLessEWT = $_POST['txtnEWT']; //EWT
 	}else{
 		$nLessEWT = ""; //EWT
 	}
 	
-	$nGrossDisc = str_replace(",","",$_REQUEST['txtnGrossDisc']);  //GROSS DISCOUNT  ngrossdisc
-	$nGross = $_REQUEST['txtnGross']; //TOTAL AMOUNT ngross
-	$BaseGross= $_REQUEST['txtnBaseGross']; //TOTAL AMOUNT * currency rate    nbasegross
+	$nGrossDisc = str_replace(",","",$_POST['txtnGrossDisc']);  //GROSS DISCOUNT  ngrossdisc
+	$nGross = $_POST['txtnGross']; //TOTAL AMOUNT ngross
+	$BaseGross= $_POST['txtnBaseGross']; //TOTAL AMOUNT * currency rate    nbasegross
 
-	if(isset($_REQUEST['selewt'])){
-		$cewtcode = implode(",",$_REQUEST['selewt']);
-	}else{
-		$cewtcode = "";
+	$cewtcode = "";
+	if(isset($_POST['selewt'])){
+		if($_POST['selewt']!=""){
+			//$cewtcode = implode(",",$_POST['selewt']);
+			$cewtcode = $_POST['selewt'];
+		}
 	}
 	
-	$RefMods= $_REQUEST['txtrefmod']; 
-	$RefModsNo= $_REQUEST['txtrefmodnos']; 
+	$RefMods= $_POST['txtrefmod']; 
+	$RefModsNo= $_POST['txtrefmodnos']; 
 	
 	$preparedby = $_SESSION['employeeid'];
 	$cacctcode = "NULL";

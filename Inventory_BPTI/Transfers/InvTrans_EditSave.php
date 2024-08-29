@@ -4,11 +4,11 @@
 	}
 	require_once "../../Connection/connection_string.php";
 
-	$MainTranNo = filter_input(INPUT_POST, 'id', FILTER_SANITIZE_STRING);
+	$MainTranNo = filter_input(INPUT_POST, 'id', FILTER_SANITIZE_FULL_SPECIAL_CHARS);
 
 	if(isset($_SESSION['myxtoken']) && !empty($_SESSION['myxtoken']) && $MainTranNo!==""){
 
-		$token = filter_input(INPUT_POST, 'hdnmyxfin', FILTER_SANITIZE_STRING);
+		$token = filter_input(INPUT_POST, 'hdnmyxfin', FILTER_SANITIZE_FULL_SPECIAL_CHARS);
 
 		if (!$token || $token !== $_SESSION['myxtoken']) {	
 			// show an error message
@@ -48,12 +48,12 @@
 	$dyear = date("y");
 
 	$company = $_SESSION['companyid'];
-	$rwcnt = filter_input(INPUT_POST, 'rowcnt', FILTER_SANITIZE_STRING);
+	$rwcnt = filter_input(INPUT_POST, 'rowcnt', FILTER_SANITIZE_FULL_SPECIAL_CHARS);
 	//$selwhfrom = filter_input(INPUT_POST, 'selwhfrom', FILTER_SANITIZE_STRING);
-	$selwhto = filter_input(INPUT_POST, 'selwhto', FILTER_SANITIZE_STRING);
-	$seltype = filter_input(INPUT_POST, 'selcntyp', FILTER_SANITIZE_STRING);
-	$hdremarks = filter_input(INPUT_POST, 'txtccrems', FILTER_SANITIZE_STRING);
-	$hddatecnt = filter_input(INPUT_POST, 'txtdtrandate', FILTER_SANITIZE_STRING);
+	$selwhto = filter_input(INPUT_POST, 'selwhto', FILTER_SANITIZE_FULL_SPECIAL_CHARS);
+	$seltype = filter_input(INPUT_POST, 'selcntyp', FILTER_SANITIZE_FULL_SPECIAL_CHARS);
+	$hdremarks = filter_input(INPUT_POST, 'txtccrems', FILTER_SANITIZE_FULL_SPECIAL_CHARS);
+	$hddatecnt = filter_input(INPUT_POST, 'txtdtrandate', FILTER_SANITIZE_FULL_SPECIAL_CHARS);
 
 	$preparedby = $_SESSION['employeeid'];
 
@@ -71,10 +71,10 @@
 
 		$cntr++;
 
-		$citemno = filter_input(INPUT_POST, 'txtitmcode'.$i, FILTER_SANITIZE_STRING);
-		$citemunit = filter_input(INPUT_POST, 'txtcunit'.$i, FILTER_SANITIZE_STRING);
-		$citemqty = filter_input(INPUT_POST, 'txtnqty'.$i, FILTER_SANITIZE_STRING);
-		$citmremarks = filter_input(INPUT_POST, 'txtcrems'.$i, FILTER_SANITIZE_STRING);
+		$citemno = filter_input(INPUT_POST, 'txtitmcode'.$i, FILTER_SANITIZE_FULL_SPECIAL_CHARS);
+		$citemunit = filter_input(INPUT_POST, 'txtcunit'.$i, FILTER_SANITIZE_FULL_SPECIAL_CHARS);
+		$citemqty = filter_input(INPUT_POST, 'txtnqty'.$i, FILTER_SANITIZE_FULL_SPECIAL_CHARS);
+		$citmremarks = filter_input(INPUT_POST, 'txtcrems'.$i, FILTER_SANITIZE_FULL_SPECIAL_CHARS);
 
 		$citemqty = str_replace(",","",$citemqty);
 

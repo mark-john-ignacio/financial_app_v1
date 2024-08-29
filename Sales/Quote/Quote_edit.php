@@ -740,7 +740,7 @@ else{
 		<div class="modal-dialog modal-lg">
 			<div class="modal-content">
 			
-				<form name="frmsendemail" id="frmsendemail" action="SendToEmail.php">
+				<form name="frmsendemail" id="frmsendemail" action="SendToEmail.php" method="POST">
 					<input type="hidden" id="cemailtranno" name="cemailtranno" value="<?=$txtctranno?>">
 					<input type="hidden" id="cemailtrantyp" name="cemailtrantyp" value="<?=$cQOType?>">
 

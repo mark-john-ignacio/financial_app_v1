@@ -64,29 +64,29 @@
 	}
 	
 
-	$sethdr = '<table border="0" cellpadding="5px" width="100%" id="tblMain" style="border-collapse:collapse">
+	$sethdr = '<table border="0" width="100%" id="tblMain" style="border-collapse:collapse">
 		<tr>
 			<td height="50px" width="100px"> <img src="../'.$logosrc.'" width="100px"/> </td>
 			<td style="text-align: center" height="50px"> <font style="font-size: 18px;">PURCHASE REQUISITION SLIP</font> </td>
 			<td height="50px" width="100px" style="text-align: right"> {PAGENO} / {nbpg} </td>
 		</tr>
 		<tr>
-			<td style="vertical-align: top; padding-top: 10px; padding-right: 5px;" colspan="3">
+			<td style="vertical-align: top;" colspan="3">
 
 				<table border="0" width="100%" style="border-collapse:collapse">
 					<tr>
-						<td style="padding-bottom: 10px; padding-top: 10px">
+						<td>
 							<font style="font-size: 14px;"><b>Department:</b> '.$SecDesc.'</font>
 						</td>
-						<td align="right" style="padding-bottom: 10px; padding-top: 10px">
+						<td align="right">
 							<font style="font-size: 14px;"><b>Date prepared:</b> '.date("F d, Y").'</font>
 						</td>						
 					</tr>
 					<tr>
-						<td style="padding-bottom: 10px">
+						<td>
 							<font style="font-size: 14px;"><b>Date needed:</b> '.date_format(date_create($DateNeeded),"F d, Y").'</font>
 						</td>
-						<td align="right" style="padding-bottom: 10px">
+						<td align="right">
 							<font style="font-size: 14px;"><b> PR No.:</b> '.$csalesno.'</font>
 						</td>
 
@@ -146,12 +146,18 @@
 		foreach($PRDet as $rowdtls){
 			$cnt++;
 
+			if(floor( $rowdtls['nqty'] ) != $rowdtls['nqty']){
+				$xsqty = number_format($rowdtls['nqty'],2);
+			}else{
+				$xsqty = number_format($rowdtls['nqty']);
+			}
+
 			$html = $html.'<tr>
 				<td align="center" class="tdpadx tddetz">'.$cnt.'</td>
 				<td align="center" class="tdpadx tddetz">'.$rowdtls['cpartdesc'].'</td>
 				<td align="center" class="tdpadx tddetz">'.$rowdtls['citemdesc'].'</td>
 				<td align="center" class="tdpadx tddetz">'.$rowdtls['citemno'].'</td>
-				<td align="center" class="tdpadx tddetz">'.intval($rowdtls['nqty']).'</td>
+				<td align="center" class="tdpadx tddetz">'.$xsqty.'</td>
 				<td align="center" class="tdpadx tddetz">'.$rowdtls['cunit'].'</td>					
 				<td align="center" class="tdpadx tddetz">'.$rowdtls['cremarks']. (($rowdtls['cremarks']!="" && $rowdtls['locdesc']!="") ? "<br>" : ""). (($rowdtls['locdesc']!="") ? $rowdtls['locdesc'] : "").'</td>			
 			</tr>';
@@ -164,7 +170,7 @@
 	$mpdf = new \Mpdf\Mpdf([
 		'mode' => '',
 		'format' => [215.9, 139.7],
-		'default_font_size' => 10,
+		'default_font_size' => 9,
 		'default_font' => 'Arial, sans-serif',
 		'margin_left' => 10,
 		'margin_right' => 10,
