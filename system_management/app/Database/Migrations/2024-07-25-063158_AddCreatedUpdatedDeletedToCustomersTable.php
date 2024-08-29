@@ -8,6 +8,9 @@ class AddCreatedUpdatedDeletedToCustomersTable extends Migration
 {
     public function up()
     {
+        if ($this->db->fieldExists('created_at', 'customers')) {
+            return;
+        }
         $this->forge->addColumn('customers',
         [
             'created_at' => [

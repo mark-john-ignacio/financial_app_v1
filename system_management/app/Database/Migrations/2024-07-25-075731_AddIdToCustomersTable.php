@@ -8,6 +8,9 @@ class AddIdToCustomersTable extends Migration
 {
     public function up()
     {
+        if ($this->db->fieldExists('id', 'customers')) {
+            return;
+        }
         $this->db->query('ALTER TABLE customers DROP PRIMARY KEY');
 
         $this->db->query('ALTER TABLE customers ADD id INT(11) UNSIGNED NOT NULL AUTO_INCREMENT PRIMARY KEY FIRST');

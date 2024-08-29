@@ -8,6 +8,9 @@ class AddCreatedUpdatedDeletedToItemsTable extends Migration
 {
     public function up()
     {
+        if ($this->db->fieldExists('created_at', 'items')) {
+            return;
+        }
         $this->forge->addColumn('items',
         [
             'created_at' => [

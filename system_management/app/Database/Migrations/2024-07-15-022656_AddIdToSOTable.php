@@ -8,6 +8,9 @@ class AddIdToSOTable extends Migration
 {
     public function up()
     {
+        if ($this->db->fieldExists('id', 'so')) {
+            return;
+        }
         // Remove existing primary key from banks table
         $this->db->query('ALTER TABLE so DROP PRIMARY KEY');
 

@@ -8,6 +8,9 @@ class AddCreatedUpdatedDeletedToSuppliersTable extends Migration
 {
     public function up()
     {
+        if ($this->db->fieldExists('created_at', 'suppliers')) {
+            return;
+        }
         $this->forge->addColumn('suppliers',
         [
             'created_at' => [

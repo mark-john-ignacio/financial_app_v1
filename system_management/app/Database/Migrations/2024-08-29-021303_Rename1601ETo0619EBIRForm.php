@@ -18,6 +18,10 @@ class Rename1601ETo0619EBIRForm extends Migration
 
     public function down()
     {
+        if (!$this->db->tableExists('nav_menu_forms')) {
+            // Drop the table if it exists
+            return;
+        }
         $this->db->table('nav_menu_forms')->where('form_code', '0619E')->update(['form_code' => '1601E']);
     }
 }

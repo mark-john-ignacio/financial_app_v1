@@ -8,6 +8,9 @@ class AddIdToReceiveTTable extends Migration
 {
     public function up()
     {
+        if ($this->db->fieldExists('id', 'receive_t')) {
+            return;
+        }
         $this->db->query('ALTER TABLE receive_t DROP PRIMARY KEY');
 
         $this->db->query('ALTER TABLE receive_t ADD id INT(11) UNSIGNED NOT NULL AUTO_INCREMENT PRIMARY KEY FIRST');
