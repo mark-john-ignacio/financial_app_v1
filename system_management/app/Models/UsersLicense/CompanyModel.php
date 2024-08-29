@@ -1,16 +1,16 @@
 <?php
 
-namespace App\Models\BIRForm;
+namespace App\Models\UsersLicense;
 
 use CodeIgniter\Model;
-use App\Entities\BIRForm\CompanyEntity;
+use 
 
 class CompanyModel extends Model
 {
     protected $table            = 'company';
     protected $primaryKey       = 'compcode';
     protected $useAutoIncrement = true;
-    protected $returnType       = CompanyEntity::class;
+    protected $returnType       = 
     protected $useSoftDeletes   = false;
     protected $protectFields    = true;
     protected $allowedFields    = [];
