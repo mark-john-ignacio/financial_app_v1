@@ -58,12 +58,12 @@ if (isset($_POST['fromDate']) && isset($_POST['toDate'])) {
     $data = [];
     
     //A. Sales for the Quarter (Exclusive of VAT)
-    $totalVATableSalesA = 0.00;
-    $totalZeroRatedSales = 0.00;  
-    $totalExemptSales = 0.00;
+    // $totalVATableSalesA = 0.00;
+    // $totalZeroRatedSales = 0.00;  
+    // $totalExemptSales = 0.00;
 
-    //B. Output Tax for the Quarter
-    $totalVATableSalesB = 0.00;
+    // //B. Output Tax for the Quarter
+    // $totalVATableSalesB = 0.00;
 
     while ($row = $result->fetch_assoc()) {
         $data[] = $row;
@@ -83,12 +83,12 @@ if (isset($_POST['fromDate']) && isset($_POST['toDate'])) {
         'data' => $data,
         
          //A. Sales for the Quarter (Exclusive of VAT)
-        'totalVATableSalesA' => $totalVATableSalesA,
-        'totalZeroRatedSales' => $totalZeroRatedSales,
-        'totalExemptSales' => $totalExemptSales,
+        // 'totalVATableSalesA' => $totalVATableSalesA,
+        // 'totalZeroRatedSales' => $totalZeroRatedSales,
+        // 'totalExemptSales' => $totalExemptSales,
 
-         //B. Output Tax for the Quarter
-        'totalVATableSalesB' => $totalVATableSalesB,
+        //  //B. Output Tax for the Quarter
+        // 'totalVATableSalesB' => $totalVATableSalesB,
     ]);
 } else {
     // Return error message in JSON format

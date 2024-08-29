@@ -153,7 +153,7 @@ class BIRPDF2550Q extends BaseController
 
         $this->writeFormattedAmount($pdf, 168.8, 162.5, 184, 162.5, $data->tax_still_payable, 25);
 
-        $this->writeFormattedAmount($pdf, 168, 168.5, 184, 168.5, $data->surcharge, 25);
+        $this->writeFormattedAmount($pdf, 168.8, 168.5, 184, 168.5, $data->surcharge, 25);
 
         $this->writeFormattedAmount($pdf, 168.8, 175.5, 184, 175.5, $data->interest, 25);
 

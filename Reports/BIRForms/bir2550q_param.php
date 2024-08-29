@@ -146,7 +146,7 @@
                         $("#frmpos").serializeArray().forEach(function(item) {
                             formData[item.name] = item.value;
                         });
-                        // console.log(JSON.stringify(formData));
+                        console.log(JSON.stringify(formData));
 
                         // Send the JSON data to the specified URL using AJAX
                         $.ajax({
@@ -209,8 +209,8 @@
                                     <div style="display: flex; align-items: center; margin-top: 10px;"> 
                                         <b>2.</b> Year Ended (MM/YYYY)
                                         <div style="margin-left: 10px;">
-                                            <input type="text" class="form-control input-sm" name="txt2550q_year_end_M" id="txt2550q_year_end_M" value="" placeholder="MM" style="text-align: center; Width: 60px">
-                                            <input type="text" class="form-control input-sm" name="txt2550q_year_end_Y" id="txt2550q_year_end_Y" value="" placeholder="YYYY" style="text-align: center; Width: 100px">
+                                            <input type="text" class="form-control input-sm" name="txt2550q_year_end_M" id="txt2550q_year_end_M" value="05" placeholder="MM" style="text-align: center; Width: 60px">
+                                            <input type="text" class="form-control input-sm" name="txt2550q_year_end_Y" id="txt2550q_year_end_Y" value="2021" placeholder="YYYY" style="text-align: center; Width: 100px">
                                             <!-- <input type="month"  class="form-control input-sm" id="" name="" style="text-align: center; Width: 150px"> -->
                                         </div>
                                     </div>
@@ -1104,20 +1104,37 @@ document.addEventListener('DOMContentLoaded', function() {
             }
         } else if (periodType === 'F' && quarter) {
             
-            document.getElementById("txt2550q_year_end_M").classList.add("monthpicker")
-            document.getElementById("txt2550q_year_end_Y").classList.add("yearpicker")
+            // document.getElementById("txt2550q_year_end_M").classList.add("monthpicker")
+            // document.getElementById("txt2550q_year_end_Y").classList.add("yearpicker")
             
-            var fiscalMonth = $('#txt2550q_year_end_M').data("DateTimePicker") ? $('#txt2550q_year_end_M').data("DateTimePicker").date() : null;
-            var fiscalYear = $('#txt2550q_year_end_Y').data("DateTimePicker") ? $('#txt2550q_year_end_Y').data("DateTimePicker").date() : null;
+            // var fiscalMonth = $('#txt2550q_year_end_M').data("DateTimePicker") ? $('#txt2550q_year_end_M').data("DateTimePicker").date() : null;
+            // var fiscalYear = $('#txt2550q_year_end_Y').data("DateTimePicker") ? $('#txt2550q_year_end_Y').data("DateTimePicker").date() : null;
 
             // Convert moment objects to regular date parts
-            fiscalMonth = fiscalMonth ? fiscalMonth.format('MM') : '';
-            fiscalYear = fiscalYear ? fiscalYear.format('YYYY') : '';
+            // fiscalMonth = fiscalMonth ? fiscalMonth.format('MM') : '';
+            // fiscalYear = fiscalYear ? fiscalYear.format('YYYY') : '';
+            
+            var fiscalMonth = document.getElementById('txt2550q_year_end_M').value;
+            var fiscalYear = document.getElementById('txt2550q_year_end_Y').value; //2021
+
+            var fiscalYearInt = parseInt(fiscalYear);
+            var fiscalMonthInt = parseInt(fiscalMonth);
+
+            var currentYr = now.getFullYear();
+            var yearEnd = (currentYr - fiscalYearInt) + fiscalYearInt;
+
+            console.log(currentYr);
+            console.log(fiscalYearInt);  
+            console.log(yearEnd);  
             
 
             if (fiscalMonth && fiscalYear) {
-                var fiscalYearInt = parseInt(fiscalYear);
-                var fiscalMonthInt = parseInt(fiscalMonth);
+
+                fiscalYearInt = yearEnd;
+                
+                console.log(fiscalYearInt);
+                // var fiscalYearInt = document.getElementById('txt2550q_year_end_M').value;
+                // var fiscalMonthInt = document.getElementById('txt2550q_year_end_Y').value;
 
                 switch (quarter) {
                     case '1':
@@ -1186,31 +1203,23 @@ document.addEventListener('DOMContentLoaded', function() {
                         console.log("Message:", data.message);
                         console.log("Data:", data.data);
 
-                        //A. Sales for the Quarter (Exclusive of VAT)
-                        console.log("total VATable Sales A:", data.totalVATableSalesA);
-                        console.log("Zero Rated Sales:", data.totalZeroRatedSales);
-                        console.log("Exempt Sales:", data.totalExemptSales);
+                        // //A. Sales for the Quarter (Exclusive of VAT)
+                        // console.log("total VATable Sales A:", data.totalVATableSalesA);
+                        // console.log("Zero Rated Sales:", data.totalZeroRatedSales);
+                        // console.log("Exempt Sales:", data.totalExemptSales);
 
-                         //B. Output Tax for the Quarter
-                        console.log("total VATable Sales B:", data.totalVATableSalesB);
-                        // console.log("Data:", parseFloat(data.data[0].nvat).toFixed(2));
-                        // console.log("Total Nvat:", parseFloat(data.totalNvat).toFixed(2));
-                        // $('#creditable_vat_withhelding').val(parseFloat(data.totalNvat).toFixed(2));
+                        //  //B. Output Tax for the Quarter
+                        // console.log("total VATable Sales B:", data.totalVATableSalesB);
 
-                         // Format and set the value of the input field
-                        // var totalNvat = parseFloat(data.totalNvat);
-                        // var formattedTotalNvat = formatCurrency(totalNvat);
-                        // console.log(formattedTotalNvat);
-                        // $('#creditable_vat_withhelding').val(formattedTotalNvat);
-                        // $('#creditable_vat_withhelding').val(formatCurrency(data.totalNvat));
+                        
 
                         //A. Sales for the Quarter (Exclusive of VAT)
-                        $('#vatable_sales_A').val(formatCurrency(data.totalVATableSalesA));
-                        $('#zero_rated_sales').val(formatCurrency(data.totalZeroRatedSales));
-                        $('#exempt_sales').val(formatCurrency(data.totalExemptSales));
+                        $('#vatable_sales_A').val(formatCurrency(data.totalVATableSales || 0));
+                        $('#zero_rated_sales').val(formatCurrency(data.totalZeroRatedSales || 0));
+                        $('#exempt_sales').val(formatCurrency(data.totalExemptSales || 0));
 
-                        //B. Output Tax for the Quarter
-                        $('#vatable_sales_B').val(formatCurrency(data.totalVATableSalesB));
+                        // B. Output Tax for the Quarter
+                        $('#vatable_sales_B').val(formatCurrency(data.totalVATableSalesB || 0));
 
                         calculateAll();
                         if (data.error) {
