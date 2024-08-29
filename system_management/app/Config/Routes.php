@@ -62,12 +62,9 @@ $routes->group('', ['filter' => 'pin_verified'], function ($routes) {
     //TODO: Remove this route
     $routes->group('testing', function ($routes) {
         $con_path = 'Testing\\AddId';
-        $routes->get('add-id-to-so-table', $con_path . '::AddIdToSOTable');
-        $routes->get('remove-id-from-so-table', $con_path . '::RemoveIdFromSOTable');
-        $routes->get('add-id-to-so-t-table', $con_path . '::AddIdToSOTTableMigration');
-        $routes->get('remove-id-from-so-t-table', $con_path . '::RemoveIdFromSOTTableMigration');
         $routes->get('run-migration', $con_path . '::runMigration');
         $routes->get('rollback-migration', $con_path . '::rollbackMigration');
+        $routes->get('seed-migration', 'Testing\\SeederController::seedMigration');
     });
 
     $routes->group('customers', function ($routes) {
@@ -120,17 +117,11 @@ $routes->group('', ['filter' => 'pin_verified'], function ($routes) {
 });
 
 
-$routes->group('api', ['namespace' => 'App\Controllers\API\BIRForms'], function($routes) {
-    $routes->get('birforms/getCompanyInfo', 'BirFormsApi::getCompanyInfo');
-    $routes->get('birforms/getApvData', 'BirFormsApi::getApvData');
-    $routes->get('birforms/getDefaultAccounts', 'BirFormsApi::getDefaultAccounts');
-});
 
 $routes->post('api/pdf/0619e', 'API\\BIRPDF\\BIRPDF0619E::generatePdf');
 $routes->get('api/pdf/0619e', 'API\\BIRPDF\\BIRPDF0619E::generatePdf');
 
 $routes->post('api/pdf2550q', 'API\\BIRPDF\\BIRPDF2550Q::generatePdf');
-// $routes->post('api/pdfs', 'API\\BIRPDF\\BIRPDF2550Q::generatePdf');
 
 $routes->post('api/pdf/2550m', 'API\\BIRPDF\\BIRPDF2550M::generatePdf');
 $routes->post('api/bir-forms/2550m/get-sales-month', 'API\\BIRForms\\BIRForm2550M::getSalesPerMonth');

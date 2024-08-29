@@ -7,120 +7,7 @@ use App\Controllers\BaseController;
 class AddId extends BaseController
 {
 
-    public function AddIdToSOTable()
-    {
-        $db = \Config\Database::connect();
-
-        try {
-            $db->transStart();
-
-            // Drop primary key
-            $db->query('ALTER TABLE so DROP PRIMARY KEY');
-
-            // Add id field to so table and set it as the primary key
-            $db->query('ALTER TABLE so ADD id INT(11) UNSIGNED NOT NULL AUTO_INCREMENT PRIMARY KEY FIRST');
-
-            $db->transComplete();
-
-            if ($db->transStatus() === FALSE) {
-                // Transaction failed, handle error
-                return $this->response->setStatusCode(500)->setBody('Failed to alter table schema.');
-            }
-
-            // Success response
-            return $this->response->setStatusCode(200)->setBody('Table schema altered successfully.');
-        } catch (\Throwable $e) {
-            // Handle exception
-            return $this->response->setStatusCode(500)->setBody('An error occurred: ' . $e->getMessage());
-        }
-    }
-
-    public function RemoveIdFromSOTable()
-    {
-        $db = \Config\Database::connect();
-
-        try {
-            $db->transStart();
-
-            // Drop id field
-            $db->query('ALTER TABLE so DROP COLUMN id');
-
-            // Restore primary key
-            $db->query('ALTER TABLE so ADD PRIMARY KEY(compcode, ctranno)');
-
-            $db->transComplete();
-
-            if ($db->transStatus() === FALSE) {
-                // Transaction failed, handle error
-                return $this->response->setStatusCode(500)->setBody('Failed to alter table schema.');
-            }
-
-            // Success response
-            return $this->response->setStatusCode(200)->setBody('Table schema altered successfully.');
-        } catch (\Throwable $e) {
-            // Handle exception
-            return $this->response->setStatusCode(500)->setBody('An error occurred: ' . $e->getMessage());
-        }
-    }
-
-    public function AddIdToSOTTableMigration()
-    {
-        $db = \Config\Database::connect();
-
-        try {
-            $db->transStart();
-
-            // Drop primary key
-            $db->query('ALTER TABLE so_t DROP PRIMARY KEY');
-
-            // Add id field to so table and set it as the primary key
-            $db->query('ALTER TABLE so_t ADD id INT(11) UNSIGNED NOT NULL AUTO_INCREMENT PRIMARY KEY FIRST');
-
-            $db->transComplete();
-
-            if ($db->transStatus() === FALSE) {
-                // Transaction failed, handle error
-                return $this->response->setStatusCode(500)->setBody('Failed to alter so_t table schema.');
-            }
-
-            // Success response
-            return $this->response->setStatusCode(200)->setBody('so_t Table schema altered successfully.');
-        } catch (\Throwable $e) {
-            // Handle exception
-            return $this->response->setStatusCode(500)->setBody('An error occurred: ' . $e->getMessage());
-        }
-
-    }
-
-    public function RemoveIdFromSOTTableMigration()
-    {
-        $db = \Config\Database::connect();
-
-        try {
-            $db->transStart();
-
-            // Drop id field
-            $db->query('ALTER TABLE so_t DROP COLUMN id');
-
-            // Restore primary key
-            $db->query('ALTER TABLE so_t ADD PRIMARY KEY(compcode, cidentity)');
-
-            $db->transComplete();
-
-            if ($db->transStatus() === FALSE) {
-                // Transaction failed, handle error
-                return $this->response->setStatusCode(500)->setBody('Failed to alter so_t table schema.');
-            }
-
-            // Success response
-            return $this->response->setStatusCode(200)->setBody('so_t Table schema altered successfully.');
-        } catch (\Throwable $e) {
-            // Handle exception
-            return $this->response->setStatusCode(500)->setBody('An error occurred: ' . $e->getMessage());
-        }
-    }
-
-    public function runMigration() {
+    public function runAllMigration() {
         $migrations = service('migrations');
         try {
             // Run all available migrations
@@ -128,33 +15,23 @@ class AddId extends BaseController
     
             return $this->response->setStatusCode(200)->setBody('Migration ran successfully.');
         } catch (\Exception $e) {
-            // Log the error for debugging purposes
-            log_message('error', 'Migration failed: ' . $e->getMessage());
-            log_message('error', 'Stack trace: ' . $e->getTraceAsString());
-    
-            // Provide a detailed error message in the response
-            $errorMessage = 'Failed to run migration: ' . $e->getMessage();
-            $errorDetails = 'File: ' . $e->getFile() . ' Line: ' . $e->getLine();
-            $errorStackTrace = 'Stack trace: ' . $e->getTraceAsString();
-    
-            // JavaScript code to log the error to the browser's console
-            $consoleLogScript = "<script>console.error('Migration Error: " . addslashes($errorMessage) . "\\n" . addslashes($errorDetails) . "\\n" . addslashes($errorStackTrace) . "');</script>";
-    
-            return $this->response->setStatusCode(500)->setBody($errorMessage . "\n" . $errorDetails . "\n" . $errorStackTrace . $consoleLogScript);
+            $errorMessage = 'Failed to run migration.';
+            return $this->response->setStatusCode(500)->setBody($errorMessage);
         }
     }
 
-    public function rollbackMigration() {
+    public function rollbackAllMigration() {
         $migrations = service('migrations');
-
+    
         try {
             // Rollback the last batch of migrations
             $migrations->setNamespace(null)->regress(0, 'default');
-
+    
             return $this->response->setStatusCode(200)->setBody('Migration rolled back successfully.');
         } catch (\Exception $e) {
-            // Handle exceptions, such as when no migrations are found to rollback
-            return $this->response->setStatusCode(500)->setBody('Failed to roll back migration: ' . $e->getMessage());
+    
+            // Provide a minimal error message in the response
+            return $this->response->setStatusCode(500)->setBody('Failed to roll back migration.');
         }
     }
     
