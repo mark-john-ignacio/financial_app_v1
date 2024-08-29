@@ -8,6 +8,9 @@ class CreateBIRYearTable extends Migration
 {
     public function up()
     {
+        if ($this->db->tableExists('bir_year')) {
+            return;
+        }
         $this->forge->addField([
             'id' => [
                 'type' => 'INT',
@@ -28,6 +31,9 @@ class CreateBIRYearTable extends Migration
 
     public function down()
     {
+        if (!$this->db->tableExists('bir_year')) {
+            return;
+        }
         $this->forge->dropTable('bir_year');
     }
 }
