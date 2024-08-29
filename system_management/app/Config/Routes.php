@@ -134,3 +134,5 @@ $routes->post('api/pdf2550q', 'API\\BIRPDF\\BIRPDF2550Q::generatePdf');
 
 $routes->post('api/pdf/2550m', 'API\\BIRPDF\\BIRPDF2550M::generatePdf');
 $routes->post('api/bir-forms/2550m/get-sales-month', 'API\\BIRForms\\BIRForm2550M::getSalesPerMonth');
+
+// TODO: Create api route sender with api-key and also put the api routes inside a filter
