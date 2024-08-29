@@ -15,16 +15,11 @@ class AddIdToSalesTable extends Migration
 
     public function down()
     {
-        $columnExists = $this->db->query("SELECT COUNT(*) AS count 
-                                          FROM information_schema.columns 
-                                          WHERE table_name = 'sales' 
-                                          AND column_name = 'id'")
-                                 ->getRow()
-                                 ->count;
+        $forge = \Config\Database::forge();
 
-        if ($columnExists > 0) {
+        if ($this->db->fieldExists('id', 'sales')) {
             // Drop the 'id' column if it exists
-            $this->db->query('ALTER TABLE sales DROP COLUMN id');
+            $forge->dropColumn('sales', 'id');
         }
         $this->db->query('ALTER TABLE sales ADD PRIMARY KEY(compcode, ctranno)');
     }

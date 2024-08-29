@@ -15,7 +15,12 @@ class AddIdToReceiveTTable extends Migration
 
     public function down()
     {
-        $this->db->query('ALTER TABLE receive_t DROP COLUMN id');
+        $forge = \Config\Database::forge();
+
+        if ($this->db->fieldExists('id', 'receive_t')) {
+            // Drop the 'id' column if it exists
+            $forge->dropColumn('receive_t', 'id');
+        }
 
         $this->db->query('ALTER TABLE receive_t ADD PRIMARY KEY(compcode, cidentity)');
     }

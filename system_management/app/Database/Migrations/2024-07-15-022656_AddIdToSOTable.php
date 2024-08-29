@@ -18,16 +18,9 @@ class AddIdToSOTable extends Migration
 
     public function down()
     {
-        $columnExists = $this->db->query("SELECT COUNT(*) AS count 
-                                          FROM information_schema.columns 
-                                          WHERE table_name = 'so' 
-                                          AND column_name = 'id'")
-                                 ->getRow()
-                                 ->count;
-
-        if ($columnExists > 0) {
+        if ($this->db->fieldExists('id', 'so')) {
             // Drop the 'id' column if it exists
-            $this->db->query('ALTER TABLE so DROP COLUMN id');
+            $this->forge->dropColumn('so', 'id');
         }
 
         // Restore primary key of banks table
