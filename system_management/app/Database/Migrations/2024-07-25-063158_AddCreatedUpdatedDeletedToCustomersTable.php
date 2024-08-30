@@ -8,6 +8,9 @@ class AddCreatedUpdatedDeletedToCustomersTable extends Migration
 {
     public function up()
     {
+        if ($this->db->fieldExists('created_at', 'customers')) {
+            return;
+        }
         $this->forge->addColumn('customers',
         [
             'created_at' => [
@@ -54,12 +57,22 @@ class AddCreatedUpdatedDeletedToCustomersTable extends Migration
 
     public function down()
     {
-        $this->forge->dropColumn('customers', 'created_at');
-        $this->forge->dropColumn('customers', 'created_by');
-        $this->forge->dropColumn('customers', 'updated_at');
-        $this->forge->dropColumn('customers', 'updated_by');
-        $this->forge->dropColumn('customers', 'deleted_at');
-        $this->forge->dropColumn('customers', 'deleted_by');
-        $this->forge->dropColumn('customers', 'deleted');
+        $forge = \Config\Database::forge();
+
+        $columns = [
+            'created_at',
+            'created_by',
+            'updated_at',
+            'updated_by',
+            'deleted_at',
+            'deleted_by',
+            'deleted'
+        ];
+    
+        foreach ($columns as $column) {
+            if ($this->db->fieldExists($column, 'customers')) {
+                $forge->dropColumn('customers', $column);
+            }
+        }
     }
 }

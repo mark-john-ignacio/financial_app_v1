@@ -8,6 +8,9 @@ class AddCompanyColumnToBirYearFormRegistrationTable extends Migration
 {
     public function up()
     {
+        if ($this->db->fieldExists('compcode', 'bir_year_form_registration')) {
+            return;
+        }
         $this->forge->addColumn('bir_year_form_registration', [
             'compcode' => [
                 'type' => 'varchar',
@@ -22,6 +25,9 @@ class AddCompanyColumnToBirYearFormRegistrationTable extends Migration
 
     public function down()
     {
+        if (!$this->db->fieldExists('compcode', 'bir_year_form_registration')) {
+            return;
+        }
         $this->forge->dropColumn('bir_year_form_registration', 'compcode');
     }
 }
