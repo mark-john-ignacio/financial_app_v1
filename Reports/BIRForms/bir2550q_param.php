@@ -81,8 +81,6 @@
     while($row = $query -> fetch_assoc()){
         $apv[] = $row;
     }
-    $UrlBase = str_replace("Components/assets/","",$AttachUrlBase);
-
 ?>
 
 
@@ -147,7 +145,7 @@
                         $("#frmpos").serializeArray().forEach(function(item) {
                             formData[item.name] = item.value;
                         });
-                         console.log(JSON.stringify(formData));
+                        console.log(JSON.stringify(formData));
 
                         // Send the JSON data to the specified URL using AJAX
                         $.ajax({
@@ -210,8 +208,8 @@
                                     <div style="display: flex; align-items: center; margin-top: 10px;"> 
                                         <b>2.</b> Year Ended (MM/YYYY)
                                         <div style="margin-left: 10px;">
-                                            <input type="text" class="form-control input-sm" name="txt2550q_year_end_M" id="txt2550q_year_end_M" value="05" placeholder="MM" style="text-align: center; Width: 60px">
-                                            <input type="text" class="form-control input-sm" name="txt2550q_year_end_Y" id="txt2550q_year_end_Y" value="2021" placeholder="YYYY" style="text-align: center; Width: 100px">
+                                            <input type="text" class="form-control input-sm" name="txt2550q_year_end_M" id="txt2550q_year_end_M" value="" placeholder="MM" style="text-align: center; Width: 60px" readonly>
+                                            <input type="text" class="form-control input-sm" name="txt2550q_year_end_Y" id="txt2550q_year_end_Y" value="" placeholder="YYYY" style="text-align: center; Width: 100px" readonly>
                                             <!-- <input type="month"  class="form-control input-sm" id="" name="" style="text-align: center; Width: 150px"> -->
                                         </div>
                                     </div>
@@ -1115,44 +1113,113 @@ document.addEventListener('DOMContentLoaded', function() {
             // fiscalMonth = fiscalMonth ? fiscalMonth.format('MM') : '';
             // fiscalYear = fiscalYear ? fiscalYear.format('YYYY') : '';
             
-            var fiscalMonth = document.getElementById('txt2550q_year_end_M').value;
-            var fiscalYear = document.getElementById('txt2550q_year_end_Y').value; //2021
+            // Check if a year is a leap year
+            // function isLeapYear(year) {
+            //     return (year % 4 === 0 && year % 100 !== 0) || (year % 400 === 0);
+            // }
 
-            var fiscalYearInt = parseInt(fiscalYear);
-            var fiscalMonthInt = parseInt(fiscalMonth);
+            // Calculate the adjusted month and year if the month exceeds 12
+            function adjustMonthAndYear(month, year) {
+                if (month > 12) {
+                    // Calculate the number of years to add
+                    var yearsToAdd = Math.floor((month - 1) / 12);
+                    // Adjust month and year
+                    month = ((month - 1) % 12) + 1;
+                    year += yearsToAdd;
+                }
+                return { month, year };
+            }
 
-            var currentYr = now.getFullYear();
-            var yearEnd = (currentYr - fiscalYearInt) + fiscalYearInt;
-
-            console.log(currentYr);
-            console.log(fiscalYearInt);  
-            console.log(yearEnd);  
-            
-
-            if (fiscalMonth && fiscalYear) {
-
-                fiscalYearInt = yearEnd;
+            // Get the last date of a given month
+            function getLastDateOfMonth(month, year) {
+                var adjusted = adjustMonthAndYear(month, year);
+                var adjMonth = adjusted.month;
+                var adjYear = adjusted.year;
                 
-                console.log(fiscalYearInt);
+                // If you need to handle February 29 in a leap year:
+                // if (fiscalMonthInt === 2 && isLeapYear(adjYear)) {
+                //     console.log('Leap year February has 29 days');
+                // }
+
+                // Month is 1-based (1 for January, 2 for February, etc.), so use month + 1 to get the next month
+                // Create a date object with the day set to 0 to get the last day of the previous month
+                var lastDay = new Date(adjYear, adjMonth, 0).getDate();
+                return lastDay;
+            }          
+
+            var yearEndDB =  <?php echo json_encode($comprdo['ptudate']); ?>;
+            var yearEndDBparts =  yearEndDB.split(/[-/]/);
+            console.log('YearEnd:', yearEndDBparts);
+
+            var currentMonth = now.getMonth() + 1; console.log('current month:', currentMonth);
+            var currentYr = now.getFullYear();
+            // var currentYr = 2023;
+            
+            var fiscalYearInt = parseInt(currentYr);
+            var fiscalMonthInt = parseInt(yearEndDBparts[1]); console.log('fiscal month int:', fiscalMonthInt)
+            
+            if (currentMonth >= fiscalMonthInt) {
+                console.log('Current month is greater than or equal to the fiscal month.'); 
+                 fiscalYearInt += 1;
+                console.log('in the if statement:', fiscalYearInt);
+            } else {
+                console.log('Current month is less than to the fiscal month.')
+            }
+
+            // Determine the last day of the fiscal month
+            // var lastDateOfFiscalMonth = getLastDateOfMonth(fiscalMonthInt, fiscalYearInt);
+
+            // var fiscalMonth = yearEndDBparts[1]; console.log('fiscal Month', fiscalMonth);
+            // var fiscalYear = yearEndDBparts[0]; console.log('fiscal year', fiscalYear);
+
+            document.getElementById('txt2550q_year_end_M').value = yearEndDBparts[1];
+            document.getElementById('txt2550q_year_end_Y').value = fiscalYearInt;
+
+            if (fiscalMonthInt && fiscalYearInt) {
+
+                // fiscalYearInt = yearEnd;
+                
+                // console.log(fiscalYearInt)
                 // var fiscalYearInt = document.getElementById('txt2550q_year_end_M').value;
                 // var fiscalMonthInt = document.getElementById('txt2550q_year_end_Y').value;
 
                 switch (quarter) {
                     case '1':
-                        fromDate = `${fiscalMonthInt + 1}/01/${fiscalYearInt - 1}`;
-                        toDate = `${fiscalMonthInt + 3}/31/${fiscalYearInt - 1}`;
+
+                        var endMonth = fiscalMonthInt + 3;
+                        var endYear = fiscalYearInt - 1;
+                        var lastDay = getLastDateOfMonth(endMonth, endYear)
+
+                        fromDate = `${fiscalMonthInt + 1}/01/${endYear }`;
+                        toDate = `${endMonth}/${lastDay}/${endYear}`;
                         break;
                     case '2':
-                        fromDate = `${fiscalMonthInt + 4}/01/${fiscalYearInt - 1}`;
-                        toDate = `${fiscalMonthInt + 6}/30/${fiscalYearInt - 1}`;
+
+                        var endMonth = fiscalMonthInt + 6;
+                        var endYear = fiscalYearInt - 1;
+                        // var adjusted = adjustMonthAndYear(endMonth, endYear);
+                        var lastDay = getLastDateOfMonth(endMonth, endYear);
+                        
+                        fromDate = `${fiscalMonthInt + 4}/01/${endYear}`;
+                        toDate = `${fiscalMonthInt + 6}/${lastDay}/${endYear}`;
                         break;
                     case '3':
-                        fromDate = `${fiscalMonthInt + 7}/01/${fiscalYearInt - 1}`;
-                        toDate = `${fiscalMonthInt + 9}/30/${fiscalYearInt - 1}`;
+
+                        var endMonth = fiscalMonthInt + 9;
+                        var endYear = fiscalYearInt - 1;
+                        var lastDay = getLastDateOfMonth(endMonth, endYear)
+
+                        fromDate = `${fiscalMonthInt + 7}/01/${endYear}`;
+                        toDate = `${fiscalMonthInt + 9}/${lastDay}/${endYear}`;
                         break;
                     case '4':
-                        fromDate = `${fiscalMonthInt + 10}/01/${fiscalYearInt - 1}`;
-                        toDate = `${fiscalMonthInt}/31/${fiscalYearInt}`;
+
+                        var endMonth = fiscalMonthInt;
+                        var endYear = fiscalYearInt - 1;
+                        var lastDay = getLastDateOfMonth(endMonth, endYear)
+
+                        fromDate = `${fiscalMonthInt + 10}/01/${endYear}`;
+                        toDate = `${fiscalMonthInt}/${lastDay}/${fiscalYearInt}`;
                         break;
                     default:
                         fromDate = '';
@@ -1163,6 +1230,24 @@ document.addEventListener('DOMContentLoaded', function() {
                 // Adjust month and year if they exceed 12
                 fromDate = adjustDate(fromDate) ;
                 toDate = adjustDate(toDate);
+
+                // Function to adjust dates if months exceed 12
+                function adjustDate(dateString) {
+                    // var parts = dateString.split('/');
+                    var parts = dateString.split(/[-/]/);
+                    var month = parseInt(parts[0]);
+                    var day = parts[1];
+                    var year = parseInt(parts[2]);
+
+                    if (month > 12) {
+                        month -= 12;
+                        year += 1;
+                    }
+
+                    return `${month.toString().padStart(2, '0')}/${day}/${year}`;
+                }
+
+               
             }
         }
 
@@ -1255,21 +1340,6 @@ document.addEventListener('DOMContentLoaded', function() {
             minimumFractionDigits: 2,
             maximumFractionDigits: 2
         });
-    }
-
-    // Function to adjust dates if months exceed 12
-    function adjustDate(dateString) {
-        var parts = dateString.split('/');
-        var month = parseInt(parts[0]);
-        var day = parts[1];
-        var year = parseInt(parts[2]);
-
-        if (month > 12) {
-            month -= 12;
-            year += 1;
-        }
-
-        return `${month.toString().padStart(2, '0')}/${day}/${year}`;
     }
 
     // Attach event listeners to year-end inputs for Fiscal calendar
