@@ -40,7 +40,7 @@ if (isset($_POST['fromDate']) && isset($_POST['toDate'])) {
     
     
 
-    // $sql = "SELECT * from sales WHERE compcode = '$company' AND ddate BETWEEN '$formattedFromDate' AND '$formattedToDate'";
+    
     $sql = "SELECT * FROM sales WHERE compcode = '001' AND dcutdate BETWEEN '$formattedFromDate' AND '$formattedToDate'
     AND ctranno IN ( SELECT receipt_sales_t.csalesno FROM receipt LEFT JOIN receipt_sales_t ON receipt.compcode = receipt_sales_t.compcode AND receipt.ctranno = receipt_sales_t.ctranno
                 WHERE receipt.compcode = '001' AND receipt.lapproved = 1 AND receipt.lvoid = 0 AND receipt.lcancelled = 0);";
@@ -58,12 +58,12 @@ if (isset($_POST['fromDate']) && isset($_POST['toDate'])) {
     $data = [];
     
     //A. Sales for the Quarter (Exclusive of VAT)
-    // $totalVATableSalesA = 0.00;
-    // $totalZeroRatedSales = 0.00;  
-    // $totalExemptSales = 0.00;
+    // $totalVATableSalesA = 0;
+    // $totalZeroRatedSales = 0;  
+    // $totalExemptSales = 0;
 
     // //B. Output Tax for the Quarter
-    // $totalVATableSalesB = 0.00;
+    // $totalVATableSalesB = 0;
 
     while ($row = $result->fetch_assoc()) {
         $data[] = $row;

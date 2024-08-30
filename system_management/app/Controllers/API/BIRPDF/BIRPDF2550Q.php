@@ -134,7 +134,7 @@ class BIRPDF2550Q extends BaseController
         $this->fillCheckbox($pdf, 67.5, 107.5, $data->txt2550q_14 == 'Y');
         $this->fillCheckbox($pdf, 83, 107.5, $data->txt2550q_14 != 'Y');
 
-        $this->writeStyledText($pdf, 127.5, 108.5, $data->txt2550q_14A);
+        $this->writeStyledText($pdf, 127.5, 108.5, substr($data->txt2550q_14A, 0, 31));
 
         // PART II
         $this->writeFormattedAmount($pdf, 168.8, 120.5, 184, 120.5, $data->net_vat_payable, 25);

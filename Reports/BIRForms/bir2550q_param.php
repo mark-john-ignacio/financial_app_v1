@@ -44,8 +44,9 @@
 		}
 	}
 
-    $year = date("Y", strtotime($_POST['years']));
-
+    // $year = date("Y", strtotime($_POST['years']));
+    $year = $_POST['years'];
+    
     $apv = array();
     $xendingmonth = "";
     switch($_POST['selqrtr']){
@@ -1071,9 +1072,10 @@ document.addEventListener('DOMContentLoaded', function() {
         var periodType = document.querySelector('input[name="txt2550q_accountingperiods"]:checked').value;
         var quarter = document.querySelector('input[name="txt2550q_qrtr"]:checked') ? document.querySelector('input[name="txt2550q_qrtr"]:checked').value : null;
         var now = new Date();
-        var year = periodType === 'C' ? now.getFullYear() : ''; // Use the current year for Calendar, empty for Fiscal
+        var year =  <?php echo json_encode($year);?>;
+        // var year = periodType === 'C' ? now.getFullYear() : ''; // Use the current year for Calendar, empty for Fiscal
         var month = periodType === 'C' ? '12' : ''; // Default to December for Calendar, empty for Fiscal
-
+         
 
         if (periodType === 'C') {
 
@@ -1112,11 +1114,6 @@ document.addEventListener('DOMContentLoaded', function() {
             // Convert moment objects to regular date parts
             // fiscalMonth = fiscalMonth ? fiscalMonth.format('MM') : '';
             // fiscalYear = fiscalYear ? fiscalYear.format('YYYY') : '';
-            
-            // Check if a year is a leap year
-            // function isLeapYear(year) {
-            //     return (year % 4 === 0 && year % 100 !== 0) || (year % 400 === 0);
-            // }
 
             // Calculate the adjusted month and year if the month exceeds 12
             function adjustMonthAndYear(month, year) {
@@ -1135,11 +1132,6 @@ document.addEventListener('DOMContentLoaded', function() {
                 var adjusted = adjustMonthAndYear(month, year);
                 var adjMonth = adjusted.month;
                 var adjYear = adjusted.year;
-                
-                // If you need to handle February 29 in a leap year:
-                // if (fiscalMonthInt === 2 && isLeapYear(adjYear)) {
-                //     console.log('Leap year February has 29 days');
-                // }
 
                 // Month is 1-based (1 for January, 2 for February, etc.), so use month + 1 to get the next month
                 // Create a date object with the day set to 0 to get the last day of the previous month
@@ -1147,18 +1139,19 @@ document.addEventListener('DOMContentLoaded', function() {
                 return lastDay;
             }          
 
-            var yearEndDB =  <?php echo json_encode($comprdo['ptudate']); ?>;
+            var yearEndDB =  <?php echo json_encode($comprdo['fiscal_month_start_end']); ?>; console.log(typeof yearEndDB);
             var yearEndDBparts =  yearEndDB.split(/[-/]/);
             console.log('YearEnd:', yearEndDBparts);
 
             var currentMonth = now.getMonth() + 1; console.log('current month:', currentMonth);
-            var currentYr = now.getFullYear();
+            // var currentYr = now.getFullYear();
+            var yearEnd = <?php echo json_encode($year); ?>;
             // var currentYr = 2023;
             
-            var fiscalYearInt = parseInt(currentYr);
-            var fiscalMonthInt = parseInt(yearEndDBparts[1]); console.log('fiscal month int:', fiscalMonthInt)
+            var fiscalYearInt = parseInt(yearEnd);
+            var fiscalMonthInt = parseInt(yearEndDBparts[0]); console.log('fiscal month int:', fiscalMonthInt)
             
-            if (currentMonth >= fiscalMonthInt) {
+            if (currentMonth > fiscalMonthInt) {
                 console.log('Current month is greater than or equal to the fiscal month.'); 
                  fiscalYearInt += 1;
                 console.log('in the if statement:', fiscalYearInt);
@@ -1166,18 +1159,10 @@ document.addEventListener('DOMContentLoaded', function() {
                 console.log('Current month is less than to the fiscal month.')
             }
 
-            // Determine the last day of the fiscal month
-            // var lastDateOfFiscalMonth = getLastDateOfMonth(fiscalMonthInt, fiscalYearInt);
-
-            // var fiscalMonth = yearEndDBparts[1]; console.log('fiscal Month', fiscalMonth);
-            // var fiscalYear = yearEndDBparts[0]; console.log('fiscal year', fiscalYear);
-
-            document.getElementById('txt2550q_year_end_M').value = yearEndDBparts[1];
+            document.getElementById('txt2550q_year_end_M').value = yearEndDBparts[0];
             document.getElementById('txt2550q_year_end_Y').value = fiscalYearInt;
 
             if (fiscalMonthInt && fiscalYearInt) {
-
-                // fiscalYearInt = yearEnd;
                 
                 // console.log(fiscalYearInt)
                 // var fiscalYearInt = document.getElementById('txt2550q_year_end_M').value;
@@ -1193,16 +1178,17 @@ document.addEventListener('DOMContentLoaded', function() {
                         fromDate = `${fiscalMonthInt + 1}/01/${endYear }`;
                         toDate = `${endMonth}/${lastDay}/${endYear}`;
                         break;
+
                     case '2':
 
                         var endMonth = fiscalMonthInt + 6;
                         var endYear = fiscalYearInt - 1;
-                        // var adjusted = adjustMonthAndYear(endMonth, endYear);
                         var lastDay = getLastDateOfMonth(endMonth, endYear);
                         
                         fromDate = `${fiscalMonthInt + 4}/01/${endYear}`;
-                        toDate = `${fiscalMonthInt + 6}/${lastDay}/${endYear}`;
+                        toDate = `${endMonth}/${lastDay}/${endYear}`;
                         break;
+
                     case '3':
 
                         var endMonth = fiscalMonthInt + 9;
@@ -1210,8 +1196,9 @@ document.addEventListener('DOMContentLoaded', function() {
                         var lastDay = getLastDateOfMonth(endMonth, endYear)
 
                         fromDate = `${fiscalMonthInt + 7}/01/${endYear}`;
-                        toDate = `${fiscalMonthInt + 9}/${lastDay}/${endYear}`;
+                        toDate = `${endMonth}/${lastDay}/${endYear}`;
                         break;
+
                     case '4':
 
                         var endMonth = fiscalMonthInt;
@@ -1219,8 +1206,9 @@ document.addEventListener('DOMContentLoaded', function() {
                         var lastDay = getLastDateOfMonth(endMonth, endYear)
 
                         fromDate = `${fiscalMonthInt + 10}/01/${endYear}`;
-                        toDate = `${fiscalMonthInt}/${lastDay}/${fiscalYearInt}`;
+                        toDate = `${endMonth}/${lastDay}/${fiscalYearInt}`;
                         break;
+                        
                     default:
                         fromDate = '';
                         toDate = '';
@@ -1250,12 +1238,6 @@ document.addEventListener('DOMContentLoaded', function() {
                
             }
         }
-
-            // Validate the presence of fromDate and toDate
-            // if (!fromDate || !toDate) {
-            //     // console.warn('From Date or To Date is not set properly.');
-            //     return; // Prevent the AJAX request from being sent
-            // }
 
             document.getElementById('from').value = fromDate;
             document.getElementById('to').value = toDate;
@@ -1300,7 +1282,7 @@ document.addEventListener('DOMContentLoaded', function() {
                         
 
                         //A. Sales for the Quarter (Exclusive of VAT)
-                        $('#vatable_sales_A').val(formatCurrency(data.totalVATableSales || 0));
+                        $('#vatable_sales_A').val(formatCurrency(data.totalVATableSalesA || 0));
                         $('#zero_rated_sales').val(formatCurrency(data.totalZeroRatedSales || 0));
                         $('#exempt_sales').val(formatCurrency(data.totalExemptSales || 0));
 
