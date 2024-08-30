@@ -8,6 +8,9 @@ class CreateWoocommerceLandingOrdersTable extends Migration
 {
     public function up()
     {
+        if ($this->db->tableExists('woocommerce_landing_orders')) {
+            return;
+        }
         $this->forge->addField([
                 'id' => [
                     'type' => 'INT',

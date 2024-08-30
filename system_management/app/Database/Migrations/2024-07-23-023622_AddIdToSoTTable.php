@@ -8,6 +8,9 @@ class AddIdToSoTTable extends Migration
 {
     public function up()
     {
+        if ($this->db->fieldExists('id', 'so')) {
+            return;
+        }
         // Remove existing primary key from banks table
         $this->db->query('ALTER TABLE so_t DROP PRIMARY KEY');
 
@@ -18,9 +21,10 @@ class AddIdToSoTTable extends Migration
 
     public function down()
     {
-        // Remove id field from banks table
-        $this->db->query('ALTER TABLE so_t DROP COLUMN id');
-
+        if ($this->db->fieldExists('id', 'so_t')) {
+            // Drop the 'id' column if it exists
+            $this->forge->dropColumn('so_t', 'id');
+        }
         // Restore primary key of banks table
         $this->db->query('ALTER TABLE so_t ADD PRIMARY KEY(compcode, cidentity)');
     

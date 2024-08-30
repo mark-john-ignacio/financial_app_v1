@@ -8,6 +8,9 @@ class CreateBIRFormImageTable extends Migration
 {
     public function up()
     {
+        if ($this->db->tableExists('bir_form_images')) {
+            return;
+        }
         $this->forge->addField([
             'id' => [
                 'type' => 'INT',

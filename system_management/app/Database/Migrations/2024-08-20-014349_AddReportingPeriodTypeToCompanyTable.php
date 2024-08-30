@@ -8,6 +8,9 @@ class AddReportingPeriodTypeToCompanyTable extends Migration
 {
     public function up()
     {
+        if ($this->db->fieldExists('reporting_period_type', 'company')) {
+            return;
+        }
         $this->forge->addColumn('company', [
             'reporting_period_type' => [
                 'type' => 'ENUM',

@@ -8,6 +8,9 @@ class AddIdToSalesTable extends Migration
 {
     public function up()
     {
+        if ($this->db->fieldExists('id', 'sales')) {
+            return;
+        }
         $this->db->query('ALTER TABLE sales DROP PRIMARY KEY');
 
         $this->db->query('ALTER TABLE sales ADD id INT(11) UNSIGNED NOT NULL AUTO_INCREMENT PRIMARY KEY FIRST');
@@ -15,8 +18,15 @@ class AddIdToSalesTable extends Migration
 
     public function down()
     {
-        $this->db->query('ALTER TABLE sales DROP COLUMN id');
+        $forge = \Config\Database::forge();
 
-        $this->db->query('ALTER TABLE sales ADD PRIMARY KEY(compcode, ctrano)');
+        if (!$this->db->tableExists('sales')) {
+            return;
+        }
+        if ($this->db->fieldExists('id', 'sales')) {
+            // Drop the 'id' column if it exists
+            $forge->dropColumn('sales', 'id');
+        }
+        $this->db->query('ALTER TABLE sales ADD PRIMARY KEY(compcode, ctranno)');
     }
 }

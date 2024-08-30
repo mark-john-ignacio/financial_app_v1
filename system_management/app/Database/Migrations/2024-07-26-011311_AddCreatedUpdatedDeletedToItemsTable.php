@@ -8,6 +8,9 @@ class AddCreatedUpdatedDeletedToItemsTable extends Migration
 {
     public function up()
     {
+        if ($this->db->fieldExists('created_at', 'items')) {
+            return;
+        }
         $this->forge->addColumn('items',
         [
             'created_at' => [
@@ -54,12 +57,22 @@ class AddCreatedUpdatedDeletedToItemsTable extends Migration
 
     public function down()
     {
-        $this->forge->dropColumn('items', 'created_at');
-        $this->forge->dropColumn('items', 'created_by');
-        $this->forge->dropColumn('items', 'updated_at');
-        $this->forge->dropColumn('items', 'updated_by');
-        $this->forge->dropColumn('items', 'deleted_at');
-        $this->forge->dropColumn('items', 'deleted_by');
-        $this->forge->dropColumn('items', 'deleted');
+        $forge = \Config\Database::forge();
+
+        $columns = [
+            'created_at',
+            'created_by',
+            'updated_at',
+            'updated_by',
+            'deleted_at',
+            'deleted_by',
+            'deleted'
+        ];
+    
+        foreach ($columns as $column) {
+            if ($this->db->fieldExists($column, 'items')) {
+                $forge->dropColumn('items', $column);
+            }
+        }
     }
 }

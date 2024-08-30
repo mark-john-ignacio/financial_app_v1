@@ -48,6 +48,9 @@
                     <li class="nav-item">
                         <a href="<?= site_url("bir-forms/form")?>" class="nav-link">Form</a>
                     </li>
+                    <li>
+                        <a href="#" class="nav-link">Reporting Period Type</a>
+                    </li>
                 </ul>
             </li>
             

@@ -182,13 +182,13 @@
             const taxDecimal = taxpercent / 100;
             const part2_12a = parseFloat($part2_12a.val()) || 0;
             const part2_13a = parseFloat($part2_13a.val()) || 0;
-            const part2_18a = parseFloat($part2_18b.val()) || 0;
-            const part2_18c = parseFloat($part2_18d.val()) || 0;
-            const part2_18e = parseFloat($part2_18f.val()) || 0;
-            const part2_18g = parseFloat($part2_18h.val()) || 0;
-            const part2_18i = parseFloat($part2_18j.val()) || 0;
-            const part2_18k = parseFloat($part2_18l.val()) || 0;
-            const part2_18n = parseFloat($part2_18o.val()) || 0;
+            const part2_18a = parseFloat($part2_18a.val()) || 0;
+            const part2_18c = parseFloat($part2_18c.val()) || 0;
+            const part2_18e = parseFloat($part2_18e.val()) || 0;
+            const part2_18g = parseFloat($part2_18g.val()) || 0;
+            const part2_18i = parseFloat($part2_18i.val()) || 0;
+            const part2_18k = parseFloat($part2_18k.val()) || 0;
+            const part2_18n = parseFloat($part2_18n.val()) || 0;
             const calculated_12b = part2_12a * taxDecimal;
             const calculated_13b = part2_13a * taxDecimal;
             const calculated_18b = part2_18a * taxDecimal;
@@ -206,6 +206,7 @@
             $part2_18h.val(calculated_18h.toFixed(2));
             $part2_18j.val(calculated_18j.toFixed(2));
             $part2_18l.val(calculated_18l.toFixed(2));
+            $part2_18o.val(calculated_18o.toFixed(2));
         }
 
 
@@ -227,9 +228,11 @@
         }
 
         function getTotalSales() {
-            var baseURL = $('#base_url').val();
+            const baseURL = $('#base_url').val();
+            const url = baseURL + 'system_management/api/bir-forms/2550m/get-sales-month';
+            console.log("URL:", url);
             $.ajax({
-                url: baseURL + 'system_management/api/bir-forms/2550m/get-sales-month',
+                url: url,
                 type: 'POST',
                 contentType: "application/json",
                 data: JSON.stringify({
