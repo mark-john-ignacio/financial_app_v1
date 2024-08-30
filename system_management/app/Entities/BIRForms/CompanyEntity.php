@@ -6,8 +6,13 @@ use CodeIgniter\Entity\Entity;
 
 class CompanyEntity extends Entity
 {
-    protected $datamap = [];
-    protected $dates = [];
+    protected $datamap = [
+        "company_code" => 'compcode',
+        "company_name" => 'compname',
+        "reporting_period" => 'reporting_period_type',
+        "fiscal_month" => 'fiscal_month_start_end',
+    ];
+    protected $dates   = ['created_at', 'updated_at', 'deleted_at'];
     protected $casts = [];
 
 }

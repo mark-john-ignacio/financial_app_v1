@@ -12,8 +12,8 @@ class AddFiscalEndMonthToCompanyTable extends Migration
             $fields = [
                 'fiscal_month_start_end' => [
                     'type' => 'VARCHAR',
-                    'constraint' => 7, // Example format: 'MM-YYYY' (or adjust as needed)
-                    'default' => "01-2024", // Example default value
+                    'constraint' => 2, // Example format: 'MM'
+                    'default' => "01", // Example default value
                     'after' => 'reporting_period_type'
                 ]
             ];
