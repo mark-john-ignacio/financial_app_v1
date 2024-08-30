@@ -18,6 +18,7 @@
             <div class="mb-3" id="fiscal_month_container">
                 <label for="company_name" class="form-label">Fiscal Month</label>
                 <select class="form-select" id="fiscal_month" name="fiscal_month">
+                    <option value="">Select Month</option>
                     <option value="01" <?= old('fiscal_month', esc($company->fiscal_month ?? "")) == "01" ? 'selected' : "" ?>>January</option>
                     <option value="02" <?= old('fiscal_month', esc($company->fiscal_month ?? "")) == "02" ? 'selected' : "" ?>>February</option>
                     <option value="03" <?= old('fiscal_month', esc($company->fiscal_month ?? "")) == "03" ? 'selected' : "" ?>>March</option>
@@ -40,6 +41,7 @@
             const reportingPeriod = $("#reporting_period").val();
             if (reportingPeriod === "calendar") {
                 $("#fiscal_month_container").hide();
+                $("#fiscal_month").val("");
             } else {
                 $("#fiscal_month_container").show();
             }
