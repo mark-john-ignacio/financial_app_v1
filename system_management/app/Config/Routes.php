@@ -27,6 +27,10 @@ $routes->group('', ['filter' => 'pin_verified'], function ($routes) {
         $con_path = 'BIRForms\\BIRFormController';
         $routes->get('form/load', $con_path . '::load');
         $routes->resource('form', ['controller' => $con_path]);
+
+        $con_path = 'BIRForms\\ReportingPeriod';
+        $routes->get('reporting-period/load', $con_path . '::load');
+        $routes->resource('reporting-period', ['controller' => $con_path]);
     });
     
     $routes->group('bir-forms-image', function ($routes) {

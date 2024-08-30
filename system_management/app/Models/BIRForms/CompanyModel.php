@@ -1,19 +1,19 @@
 <?php
 
-namespace App\Models\BIRForm;
+namespace App\Models\BIRForms;
 
-use CodeIgniter\Model;
-use App\Entities\BIRForm\CompanyEntity;
+use App\Models\BaseModel;
+use App\Entities\BIRForms\CompanyEntity;
 
-class CompanyModel extends Model
+class CompanyModel extends BaseModel
 {
     protected $table            = 'company';
-    protected $primaryKey       = 'compcode';
+    protected $primaryKey       = 'id';
     protected $useAutoIncrement = true;
     protected $returnType       = CompanyEntity::class;
     protected $useSoftDeletes   = false;
     protected $protectFields    = true;
-    protected $allowedFields    = [];
+    protected $allowedFields    = ["reporting_period_type", "fiscal_month_start_end"];
 
     protected bool $allowEmptyInserts = false;
     protected bool $updateOnlyChanged = true;
@@ -33,15 +33,4 @@ class CompanyModel extends Model
     protected $validationMessages   = [];
     protected $skipValidation       = false;
     protected $cleanValidationRules = true;
-
-    // Callbacks
-    protected $allowCallbacks = true;
-    protected $beforeInsert   = [];
-    protected $afterInsert    = [];
-    protected $beforeUpdate   = [];
-    protected $afterUpdate    = [];
-    protected $beforeFind     = [];
-    protected $afterFind      = [];
-    protected $beforeDelete   = [];
-    protected $afterDelete    = [];
 }
