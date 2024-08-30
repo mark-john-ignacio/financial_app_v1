@@ -41,7 +41,15 @@ $(document).ready(function() {
             { data: 'company_code' },
             { data: 'company_name' },
             { data: 'reporting_period' },
-            { data: 'fiscal_month' },
+            { 
+                data: 'fiscal_month', 
+                render: function(data, type, row) {
+                    if (row.reporting_period === "calendar") {
+                        return "N/A";
+                    }
+                    return data;
+                }
+            },
             {
                 data: null,
                 render: function(data, type, row) {
