@@ -25,7 +25,22 @@
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.min.js"></script>
 
 
-
+<style>
+html {
+  position: relative;
+  min-height: 100%;
+  padding-bottom:50px;
+}
+body {
+  margin-bottom: 160px;
+}
+footer {
+  position: absolute;
+  bottom: 0;
+  width: 100%;
+  height: 30px;
+}
+</style>
 </head>
 <body>
 <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
@@ -49,7 +64,7 @@
                         <a href="<?= site_url("bir-forms/form")?>" class="nav-link">Form</a>
                     </li>
                     <li>
-                        <a href="#" class="nav-link">Reporting Period Type</a>
+                        <a href="<?= site_url("bir-forms/reporting-period") ?>" class="nav-link">Reporting Period Type</a>
                     </li>
                 </ul>
             </li>
@@ -141,7 +156,14 @@ if ($session->has('swal') && !empty($session->get('swal'))):
         });
     </script>
 <?php endif; ?>
-
+<footer class="d-flex flex-wrap justify-content-between align-items-center py-3 my-4 border-top">
+    <div class="col-md-4 d-flex align-items-center">
+      <a href="/" class="mb-3 me-2 mb-md-0 text-muted text-decoration-none lh-1">
+        <svg class="bi" width="30" height="24"><use xlink:href=""></use></svg>
+      </a>
+      <span class="mb-3 mb-md-0 text-muted">© 2024 MyxFinancials, Inc</span>
+    </div>
+</footer>
 </body>
 </html>
 

@@ -24,6 +24,35 @@ class AddFormLinkAndParamsToForms extends Migration
                     'after' => 'form_link'
                 ]
             ]);
+
+                    // Insert new rows
+            $data = [
+                [
+                    "form_code" => "2550M",
+                    "form_name" => "Monthly Value-Added Tax Declaration",
+                    "form_link" => "bir2550m",
+                    "params" => "bir2550m_param",
+                    "filter" => "Monthly",
+                    "cstatus" => "Active"
+                ],
+                [
+                    "form_code" => "2550Q",
+                    "form_name" => "Quarterly Value-Added Tax Return",
+                    "form_link" => "bir2550q",
+                    "params" => "bir2550q_param",
+                    "filter" => "Quarterly",
+                    "cstatus" => "Active"
+                ],
+                [
+                    "form_code" => "1601Q",
+                    "form_name" => "Quarterly Remittance Return of Creditable Income Taxes Withheld (Expanded)",
+                    "form_link" => "bir1601q",
+                    "params" => "bir1601q_param",
+                    "filter" => "Quarterly",
+                    "cstatus" => "Active"
+                ]
+            ];
+            $this->db->table('nav_menu_forms')->insertBatch($data);
         }
     
         // Update existing entry
@@ -32,34 +61,7 @@ class AddFormLinkAndParamsToForms extends Migration
             'params' => 'bir0619e_param'
         ]);
     
-        // Insert new rows
-        $data = [
-            [
-                "form_code" => "2550M",
-                "form_name" => "Monthly Value-Added Tax Declaration",
-                "form_link" => "bir2550m",
-                "params" => "bir2550m_param",
-                "filter" => "Monthly",
-                "cstatus" => "Active"
-            ],
-            [
-                "form_code" => "2550Q",
-                "form_name" => "Quarterly Value-Added Tax Return",
-                "form_link" => "bir2550q",
-                "params" => "bir2550q_param",
-                "filter" => "Quarterly",
-                "cstatus" => "Active"
-            ],
-            [
-                "form_code" => "1601Q",
-                "form_name" => "Quarterly Remittance Return of Creditable Income Taxes Withheld (Expanded)",
-                "form_link" => "bir1601q",
-                "params" => "bir1601q_param",
-                "filter" => "Quarterly",
-                "cstatus" => "Active"
-            ]
-        ];
-        $this->db->table('nav_menu_forms')->insertBatch($data);
+
     }
     
     public function down()

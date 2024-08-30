@@ -20,13 +20,12 @@ class AddIdToSalesTable extends Migration
     {
         $forge = \Config\Database::forge();
 
-        if (!$this->db->tableExists('sales')) {
-            return;
+        if ($this->db->tableExists('sales')) {
+            if ($this->db->fieldExists('id', 'sales')) {
+                // Drop the 'id' column if it exists
+                $forge->dropColumn('sales', 'id');
+                $this->db->query('ALTER TABLE sales ADD PRIMARY KEY(compcode, ctranno)');
+            }
         }
-        if ($this->db->fieldExists('id', 'sales')) {
-            // Drop the 'id' column if it exists
-            $forge->dropColumn('sales', 'id');
-        }
-        $this->db->query('ALTER TABLE sales ADD PRIMARY KEY(compcode, ctranno)');
     }
 }
