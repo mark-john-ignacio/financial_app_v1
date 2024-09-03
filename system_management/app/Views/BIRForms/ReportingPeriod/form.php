@@ -25,7 +25,7 @@
                     <option value="05" <?= old('fiscal_month', esc($company->fiscal_month ?? "")) == "05" ? 'selected' : "" ?>>May</option>
                     <option value="06" <?= old('fiscal_month', esc($company->fiscal_month ?? "")) == "06" ? 'selected' : "" ?>>June</option>
                     <option value="07" <?= old('fiscal_month', esc($company->fiscal_month ?? "")) == "07" ? 'selected' : "" ?>>July</option>
-                    <option value="8" <?= old('fiscal_month', esc($company->fiscal_month ?? "")) == "08" ? 'selected' : "" ?>>August</option>
+                    <option value="08" <?= old('fiscal_month', esc($company->fiscal_month ?? "")) == "08" ? 'selected' : "" ?>>August</option>
                     <option value="09" <?= old('fiscal_month', esc($company->fiscal_month ?? "")) == "09" ? 'selected' : "" ?>>September</option>
                     <option value="10" <?= old('fiscal_month', esc($company->fiscal_month ?? "")) == "10" ? 'selected' : "" ?>>October</option>
                     <option value="11" <?= old('fiscal_month', esc($company->fiscal_month ?? "")) == "11" ? 'selected' : "" ?>>November</option>

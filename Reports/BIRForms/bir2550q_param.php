@@ -338,13 +338,13 @@
                                         <b> 13 </b> Tax Payer Classification
                                         <div style="margin-left: 10px;">
                                             <ul class="ichecks list-inline" style="margin: 0px !important">
-                                                <li><input tabindex="3" type="radio" id="txt2550q_tax_payer_classification1" name="txt2550q_tax_payer_classification" value="micro"><label for="txt2550q_tax_payer_classification1">&nbsp;Mirco</li>
+                                                <li><input tabindex="3" type="radio" id="txt2550q_tax_payer_classification1" name="txt2550q_tax_payer_classification" <?=($comprdo['']=="") ? "checked" : "disabled"?> value="micro"><label for="txt2550q_tax_payer_classification1">&nbsp;Mirco</li>
 
-                                                <li><input tabindex="3" type="radio" id="txt2550q_tax_payer_classification2" name="txt2550q_tax_payer_classification" value="small"><label for="txt2550q_tax_payer_classification2">&nbsp;Small</li>
+                                                <li><input tabindex="3" type="radio" id="txt2550q_tax_payer_classification2" name="txt2550q_tax_payer_classification" <?=($comprdo['']=="") ? "checked" : "disabled"?> value="small"><label for="txt2550q_tax_payer_classification2">&nbsp;Small</li>
 
-                                                <li><input tabindex="3" type="radio" id="txt2550q_tax_payer_classification3" name="txt2550q_tax_payer_classification" value="medium"><label for="txt2550q_tax_payer_classification3">&nbsp;Medium</li>
+                                                <li><input tabindex="3" type="radio" id="txt2550q_tax_payer_classification3" name="txt2550q_tax_payer_classification" <?=($comprdo['']=="") ? "checked" : "disabled"?> value="medium"><label for="txt2550q_tax_payer_classification3">&nbsp;Medium</li>
 
-                                                <li><input tabindex="3" type="radio" id="txt2550q_tax_payer_classification4" name="txt2550q_tax_payer_classification" value="Large"><label for="txt2550q_tax_payer_classification4">&nbsp;Large</li>
+                                                <li><input tabindex="3" type="radio" id="txt2550q_tax_payer_classification4" name="txt2550q_tax_payer_classification" <?=($comprdo['']=="") ? "checked" : "disabled"?> value="Large"><label for="txt2550q_tax_payer_classification4">&nbsp;Large</li>
                                             </ul>
                                         </div>
                                     </div>
