@@ -14,6 +14,7 @@
                     <th>Company Name</th>
                     <th>Reporting Period</th>
                     <th>Fiscal Month</th>
+                    <th>Taxpayer Size</th>
                     <th>Action</th>
                 </tr>
             </thead>
@@ -50,6 +51,7 @@ $(document).ready(function() {
                     return data;
                 }
             },
+            { data: 'taxpayer_size_class' },
             {
                 data: null,
                 render: function(data, type, row) {

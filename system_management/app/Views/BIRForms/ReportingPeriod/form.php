@@ -32,6 +32,15 @@
                     <option value="12" <?= old('fiscal_month', esc($company->fiscal_month ?? "")) == "12" ? 'selected' : "" ?>>December</option>
                 </select>                   
             </div>
+            <div class="mb-3">
+                <label for="taxpayer_size_class" class="form-label">Taxpayer Size</label>
+                <select class="form-select" id="taxpayer_size_class" name="taxpayer_size_class">
+                    <option value="Micro" <?= old('taxpayer_size_class', esc($company->taxpayer_size_class ?? "")) == "Micro" ? 'selected' : "" ?>>Micro</option>
+                    <option value="Small" <?= old('taxpayer_size_class', esc($company->taxpayer_size_class ?? "")) == "Small" ? 'selected' : "" ?>>Small</option>
+                    <option value="Medium" <?= old('taxpayer_size_class', esc($company->taxpayer_size_class ?? "")) == "Medium" ? 'selected' : "" ?>>Medium</option>
+                    <option value="Large" <?= old('taxpayer_size_class', esc($company->taxpayer_size_class ?? "")) == "Large" ? 'selected' : "" ?>>Large</option>
+                </select>
+            </div>
             
 
 <script>

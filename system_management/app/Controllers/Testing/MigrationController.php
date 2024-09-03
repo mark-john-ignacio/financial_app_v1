@@ -15,9 +15,9 @@ class MigrationController extends BaseController
     {
         try {
             $this->migrate->latest();
-            return "Migrations completed successfully.";
+            return redirect()->to(site_url('/'))->with('message', 'Migrations ran successfully.');
         } catch (\Exception $e) {
-            return "An error occurred while running migrations: " . $e->getMessage();
+            return redirect()->to(site_url('/'))->with('errors', $e->getMessage());
         }
     }
 
