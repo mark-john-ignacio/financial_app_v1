@@ -51,6 +51,6 @@ class BIRPDF0619E extends BIRPDFBase
         $this->processAndWriteAmount(184.3, 148.5, $data->penalty_compromise);
         $this->processAndWriteAmount(184.3, 155, $data->total_penalties);
         $this->processAndWriteAmount(184.3, 161.5, $data->total_amount_of_remittance);
-        // $this->processSignatureImage(120, 176, $data->signature_image);
+        $this->processSignatureImage(120, 173, $data->signature_image);
     }
 }
