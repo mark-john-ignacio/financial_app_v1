@@ -131,9 +131,9 @@ $routes->post('api/pdf/2550m', 'API\\BIRPDF\\BIRPDF2550M::generatePdf');
 
 $routes->post('api/bir-forms/2550m/get-sales-month', 'API\\BIRForms\\BIRForm2550M::getSalesPerMonth');
 
-$routes->post("api/company/(:num)/sign-img/create", "API\\Company\\BIRSignatureImage::create/$1");
-
-$routes->get("api/company/(:num)/sign-img", "API\\Company\\BIRSignatureImage::show/$1");
-
-$routes->delete("api/company/(:num)/sign-img/delete", "API\\Company\\BIRSignatureImage::delete/$1");
+$routes->group('', ['filter' => 'verify_api_request'], function ($routes) {
+    $routes->post('api/company/(:num)/sign-img/create', 'API\\Company\\BIRSignatureImage::create/$1');
+    $routes->get('api/company/(:num)/sign-img', 'API\\Company\\BIRSignatureImage::show/$1');
+    $routes->delete('api/company/(:num)/sign-img/delete', 'API\\Company\\BIRSignatureImage::delete/$1');
+});
 // TODO: Create api route sender with api-key and also put the api routes inside a filter
