@@ -13,7 +13,7 @@ class CompanyModel extends BaseModel
     protected $returnType       = CompanyEntity::class;
     protected $useSoftDeletes   = false;
     protected $protectFields    = true;
-    protected $allowedFields    = ["reporting_period_type", "fiscal_month_start_end"];
+    protected $allowedFields    = ["reporting_period_type", "fiscal_month_start_end", "taxpayer_size_class"];
 
     protected bool $allowEmptyInserts = false;
     protected bool $updateOnlyChanged = true;
