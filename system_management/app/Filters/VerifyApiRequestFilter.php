@@ -25,7 +25,7 @@ class VerifyApiRequestFilter implements FilterInterface
     private function isValidApiKey($request)
     {
         $model = new CompanyModel();
-        $apiSecret = $model->find(1)->code;
+        $apiSecret = $model->find(1)->bir_sig_sign;
         $apiKey = $request->getHeaderLine('API-KEY');
 
         return $apiKey === $apiSecret;

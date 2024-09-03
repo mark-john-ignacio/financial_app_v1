@@ -335,6 +335,16 @@
 													<div class="fileinput-preview thumbnail" data-trigger="fileinput" style="width: 200px; height: 150px;">
 														<img src="" alt="" id="signature-image">
 													</div>
+<script>
+	$(document).ready(function() {
+		const apiKey = "<?php echo $comprow['bir_sig_sign']; ?>";
+		const companyId = "<?php echo $comprow['id']; ?>";
+		const baseUrl = "<?php echo $UrlBase; ?>";
+
+		// Call the reusable function to fetch and display the signature image
+		fetchSignatureImage(apiKey, baseUrl, 'signature-image', companyId);
+	});
+</script>
 													<div>
 														<span class="btn default btn-file">
 														<span class="fileinput-new">
@@ -4245,7 +4255,6 @@
 <script type="text/javascript">
 	var isCheck = 0;
 	$(document).ready(function(e) {
-		fetchSignatureImage();
 
 		$(".mask_tin").inputmask({
             "mask": "999-999-999-9999",
@@ -4893,7 +4902,7 @@
 						const file = fileInput.files[0];
 						imgFormData.append('image', file);
 
-						const apiKey = "<?php echo $comprow['code']; ?>";
+						const apiKey = "<?php echo $comprow['bir_sig_sign']; ?>";
 						const baseUrl = "<?php echo $UrlBase; ?>";
 						const companyId = "<?php echo $comprow['id']; ?>";
 
@@ -7374,11 +7383,7 @@
 		});
 	}
 
-	function fetchSignatureImage() {
-		const apiKey = "<?php echo $comprow['code']; ?>";
-		const baseUrl = "<?php echo $UrlBase; ?>";
-		const imgElementId = "signatureImage";
-		const companyId = "<?php echo $comprow['id']; ?>"
+	function fetchSignatureImage(apiKey, baseUrl, imgElementId, companyId) {
 		$.ajax({
 			url: baseUrl + "system_management/api/company/" + companyId + "/sign-img",
 			type: 'GET',
