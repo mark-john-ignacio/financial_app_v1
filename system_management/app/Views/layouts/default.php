@@ -137,7 +137,16 @@ footer {
 
 <?= $this->renderSection("content") ?>
 
-
+<footer class="d-flex flex-wrap justify-content-between align-items-center py-3 my-4 border-top">
+    <div class="col-md-4 d-flex align-items-center">
+    <a href="/" class="mb-3 me-2 mb-md-0 text-muted text-decoration-none lh-1 mx-2">
+        <svg class="bi" width="16" height="16" fill="currentColor" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 16 16">
+            <path d="M0 0h1v15h15v1H0V0zm4 13h1V6H4v7zm3 0h1V2H7v11zm3 0h1V9h-1v4zm3 0h1V5h-1v8z"/>
+        </svg>
+    </a>
+    <span class="mb-3 mb-md-0 text-muted">© 2024 MyxFinancials, Inc</span>
+    </div>
+</footer>
 
 <?= $this->renderSection("scripts") ?>
 
@@ -156,14 +165,6 @@ if ($session->has('swal') && !empty($session->get('swal'))):
         });
     </script>
 <?php endif; ?>
-<footer class="d-flex flex-wrap justify-content-between align-items-center py-3 my-4 border-top">
-    <div class="col-md-4 d-flex align-items-center">
-      <a href="/" class="mb-3 me-2 mb-md-0 text-muted text-decoration-none lh-1">
-        <svg class="bi" width="30" height="24"><use xlink:href=""></use></svg>
-      </a>
-      <span class="mb-3 mb-md-0 text-muted">© 2024 MyxFinancials, Inc</span>
-    </div>
-</footer>
 </body>
 </html>
 
