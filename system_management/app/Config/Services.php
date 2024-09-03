@@ -29,4 +29,16 @@ class Services extends BaseService
      *     return new \CodeIgniter\Example();
      * }
      */
+
+    public static function imageService($getShared = true)
+    {
+        if ($getShared) {
+            return static::getSharedInstance('imageService');
+        }
+
+        $config = config('Images');
+        $imageHandler = \Config\Services::image();
+
+        return new \App\Services\ImageService($config, $imageHandler);
+    }
 }
