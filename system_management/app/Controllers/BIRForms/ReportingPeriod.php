@@ -6,6 +6,7 @@ use App\Controllers\BaseController;
 use App\Models\BIRForms\CompanyModel;
 use CodeIgniter\API\ResponseTrait;
 use App\Entities\BIRForms\CompanyEntity;
+use CodeIgniter\Exceptions\PageNotFoundException;
 
 class ReportingPeriod extends BaseController
 {
@@ -63,7 +64,7 @@ class ReportingPeriod extends BaseController
     {
         $entry = $this->companyModel->find($id);
         if ($entry === null){
-            throw new PageNotFoundException("Form with $id id not found");
+            throw new PageNotFoundException("Form with id:$id not found");
         }
 
         return $entry;

@@ -133,6 +133,20 @@ footer {
             <?php endif; ?>
         </div>
     </div>
+    <div class="row">
+        <div class="col-md-6">
+            <?php if (session()->has('errors')): ?>
+                <div class="alert alert-danger alert-dismissible fade show">
+                    <ul>
+                        <?php foreach (session('errors') as $error): ?>
+                            <li><?= $error ?></li>
+                        <?php endforeach; ?>
+                    </ul>
+                    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                </div>
+            <?php endif; ?>
+        </div>
+    </div>
 </div>
 
 <?= $this->renderSection("content") ?>
