@@ -60,41 +60,40 @@ var sawt = [];
         });
 
         $(".xcompute").on("keyup", function(){   
-            $TotalTaxesWithheld = $("#txt1601eq_totewt").val().replace(/,/g,'');
+            const $TotalTaxesWithheld = $("#txt1601eq_totewt").val().replace(/,/g,'');
 
-            $less1 = ($("#txt1601eq_less1").val()=="") ? 0 : $("#txt1601eq_less1").val().replace(/,/g,'');
-            $less2 = ($("#txt1601eq_less2").val()=="") ? 0 : $("#txt1601eq_less2").val().replace(/,/g,'');
-            $taxrmmited = ($("#txt1601eq_prev").val()=="") ? 0 : $("#txt1601eq_prev").val().replace(/,/g,'');
-            $overremit = ($("#txt1601eq_overr").val()=="") ? 0 : $("#txt1601eq_overr").val().replace(/,/g,''); 
-            $othrpay = ($("#txt1601eq_otrpay").val()=="") ? 0 : $("#txt1601eq_otrpay").val().replace(/,/g,'');
+            const $less1 = ($("#txt1601eq_less1").val()=="") ? 0 : $("#txt1601eq_less1").val().replace(/,/g,'');
+            const $less2 = ($("#txt1601eq_less2").val()=="") ? 0 : $("#txt1601eq_less2").val().replace(/,/g,'');
+            const $taxrmmited = ($("#txt1601eq_prev").val()=="") ? 0 : $("#txt1601eq_prev").val().replace(/,/g,'');
+            const $overremit = ($("#txt1601eq_overr").val()=="") ? 0 : $("#txt1601eq_overr").val().replace(/,/g,''); 
+            const $othrpay = ($("#txt1601eq_otrpay").val()=="") ? 0 : $("#txt1601eq_otrpay").val().replace(/,/g,'');
 
-            $totrem = parseFloat($less1) + parseFloat($less2) + parseFloat($taxrmmited) + parseFloat($overremit) + parseFloat($othrpay);
+            const $totrem = parseFloat($less1) + parseFloat($less2) + parseFloat($taxrmmited) + parseFloat($overremit) + parseFloat($othrpay);
             $("#txt1601eq_totrem").val($totrem);
             $("#txt1601eq_totrem").autoNumeric('destroy');
 			$("#txt1601eq_totrem").autoNumeric('init',{mDec:2});
 
 
-            $totsdue = parseFloat($TotalTaxesWithheld) - parseFloat($totrem);
+            const $totsdue = parseFloat($TotalTaxesWithheld) - parseFloat($totrem);
             $("#txt1601eq_taxdue").val($totsdue);
             $("#txt1601eq_taxdue").autoNumeric('destroy');
 			$("#txt1601eq_taxdue").autoNumeric('init',{mDec:2});
 
 
-            $penaltysur = ($("#txt1601eq_pensur").val()=="") ? 0 : $("#txt1601eq_pensur").val().replace(/,/g,'');
-            $penaltyint = ($("#txt1601eq_penint").val()=="") ? 0 : $("#txt1601eq_penint").val().replace(/,/g,'');
-            $penaltycom = ($("#txt1601eq_pencom").val()=="") ? 0 : $("#txt1601eq_pencom").val().replace(/,/g,'');
+            const $penaltysur = ($("#txt1601eq_pensur").val()=="") ? 0 : $("#txt1601eq_pensur").val().replace(/,/g,'');
+            const $penaltyint = ($("#txt1601eq_penint").val()=="") ? 0 : $("#txt1601eq_penint").val().replace(/,/g,'');
+            const $penaltycom = ($("#txt1601eq_pencom").val()=="") ? 0 : $("#txt1601eq_pencom").val().replace(/,/g,'');
 
-            $totpenalty = parseFloat($penaltysur) + parseFloat($penaltyint) + parseFloat($penaltycom);
+            const $totpenalty = parseFloat($penaltysur) + parseFloat($penaltyint) + parseFloat($penaltycom);
             $("#txt1601eq_pentot").val($totpenalty);
             $("#txt1601eq_pentot").autoNumeric('destroy');
 			$("#txt1601eq_pentot").autoNumeric('init',{mDec:2});
 
-            txt1601eq_gtot = $totsdue + $totpenalty;
+            const txt1601eq_gtot = $totsdue + $totpenalty;
             $("#txt1601eq_gtot").val(txt1601eq_gtot);
             $("#txt1601eq_gtot").autoNumeric('destroy');
 			$("#txt1601eq_gtot").autoNumeric('init',{mDec:2});
         });
         
     });
-    
 })(jQuery);

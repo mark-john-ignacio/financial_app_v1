@@ -7,9 +7,9 @@ if(!isset($_SESSION)) {
 }
 
 // Include necessary files
-include("../../Connection/connection_string.php");
-include('../../include/denied.php');
-include('../../include/access.php');
+include("../../../Connection/connection_string.php");
+include('../../../include/denied.php');
+include('../../../include/access.php');
 
 $company = $_SESSION['companyid'];
 
@@ -23,8 +23,8 @@ if (isset($_POST['fromDate']) && isset($_POST['toDate'])) {
     $toDate = $_POST['toDate']; // Corrected this line
 
     // Sanitize input
-    $fromDate = htmlspecialchars($fromDate, ENT_QUOTES, 'UTF-8');
-    $toDate = htmlspecialchars($toDate, ENT_QUOTES, 'UTF-8');
+    $fromDate = htmlspecialchars($fromDate);
+    $toDate = htmlspecialchars($toDate);
     
     // Convert MM/DD/YYYY to YYYY-MM-DD
     function formatDate($date) {
