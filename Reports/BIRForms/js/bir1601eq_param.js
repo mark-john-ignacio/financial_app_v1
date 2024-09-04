@@ -4,7 +4,14 @@
 var sawt = [];
     $(document).ready(function(){
 
-        // $(".xcompute").autoNumeric('init',{mDec:2});
+        document.title = "BIR Form No. 1601EQ";
+        
+        $(".xcompute").autoNumeric('init', { 
+            mDec: 2, 
+            vMin: '-999999999999.99', // Very low minimum value
+            vMax: '999999999999.99'   // Very high maximum value
+        });
+
         $(".xcompute").on("click", function () {
             $(this).select();
         });

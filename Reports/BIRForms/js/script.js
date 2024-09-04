@@ -4,11 +4,6 @@
     $(document).ready(function() {
         var apiURL = $('#frmpos').data('api-url');
 
-        // $(".xcompute").autoNumeric('init', { 
-        //     mDec: 2, 
-        //     vMin: '-999999999999.99', // Very low minimum value
-        //     vMax: '999999999999.99'   // Very high maximum value
-        // });
         // Initialize iCheck 
         $(".ichecks input").iCheck({
             checkboxClass: 'icheckbox_square-blue',
