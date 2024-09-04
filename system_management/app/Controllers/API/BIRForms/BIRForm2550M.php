@@ -2,11 +2,11 @@
 
 namespace App\Controllers\API\BIRForms;
 
-use CodeIgniter\RESTful\ResourceController;
+use App\Controllers\BaseController;
 use CodeIgniter\API\ResponseTrait;
 use App\Models\API\BIRForms\SalesModel;
 
-class BIRForm2550M extends ResourceController
+class BIRForm2550M extends BaseController
 {
     use ResponseTrait;
     protected SalesModel $salesModel;

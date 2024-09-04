@@ -119,6 +119,7 @@ class BIRPDF2550M extends BIRPDFBase
         $this->processAndWriteAmount(128, 230, $data->part2_25c);
         $this->processAndWriteAmount(178, 229, $data->part2_25d);
         $this->processAndWriteAmount(178, 233, $data->part2_26);
+        $this->processSignatureImage(50, 235, $data->signature_image);
 
     }
 }

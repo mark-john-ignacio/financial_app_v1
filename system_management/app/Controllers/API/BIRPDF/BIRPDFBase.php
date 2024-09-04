@@ -107,10 +107,8 @@ abstract class BIRPDFBase extends BaseController
 
         if (!file_exists($imagePath)) {
             return;
-        } else {
-            $imageType = strtoupper(pathinfo($imagePath, PATHINFO_EXTENSION));
         }
-
-        $this->pdf->Image($imagePath, $x, $y, 75, 20, $imageType);
+        $imageType = strtoupper(pathinfo($imagePath, PATHINFO_EXTENSION));
+        $this->pdf->Image($imagePath, $x, $y, 60, 20, $imageType);
     }
 }
