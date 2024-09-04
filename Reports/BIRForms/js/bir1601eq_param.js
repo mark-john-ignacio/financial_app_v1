@@ -4,16 +4,16 @@
 var sawt = [];
     $(document).ready(function(){
 
-        $(".xcompute").autoNumeric('init',{mDec:2});
+        // $(".xcompute").autoNumeric('init',{mDec:2});
         $(".xcompute").on("click", function () {
             $(this).select();
         });
 
-        $(".ichecks input").iCheck({
-            checkboxClass: 'icheckbox_square-blue',
-            radioClass: 'iradio_square-blue',
-            increaseArea: '20%' // optional
-        });
+        // $(".ichecks input").iCheck({
+        //     checkboxClass: 'icheckbox_square-blue',
+        //     radioClass: 'iradio_square-blue',
+        //     increaseArea: '20%' // optional
+        // });
        // $(".birforms").hide();
 
         $(".yearpicker").datetimepicker({
