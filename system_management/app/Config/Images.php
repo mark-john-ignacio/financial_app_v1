@@ -28,4 +28,20 @@ class Images extends BaseConfig
         'gd'      => GDHandler::class,
         'imagick' => ImageMagickHandler::class,
     ];
+
+
+    public $defaultUploadPath = WRITEPATH . 'uploads/';
+    public $defaultMaxSize = 2; // MB
+    public $allowedTypes = ['image/jpeg', 'image/png', 'image/webp'];
+    public $defaultThumbnailSize = [];
+
+    public $uploadPaths = [
+        'signature' => WRITEPATH . 'uploads/bir_signature/'
+    ];
+
+    public $maxSizes = [
+    ];
+
+    public $thumbnailSizes = [
+    ];
 }

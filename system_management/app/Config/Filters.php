@@ -35,6 +35,7 @@ class Filters extends BaseFilters
         'pagecache'     => PageCache::class,
         'performance'   => PerformanceMetrics::class,
         'pin_verified'  => \App\Filters\PinVerifiedFilter::class,
+        'verify_api_request' => \App\Filters\VerifyApiRequestFilter::class,
     ];
 
     /**

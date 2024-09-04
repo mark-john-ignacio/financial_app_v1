@@ -96,6 +96,7 @@
 
 	@$qortype = array(array('ccode' => 'quote', 'cdesc' => 'Quotation'),array('ccode' => 'billing', 'cdesc' => 'Billing'));
 
+	$UrlBase = str_replace("Components/assets/","",$AttachUrlBase);
 ?>
 <html>
 
@@ -332,12 +333,18 @@
 											<div class="col-xs-5 nopadding">
 												<div class="fileinput fileinput-new" data-provides="fileinput">
 													<div class="fileinput-preview thumbnail" data-trigger="fileinput" style="width: 200px; height: 150px;">
-														<?php
-															if($comprow['bir_sig_sign']!="" && $comprow['bir_sig_sign']!=null){
-																echo '<img src="'.$comprow['bir_sig_sign'].'">';
-															}
-														?>
+														<img src="" alt="" id="signature-image">
 													</div>
+<script>
+	$(document).ready(function() {
+		const apiKey = "<?php echo $comprow['bir_sig_sign']; ?>";
+		const companyId = "<?php echo $comprow['id']; ?>";
+		const baseUrl = "<?php echo $UrlBase; ?>";
+
+		// Call the reusable function to fetch and display the signature image
+		fetchSignatureImage(apiKey, baseUrl, 'signature-image', companyId);
+	});
+</script>
 													<div>
 														<span class="btn default btn-file">
 														<span class="fileinput-new">
@@ -4867,7 +4874,7 @@
 
 			var formData = new FormData(this);
 
-			$.ajax ({
+			$.ajax({
 				url: "th_savecompany.php",
 				type: 'POST',
 				data: formData,
@@ -4875,33 +4882,59 @@
 				contentType: false,
 				processData: false,
 				async: false,
-				success: function( data ) {
-
-					if(data.trim()!="True"){
-						$("#CompanyAlertMsg").html("<b>Error Saving:</b>"+data.trim());
+				success: function(data) {
+					if (data.trim() != "True") {
+						$("#CompanyAlertMsg").html("<b>Error Saving:</b>" + data.trim());
 						$("#CompanyAlertMsg").show();
-		
+
 						$("#CompanyAlertDone").html("");
 						$("#CompanyAlertDone").hide();
-					}
-					else{
+					} else {
 						$("#CompanyAlertMsg").html("");
 						$("#CompanyAlertMsg").hide();
-		
+
 						$("#CompanyAlertDone").html("<b>SUCCESS: </b> Company details successfully updated!");
 						$("#CompanyAlertDone").show();
+
+						// Additional AJAX request to upload the image
+						const imgFormData = new FormData();
+						const fileInput = document.querySelector('input[name="img_sign"]');
+						const file = fileInput.files[0];
+						imgFormData.append('image', file);
+
+						const apiKey = "<?php echo $comprow['bir_sig_sign']; ?>";
+						const baseUrl = "<?php echo $UrlBase; ?>";
+						const companyId = "<?php echo $comprow['id']; ?>";
+
+						$.ajax({
+							url: baseUrl + "system_management/api/company/" + companyId +"/sign-img/create",
+							type: 'POST',
+							headers: {
+								'api-key': apiKey
+							},
+							data: imgFormData,
+							processData: false,
+							contentType: false,
+							success: function(response) {
+								console.log('Image uploaded successfully:', response);
+							},
+							error: function(xhr, status, error) {
+								console.error('Error uploading image:', error);
+								$("#CompanyAlertMsg").html("<b>Error uploading image:</b> " + status + " " + error);
+								$("#CompanyAlertMsg").show();
+								console.log(xhr);
+							}
+						});
 					}
 				},
-				error: function (req, status, err) {
-					//console.log('Something went wrong', status, err)
-					alert('Something went wrong\n'+status+"\n"+err);	
-					$("#CompanyAlertMsg").html("<b>Something went wrong: </b>"+status+ " " + err);
+				error: function(req, status, err) {
+					alert('Something went wrong\n' + status + "\n" + err);
+					$("#CompanyAlertMsg").html("<b>Something went wrong: </b>" + status + " " + err);
 					$("#CompanyAlertMsg").show();
 				}
-			
 			});
 		});
-		
+
 		$("#btnaddterms").on("click", function(){
 			var xy = 1;
 				$.ajax ({
@@ -7347,6 +7380,30 @@
 				}
 			}
 		
+		});
+	}
+
+	function fetchSignatureImage(apiKey, baseUrl, imgElementId, companyId) {
+		$.ajax({
+			url: baseUrl + "system_management/api/company/" + companyId + "/sign-img",
+			type: 'GET',
+			headers: {
+				'api-key': apiKey
+			},
+			xhrFields: {
+				responseType: 'blob' // Set the response type to blob to handle binary data
+			},
+			success: function(response) {
+				var reader = new FileReader();
+				reader.onload = function(e) {
+					var imageUrl = e.target.result;
+					$('#' + imgElementId).attr('src', imageUrl);
+				};
+				reader.readAsDataURL(response); // Convert the blob to a base64-encoded string
+			},
+			error: function(xhr, status, error) {
+				console.error('Error fetching image:', error);
+			}
 		});
 	}
 </script>
