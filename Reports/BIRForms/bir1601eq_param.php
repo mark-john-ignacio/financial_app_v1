@@ -1,28 +1,6 @@
 <?php 
-    if(!isset($_SESSION)) {
-        session_start();
-    }
-
-    $_SESSION['pageid'] = "BIRForms";
-
-    include("../../Connection/connection_string.php");
-    include('../../include/denied.php');
-    include('../../include/access.php');
-
-    $company = $_SESSION['companyid'];
-
-    $sql = "select * From company where compcode='$company'";
-    $result=mysqli_query($con,$sql);
+    include 'layouts/default.php';
     
-    if (!mysqli_query($con, $sql)) {
-        printf("Errormessage: %s\n", mysqli_error($con));
-    } 
-        
-    while($row = mysqli_fetch_array($result, MYSQLI_ASSOC))
-    {
-        $comprdo = $row;
-    }
-
    //get default EWT acct code
 	@$ewtpaydef = "";
 	@$ewtpaydefdsc = "";
@@ -76,53 +54,29 @@
         LEFT JOIN groupings d ON c.compcode = d.compcode AND c.csuppliertype = d.ccode AND d.ctype = 'SUPTYP'				
         WHERE a.compcode = '$company' AND MONTH(b.dapvdate) in ($months) AND YEAR(b.dapvdate) = '$year' AND  b.lapproved = 1 AND b.lvoid = 0 AND b.lcancelled = 0 and a.cacctno='$ewtpaydef' and IFNULL(a.cewtcode,'') <> '' Group By a.cewtcode, a.newtrate Order By a.cewtcode";
     
-    //echo $sql."<br>";
+    // echo $sql."<br>";
     $query = mysqli_query($con, $sql);               
     while($row = $query -> fetch_assoc()){
         $apv[] = $row;
     }
 ?>
 
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <link rel="stylesheet" type="text/css" href="../../global/plugins/font-awesome/css/font-awesome.min.css">
-    <link rel="stylesheet" type="text/css" href="../../Bootstrap/css/bootstrap.css?x=<?php echo time();?>">
-    <link rel="stylesheet" type="text/css" href="../../Bootstrap/css/bootstrap-datetimepicker.css">
-    <link rel="stylesheet" type="text/css" href="../../include/select2/select2.min.css">
-
-    <link rel="stylesheet" type="text/css" href="../../global/plugins/icheck/skins/all.css?x=<?php echo time();?>">
-
-    <link href="../../global/css/components.css?x=<?=time()?>" rel="stylesheet" type="text/css"/>
-
-    <script src="../../Bootstrap/js/jquery-3.2.1.min.js"></script>
-    <script src="../../js/bootstrap3-typeahead.min.js"></script>
-    <script src="../../include/select2/select2.full.min.js"></script>
-
-    <script src="../../global/plugins/icheck/icheck.min.js"></script>
-
-    <script src="../../include/autoNumeric.js"></script>
-	<script src="../../include/FormatNumber.js"></script>
-
-    <script src="../../Bootstrap/js/bootstrap.js"></script>
-    <script src="../../Bootstrap/js/moment.js"></script>
-    <script src="../../Bootstrap/js/bootstrap-datetimepicker.min.js"></script>
-
-    
-    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-    <title>MyxFinancials</title>
-</head>
 <body>
 
-    <form action="bir1601eq.php" name="frmpos" id="frmpos" method="post" target="_blank">
+    <form action="bir1601eq.php" name="frmpos" id="frmpos" method="post" target="_blank" data-api-url="<?= $UrlBase . "system_management/api/pdf/1601eq"?>">
         <div class="container">
             <br>
             <div class="row">
                 <div class="col-sm-10">
                 &nbsp;
                 </div>
-                <div class="col-sm-2">
+                <!-- <div class="col-sm-2">
                     <button type="submit" class="btn btn-success btn-sm btn-block"><i class="fa fa-print"></i>&nbsp;PRINT PDF</button>
+                </div> -->
+                <div class="col-sm-2">
+                    <button type="button" id="btnPrintPdf" class="btn btn-success btn-sm btn-block">
+                        <i class="fa fa-print"></i>&nbsp;PRINT PDF
+                    </button>
                 </div>
             </div>
 
@@ -273,8 +227,10 @@
                                         <td align="center" nowrap> <b> Tax Withheld (Consolidated for the Quarter) </b> </td>
                                     </tr>
                                     <?php
-                                        $rowcnt = 0;
 
+
+                                        $rowcnt = 0;
+                                        
                                         $cnt = 12;
                                         $totEWT = 0;
                                         foreach($apv as $row){
@@ -359,10 +315,10 @@
                                         <td align="center" nowrap style="vertical-align: middle;"> If over-remittance, mark one (1) box only</td>
                                         <td align="center" width="10px" style="vertical-align: middle"> <input tabindex="3" type="checkbox" id="txt1601eq_ifovr1" name="txt1601eq_ifovr1" value="1"> </td>
                                         <td style="vertical-align: middle">&nbsp;To be refunded </td>
-                                        <td align="center" width="10px" style="vertical-align: middle"> <input tabindex="3" type="checkbox" id="txt1601eq_ifovr2" name="txt1601eq_ifovr2" value="1"> </td> 
+                                        <td align="center" width="10px" style="vertical-align: middle"> <input tabindex="3" type="checkbox" id="txt1601eq_ifovr2" name="txt1601eq_ifovr2" value="2"> </td> 
                                         <td style="vertical-align: middle">&nbsp;To be issued Tax Credit Certificate </td>
-                                        <td align="center" width="10px" style="vertical-align: middle"> <input tabindex="3" type="checkbox" id="txt1601eq_ifovr3" name="txt1601eq_ifovr3" value="1"> </td>
-                                        <td style="vertical-align: middle">&nbsp;To be carried over to the next quarter within the same calendar year (not applicable for succeeding year </td>
+                                        <td align="center" width="10px" style="vertical-align: middle"> <input tabindex="3" type="checkbox" id="txt1601eq_ifovr3" name="txt1601eq_ifovr3" value="3"> </td>
+                                        <td style="vertical-align: middle">&nbsp;To be carried over to the next quarter within the same calendar year (not applicable for succeeding year) </td>
                                     </tr>
                                 </table>
                             </td>
@@ -444,102 +400,5 @@
 
 </body>
 </html>
-
-<script type="text/javascript">
-    var sawt = [];
-    $(document).ready(function(){
-
-        $(".xcompute").autoNumeric('init',{mDec:2});
-        $(".xcompute").on("click", function () {
-            $(this).select();
-        });
-
-        $(".ichecks input").iCheck({
-            checkboxClass: 'icheckbox_square-blue',
-            radioClass: 'iradio_square-blue',
-            increaseArea: '20%' // optional
-        });
-       // $(".birforms").hide();
-
-        $(".yearpicker").datetimepicker({
-            defaultDate: moment(),
-            viewMode: 'years',
-            format: 'YYYY'
-        })
-
-        $("#selfrmname").select2({
-            placeholder: "Please select a form"
-        }); 
-
-        $("#selfil").on("change", function(){
-            $x = $(this).val();
-            if($x=="Monthly"){
-                $("#divqr").hide();
-                $("#divmn").show();
-            }else if($x=="Quarterly"){
-                $("#divqr").show();
-                $("#divmn").hide();
-            }else if($x=="Annually"){
-                $("#divqr").hide();
-                $("#divmn").hide();
-            }
-        });
-
-        $("#selfrmname").on("change", function(){
-            $xc = $(this).find(':selected').attr('data-param')
-
-            $('.birforms').each(function(i, obj) {
-                if($(this).attr("id")==$xc){
-                    $(this).show();
-                }else{
-                    $(this).hide();
-                }
-            });
-            
-        });
-        
-
-        $("#btnView").on("click", function(){
-            $("#frmBIRForm").attr("action", $("#selfrmname").val());
-            $("#frmBIRForm").submit();
-        });
-
-        $(".xcompute").on("keyup", function(){   
-            $TotalTaxesWithheld = $("#txt1601eq_totewt").val().replace(/,/g,'');
-
-            $less1 = ($("#txt1601eq_less1").val()=="") ? 0 : $("#txt1601eq_less1").val().replace(/,/g,'');
-            $less2 = ($("#txt1601eq_less2").val()=="") ? 0 : $("#txt1601eq_less2").val().replace(/,/g,'');
-            $taxrmmited = ($("#txt1601eq_prev").val()=="") ? 0 : $("#txt1601eq_prev").val().replace(/,/g,'');
-            $overremit = ($("#txt1601eq_overr").val()=="") ? 0 : $("#txt1601eq_overr").val().replace(/,/g,''); 
-            $othrpay = ($("#txt1601eq_otrpay").val()=="") ? 0 : $("#txt1601eq_otrpay").val().replace(/,/g,'');
-
-            $totrem = parseFloat($less1) + parseFloat($less2) + parseFloat($taxrmmited) + parseFloat($overremit) + parseFloat($othrpay);
-            $("#txt1601eq_totrem").val($totrem);
-            $("#txt1601eq_totrem").autoNumeric('destroy');
-			$("#txt1601eq_totrem").autoNumeric('init',{mDec:2});
-
-
-            $totsdue = parseFloat($TotalTaxesWithheld) - parseFloat($totrem);
-            $("#txt1601eq_taxdue").val($totsdue);
-            $("#txt1601eq_taxdue").autoNumeric('destroy');
-			$("#txt1601eq_taxdue").autoNumeric('init',{mDec:2});
-
-
-            $penaltysur = ($("#txt1601eq_pensur").val()=="") ? 0 : $("#txt1601eq_pensur").val().replace(/,/g,'');
-            $penaltyint = ($("#txt1601eq_penint").val()=="") ? 0 : $("#txt1601eq_penint").val().replace(/,/g,'');
-            $penaltycom = ($("#txt1601eq_pencom").val()=="") ? 0 : $("#txt1601eq_pencom").val().replace(/,/g,'');
-
-            $totpenalty = parseFloat($penaltysur) + parseFloat($penaltyint) + parseFloat($penaltycom);
-            $("#txt1601eq_pentot").val($totpenalty);
-            $("#txt1601eq_pentot").autoNumeric('destroy');
-			$("#txt1601eq_pentot").autoNumeric('init',{mDec:2});
-
-            txt1601eq_gtot = $totsdue + $totpenalty;
-            $("#txt1601eq_gtot").val(txt1601eq_gtot);
-            $("#txt1601eq_gtot").autoNumeric('destroy');
-			$("#txt1601eq_gtot").autoNumeric('init',{mDec:2});
-        });
-        
-    })
-
-</script>
+<script src="js/script.js"></script>
+<script src="js/bir1601eq_param.js"></script>
