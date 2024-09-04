@@ -1,4 +1,6 @@
-
+(function($) {
+    'use strict';
+    
 var sawt = [];
     $(document).ready(function(){
 
@@ -93,4 +95,6 @@ var sawt = [];
 			$("#txt1601eq_gtot").autoNumeric('init',{mDec:2});
         });
         
-    })
+    });
+    
+})(jQuery);
