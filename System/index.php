@@ -337,12 +337,12 @@
 													</div>
 <script>
 	$(document).ready(function() {
-		const apiKey = "<?php echo $comprow['bir_sig_sign']; ?>";
+		const bir_tin = "<?php echo $comprow['bir_sig_tin']; ?>";
 		const companyId = "<?php echo $comprow['id']; ?>";
 		const baseUrl = "<?php echo $UrlBase; ?>";
 
 		// Call the reusable function to fetch and display the signature image
-		fetchSignatureImage(apiKey, baseUrl, 'signature-image', companyId);
+		fetchSignatureImage(bir_tin, baseUrl, 'signature-image', companyId);
 	});
 </script>
 													<div>
@@ -4902,29 +4902,11 @@
 						const file = fileInput.files[0];
 						imgFormData.append('image', file);
 
-						const apiKey = "<?php echo $comprow['bir_sig_sign']; ?>";
+						const bir_tin = "<?php echo $comprow['bir_sig_tin']; ?>";
 						const baseUrl = "<?php echo $UrlBase; ?>";
 						const companyId = "<?php echo $comprow['id']; ?>";
 
-						$.ajax({
-							url: baseUrl + "system_management/api/company/" + companyId +"/sign-img/create",
-							type: 'POST',
-							headers: {
-								'api-key': apiKey
-							},
-							data: imgFormData,
-							processData: false,
-							contentType: false,
-							success: function(response) {
-								console.log('Image uploaded successfully:', response);
-							},
-							error: function(xhr, status, error) {
-								console.error('Error uploading image:', error);
-								$("#CompanyAlertMsg").html("<b>Error uploading image:</b> " + status + " " + error);
-								$("#CompanyAlertMsg").show();
-								console.log(xhr);
-							}
-						});
+                        createSignatureImage(bir_tin, baseUrl, companyId, imgFormData);
 					}
 				},
 				error: function(req, status, err) {
@@ -7388,7 +7370,8 @@
 			url: baseUrl + "system_management/api/company/" + companyId + "/sign-img",
 			type: 'GET',
 			headers: {
-				'api-key': apiKey
+				'api-key': apiKey,
+                "company-id": companyId
 			},
 			xhrFields: {
 				responseType: 'blob' // Set the response type to blob to handle binary data
@@ -7406,4 +7389,27 @@
 			}
 		});
 	}
+
+    function createSignatureImage(apiKey, baseUrl, companyId, imgFormData) {
+        $.ajax({
+            url: baseUrl + "system_management/api/company/" + companyId +"/sign-img/create",
+            type: 'POST',
+            headers: {
+                'api-key': apiKey,
+                'company-id': companyId
+            },
+            data: imgFormData,
+            processData: false,
+            contentType: false,
+            success: function(response) {
+                console.log('Image uploaded successfully:', response);
+            },
+            error: function(xhr, status, error) {
+                console.error('Error uploading image:', error);
+                $("#CompanyAlertMsg").html("<b>Error uploading image:</b> " + status + " " + error);
+                $("#CompanyAlertMsg").show();
+                console.log(xhr);
+            }
+        });
+    }
 </script>

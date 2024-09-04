@@ -100,22 +100,15 @@ abstract class BIRPDFBase extends BaseController
     // TODO: Move image inside the ci4 project to make it secure
     // TODO: Create an API for fetching the image
     // TODO: Create a module for setting signature image
+
     protected function processSignatureImage($x, $y, $imageFileName)
     {
         $imagePath = WRITEPATH . 'uploads/bir_signature/' . $imageFileName;
-        $placeholderPath = WRITEPATH . 'uploads/bir_signature/placeholder.webp';
 
         if (!file_exists($imagePath)) {
-            $imagePath = $placeholderPath;
-            $imageType = 'WEBP';
-        } else {
-            $imageType = strtoupper(pathinfo($imagePath, PATHINFO_EXTENSION));
+            return;
         }
-
-        if (!file_exists($imagePath)) {
-            throw new \Exception("Placeholder image file not found: $imagePath");
-        }
-
-        $this->pdf->Image($imagePath, $x, $y, 75, 20, $imageType);
+        $imageType = strtoupper(pathinfo($imagePath, PATHINFO_EXTENSION));
+        $this->pdf->Image($imagePath, $x, $y, 60, 20, $imageType);
     }
 }
