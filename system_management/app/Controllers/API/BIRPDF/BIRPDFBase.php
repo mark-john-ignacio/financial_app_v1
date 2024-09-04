@@ -89,10 +89,12 @@ abstract class BIRPDFBase extends BaseController
 
     protected function processAndWriteAmount($x, $y, $amountString, $fieldWidth = 25)
     {
-        $cleanedAmountString = str_replace(',', '', $amountString);
-        $number = (float)$cleanedAmountString;
-        $amountFormatted = number_format($number, 2, '.', '');
-        $this->writeRightAlignedText($x, $y, $amountFormatted, $fieldWidth);
+        if ($amountString) {
+            $cleanedAmountString = str_replace(',', '', $amountString);
+            $number = (float)$cleanedAmountString;
+            $amountFormatted = number_format($number, 2, '.', '');
+            $this->writeRightAlignedText($x, $y, $amountFormatted, $fieldWidth);
+        }
     }
 
     // TODO: Move image inside the ci4 project to make it secure

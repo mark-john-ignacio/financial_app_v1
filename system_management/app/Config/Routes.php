@@ -125,7 +125,9 @@ $routes->group('', ['filter' => 'pin_verified'], function ($routes) {
 
 $routes->post('api/pdf/0619e', 'API\\BIRPDF\\BIRPDF0619E::generatePdf');
 
-$routes->post('api/pdf2550q', 'API\\BIRPDF\\BIRPDF2550Q::generatePdf');
+$routes->post('api/pdf/2550q', 'API\\BIRPDF\\BIRPDF2550Q::generatePdf');
+
+$routes->post('api/pdf/1601eq', 'API\\BIRPDF\\BIRPDF1601EQ::generatePdf');
 
 $routes->post('api/pdf/2550m', 'API\\BIRPDF\\BIRPDF2550M::generatePdf');
 
