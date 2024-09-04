@@ -2,70 +2,63 @@
     'use strict';
 
     $(document).ready(function() {
-
         document.title = "BIR Form No. 0619-E";
 
+        // AutoNumeric configuration
+        const autoNumericOptions = {
+            digitGroupSeparator: ',',
+            decimalCharacter: '.',
+            decimalPlaces: 2,
+            minimumValue: -99999999999.99,
+            maximumValue: 99999999999.99,
+            allowDecimalPadding: false,  // Allow decimal input
+            watchExternalChanges: true
+        };
 
-        // Cache jQuery selectors
-        const $amountOfRemittance = $('#amount_of_remittance');
-        const $amountRemittedPrevious = $('#amount_remitted_previous');
-        const $netAmountOfRemittance = $('#net_amount_of_remittance');
-        const $penaltySurcharge = $('#penalty_surcharge');
-        const $penaltyInterest = $('#penalty_interest');
-        const $penaltyCompromise = $('#penalty_compromise');
-        const $totalPenalties = $('#total_penalties');
-        const $totalAmountOfRemittance = $('#total_amount_of_remittance');
-        const $xcompute = $('.xcompute');
+        // Initialize AutoNumeric for all input fields
+        const fields = [
+            'amount_of_remittance',
+            'amount_remitted_previous',
+            'net_amount_of_remittance',
+            'penalty_surcharge',
+            'penalty_interest',
+            'penalty_compromise',
+            'total_penalties',
+            'total_amount_of_remittance'
+        ];
 
-        // Set limits
-        const minLimit = -999999999999.99;
-        const maxLimit = 999999999999.99;
+        const autoNumericInstances = {};
 
-        // Function to enforce limits
-        function enforceLimits($element) {
-            $element.on('input', function() {
-                let value = parseFloat($element.val()) || 0;
-                if (value < minLimit) {
-                    value = minLimit;
-                } else if (value > maxLimit) {
-                    value = maxLimit;
-                }
-                $element.val(value.toFixed(2));
-            });
-        }
-
-        // Apply limits to all .xcompute fields
-        $xcompute.each(function() {
-            enforceLimits($(this));
+        fields.forEach(field => {
+            autoNumericInstances[field] = new AutoNumeric(`#${field}`, autoNumericOptions);
         });
 
         // Event Listeners
-        $amountOfRemittance.add($amountRemittedPrevious).on('input', calculateNetAmount);
-        $penaltySurcharge.add($penaltyInterest).add($penaltyCompromise).on('input', calculateTotalPenalties);
-
-        $xcompute.on('input', calculateTotalAmount);
+        $('#amount_of_remittance, #amount_remitted_previous').on('input', calculateNetAmount);
+        $('#penalty_surcharge, #penalty_interest, #penalty_compromise').on('input', calculateTotalPenalties);
+        $('.xcompute').on('input', calculateTotalAmount);
 
         // Functions
         function calculateNetAmount() {
-            const amount14 = parseFloat($amountOfRemittance.val()) || 0;
-            const amount15 = parseFloat($amountRemittedPrevious.val()) || 0;
+            const amount14 = autoNumericInstances.amount_of_remittance.getNumber() || 0;
+            const amount15 = autoNumericInstances.amount_remitted_previous.getNumber() || 0;
             const netAmount = amount14 - amount15;
-            $netAmountOfRemittance.val(netAmount.toFixed(2));
+            autoNumericInstances.net_amount_of_remittance.set(netAmount);
         }
 
         function calculateTotalPenalties() {
-            const surcharge = parseFloat($penaltySurcharge.val()) || 0;
-            const interest = parseFloat($penaltyInterest.val()) || 0;
-            const compromise = parseFloat($penaltyCompromise.val()) || 0;
+            const surcharge = autoNumericInstances.penalty_surcharge.getNumber() || 0;
+            const interest = autoNumericInstances.penalty_interest.getNumber() || 0;
+            const compromise = autoNumericInstances.penalty_compromise.getNumber() || 0;
             const totalPenalties = surcharge + interest + compromise;
-            $totalPenalties.val(totalPenalties.toFixed(2));
+            autoNumericInstances.total_penalties.set(totalPenalties);
         }
 
         function calculateTotalAmount() {
-            const netAmount = parseFloat($netAmountOfRemittance.val()) || 0;
-            const totalPenalties = parseFloat($totalPenalties.val()) || 0;
+            const netAmount = autoNumericInstances.net_amount_of_remittance.getNumber() || 0;
+            const totalPenalties = autoNumericInstances.total_penalties.getNumber() || 0;
             const totalAmount = netAmount + totalPenalties;
-            $totalAmountOfRemittance.val(totalAmount.toFixed(2));
+            autoNumericInstances.total_amount_of_remittance.set(totalAmount);
         }
     });
 })(jQuery);

@@ -52,6 +52,7 @@
     <script src="../../global/plugins/icheck/icheck.min.js"></script>
 
     <script src="../../include/autoNumeric.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/autonumeric@4.5.4/dist/autoNumeric.min.js"></script>
 	<script src="../../include/FormatNumber.js"></script>
 
     <script src="../../Bootstrap/js/bootstrap.js"></script>
