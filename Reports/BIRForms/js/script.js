@@ -4,7 +4,6 @@
     $(document).ready(function() {
         var apiURL = $('#frmpos').data('api-url');
 
-
         // Initialize iCheck 
         $(".ichecks input").iCheck({
             checkboxClass: 'icheckbox_square-blue',

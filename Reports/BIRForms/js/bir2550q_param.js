@@ -1,6 +1,8 @@
 (function($) {
     'use strict';
     
+    document.title = "BIR Form No. 2550Q";
+    
         function getCleanedValue(selector) {
             const value = $(selector).val();
             // return (value === "" || value === undefined) ? 0 : value.replace(/,/g, '');
@@ -213,6 +215,11 @@
           
         $(document).ready(function() {
 
+            $(".xcompute").autoNumeric('init', { 
+                mDec: 2, 
+                vMin: '-999999999999.99', // Very low minimum value
+                vMax: '999999999999.99'   // Very high maximum value
+            });
         
             // $(".ichecks input").iCheck({
             //     checkboxClass: 'icheckbox_square-blue',
