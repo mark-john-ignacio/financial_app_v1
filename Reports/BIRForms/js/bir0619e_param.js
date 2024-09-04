@@ -17,6 +17,27 @@
         const $totalAmountOfRemittance = $('#total_amount_of_remittance');
         const $xcompute = $('.xcompute');
 
+        // Set limits
+        const minLimit = -999999999999.99;
+        const maxLimit = 999999999999.99;
+
+        // Function to enforce limits
+        function enforceLimits($element) {
+            $element.on('input', function() {
+                let value = parseFloat($element.val()) || 0;
+                if (value < minLimit) {
+                    value = minLimit;
+                } else if (value > maxLimit) {
+                    value = maxLimit;
+                }
+                $element.val(value.toFixed(2));
+            });
+        }
+
+        // Apply limits to all .xcompute fields
+        $xcompute.each(function() {
+            enforceLimits($(this));
+        });
 
         // Event Listeners
         $amountOfRemittance.add($amountRemittedPrevious).on('input', calculateNetAmount);
