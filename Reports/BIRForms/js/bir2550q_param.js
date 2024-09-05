@@ -216,9 +216,10 @@
         $(document).ready(function() {
 
             $(".xcompute").autoNumeric('init', { 
-                mDec: 2, 
+                // mDec: 2, 
                 vMin: '-999999999999.99', // Very low minimum value
-                vMax: '999999999999.99'   // Very high maximum value
+                vMax: '999999999999.99',   // Very high maximum value
+                aPad: false
             });
         
             // $(".ichecks input").iCheck({
