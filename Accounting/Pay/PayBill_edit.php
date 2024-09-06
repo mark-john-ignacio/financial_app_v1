@@ -840,7 +840,9 @@ else{
 		<button type="button" id="btn2307" style="display: none;"></button>
 	</form>
 
-
+<?php
+	$UrlBase = str_replace("Components/assets/","system_management/",$AttachUrlBase);
+?>
 </body>
 </html>
 <!-- <script src="../../Reports/BIRForms/js/script.js"></script> -->
@@ -859,8 +861,9 @@ else{
                 success: function(response) {
                     console.log('Form submitted successfully');
                     console.log('Data received:', response);
+					const apiUrl = "<?=$UrlBase?>api/pdf/2307"
 
-					sendAjaxRequest(response, "sample.com" )
+					sendAjaxRequest(response, apiUrl)
 					
                 },
                 error: function(xhr, status, error) {
@@ -875,6 +878,7 @@ else{
 </script>
 
 <script>
+	
 	function sendAjaxRequest(formData, apiURL) {
             $.ajax({
                 url: apiURL,

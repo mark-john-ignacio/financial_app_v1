@@ -8,7 +8,7 @@ class BIRPDF2307 extends BIRPDFBase
     {
         $json = $this->request->getJSON();
         $this->loadTemplate('BIRForm2307.pdf');
-        $fileName = 'BIR_Form_' . $json->taxpayer_tin . '_' . date('Y-m-d') . '.pdf';
+        // $fileName = 'BIR_Form_' . $json->taxpayer_tin . '_' . date('Y-m-d') . '.pdf';
         return parent::generatePdf($json, $fileName);
     }
 
