@@ -131,6 +131,8 @@ $routes->post('api/pdf/1601eq', 'API\\BIRPDF\\BIRPDF1601EQ::generatePdf');
 
 $routes->post('api/pdf/2550m', 'API\\BIRPDF\\BIRPDF2550M::generatePdf');
 
+$routes->post('api/pdf/2307', 'API\\BIRPDF\\BIRPDF2307::generatePdf');
+
 $routes->post('api/bir-forms/2550m/get-sales-month', 'API\\BIRForms\\BIRForm2550M::getSalesPerMonth');
 
 $routes->group('', ['filter' => 'verify_api_request'], function ($routes) {
