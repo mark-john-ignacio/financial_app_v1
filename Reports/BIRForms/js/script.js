@@ -3,7 +3,7 @@
 
     $(document).ready(function() {
         var apiURL = $('#frmpos').data('api-url');
-
+        console.log
         // Initialize iCheck 
         $(".ichecks input").iCheck({
             checkboxClass: 'icheckbox_square-blue',
@@ -39,6 +39,7 @@
             return formData;
         }
 
+        
         function sendAjaxRequest(formData, apiURL) {
             $.ajax({
                 url: apiURL,

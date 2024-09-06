@@ -830,13 +830,123 @@ else{
 		<input type="submit" style="display: none" id="btncheck"> 
 	</form>
 
-	<form action="bir2307.php" name="frmbir2307" id="frmbir2307" method="post" target="_blank"> 
+	<!-- <form action="bir2307.php" name="frmbir2307" id="frmbir2307" method="post" target="_blank"> 
 		<input type="hidden" name="id" id="id" value="<?php echo $ccvno;?>">
 		<input type="submit" style="display: none" id="btn2307"> 
+	</form> -->
+
+	<form id="frmbir2307" method="post">
+		<input type="hidden" name="id" id="id" value="<?php echo $ccvno; ?>">
+		<button type="button" id="btn2307" style="display: none;"></button>
 	</form>
+
 
 </body>
 </html>
+<!-- <script src="../../Reports/BIRForms/js/script.js"></script> -->
+
+<script>
+    $(document).ready(function() {
+        $('#btn2307').click(function() {
+            // Serialize the form data
+            var formData = $('#frmbir2307').serialize();
+            
+            // Send the form data using AJAX
+            $.ajax({
+                url: 'bir2307.php',
+                type: 'POST',
+                data: formData,
+                success: function(response) {
+                    console.log('Form submitted successfully');
+                    console.log('Data received:', response);
+
+					sendAjaxRequest(response, "sample.com" )
+					
+                },
+                error: function(xhr, status, error) {
+                    console.error('Error:', error);
+                }
+            });
+        });
+
+        // Trigger the submit button click (optional if needed)
+        $('#submitBtn').click();
+    });
+</script>
+
+<script>
+	function sendAjaxRequest(formData, apiURL) {
+            $.ajax({
+                url: apiURL,
+                type: "POST",
+                contentType: "application/json",
+                data: JSON.stringify(formData),
+                xhrFields: {
+                    responseType: 'blob'
+                },
+                success: function(blob, status, xhr) {
+                    handleBlobResponse(blob, xhr);
+                },
+                error: function(xhr, status, error) {
+                    console.error("AJAX error:", {xhr: xhr, status: status, error: error});
+                    handleError(xhr, status, error);
+                }
+            });
+        }
+
+        function handleBlobResponse(blob, xhr) {
+            var filename = xhr.getResponseHeader('X-Filename') || "generated.pdf";
+            var blobUrl = window.URL.createObjectURL(blob);
+            openBlobUrlInNewTab(blobUrl, filename);
+            revokeBlobUrl(blobUrl);
+        }
+
+        function openBlobUrlInNewTab(blobUrl, filename) {
+            var newTab = window.open(blobUrl, '_blank');
+            if (newTab) {
+                newTab.onload = function() {
+                    newTab.document.title = filename;
+                };
+            } else {
+                alert("Please allow popups for this website");
+            }
+        }
+
+        function revokeBlobUrl(blobUrl) {
+            setTimeout(function() {
+                window.URL.revokeObjectURL(blobUrl);
+            }, 5000);
+        }
+
+        function handleError(xhr, status, error) {
+            console.error("Error status:", status);
+            console.error("Error:", error);
+
+            if (xhr.responseType === 'blob') {
+                var reader = new FileReader();
+                reader.onload = function() {
+                    try {
+                        var errorResponse = JSON.parse(this.result);
+                        console.error("Server error response:", errorResponse);
+                        alert("Error: " + (errorResponse.message || "An unknown error occurred"));
+                    } catch (e) {
+                        console.error("Unable to parse error response:", this.result);
+                        alert("An error occurred: " + this.result);
+                    }
+                };
+                reader.onerror = function() {
+                    console.error("FileReader error:", reader.error);
+                    alert("An error occurred while reading the server response");
+                };
+                reader.readAsText(xhr.response);
+            } else {
+                console.error("Server response:", xhr.responseText);
+                alert("An error occurred: " + xhr.responseText);
+            }
+        }
+</script>
+
+
 
 <script type="text/javascript">
 

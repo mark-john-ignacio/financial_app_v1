@@ -40,10 +40,10 @@
 	
 		}
 	}
-	
-	//echo "<pre>";
-	//print_r($json2);
-	//echo "</pre>";
+
+	// echo "<pre>";
+	// print_r($json2);
+	// echo "</pre>";
 
 	echo $xc;
 
