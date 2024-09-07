@@ -80,21 +80,88 @@
 	$arrqtri = array('07','08','09');
 	$arrqfor = array('10','11','12');
 
-	$dmonth = date("m", strtotime($data['dpaydate']));
-	$dyear = date("Y", strtotime($data['dpaydate']));
+	// Get the reporting_period_type from the company table
+	$sql = "select * From company where compcode='$company'";
+	$result=mysqli_query($con,$sql);
+	while($row = mysqli_fetch_array($result, MYSQLI_ASSOC))
+	{
+		$data['reporting_period_type'] = $row['reporting_period_type'];
+	}
+	// if reporting_period_type is fiscal, Get the fiscal_month_start_end from the company table
+	if ($data['reporting_period_type'] == 'fiscal') {
+		$sql = "select * From company where compcode='$company'";
+		$result=mysqli_query($con,$sql);
+		while($row = mysqli_fetch_array($result, MYSQLI_ASSOC))
+		{
+			$data['fiscal_month_start_end'] = $row['fiscal_month_start_end'];
+		}
+	}
+	// create condition for the date1 and date2 based on the fiscal_month_start_end, fiscal_month_start_end is a two digit month value
+	if ($data['reporting_period_type'] == 'fiscal') {
+		$data = computeFiscalDates($data);
+	// else if reporting_period_type is calendar, use the code below
+	}else{
+	
+		$dmonth = date("m", strtotime($data['dpaydate']));
+		$dyear = date("Y", strtotime($data['dpaydate']));
 
-	if(in_array($dmonth, $arrqone)){
-		$data['date1'] = "0131".$dyear;
-		$data['date2'] = "0331".$dyear;
-	}elseif(in_array($dmonth, $arrqtwo)){
-		$data['date1'] = "0401".$dyear;
-		$data['date2'] = "0630".$dyear;
-	}elseif(in_array($dmonth, $arrqtri)){
-		$data['date1'] = "0701".$dyear;
-		$data['date2'] = "0930".$dyear;
-	}elseif(in_array($dmonth, $arrqfor)){
-		$data['date1'] = "1001".$dyear;
-		$data['date2'] = "1231".$dyear;
+		if(in_array($dmonth, $arrqone)){
+			$data['date1'] = "0131".$dyear;
+			$data['date2'] = "0331".$dyear;
+		}elseif(in_array($dmonth, $arrqtwo)){
+			$data['date1'] = "0401".$dyear;
+			$data['date2'] = "0630".$dyear;
+		}elseif(in_array($dmonth, $arrqtri)){
+			$data['date1'] = "0701".$dyear;
+			$data['date2'] = "0930".$dyear;
+		}elseif(in_array($dmonth, $arrqfor)){
+			$data['date1'] = "1001".$dyear;
+			$data['date2'] = "1231".$dyear;
+		}
+	}
+
+	function computeFiscalDates($data) {
+		$dmonth = date("m", strtotime($data['dpaydate']));
+		$dyear = date("Y", strtotime($data['dpaydate']));
+		$fiscal_month_start_end = $data['fiscal_month_start_end'];
+	
+		// Define fiscal quarters based on the start month
+		$quarters = [
+			'01' => [['01', '02', '03'], ['04', '05', '06'], ['07', '08', '09'], ['10', '11', '12']],
+			'02' => [['02', '03', '04'], ['05', '06', '07'], ['08', '09', '10'], ['11', '12', '01']],
+			'03' => [['03', '04', '05'], ['06', '07', '08'], ['09', '10', '11'], ['12', '01', '02']],
+			'04' => [['04', '05', '06'], ['07', '08', '09'], ['10', '11', '12'], ['01', '02', '03']],
+			'05' => [['05', '06', '07'], ['08', '09', '10'], ['11', '12', '01'], ['02', '03', '04']],
+			'06' => [['06', '07', '08'], ['09', '10', '11'], ['12', '01', '02'], ['03', '04', '05']],
+			'07' => [['07', '08', '09'], ['10', '11', '12'], ['01', '02', '03'], ['04', '05', '06']],
+			'08' => [['08', '09', '10'], ['11', '12', '01'], ['02', '03', '04'], ['05', '06', '07']],
+			'09' => [['09', '10', '11'], ['12', '01', '02'], ['03', '04', '05'], ['06', '07', '08']],
+			'10' => [['10', '11', '12'], ['01', '02', '03'], ['04', '05', '06'], ['07', '08', '09']],
+			'11' => [['11', '12', '01'], ['02', '03', '04'], ['05', '06', '07'], ['08', '09', '10']],
+			'12' => [['12', '01', '02'], ['03', '04', '05'], ['06', '07', '08'], ['09', '10', '11']],
+		];
+	
+		// Get the quarters for the given fiscal start month
+		$fiscalQuarters = $quarters[$fiscal_month_start_end];
+	
+		// Determine the quarter based on the payment month
+		foreach ($fiscalQuarters as $index => $quarter) {
+			if (in_array($dmonth, $quarter)) {
+				$data['date1'] = $quarter[0] . "01" . $dyear;
+				$data['date2'] = $quarter[2] . "30" . $dyear;
+				// Adjust the end date for February
+				if ($quarter[2] == '02') {
+					$data['date2'] = $quarter[2] . "28" . $dyear;
+				}
+				// Adjust the end date for months with 31 days
+				if (in_array($quarter[2], ['01', '03', '05', '07', '08', '10', '12'])) {
+					$data['date2'] = $quarter[2] . "31" . $dyear;
+				}
+				break;
+			}
+		}
+	
+		return $data;
 	}
 
 	// Get signature image
