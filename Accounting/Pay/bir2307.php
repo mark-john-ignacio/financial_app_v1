@@ -84,7 +84,7 @@
 	$dyear = date("Y", strtotime($data['dpaydate']));
 
 	if(in_array($dmonth, $arrqone)){
-		$data['date1'] = "0131".$dyear;
+		$data['date1'] = "01/01/".$dyear;
 		$data['date2'] = "0331".$dyear;
 	}elseif(in_array($dmonth, $arrqtwo)){
 		$data['date1'] = "0401".$dyear;
