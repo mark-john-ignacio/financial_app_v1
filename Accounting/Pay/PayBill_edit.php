@@ -573,7 +573,7 @@ if (mysqli_num_rows($sqlchk)!=0) {
 					<button type="button" class="btn btn-info btn-sm" tabindex="6" onClick="printVoucher();" id="print-voucher" name="print-voucher">
 					Print <br>Voucher
 					</button>
-					<button type="button" class="btn btn-info btn-sm" tabindex="6" onClick="printchk();" id="btnPrint" name="btnPrint">
+					<button type="button" class="btn btn-info btn-sm" tabindex="6" onClick="print2307();" id="print-2307" name="print-2307">
 						Print <br>2307
 					</button>
 					<button type="button" class="btn btn-info btn-sm" tabindex="6" onClick="printCheck();" id="print-check" name="print-check">
@@ -1036,7 +1036,7 @@ else{
 		}
 	  }
 	  else if(e.keyCode == 80 && e.ctrlKey){//CTRL+P
-		if($("#btnPrint").is(":disabled")==false){
+		if($("#print-2307").is(":disabled")==false){
 			e.preventDefault();
 			printchk();
 		}
@@ -2112,7 +2112,7 @@ else{
 		$("#btnMain").attr("disabled", false);
 		$("#btnNew").attr("disabled", false);
 		$("#print-voucher").attr("disabled", false);
-		$("#btnPrint").attr("disabled", false);
+		$("#print-2307").attr("disabled", false);
 		$("#print-check").attr("disabled", false);
 		$("#btnEdit").attr("disabled", false);
 
@@ -2156,7 +2156,9 @@ else{
 				
 				$("#btnMain").attr("disabled", true);
 				$("#btnNew").attr("disabled", true);
-				$("#btnPrint").attr("disabled", true);
+				$("#print-voucher").attr("disabled", true);
+				$("#print-2307").attr("disabled", true);
+				$("#print-check").attr("disabled", true);
 				$("#btnEdit").attr("disabled", true);		  
 
 				if($("#selpayment").val()=="cash"){
@@ -2166,17 +2168,14 @@ else{
 
 	}
 
-	function printchk(){
-
-		if(document.getElementById("hdncancel").value==1){
-
-			document.getElementById("statmsgz").innerHTML = "CANCELLED TRANSACTION CANNOT BE PRINTED!";
-			document.getElementById("statmsgz").style.color = "#FF0000";
-
+	function print2307(){
+		const isCancelled = $("#hdncancel").val() == 1;
+		console.log(isCancelled);
+		if(isCancelled){
+			$("#statmsgz").html("CANCELLED TRANSACTION CANNOT BE PRINTED!").css("color", "#FF0000");
+			alert("CANCELLED TRANSACTION CANNOT BE PRINTED!");
+			$("#print-2307").attr("disabled", true);
 		}else{
-				
-			//$("#frmvoucher").delay(300).submit();
-    		//$("#frmchek").delay(300).submit();
 			var xno = $("#txtctranno").val();
 			$ewtamt = 0;
 			$.ajax({
@@ -2189,52 +2188,43 @@ else{
 					$ewtamt = data;
 				}
 			});
-
 			if($ewtamt != 0){
 				$("#btn2307").click();
+			} else {
+				$("#statmsgz").html("NO EWT TO PRINT!").css("color", "#FF0000");
+				alert("NO EWT TO PRINT!");
+				$("#print-2307").attr("disabled", true);
 			}
-
-			$("#selpayment").val("cheque");
-			if($("#selpayment").val()=="cheque"){
-				$("#btncheck").click();
-			}
-
-			$("#btnvoucher").click(); 
-
 		}
 	}
 
 function printVoucher() {
-    // Check if the transaction is cancelled
-    if (document.getElementById("hdncancel").value == 1) {
-        // Display an error message if the transaction is cancelled
-        document.getElementById("statmsgz").innerHTML = "CANCELLED TRANSACTION CANNOT BE PRINTED!";
-        document.getElementById("statmsgz").style.color = "#FF0000";
+	const isCancelled = $("#hdncancel").val() == 1;
+    if (isCancelled) {
+		$("#statmsgz").html("CANCELLED TRANSACTION CANNOT BE PRINTED!").css("color", "#FF0000");
+		alert("CANCELLED TRANSACTION CANNOT BE PRINTED!");
+		$("#print-voucher").attr("disabled", true);
     } else {
-        // Submit the voucher form if the transaction is not cancelled
         $("#frmvoucher").submit();
     }
 }
 
 function printCheck() {
-    // Check if the transaction is cancelled
     const isCancelled = $("#hdncancel").val() == 1;
-    // Check if the payment method is cheque
     const isChequePayment = $("#selpayment").val() == "cheque";
 
     console.log(isCancelled, isChequePayment);
 
     if (isCancelled) {
-        // Display an error message if the transaction is cancelled
         $("#statmsgz").html("CANCELLED TRANSACTION CANNOT BE PRINTED!").css("color", "#FF0000");
+		alert("CANCELLED TRANSACTION CANNOT BE PRINTED!");
+		$("#print-check").attr("disabled", true);
     } else {
         if (isChequePayment) {
-            // Submit the cheque form if the payment method is cheque
             $("#frmchek").submit();
         } else {
-            // Display an alert if the payment method is not cheque
+			$("#statmsgz").html("Only cheque payment method can be printed.").css("color", "#FF0000");
             alert("Only cheque payment method can be printed.");
-            // Disable the print check button
             $("#print-check").attr("disabled", true);
         }
     }
