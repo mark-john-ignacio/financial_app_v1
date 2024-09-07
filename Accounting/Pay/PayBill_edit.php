@@ -570,8 +570,16 @@ if (mysqli_num_rows($sqlchk)!=0) {
 						if($printstat=="True"){
 					?>
 
+					<button type="button" class="btn btn-info btn-sm" tabindex="6" onClick="printVoucher();" id="print-voucher" name="print-voucher">
+					Print <br>Voucher
+					</button>
 					<button type="button" class="btn btn-info btn-sm" tabindex="6" onClick="printchk();" id="btnPrint" name="btnPrint">
-						Print<br>(F4)
+						Print <br>2307
+					</button>
+					<button type="button" class="btn btn-info btn-sm" tabindex="6" onClick="printCheck();" id="print-check" name="print-check">
+						Print <br>Check
+					</button>
+
 					</button>
 			
 					<?php
@@ -2103,7 +2111,9 @@ else{
 		$("#txtctranno").attr("disabled", false);
 		$("#btnMain").attr("disabled", false);
 		$("#btnNew").attr("disabled", false);
+		$("#print-voucher").attr("disabled", false);
 		$("#btnPrint").attr("disabled", false);
+		$("#print-check").attr("disabled", false);
 		$("#btnEdit").attr("disabled", false);
 
 		//if(document.getElementById("hdnposted").value==1 && document.getElementById("hdnvoid").value==0){
@@ -2184,6 +2194,7 @@ else{
 				$("#btn2307").click();
 			}
 
+			$("#selpayment").val("cheque");
 			if($("#selpayment").val()=="cheque"){
 				$("#btncheck").click();
 			}
@@ -2192,6 +2203,42 @@ else{
 
 		}
 	}
+
+function printVoucher() {
+    // Check if the transaction is cancelled
+    if (document.getElementById("hdncancel").value == 1) {
+        // Display an error message if the transaction is cancelled
+        document.getElementById("statmsgz").innerHTML = "CANCELLED TRANSACTION CANNOT BE PRINTED!";
+        document.getElementById("statmsgz").style.color = "#FF0000";
+    } else {
+        // Submit the voucher form if the transaction is not cancelled
+        $("#frmvoucher").submit();
+    }
+}
+
+function printCheck() {
+    // Check if the transaction is cancelled
+    const isCancelled = $("#hdncancel").val() == 1;
+    // Check if the payment method is cheque
+    const isChequePayment = $("#selpayment").val() == "cheque";
+
+    console.log(isCancelled, isChequePayment);
+
+    if (isCancelled) {
+        // Display an error message if the transaction is cancelled
+        $("#statmsgz").html("CANCELLED TRANSACTION CANNOT BE PRINTED!").css("color", "#FF0000");
+    } else {
+        if (isChequePayment) {
+            // Submit the cheque form if the payment method is cheque
+            $("#frmchek").submit();
+        } else {
+            // Display an alert if the payment method is not cheque
+            alert("Only cheque payment method can be printed.");
+            // Disable the print check button
+            $("#print-check").attr("disabled", true);
+        }
+    }
+}
 
 	function loadDets(){
 		var xno = $("#txtctranno").val();
