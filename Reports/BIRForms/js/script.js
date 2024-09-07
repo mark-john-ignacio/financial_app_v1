@@ -8,12 +8,14 @@ var MyApp = MyApp || {};
         console.log
 
         // Initialize iCheck 
-        $(".ichecks input").iCheck({
-            checkboxClass: 'icheckbox_square-blue',
-            radioClass: 'iradio_square-blue',
-            increaseArea: '20%' // optional
-        });
-        
+        if ($(".ichecks").length) {
+            console.log("ichecks")
+            $(".ichecks input").iCheck({
+                checkboxClass: 'icheckbox_square-blue',
+                radioClass: 'iradio_square-blue',
+                increaseArea: '20%' // optional
+            });
+        }
 
         // Cache jQuery selectors
         const $xcompute = $('.xcompute');

@@ -25,13 +25,32 @@ class BIRPDF2307 extends BIRPDFBase
 
 
         // NEED TO ADD THE PERIOD DATE BASED ON QUARTE IF FISCAL IS THE TYPE OF YEAR
-        
         $this->pdf->setFontSpacing($letterSpacing2); 
-        $payeetin = explode(".", $data->payeetin);
+        $date1 = explode("-", $data->date1);
+        $this->writeStyledText(53.5, 35.5, $date1[0]);
+        $this->writeStyledText(62.5, 35.5, $date1[1]);
+        $this->writeStyledText(71.5, 35.5, $date1[2]);
+
+        $date2 = explode("-", $data->date2);
+        $this->writeStyledText(140.5, 35.5, $date2[0]);
+        $this->writeStyledText(150.5, 35.5, $date2[1]);
+        $this->writeStyledText(159, 35.5, $date2[2]);
+        
+        
+        $payeetin = isset($data->payeetin) ? explode(".", $data->payeetin) : [];
+
+        // Set default values if any part of $payeetin is missing
+        $payeetin[0] = isset($payeetin[0]) ? $payeetin[0] : '';
+        $payeetin[1] = isset($payeetin[1]) ? $payeetin[1] : '';
+        $payeetin[2] = isset($payeetin[2]) ? $payeetin[2] : '';
+        $payeetin[3] = isset($payeetin[3]) ? $payeetin[3] : '';
+        
+        // Write text with default or actual values
         $this->writeStyledText(72.8, 46, $payeetin[0]);
         $this->writeStyledText(91, 46, $payeetin[1]);
         $this->writeStyledText(109, 46, $payeetin[2]);
         $this->writeStyledText(128.4, 46, $payeetin[3]);
+        
 
         $this->pdf->setFontSpacing($letterSpacing);
         $this->writeStyledText(12, 55.5, $data->payeename);
@@ -77,7 +96,7 @@ class BIRPDF2307 extends BIRPDFBase
 
             $xValTxt += 2.4;
 
-            $this->writeStyledText(6, $xValTxt,substr( $detail->ewtdesc, 58, 80 ));
+            $this->writeStyledText(6, $xValTxt,substr( $detail->ewtdesc, 58, 58 ));
 
             $this->pdf->SetFont($fontname, '', 9);
             $this->writeStyledText(64.5, 126, $detail->cewtcode);

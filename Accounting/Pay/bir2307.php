@@ -80,25 +80,6 @@
 	$arrqtri = array('07','08','09');
 	$arrqfor = array('10','11','12');
 
-<<<<<<< HEAD
-	$dmonth = date("m", strtotime($data['dpaydate']));
-	$dyear = date("Y", strtotime($data['dpaydate']));
-
-	if(in_array($dmonth, $arrqone)){
-		$data['date1'] = "01/01/".$dyear;
-		$data['date2'] = "0331".$dyear;
-	}elseif(in_array($dmonth, $arrqtwo)){
-		$data['date1'] = "0401".$dyear;
-		$data['date2'] = "0630".$dyear;
-	}elseif(in_array($dmonth, $arrqtri)){
-		$data['date1'] = "0701".$dyear;
-		$data['date2'] = "0930".$dyear;
-	}elseif(in_array($dmonth, $arrqfor)){
-		$data['date1'] = "1001".$dyear;
-		$data['date2'] = "1231".$dyear;
-	}
-=======
->>>>>>> 737307e12c84b155f64d29b7021de7fc12c5f2aa
 
 	// Get signature image
 	$signimg = "";
@@ -215,8 +196,8 @@
 					$endYear++;
 				}
 	
-				$startDate = sprintf("%s01%s", $startMonth, $startYear);
-				$endDate = sprintf("%s%s%s", $endMonth, getLastDayOfMonth($endMonth), $endYear);
+				$startDate = sprintf("%s-01-%s", $startMonth, $startYear);
+				$endDate = sprintf("%s-%s-%s", $endMonth, getLastDayOfMonth($endMonth), $endYear);
 				
 				return ['date1' => $startDate, 'date2' => $endDate];
 			}
@@ -230,8 +211,8 @@
 		$startMonth = ($quarter - 1) * 3 + 1;
 		$endMonth = $quarter * 3;
 		
-		$startDate = sprintf("%02d01%s", $startMonth, $paymentYear);
-		$endDate = sprintf("%02d%s%s", $endMonth, getLastDayOfMonth($endMonth), $paymentYear);
+		$startDate = sprintf("%02d-01-%s", $startMonth, $paymentYear);
+		$endDate = sprintf("%02d-%s-%s", $endMonth, getLastDayOfMonth($endMonth), $paymentYear);
 		
 		return ['date1' => $startDate, 'date2' => $endDate];
 	}
