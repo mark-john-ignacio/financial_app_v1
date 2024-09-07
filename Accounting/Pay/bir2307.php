@@ -80,6 +80,7 @@
 	$arrqtri = array('07','08','09');
 	$arrqfor = array('10','11','12');
 
+<<<<<<< HEAD
 	$dmonth = date("m", strtotime($data['dpaydate']));
 	$dyear = date("Y", strtotime($data['dpaydate']));
 
@@ -96,6 +97,8 @@
 		$data['date1'] = "1001".$dyear;
 		$data['date2'] = "1231".$dyear;
 	}
+=======
+>>>>>>> 737307e12c84b155f64d29b7021de7fc12c5f2aa
 
 	// Get signature image
 	$signimg = "";
@@ -162,6 +165,106 @@
 	$data['details'] = $details;
 	$data['totdues'] = number_format($totdues, 2);
 	$data['totewts'] = number_format($totewts, 2);
+
+	function getReportingPeriod($company, $paymentDate) {
+		$companyData = getCompanyData($company);
+		$reportingPeriodType = $companyData['reporting_period_type'];
+	
+		if ($reportingPeriodType === 'fiscal') {
+			return computeFiscalDates($paymentDate, $companyData['fiscal_month_start_end']);
+		} else {
+			return computeCalendarDates($paymentDate);
+		}
+	}
+	
+	function getCompanyData($company) {
+		global $con;
+		$company = mysqli_real_escape_string($con, $company);
+		$sql = "SELECT reporting_period_type, fiscal_month_start_end FROM company WHERE compcode = ?";
+		$stmt = mysqli_prepare($con, $sql);
+		mysqli_stmt_bind_param($stmt, "s", $company);
+		mysqli_stmt_execute($stmt);
+		$result = mysqli_stmt_get_result($stmt);
+		return mysqli_fetch_assoc($result);
+	}
+	
+	function computeFiscalDates($paymentDate, $fiscalMonthStartEnd) {
+		$fiscalMonthStartEnd = incrementFiscalMonth($fiscalMonthStartEnd);
+		$paymentMonth = date("m", strtotime($paymentDate));
+		$paymentYear = date("Y", strtotime($paymentDate));
+		$quarters = generateFiscalQuarters();
+		$fiscalQuarters = $quarters[$fiscalMonthStartEnd];
+	
+		foreach ($fiscalQuarters as $index => $quarter) {
+			if (in_array($paymentMonth, $quarter)) {
+				$startMonth = $quarter[0];
+				$endMonth = $quarter[2];
+				
+				// Determine the correct year for start and end dates
+				$startYear = $paymentYear;
+				$endYear = $paymentYear;
+				
+				// If the fiscal year starts after the payment month, adjust the years
+				if ($index == 0 && $paymentMonth < $fiscalMonthStartEnd) {
+					$startYear--;
+					$endYear--;
+				}
+				
+				// If the end month is less than the start month, it means we've crossed into the next year
+				if ($endMonth < $startMonth) {
+					$endYear++;
+				}
+	
+				$startDate = sprintf("%s01%s", $startMonth, $startYear);
+				$endDate = sprintf("%s%s%s", $endMonth, getLastDayOfMonth($endMonth), $endYear);
+				
+				return ['date1' => $startDate, 'date2' => $endDate];
+			}
+		}
+	}
+	
+	function computeCalendarDates($paymentDate) {
+		$paymentMonth = date("m", strtotime($paymentDate));
+		$paymentYear = date("Y", strtotime($paymentDate));
+		$quarter = ceil($paymentMonth / 3);
+		$startMonth = ($quarter - 1) * 3 + 1;
+		$endMonth = $quarter * 3;
+		
+		$startDate = sprintf("%02d01%s", $startMonth, $paymentYear);
+		$endDate = sprintf("%02d%s%s", $endMonth, getLastDayOfMonth($endMonth), $paymentYear);
+		
+		return ['date1' => $startDate, 'date2' => $endDate];
+	}
+	
+	function generateFiscalQuarters() {
+		$quarters = [];
+		for ($startMonth = 1; $startMonth <= 12; $startMonth++) {
+			$quarters[sprintf('%02d', $startMonth)] = [];
+			for ($i = 0; $i < 4; $i++) {
+				$quarter = [];
+				for ($j = 0; $j < 3; $j++) {
+					$month = ($startMonth + $i * 3 + $j - 1) % 12 + 1;
+					$quarter[] = sprintf('%02d', $month);
+				}
+				$quarters[sprintf('%02d', $startMonth)][] = $quarter;
+			}
+		}
+		return $quarters;
+	}
+	
+	function getLastDayOfMonth($month) {
+		return $month == '02' ? '28' : (in_array($month, ['04', '06', '09', '11']) ? '30' : '31');
+	}
+
+	function incrementFiscalMonth($fiscalMonthStartEnd) {
+		$nextMonth = ((int)$fiscalMonthStartEnd % 12) + 1;
+		return sprintf('%02d', $nextMonth);
+	}
+	
+	// Usage
+	$reportingPeriod = getReportingPeriod($company, $data['dpaydate']);
+	$data['date1'] = $reportingPeriod['date1'];
+	$data['date2'] = $reportingPeriod['date2'];
 
 	// Set content type to JSON and output the data
 	header('Content-Type: application/json');
