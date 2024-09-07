@@ -579,8 +579,6 @@ if (mysqli_num_rows($sqlchk)!=0) {
 					<button type="button" class="btn btn-info btn-sm" tabindex="6" onClick="printCheck();" id="print-check" name="print-check">
 						Print <br>Check
 					</button>
-
-					</button>
 			
 					<?php
 						}
@@ -2103,28 +2101,6 @@ else{
 		}
 	}
 
-	function disabled(){
-
-		$("#frmpos :input").attr("disabled", true);
-		
-		
-		$("#txtctranno").attr("disabled", false);
-		$("#btnMain").attr("disabled", false);
-		$("#btnNew").attr("disabled", false);
-		$("#print-voucher").attr("disabled", false);
-		$("#print-2307").attr("disabled", false);
-		$("#print-check").attr("disabled", false);
-		$("#btnEdit").attr("disabled", false);
-
-		//if(document.getElementById("hdnposted").value==1 && document.getElementById("hdnvoid").value==0){
-			$("#btnentry").attr("disabled", false);
-		//}
-
-		$("#btn-closemod").attr("disabled", false); 
-
-		$(".kv-file-zoom").attr("disabled", false);
-
-	}
 
 	function enabled(){
 		if(document.getElementById("hdnposted").value==1 || document.getElementById("hdncancel").value==1){
@@ -2168,67 +2144,99 @@ else{
 
 	}
 
-	function print2307(){
-		const isCancelled = $("#hdncancel").val() == 1;
-		console.log(isCancelled);
-		if(isCancelled){
-			$("#statmsgz").html("CANCELLED TRANSACTION CANNOT BE PRINTED!").css("color", "#FF0000");
-			alert("CANCELLED TRANSACTION CANNOT BE PRINTED!");
-			$("#print-2307").attr("disabled", true);
-		}else{
-			var xno = $("#txtctranno").val();
-			$ewtamt = 0;
-			$.ajax({
-				url: 'th_chkAPVewt.php',
-				data: 'x='+xno,
-				dataType: 'text',
-				async:false,
-				method: 'post',
-				success: function (data) {
-					$ewtamt = data;
+	const setStatusMessage = (message, color = "#FF0000") => {
+    $("#statmsgz").html(message).css("color", color);
+	};
+
+	const showAlert = (message) => {
+		alert(message);
+	};
+
+	const disableButton = (buttonId) => {
+		$(`#${buttonId}`).attr("disabled", true);
+	};
+
+	const isCancelled = () => $("#hdncancel").val() == 1;
+
+	const handleCancelledTransaction = (buttonId) => {
+		const message = "CANCELLED TRANSACTION CANNOT BE PRINTED!";
+		setStatusMessage(message);
+		showAlert(message);
+		disableButton(buttonId);
+	};
+
+	function disabled(){
+
+		$("#frmpos :input").attr("disabled", true);
+    
+	    // Enable specific elements
+		const enabledElements = ["#txtctranno", "#btnMain", "#btnNew", "#btnEdit", "#btnentry", "#btn-closemod", ".kv-file-zoom"];
+		enabledElements.forEach(el => $(el).attr("disabled", false));
+
+		// Handle print buttons
+		const printButtons = {
+			"print-voucher": true,
+			"print-2307": true,
+			"print-check": $("#selpayment").val() == "cheque"
+		};
+
+		Object.entries(printButtons).forEach(([buttonId, condition]) => {
+			$(`#${buttonId}`).attr("disabled", isCancelled() || !condition);
+		});
+
+	}
+
+	// Print functions
+	function print2307() {
+		if (isCancelled()) {
+			handleCancelledTransaction("print-2307");
+			return;
+		}
+
+		const xno = $("#txtctranno").val();
+		$.ajax({
+			url: 'th_chkAPVewt.php',
+			data: { x: xno },
+			dataType: 'text',
+			async: false,
+			method: 'post',
+			success: function(data) {
+				if (data != 0) {
+					$("#btn2307").click();
+				} else {
+					const message = "NO EWT TO PRINT!";
+					setStatusMessage(message);
+					showAlert(message);
+					disableButton("print-2307");
 				}
-			});
-			if($ewtamt != 0){
-				$("#btn2307").click();
-			} else {
-				$("#statmsgz").html("NO EWT TO PRINT!").css("color", "#FF0000");
-				alert("NO EWT TO PRINT!");
-				$("#print-2307").attr("disabled", true);
 			}
+		});
+	}
+
+	function printVoucher() {
+		if (isCancelled()) {
+			handleCancelledTransaction("print-voucher");
+		} else {
+			$("#frmvoucher").submit();
 		}
 	}
 
-function printVoucher() {
-	const isCancelled = $("#hdncancel").val() == 1;
-    if (isCancelled) {
-		$("#statmsgz").html("CANCELLED TRANSACTION CANNOT BE PRINTED!").css("color", "#FF0000");
-		alert("CANCELLED TRANSACTION CANNOT BE PRINTED!");
-		$("#print-voucher").attr("disabled", true);
-    } else {
-        $("#frmvoucher").submit();
-    }
-}
+	function printCheck() {
+		if (isCancelled()) {
+			handleCancelledTransaction("print-check");
+			return;
+		}
 
-function printCheck() {
-    const isCancelled = $("#hdncancel").val() == 1;
-    const isChequePayment = $("#selpayment").val() == "cheque";
-
-    console.log(isCancelled, isChequePayment);
-
-    if (isCancelled) {
-        $("#statmsgz").html("CANCELLED TRANSACTION CANNOT BE PRINTED!").css("color", "#FF0000");
-		alert("CANCELLED TRANSACTION CANNOT BE PRINTED!");
-		$("#print-check").attr("disabled", true);
-    } else {
-        if (isChequePayment) {
-            $("#frmchek").submit();
-        } else {
-			$("#statmsgz").html("Only cheque payment method can be printed.").css("color", "#FF0000");
-            alert("Only cheque payment method can be printed.");
-            $("#print-check").attr("disabled", true);
-        }
-    }
-}
+		const isChequePayment = $("#selpayment").val() == "cheque";
+		if (isChequePayment) {
+			$("#frmchek").submit();
+		} else {
+			const message = "Only cheque payment method can be printed.";
+			setStatusMessage(message);
+			showAlert(message);
+			disableButton("print-check");
+		}
+	}
 
 	function loadDets(){
 		var xno = $("#txtctranno").val();
