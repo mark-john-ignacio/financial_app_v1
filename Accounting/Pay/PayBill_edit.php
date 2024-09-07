@@ -2176,14 +2176,35 @@ else{
 		// Handle print buttons
 		const printButtons = {
 			"print-voucher": true,
-			"print-2307": true,
+			"print-2307": false,
 			"print-check": $("#selpayment").val() == "cheque"
 		};
-
-		Object.entries(printButtons).forEach(([buttonId, condition]) => {
-			$(`#${buttonId}`).attr("disabled", isCancelled() || !condition);
+		checkEWT(function(result) {
+			printButtons["print-2307"] = result;
+			
+			Object.entries(printButtons).forEach(([buttonId, condition]) => {
+				$(`#${buttonId}`).attr("disabled", isCancelled() || !condition);
+			});
 		});
 
+	}
+
+	function checkEWT(callback) {
+		const xno = $("#txtctranno").val();
+		$.ajax({
+			url: 'th_chkAPVewt.php',
+			data: { x: xno },
+			dataType: 'text',
+			async: true, // Ensure async is true
+			method: 'post',
+			success: function(data) {
+				if (data != 0) {
+					callback(true);
+				} else {
+					callback(false);
+				}
+			}
+		});
 	}
 
 	// Print functions
@@ -2192,25 +2213,16 @@ else{
 			handleCancelledTransaction("print-2307");
 			return;
 		}
-
-		const xno = $("#txtctranno").val();
-		$.ajax({
-			url: 'th_chkAPVewt.php',
-			data: { x: xno },
-			dataType: 'text',
-			async: false,
-			method: 'post',
-			success: function(data) {
-				if (data != 0) {
-					$("#btn2307").click();
-				} else {
-					const message = "NO EWT TO PRINT!";
-					setStatusMessage(message);
-					showAlert(message);
-					disableButton("print-2307");
-				}
-			}
-		});
+		checkEWT(function(isEWT) {
+        if (isEWT) {
+            $("#btn2307").click();
+        } else {
+            const message = "NO EWT TO PRINT!";
+            setStatusMessage(message);
+            showAlert(message);
+            disableButton("print-2307");
+        }
+    });
 	}
 
 	function printVoucher() {
