@@ -14,12 +14,13 @@ class BIRPDF2307 extends BIRPDFBase
 
     protected function fillFields($data)
     {
+        $this->pdf->SetPage(1);
         $fontPath = APPPATH . 'Fonts/SourceCodePro-Bold.ttf';
         $fontname = TCPDF_FONTS::addTTFfont($fontPath, 'TrueTypeUnicode', '', 96);
         $this->pdf->SetFont($fontname, '', 12);
         $this->pdf->SetTextColor(0, 0, 0);
         $letterSpacing = 2.55;
         $this->pdf->setFontSpacing($letterSpacing);
-        $this->writeStyledText(16.5, 45, "testing");
+        $this->writeStyledText(16.5, 45,$data->compname);
     }
 }
