@@ -22,6 +22,7 @@ class BIRPDF2307 extends BIRPDFBase
         $letterSpacing = 0;
         $letterSpacing2 = 2.7;
         $letterSpacing3 = 2.1;
+        $letterSpacing4 = -0.3;
 
 
         // NEED TO ADD THE PERIOD DATE BASED ON QUARTE IF FISCAL IS THE TYPE OF YEAR
@@ -79,10 +80,10 @@ class BIRPDF2307 extends BIRPDFBase
         $xValTxt = 125;
         $xValNum = 126;
         $count = 0; // if need to limit the number of lopp that will be display based on the number of field on the form
-        // $count = count($data->details);
+
         foreach ($data->details as $detail ) {
             //increment the xValTxt by 2.4
-            //increment the xValTxt by 5
+            //increment the xValTxt by 4.9
             
             // if need to limit the number of lopp that will be display based on the number of field in the form
             if ($count >= 10) {
@@ -90,26 +91,36 @@ class BIRPDF2307 extends BIRPDFBase
             }
             $count++;
 
-            $this->pdf->SetFont($fontname, '', 4.5);
-            $this->pdf->setFontSpacing($letterSpacing);
-            $this->writeStyledText(6, $xValTxt ,substr( $detail->ewtdesc, 0, 58 ));
+            // Calculate the number of chunks needed
+            $textLength = strlen($detail->ewtdesc);
+            $chunks = ceil($textLength / 58);
 
-            $xValTxt += 2.4;
+            for ($i = 0; $i < $chunks; $i++) {
 
-            $this->writeStyledText(6, $xValTxt,substr( $detail->ewtdesc, 58, 58 ));
+                $start = $i * 58;
 
-            $this->pdf->SetFont($fontname, '', 9);
-            $this->writeStyledText(64.5, 126, $detail->cewtcode);
 
-            $this->writeRightAlignedText( 78.5, $xValNum, $detail->amount, 25);
-            //$this->writeRightAlignedText( 104.7, $xValNum, $detail->amount, 25);//change the amount depend on the name of the data
-            //$this->writeRightAlignedText( 130, $xValNum, $detail->amount, 25);//change the amount depend on the name of the data
-            $this->writeRightAlignedText( 155.5, $xValNum, $detail->amount, 25);//change the amount depend on the name of the data
+                $chunk = substr($detail->ewtdesc, $start, 58); 
+                $this->pdf->SetFont($fontname, '', 4.5);
+                $this->pdf->setFontSpacing($letterSpacing);
+                $this->writeStyledText(6, $xValTxt, $chunk);
 
-            $this->writeRightAlignedText( 185.5, $xValNum, $detail->newtamt, 25);
+                $xValTxt += 2.4;
 
-            $xValNum += 4.4;
-            $xValTxt += 2.4;
+                if ($i == 0) {
+                    $this->pdf->SetFont($fontname, '', 9);
+                    $this->writeStyledText(64.5, $xValNum, $detail->cewtcode);
+        
+                    $this->writeRightAlignedText( 78.5, $xValNum, $detail->amount, 25);
+                    //$this->writeRightAlignedText( 104.7, $xValNum, $detail->amount, 25);//change the amount depend on the name of the data
+                    //$this->writeRightAlignedText( 130, $xValNum, $detail->amount, 25);//change the amount depend on the name of the data
+                    $this->writeRightAlignedText( 155.5, $xValNum, $detail->amount, 25);//change the amount depend on the name of the data
+        
+                    $this->writeRightAlignedText( 185.5, $xValNum, $detail->newtamt, 25);
+                }
+                $xValNum += 4.9;
+            }
+
         }
         
         $this->pdf->SetFont($fontname, '', 9);
@@ -118,6 +129,10 @@ class BIRPDF2307 extends BIRPDFBase
         //$this->writeRightAlignedText( 130, 174.4, $data->amount, 25);//change the amount depend on the name of the data
         $this->writeRightAlignedText( 155.5, 174.4, $data->totdues, 25);//change the amount depend on the name of the data
         $this->writeRightAlignedText( 185.5, 174.4, $data->totewts, 25);
+
+        $this->pdf->SetFont($fontname, '', 9);
+      
+        $this->processSignatureImage(77, 247, $data->bir_sig_sign);
 
 
         // Change the value here 
