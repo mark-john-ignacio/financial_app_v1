@@ -1,4 +1,7 @@
 <?php
+
+use PhpOffice\PhpSpreadsheet\Worksheet\Row;
+
 	if(!isset($_SESSION)){
 		session_start();
 	}
@@ -36,8 +39,10 @@
 		$data['comptin'] =  str_replace("-",".",$row['comptin']);
 		$data['compadd'] =  $row['compadd']; 
 		$data['compzip'] =  $row['compzip'];
-	}
-
+		$data['bir_sig_sign'] = $row['bir_sig_sign'];
+	}	
+	
+	
 	// PAYEE INFO
 	$ccodesxz = "";
 	$dwithnorefz = 0;
@@ -81,15 +86,16 @@
 	$arrqfor = array('10','11','12');
 
 
-	// Get signature image
-	$signimg = "";
-	$sqlimg = "select * From parameters where compcode='$company' and ccode='BIR2307_sign'";
-	$result=mysqli_query($con,$sqlimg);
-	while($row = mysqli_fetch_array($result, MYSQLI_ASSOC))
-	{
-		$signimg = $row['cvalue'];
-	}
-	$data['signimg'] = $signimg;
+	// // Get signature image
+	// $signimg = "";
+	// $sqlimg = "select * From parameters where compcode='$company' and ccode='BIR2307_sign'";
+	// $result=mysqli_query($con,$sqlimg);
+	// while($row = mysqli_fetch_array($result, MYSQLI_ASSOC))
+	// {
+	// 	$signimg = $row['cvalue'];
+	// }
+	// $data['signimg'] = $signimg;
+
 
 	// Process and return amounts
 	$NOREFGAmt = 0;
