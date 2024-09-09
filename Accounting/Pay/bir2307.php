@@ -196,8 +196,8 @@
 					$endYear++;
 				}
 	
-				$startDate = sprintf("%s01%s", $startMonth, $startYear);
-				$endDate = sprintf("%s%s%s", $endMonth, getLastDayOfMonth($endMonth), $endYear);
+				$startDate = sprintf("%s-01-%s", $startMonth, $startYear);
+				$endDate = sprintf("%s-%s-%s", $endMonth, getLastDayOfMonth($endMonth), $endYear);
 				
 				return ['date1' => $startDate, 'date2' => $endDate];
 			}
@@ -211,8 +211,8 @@
 		$startMonth = ($quarter - 1) * 3 + 1;
 		$endMonth = $quarter * 3;
 		
-		$startDate = sprintf("%02d01%s", $startMonth, $paymentYear);
-		$endDate = sprintf("%02d%s%s", $endMonth, getLastDayOfMonth($endMonth), $paymentYear);
+		$startDate = sprintf("%02d-01-%s", $startMonth, $paymentYear);
+		$endDate = sprintf("%02d-%s-%s", $endMonth, getLastDayOfMonth($endMonth), $paymentYear);
 		
 		return ['date1' => $startDate, 'date2' => $endDate];
 	}
