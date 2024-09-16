@@ -2,7 +2,7 @@
 
 use Illuminate\Support\Str;
 
-require_once __DIR__ . '/../../Connection/connection_string.php';
+require __DIR__ . '/../../Connection/connection_string.php';
 
 return [
 

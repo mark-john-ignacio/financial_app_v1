@@ -1,5 +1,8 @@
 <?php
+require __DIR__ . '/../../Connection/connection_string.php';
 
+// Construct the base URL
+$base_url = str_replace("Components/assets/", "", $AttachUrlBase) . "laravel-backend/public/";
 return [
 
     /*
@@ -52,7 +55,7 @@ return [
     |
     */
 
-    'url' => env('APP_URL', 'http://localhost'),
+    'url' => env('APP_URL', $base_url),
 
     /*
     |--------------------------------------------------------------------------
