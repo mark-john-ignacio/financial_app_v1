@@ -11,13 +11,16 @@ return new class extends Migration
      */
     public function up(): void
     {
+        if (Schema::hasTable('boms')) {
+            Schema::dropIfExists('boms');
+        }
         Schema::create('boms', function (Blueprint $table) {
             $table->id();
             $table->string('product_name');
             $table->string('bom_type');
             $table->integer('quantity')->default(1);
             $table->string('uom')->default('BATCH');
-            $table->foreignIdFor(\App\Models\Item::class)->constrained()->cascadeOnDelete();
+//            $table->foreignId('item_id')->constrained('items', 'nid')->cascadeOnDelete();
             $table->timestamps();
         });
     }
