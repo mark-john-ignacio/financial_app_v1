@@ -9,6 +9,4 @@ class Item extends Model
 {
     use HasFactory;
 
-    protected $table = 'items';
-    protected $primaryKey = 'nid';
 }

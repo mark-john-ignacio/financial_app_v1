@@ -20,7 +20,8 @@ return new class extends Migration
             $table->string('bom_type');
             $table->integer('quantity')->default(1);
             $table->string('uom')->default('BATCH');
-//            $table->foreignId('item_id')->constrained('items', 'nid')->cascadeOnDelete();
+            $table->integer('item_id');
+            $table->foreign('item_id')->references('nid')->on('items')->cascadeOnDelete();
             $table->timestamps();
         });
     }
