@@ -12,7 +12,7 @@
     include('../../include/access.php');
 
 $UrlBase = str_replace("Components/assets/", "laravel-backend/public", $AttachUrlBase);
-$apiUrl = $UrlBase . "/api/hello";
+$apiUrl = $UrlBase . "/";
 
 // Initialize cURL
 $ch = curl_init();
@@ -40,17 +40,5 @@ if ($response === false) {
 // Close cURL
 curl_close($ch);
 
-// Decode the JSON response
-$data = json_decode($response, true);
-?>
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Testing Laravel</title>
-</head>
-<body style="text-align: center; height: 100vh; display: flex; justify-content: center; align-items: center;">
-    <h1>API Response: <?php echo htmlspecialchars($data['message']); ?></h1>
-</body>
-</html>
+// Output the HTML response directly
+echo $response;
