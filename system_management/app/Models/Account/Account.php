@@ -8,11 +8,11 @@ use App\Entities\Account\Account;
 class Account extends BaseModel
 {
     protected $table            = 'accounts';
-    protected $primaryKey       = 'id';
+    protected $primaryKey       = 'cacctno';
     protected $useAutoIncrement = true;
     protected $returnType       = Account::class;
     protected $useSoftDeletes   = false;
-    protected $protectFields    = true;
+    protected $protectFields    = false;
     protected $allowedFields    = [];
 
     protected bool $allowEmptyInserts = false;
