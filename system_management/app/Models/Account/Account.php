@@ -3,14 +3,14 @@
 namespace App\Models\Account;
 
 use App\Models\BaseModel;
-use App\Entities\Account\Account;
+use App\Entities\Account\AccountEntity;
 
 class Account extends BaseModel
 {
     protected $table            = 'accounts';
     protected $primaryKey       = 'cacctno';
     protected $useAutoIncrement = true;
-    protected $returnType       = Account::class;
+    protected $returnType       = AccountEntity::class;
     protected $useSoftDeletes   = false;
     protected $protectFields    = false;
     protected $allowedFields    = [];
