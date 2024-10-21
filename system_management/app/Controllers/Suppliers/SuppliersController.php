@@ -202,7 +202,41 @@ class SuppliersController extends BaseController
                             }
                         }
                         if (!empty($rowData[$class])) {
-                            $classs = $this->db->table('supplier_classification')->where('ccode', $rowData[$class])->where('deleted', 0)->where('compcode', $this->company_code)->get()->getRow();
+                            try {
+                                // Attempt to query the supplier_classification table
+                                $classs = $this->db->table('supplier_classification')
+                                    ->where('ccode', $rowData[$class])
+                                    ->where('deleted', 0)
+                                    ->where('compcode', $this->company_code)
+                                    ->get()
+                                    ->getRow();
+                            } catch (\Exception $e) {
+                                // If an exception occurs (e.g., table does not exist), query the groupings table instead
+                                $classs = $this->db->table('groupings')
+                                    ->where('ccode', $rowData[$class])
+                                    ->where('ctype', 'SUPCLS')
+                                    ->where('compcode', $this->company_code)
+                                    ->get()
+                                    ->getRow();
+                            }
+                            if (empty($classs)) {
+                                // If no record is found in the groupings table, insert a new entry
+                                $this->db->table('groupings')->insert([
+                                    'ccode' => $rowData[$class],
+                                    'cdesc' => $rowData[$class], // Assuming cdesc should be the same as ccode
+                                    'ctype' => 'SUPCLS',
+                                    'compcode' => $this->company_code,
+                                    'deleted' => 0
+                                ]);
+                        
+                                // Query the newly inserted entry
+                                $classs = $this->db->table('groupings')
+                                    ->where('ccode', $rowData[$class])
+                                    ->where('ctype', 'SUPCLS')
+                                    ->where('compcode', $this->company_code)
+                                    ->get()
+                                    ->getRow();
+                            }
                             if (empty($classs)) {
                                 $rowErrors[] = '* Classification must exist';
                             }
