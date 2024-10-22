@@ -171,12 +171,12 @@ class SuppliersController extends BaseController
                         $rowErrors = [];
                         $rowData = array_combine($headers, array_map('trim', $row));
 
-                        // if (!empty($rowData[$supcode])){
-                        //     $SuppCodesSheet1[] = $rowData[$supcode];
-                        // } else{
-                        //     $this->swal('error', 'Invalid File! Please Download the Template');
-                        //     return redirect()->to(url_to("suppliers-upload-form"));
-                        // }
+                        if (!empty($rowData[$supcode])){
+                            $SuppCodesSheet1[] = $rowData[$supcode];
+                        } else{
+                            $this->swal('error', 'Invalid File! Please Download the Template');
+                            return redirect()->to(url_to("suppliers-upload-form"));
+                        }
 
                         $cellNumber++;
                         $rowData['Cell Number'] = $cellNumber;
@@ -299,15 +299,15 @@ class SuppliersController extends BaseController
                             // If the liability code does not exist, insert a new entry
                             if (empty($liabcodes)) {
                                 $this->db->table('accounts')->insert([
-                                    'cacctno' => $rowData[$liabcode],
+                                    'cacctid' => $rowData[$liabcode],
+                                    'cacctdesc' => $rowData[$liabcode], // Assuming cacctdesc should be the same as cacctid
                                     'ccategory' => 'LIABILITIES',
                                     'compcode' => $this->company_code,
-                                    'deleted' => 0
                                 ]);
                         
                                 // Query the newly inserted entry
                                 $liabcodes = $this->db->table('accounts')
-                                    ->where('cacctno', $rowData[$liabcode])
+                                    ->where('cacctdesc', $rowData[$liabcode])
                                     ->where('ccategory', 'LIABILITIES')
                                     ->where('compcode', $this->company_code)
                                     ->get()
@@ -403,7 +403,7 @@ class SuppliersController extends BaseController
                         }
                         
                         $supcode = $this->db->table('suppliers')->where('ccode', $rowData[$supcode2])->where('deleted', 0)->where('compcode', $this->company_code)->get()->getRow();
-                        
+                        // dd($supcode, $rowData[$supcode2], $SuppCodesSheet1);
                         if (!in_array($rowData[$supcode2], $SuppCodesSheet1) && empty($supcode)) {
                             $rowErrors2[] = '* Supplier Code does not exist in the uploaded file and in Suppliers Table';
                         }
