@@ -10,6 +10,7 @@ use PhpOffice\PhpSpreadsheet\Writer\Xlsx;
 use CodeIgniter\Files\File;
 use App\Models\Suppliers\SuppliersModel;
 use App\Entities\Suppliers\SuppliersEntity;
+use CodeIgniter\Database\Exceptions\DatabaseException;
 
 class SuppliersController extends BaseController
 {
@@ -203,42 +204,53 @@ class SuppliersController extends BaseController
                         }
                         if (!empty($rowData[$class])) {
                             try {
-                                // Attempt to query the supplier_classification table
-                                $classs = $this->db->table('supplier_classification')
-                                    ->where('ccode', $rowData[$class])
-                                    ->where('deleted', 0)
-                                    ->where('compcode', $this->company_code)
-                                    ->get()
-                                    ->getRow();
-                            } catch (\Exception $e) {
-                                // If an exception occurs (e.g., table does not exist), query the groupings table instead
+                                // Check if the supplier_classification table exists
+                                $tableExists = $this->db->query("SHOW TABLES LIKE 'supplier_classification'")->getNumRows() > 0;
+
+                                if ($tableExists) {
+                                    // Attempt to query the supplier_classification table
+                                    $classs = $this->db->table('supplier_classification')
+                                        ->where('ccode', $rowData[$class])
+                                        ->where('deleted', 0)
+                                        ->where('compcode', $this->company_code)
+                                        ->get()
+                                        ->getRow();
+                                } else {
+                                    throw new DatabaseException('Table supplier_classification does not exist.');
+                                }
+                            } catch (DatabaseException $e) {
+                                // Log the error if the supplier_classification table does not exist
+                                log_message('error', 'Table supplier_classification does not exist: ' . $e->getMessage());
+
+                                // Query the groupings table instead
                                 $classs = $this->db->table('groupings')
                                     ->where('ccode', $rowData[$class])
                                     ->where('ctype', 'SUPCLS')
                                     ->where('compcode', $this->company_code)
                                     ->get()
                                     ->getRow();
-                            }
-                            if (empty($classs)) {
+
                                 // If no record is found in the groupings table, insert a new entry
-                                $this->db->table('groupings')->insert([
-                                    'ccode' => $rowData[$class],
-                                    'cdesc' => $rowData[$class], // Assuming cdesc should be the same as ccode
-                                    'ctype' => 'SUPCLS',
-                                    'compcode' => $this->company_code,
-                                    'deleted' => 0
-                                ]);
-                        
-                                // Query the newly inserted entry
-                                $classs = $this->db->table('groupings')
-                                    ->where('ccode', $rowData[$class])
-                                    ->where('ctype', 'SUPCLS')
-                                    ->where('compcode', $this->company_code)
-                                    ->get()
-                                    ->getRow();
-                            }
-                            if (empty($classs)) {
-                                $rowErrors[] = '* Classification must exist';
+                                if (empty($classs)) {
+                                    $this->db->table('groupings')->insert([
+                                        'ccode' => $rowData[$class],
+                                        'cdesc' => $rowData[$class], // Assuming cdesc should be the same as ccode
+                                        'ctype' => 'SUPCLS',
+                                        'compcode' => $this->company_code,
+                                    ]);
+
+                                    // Query the newly inserted entry
+                                    $classs = $this->db->table('groupings')
+                                        ->where('ccode', $rowData[$class])
+                                        ->where('ctype', 'SUPCLS')
+                                        ->where('compcode', $this->company_code)
+                                        ->get()
+                                        ->getRow();
+                                }
+
+                                if (empty($classs)) {
+                                    $rowErrors[] = '* Classification must exist';
+                                }
                             }
                         }
                         if (!empty($rowData[$terms])) {
