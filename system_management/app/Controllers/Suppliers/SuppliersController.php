@@ -288,7 +288,33 @@ class SuppliersController extends BaseController
                             }
                         }
                         if (!empty($rowData[$liabcode])) {
-                            $liabcodes = $this->db->table('accounts')->where('cacctno', $rowData[$liabcode])->where('ccategory', 'LIABILITIES')->where('compcode', $this->company_code)->get()->getRow();
+                            // Attempt to query the accounts table for the liability code
+                            $liabcodes = $this->db->table('accounts')
+                                ->where('cacctno', $rowData[$liabcode])
+                                ->where('ccategory', 'LIABILITIES')
+                                ->where('compcode', $this->company_code)
+                                ->get()
+                                ->getRow();
+                        
+                            // If the liability code does not exist, insert a new entry
+                            if (empty($liabcodes)) {
+                                $this->db->table('accounts')->insert([
+                                    'cacctno' => $rowData[$liabcode],
+                                    'ccategory' => 'LIABILITIES',
+                                    'compcode' => $this->company_code,
+                                    'deleted' => 0
+                                ]);
+                        
+                                // Query the newly inserted entry
+                                $liabcodes = $this->db->table('accounts')
+                                    ->where('cacctno', $rowData[$liabcode])
+                                    ->where('ccategory', 'LIABILITIES')
+                                    ->where('compcode', $this->company_code)
+                                    ->get()
+                                    ->getRow();
+                            }
+                        
+                            // If the liability code still does not exist, add an error message
                             if (empty($liabcodes)) {
                                 $rowErrors[] = '* Liability Code must exist';
                             }
