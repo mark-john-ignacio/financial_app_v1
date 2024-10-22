@@ -171,12 +171,12 @@ class SuppliersController extends BaseController
                         $rowErrors = [];
                         $rowData = array_combine($headers, array_map('trim', $row));
 
-                        if (!empty($rowData[$supcode])){
-                            $SuppCodesSheet1[] = $rowData[$supcode];
-                        } else{
-                            $this->swal('error', 'Invalid File! Please Download the Template');
-                            return redirect()->to(url_to("suppliers-upload-form"));
-                        }
+                        // if (!empty($rowData[$supcode])){
+                        //     $SuppCodesSheet1[] = $rowData[$supcode];
+                        // } else{
+                        //     $this->swal('error', 'Invalid File! Please Download the Template');
+                        //     return redirect()->to(url_to("suppliers-upload-form"));
+                        // }
 
                         $cellNumber++;
                         $rowData['Cell Number'] = $cellNumber;
@@ -260,7 +260,29 @@ class SuppliersController extends BaseController
                             }
                         }
                         if (!empty($rowData[$ewtcode])) {
-                            $ewtcodes = $this->db->table('ewt_codes')->where('ctaxcode', $rowData[$ewtcode])->where('deleted', 0)->where('compcode', $this->company_code)->get()->getRow();
+                            // Attempt to query the taxcode table
+                            $ewtcodes = $this->db->table('taxcode')
+                                ->where('ctaxcode', $rowData[$ewtcode])
+                                ->where('compcode', $this->company_code)
+                                ->get()
+                                ->getRow();
+                        
+                            // If the tax code does not exist, insert a new entry
+                            if (empty($ewtcodes)) {
+                                $this->db->table('taxcode')->insert([
+                                    'ctaxcode' => $rowData[$ewtcode],
+                                    'compcode' => $this->company_code,
+                                ]);
+                        
+                                // Query the newly inserted entry
+                                $ewtcodes = $this->db->table('taxcode')
+                                    ->where('ctaxcode', $rowData[$ewtcode])
+                                    ->where('compcode', $this->company_code)
+                                    ->get()
+                                    ->getRow();
+                            }
+                        
+                            // If the tax code still does not exist, add an error message
                             if (empty($ewtcodes)) {
                                 $rowErrors[] = '* EWT Code must exist';
                             }
@@ -272,7 +294,7 @@ class SuppliersController extends BaseController
                             }
                         }
                         if (!empty($rowData[$currency])) {
-                            $currencys = $this->db->table('currency_rate')->where('symbol', $rowData[$currency])->where('deleted', 0)->where('compcode', $this->company_code)->get()->getRow();
+                            $currencys = $this->db->table('currency_rate')->where('symbol', $rowData[$currency])->where('compcode', $this->company_code)->get()->getRow();
                             if (empty($currencys)) {
                                 $rowErrors[] = '* Default Currency must exist';
                             }
