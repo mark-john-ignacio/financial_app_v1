@@ -466,12 +466,37 @@ class SuppliersController extends BaseController
                         $rowData['Cell Number'] = $cellNumber3;
 
                         // Validation
-                        if (empty($rowData[$supcode3]) || empty($rowData[$contname3]) || empty($rowData[$desig]) || empty($rowData[$dept]) || empty($rowData[$email3]) || empty($rowData[$mobile3])) {
+                        if (empty($rowData[$supcode3])) {
                             $rowErrors3[] = '* Required fields must be filled';
                         }
+
+                        // Validation and placeholder assignment
+                        $placeholders = [
+                            'contname' => 'CONTACT_NAME_PLACEHOLDER',
+                            'desig' => 'DESIGNATION_PLACEHOLDER',
+                            'dept' => 'DEPARTMENT_PLACEHOLDER',
+                            'email' => 'placeholder@example.com', // Valid email format
+                            'mobile' => '0000000000' 
+                        ];
+
+                        if (empty($rowData[$contname3])) {
+                            $rowData[$contname3] = $placeholders['contname'];
+                        }
+                        if (empty($rowData[$desig])) {
+                            $rowData[$desig] = $placeholders['desig'];
+                        }
+                        if (empty($rowData[$dept])) {
+                            $rowData[$dept] = $placeholders['dept'];
+                        }
+                        if (empty($rowData[$email3])) {
+                            $rowData[$email3] = $placeholders['email'];
+                        }
+                        if (empty($rowData[$mobile3])) {
+                            $rowData[$mobile3] = $placeholders['mobile'];
+                        }
                         
-                        $supplierercode3 = $this->db->table('suppliers')->where('ccode', $rowData[$supcode3])->where('deleted', 0)->where('compcode', $this->company_code)->get()->getRow();
-                        
+                        $supplierercode3 = $this->db->table('suppliers')->where('ccode', $rowData[$supcode3])->where('compcode', $this->company_code)->get()->getRow();
+                        // dd($supplierercode3, $rowData[$supcode3], $SuppCodesSheet1);
                         if (!in_array($rowData[$supcode3], $SuppCodesSheet1) && empty($supplierercode3)) {
                             $rowErrors3[] = '* Supplier code does not exist in the uploaded file and in Suppliers Table';
                         }
@@ -480,9 +505,11 @@ class SuppliersController extends BaseController
                                 $rowErrors3[] = '* Invalid email address';
                             }
                         }
-                        if (!empty($rowData[$mobile3])){
-                            if (!is_numeric($rowData[$mobile3])) {
-                                $rowErrors3[] = '* Mobile Number must be numeric';
+
+                        if (!empty($rowData[$mobile3])) {
+                            // Regular expression to match numbers separated by dashes or slashes
+                            if (!preg_match('/^\d+([\-\/]\d+)*$/', $rowData[$mobile3])) {
+                                $rowErrors3[] = '* Mobile Number must be numeric and can be separated by dashes or slashes';
                             }
                         }
 
@@ -682,7 +709,7 @@ class SuppliersController extends BaseController
             $logfile = array(
                 'user_id' => $this->user_id,
                 'created_by' => $this->user_id,
-                'created_date' => datetimedb,
+                // 'created_date' => datetimedb,
                 'main_module' => 'Administrator',
                 'sub_module' => 'Suppliers > Masterfile',
                 'event' => 'MASS UPLOAD ADDRESS',
@@ -692,7 +719,7 @@ class SuppliersController extends BaseController
             );
     
             if (!empty($rowData['ccode'])) {
-                $this->db->table('logfile_supplier_masterfile')->insert($logfile); 
+                // $this->db->table('logfile_supplier_masterfile')->insert($logfile); 
                 $saveSuccess = $this->db->table('suppliers_address')->insert($rowData);
 
                 if (!$saveSuccess) {
@@ -741,7 +768,7 @@ class SuppliersController extends BaseController
             $logfile = array(
                 'user_id' => $this->user_id,
                 'created_by' => $this->user_id,
-                'created_date' => datetimedb,
+                // 'created_date' => datetimedb,
                 'main_module' => 'Administrator',
                 'sub_module' => 'Suppliers > Masterfile',
                 'event' => 'MASS UPLOAD CONTACT LIST',
@@ -751,7 +778,7 @@ class SuppliersController extends BaseController
             );
     
             if (!empty($rowData['ccode'])) {
-                $this->db->table('logfile_supplier_masterfile')->insert($logfile); 
+                // $this->db->table('logfile_supplier_masterfile')->insert($logfile); 
                 $saveSuccess = $this->db->table('suppliers_contacts')->insert($rowData);
 
                 if (!$saveSuccess) {

@@ -213,7 +213,7 @@
 
     <script>
         $(document).ready(function () {
-            var table = $('#myTable').DataTable({
+            let table = $('#myTable').DataTable({
                 "order": [[0,"desc"]],
                 "createdRow": function (row, data, dataIndex) {
                     if (data[0] === null || data[0] === '') {
@@ -221,9 +221,9 @@
                     }
                 }
             });
-            $('#myTable2').DataTable();
-            $('#myTable3').DataTable();
-            $('#myTable4').DataTable();
+            let table2 = $('#myTable2').DataTable();
+            let table3 = $('#myTable3').DataTable();
+            let table4 = $('#myTable4').DataTable();
 
             // Handle form submission
             $('#dataForm').on('submit', function (e) {
@@ -246,11 +246,12 @@
                 console.log(tableData);
 
                 var tableData2 = [];
-                $('#myTable2 tbody tr').each(function () {
+                table2.rows().every(function (rowIdx, tableLoop, rowLoop) {
                     var row = {};
-                    $(this).find('td').each(function (index) {
-                        var key = $('#myTable2 thead th').eq(index).text();
-                        var value = $(this).text();
+                    var data = this.data();
+                    $('#myTable2 thead th').each(function (index) {
+                        var key = $(this).text();
+                        var value = data[index];
                         row[key] = value;
                     });
                     tableData2.push(row);
