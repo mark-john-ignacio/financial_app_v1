@@ -59,6 +59,7 @@
 			<div class="col-xs-12 nopadwdown">
 				<div class="col-xs-4 nopadding">
 					<button type="button" class="btn btn-primary btn-sm" onClick="location.href='SO_new.php'"><span class="glyphicon glyphicon glyphicon-file"></span>&nbsp;Create New (F1)</button>
+					<button type="button" class="btn btn-primary btn-sm" onClick="location.href='testing.php'"><span class="fa fa-check"></span>&nbsp;Testing Page</button>
 
 					<?php
 						if($unpoststat=="True"){

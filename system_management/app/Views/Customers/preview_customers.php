@@ -268,9 +268,9 @@
                     }
                 }
             });
-            $('#myTable2').DataTable();
-            $('#myTable3').DataTable();
-            $('#myTable4').DataTable();
+            let table2 = $('#myTable2').DataTable();
+            let table3 = $('#myTable3').DataTable();
+            let table4 = $('#myTable4').DataTable();
 
             // Handle form submission
             $('#dataForm').on('submit', function (e) {
@@ -293,33 +293,39 @@
                 console.log(tableData);
 
                 var tableData2 = [];
-                $('#myTable2 tbody tr').each(function () {
+                // Use DataTables API to get all data from table2
+                table2.rows({ search: 'applied' }).every(function (rowIdx, tableLoop, rowLoop) {
                     var row = {};
-                    $(this).find('td').each(function (index) {
-                        var key = $('#myTable2 thead th').eq(index).text();
-                        var value = $(this).text();
+                    var data = this.data();
+                    $('#myTable2 thead th').each(function (index) {
+                        var key = $(this).text();
+                        var value = data[index];
                         row[key] = value;
                     });
                     tableData2.push(row);
                 });
 
                 var tableData3 = [];
-                $('#myTable3 tbody tr').each(function () {
+                // Use DataTables API to get all data from table3
+                table3.rows({ search: 'applied' }).every(function (rowIdx, tableLoop, rowLoop) {
                     var row = {};
-                    $(this).find('td').each(function (index) {
-                        var key = $('#myTable3 thead th').eq(index).text();
-                        var value = $(this).text();
+                    var data = this.data();
+                    $('#myTable3 thead th').each(function (index) {
+                        var key = $(this).text();
+                        var value = data[index];
                         row[key] = value;
                     });
                     tableData3.push(row);
                 });
 
                 var tableData4 = [];
-                $('#myTable4 tbody tr').each(function () {
+                // Use DataTables API to get all data
+                table4.rows({ search: 'applied' }).every(function (rowIdx, tableLoop, rowLoop) {
                     var row = {};
-                    $(this).find('td').each(function (index) {
-                        var key = $('#myTable4 thead th').eq(index).text();
-                        var value = $(this).text();
+                    var data = this.data();
+                    $('#myTable4 thead th').each(function (index) {
+                        var key = $(this).text();
+                        var value = data[index];
                         row[key] = value;
                     });
                     tableData4.push(row);
@@ -330,6 +336,7 @@
 
                 // Submit the form
                 this.submit();
+                // console.log(tableData2);
             });
         });
     </script>

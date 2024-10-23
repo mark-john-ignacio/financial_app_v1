@@ -562,10 +562,11 @@ class Customers extends BaseController
     {
         $data = json_decode($this->request->getPost('tableData'))->table1;
         //$data = $this->request->getPost('data');
-        $data2 = $this->request->getPost('data2');
-        $data3 = $this->request->getPost('data3');
-        $data4 = $this->request->getPost('data4');
+        $data2 = json_decode($this->request->getPost('tableData'))->table2;
+        $data3 = json_decode($this->request->getPost('tableData'))->table3;
+        $data4 = json_decode($this->request->getPost('tableData'))->table4;
 
+        // dd($data2);
         $success = false;
         $success2 = true; 
         $success3 = true; 
@@ -709,7 +710,7 @@ class Customers extends BaseController
             $logfile = array(
                 'user_id' => $this->user_id,
                 'created_by' => $this->user_id,
-                'created_date' => datetimedb,
+                // 'created_date' => datetimedb,
                 'main_module' => 'Administrator',
                 'sub_module' => 'Customers > Masterfile',
                 'event' => 'MASS UPLOAD ADDRESS',
@@ -719,7 +720,7 @@ class Customers extends BaseController
             );
     
             if (!empty($rowData['ccode'])) {
-                $this->db->table('logfile_customer_masterfile')->insert($logfile); 
+                // $this->db->table('logfile_customer_masterfile')->insert($logfile); 
                 $saveSuccess = $this->db->table('customers_address')->insert($rowData);
 
                 if (!$saveSuccess) {
@@ -786,7 +787,7 @@ class Customers extends BaseController
            $logfile = array(
                 'user_id' => $this->user_id,
                 'created_by' => $this->user_id,
-                'created_date' => datetimedb,
+                // 'created_date' => datetimedb,
                 'main_module' => 'Administrator',
                 'sub_module' => 'Customers > Masterfile',
                 'event' => 'MASS UPLOAD SECONDARY ADDRESS',
@@ -796,7 +797,7 @@ class Customers extends BaseController
             );
     
             if (!empty($rowData['cmaincode'])) {
-                $this->db->table('logfile_customer_masterfile')->insert($logfile); 
+                // $this->db->table('logfile_customer_masterfile')->insert($logfile); 
                 $saveSuccess = $this->db->table('customers_secondary')->insert($rowData);
 
                 if (!$saveSuccess) {
@@ -844,7 +845,7 @@ class Customers extends BaseController
             $logfile = array(
                 'user_id' => $this->user_id,
                 'created_by' => $this->user_id,
-                'created_date' => datetimedb,
+                // 'created_date' => datetimedb,
                 'main_module' => 'Administrator',
                 'sub_module' => 'Customers > Masterfile',
                 'event' => 'MASS UPLOAD CONTACT LIST',
@@ -854,7 +855,7 @@ class Customers extends BaseController
             );
     
             if (!empty($rowData['ccode'])) {
-                $this->db->table('logfile_customer_masterfile')->insert($logfile); 
+                // $this->db->table('logfile_customer_masterfile')->insert($logfile); 
                 $saveSuccess = $this->db->table('customers_contacts')->insert($rowData);
                 
                 if (!$saveSuccess) {
