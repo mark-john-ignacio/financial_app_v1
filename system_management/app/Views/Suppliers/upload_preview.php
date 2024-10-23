@@ -246,7 +246,8 @@
                 console.log(tableData);
 
                 var tableData2 = [];
-                table2.rows().every(function (rowIdx, tableLoop, rowLoop) {
+                // Use DataTables API to get all data from table2
+                table2.rows({ search: 'applied' }).every(function (rowIdx, tableLoop, rowLoop) {
                     var row = {};
                     var data = this.data();
                     $('#myTable2 thead th').each(function (index) {
@@ -258,11 +259,13 @@
                 });
 
                 var tableData3 = [];
-                $('#myTable3 tbody tr').each(function () {
+                // Use DataTables API to get all data from table3
+                table3.rows({ search: 'applied' }).every(function (rowIdx, tableLoop, rowLoop) {
                     var row = {};
-                    $(this).find('td').each(function (index) {
-                        var key = $('#myTable3 thead th').eq(index).text();
-                        var value = $(this).text();
+                    var data = this.data();
+                    $('#myTable3 thead th').each(function (index) {
+                        var key = $(this).text();
+                        var value = data[index];
                         row[key] = value;
                     });
                     tableData3.push(row);

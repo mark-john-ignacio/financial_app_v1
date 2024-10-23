@@ -572,8 +572,8 @@ class SuppliersController extends BaseController
     {
         $data = json_decode($this->request->getPost('tableData'))->table1;
         //$data = $this->request->getPost('data');
-        $data2 = $this->request->getPost('data2');
-        $data3 = $this->request->getPost('data3');
+        $data2 = json_decode($this->request->getPost('tableData'))->table2;
+        $data3 = json_decode($this->request->getPost('tableData'))->table3;
 
         $success = false;
         $success2 = true; 
