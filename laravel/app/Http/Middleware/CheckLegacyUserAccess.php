@@ -6,7 +6,7 @@ use Closure;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 
-class SessionAccessControl
+class CheckLegacyUserAccess
 {
     public function handle(Request $request, Closure $next)
     {
