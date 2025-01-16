@@ -16,7 +16,7 @@ class WooSecretKeyAuth
     public function handle(Request $request, Closure $next): Response
     {
         $webhookSecret = config('services.woocommerce.webhook_secret');
-        $header = $request->header('X-WC-Webhook-Signature');
+        $header = $request->header('x-wc-webhook-signature');
         $payload = $request->getContent();
         $calculated = hash_hmac('sha256', $payload, $webhookSecret, true);
         $calculated = base64_encode($calculated);
