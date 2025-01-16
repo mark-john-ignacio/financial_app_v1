@@ -4,6 +4,8 @@ namespace Database\Seeders;
 
 use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
+use App\Models\Item;
+use App\Models\WooCommerceProductMapping;
 
 class WooCommerceProductMappingSeeder extends Seeder
 {
@@ -13,6 +15,12 @@ class WooCommerceProductMappingSeeder extends Seeder
     public function run(): void
     {
         $items = Item::select('nid')->get();
-        dd($items);
+
+        foreach ($items as $item){
+            WooCommerceProductMapping::create([
+                'woocommerce_product_id' => null,
+                'myxfin_product_id' => $item->nid
+            ]);
+        }
     }
 }
