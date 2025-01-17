@@ -42,6 +42,9 @@ class WooCommerceWebhookController extends Controller
 
     public function processOrder($orderData, $myxfinProductIds)
     {
+        //Order Transaction will get into Sales Order.
+        //Sales Order will have reference Delivery Receipt.
+        //Delivery Receipt will have reference Sales Invoice
 
     }
 }
