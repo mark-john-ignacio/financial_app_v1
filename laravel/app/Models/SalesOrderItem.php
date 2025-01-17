@@ -11,6 +11,8 @@ class SalesOrderItem extends Model
     /** @use HasFactory<\Database\Factories\SalesOrderItemFactory> */
     use HasFactory;
 
+    protected $table = 'so_t';
+
     public function sales_order():BelongsTo
     {
         return $this->belongsTo(SalesOrder::class, "ctranno", "ctranno");

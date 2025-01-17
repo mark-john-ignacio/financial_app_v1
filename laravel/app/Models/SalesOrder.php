@@ -12,6 +12,9 @@ class SalesOrder extends Model
     use HasFactory;
 
     protected $table = 'so';
+    protected $fillable = [
+        'compcode', 'ctranno', 'ccode', 'ddate', 'dcutdate', 'dpodate', 'csalestype', 'cpono', 'ngross', 'nbasegross', 'ccurrencycode', 'ccurrencydesc', 'nexchangerate', 'cremarks', 'cspecins', 'cpreparedby', 'csalesman', 'cdelcode', 'cdeladdno', 'cdeladdcity', 'cdeladdstate', 'cdeladdcountry', 'cdeladdzip', 'lapproved', 'lvoid', 'lcancelled', 'lsent', 'lprintposted'
+    ];
 
     public function sales_order_items():hasMany
     {
