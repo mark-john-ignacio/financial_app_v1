@@ -17,4 +17,9 @@ class DeliveryReceipt extends Model
     {
         return $this->hasMany(DeliveryReceiptItems::class, "ctranno", "ctranno");
     }
+
+    public function sales_invoices():hasMany
+    {
+        return $this->hasMany(SalesInvoice::class, "crefmoduletran", "ctranno");
+    }
 }

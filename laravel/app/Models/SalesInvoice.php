@@ -4,6 +4,8 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 
 class SalesInvoice extends Model
 {
@@ -11,4 +13,14 @@ class SalesInvoice extends Model
     use HasFactory;
 
     protected $table = "sales";
+
+    public function sales_invoice_items():hasMany
+    {
+        return $this->hasMany(SalesInvoiceItems::class, "ctranno", "ctranno");
+    }
+
+    public function delivery_receipt():belongsTo
+    {
+        return $this->belongsTo(DeliveryReceipt::class, "crefmoduletran", "ctranno");
+    }
 }
