@@ -18,4 +18,9 @@ class SalesInvoiceItems extends Model
         return $this->belongsTo(SalesInvoice::class, "ctranno", "ctranno");
     }
 
+    public function delivery_receipt():belongsTo
+    {
+        return $this->belongsTo(DeliveryReceipt::class, "creference", "ctranno");
+    }
+
 }

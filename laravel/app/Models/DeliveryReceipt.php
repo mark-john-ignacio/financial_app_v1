@@ -22,4 +22,9 @@ class DeliveryReceipt extends Model
     {
         return $this->hasMany(SalesInvoice::class, "crefmoduletran", "ctranno");
     }
+
+    public function sales_invoice_items():hasMany
+    {
+        return $this->hasMany(SalesInvoiceItems::class, "creference", "ctranno");
+    }
 }
