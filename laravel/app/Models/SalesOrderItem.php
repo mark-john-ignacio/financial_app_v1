@@ -13,6 +13,16 @@ class SalesOrderItem extends Model
 
     protected $table = 'so_t';
 
+    protected $fillable = [
+        'compcode',
+        'ctranno',
+        'citemcode',
+        'citemdesc',
+        'nquantity',
+        'nprice',
+        'nbaseprice'
+        ];
+
     public function sales_order():BelongsTo
     {
         return $this->belongsTo(SalesOrder::class, "ctranno", "ctranno");

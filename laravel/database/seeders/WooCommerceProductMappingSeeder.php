@@ -48,7 +48,7 @@ class WooCommerceProductMappingSeeder extends Seeder
         }
 
         WooCommerceProductMapping::create([
-            'woocommerce_product_id' => 5,
+            'woocommerce_product_id' => 11123,
             'myxfin_product_id' => $itemA4->nid
         ]);
 

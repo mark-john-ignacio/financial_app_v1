@@ -99,7 +99,7 @@ class WooCommerceWebhookController extends Controller
                         'cremarks' => 'from_woocommerce',
                     ]);
                 } else {
-                    Log::error('No mapping found for WooCommerce product ID: ' . $item['product_id']);
+                    throw new \Exception('No mapping found for WooCommerce product ID: ' . $item['product_id']);
                 }
             }
             //Create DR
