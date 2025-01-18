@@ -124,6 +124,13 @@ function listcurrencies(){ //API for currency list
 	= '$txtctranno' and a.compcode='$company'");
 
 
+	function dump($var){
+		echo "<pre>";
+		var_dump($var);
+		echo "</pre>";
+	}
+
+
 if (mysqli_num_rows($sqlhead)!=0) {
 	while($row = mysqli_fetch_array($sqlhead, MYSQLI_ASSOC)){
 		$CustCode = $row['ccode'];

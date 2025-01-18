@@ -11,10 +11,9 @@ return new class extends Migration
      */
     public function up(): void
     {
-//        Schema::create('customers', function (Blueprint $table) {
-//            $table->id();
-//            $table->timestamps();
-//        });
+        Schema::table('dr_t', function (Blueprint $table) {
+            //
+        });
     }
 
     /**
@@ -22,6 +21,8 @@ return new class extends Migration
      */
     public function down(): void
     {
-//        Schema::dropIfExists('customers');
+        Schema::table('dr_t', function (Blueprint $table) {
+            //
+        });
     }
 };
