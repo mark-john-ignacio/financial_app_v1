@@ -11,6 +11,6 @@ class Customer extends Model
     use HasFactory;
     protected $fillable = [
       'compcode', 'cempid', 'cname', 'ctradename', 'chouseno', 'ccity', 'cstate', 'ccountry', 'czip', 'cacctcodesales',
-        'cterms'
+        'cterms', 'cGroup1'
     ];
 }

@@ -13,6 +13,30 @@ class DeliveryReceipt extends Model
 
     protected $table = "dr";
 
+    protected $fillable = [
+        'compcode',
+        'ctranno',
+        'ccode',
+        'cremarks',
+        'ddate',
+        'dcutdate',
+        'ngross',
+        'nbasegross',
+        'ccurrencycode',
+        'ccurrencydesc',
+        'nexchangerate',
+        'cpreparedby',
+        'cacctcode',
+        'csalesman',
+        'cdelcode',
+        'cdeladdno',
+        'cdeladdcity',
+        'cdeladdstate',
+        'cdeladdcountry',
+        'cdeladdzip',
+        'cterms',
+    ];
+
     public function delivery_receipt_items():hasMany
     {
         return $this->hasMany(DeliveryReceiptItems::class, "ctranno", "ctranno");
