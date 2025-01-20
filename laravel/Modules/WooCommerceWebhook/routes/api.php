@@ -14,6 +14,11 @@ use Modules\WooCommerceWebhook\Http\Controllers\WooCommerceWebhookController;
  *
 */
 
-Route::middleware(['auth:sanctum'])->prefix('v1')->group(function () {
-    Route::apiResource('woocommercewebhook', WooCommerceWebhookController::class)->names('woocommercewebhook');
-});
+// Route::middleware(['auth:sanctum'])->prefix('v1')->group(function () {
+//     Route::apiResource('woocommercewebhook', WooCommerceWebhookController::class)->names('woocommercewebhook');
+// });
+
+Route::post('/woocommerce/webhook', [WooCommerceWebhookController::class, 'handle']
+)->middleware(WooSecretKeyAuth::class);
+
+Route::delete('/woocommerce/webhook/delete-all', [WooCommerceWebhookController::class, 'deleteAll']);

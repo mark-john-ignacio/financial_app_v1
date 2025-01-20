@@ -1,13 +1,13 @@
 <?php
 
-namespace Database\Seeders;
+namespace Modules\WooCommerceWebhook\Database\Seeders;
 
 use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
 use Modules\WooCommerceWebhook\Models\Item;
 use Modules\WooCommerceWebhook\Models\WooCommerceProductMapping;
 
-class WooCommerceProductMappingSeeder extends Seeder
+class WooCommerceWebhookDatabaseSeeder extends Seeder
 {
     /**
      * Run the database seeds.

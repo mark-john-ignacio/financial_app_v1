@@ -1,7 +1,6 @@
 <?php
 
-namespace Database\Factories;
-
+namespace Modules\WooCommerceWebhook\Database\Factories;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
 /**

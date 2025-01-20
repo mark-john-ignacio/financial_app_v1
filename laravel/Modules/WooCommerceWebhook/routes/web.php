@@ -14,6 +14,6 @@ use Modules\WooCommerceWebhook\Http\Controllers\WooCommerceWebhookController;
 |
 */
 
-Route::group([], function () {
-    Route::resource('woocommercewebhook', WooCommerceWebhookController::class)->names('woocommercewebhook');
-});
+// Route::group([], function () {
+//     Route::resource('woocommercewebhook', WooCommerceWebhookController::class)->names('woocommercewebhook');
+// });

@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Http\Controllers;
+namespace Modules\WooCommerceWebhook\Http\Controllers;
 
 use Modules\WooCommerceWebhook\Models\Customer;
 use Modules\WooCommerceWebhook\Models\DeliveryReceipt;
@@ -9,6 +9,7 @@ use Illuminate\Http\Request;
 use Modules\WooCommerceWebhook\Models\WoocommerceProductMapping as ProductMapping;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
+use App\Http\Controllers\Controller;
 
 class WooCommerceWebhookController extends Controller
 {
