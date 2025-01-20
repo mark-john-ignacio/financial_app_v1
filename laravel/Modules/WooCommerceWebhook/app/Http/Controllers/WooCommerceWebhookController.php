@@ -6,6 +6,7 @@ use Modules\WooCommerceWebhook\Models\Customer;
 use Modules\WooCommerceWebhook\Models\DeliveryReceipt;
 use Modules\WooCommerceWebhook\Models\SalesOrder;
 use Illuminate\Http\Request;
+use Modules\WooCommerceWebhook\Models\SalesOrderItem;
 use Modules\WooCommerceWebhook\Models\WoocommerceProductMapping as ProductMapping;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
@@ -17,20 +18,19 @@ class WooCommerceWebhookController extends Controller
     public function handle(Request $request)
     {
         $orderData = $request->all();
-        return [
-            'status' => 'success',
-            'data' => $orderData
-        ];
 
         $woocommerceProductIds = array_map(function($item){
             return $item['product_id'];
         }, $orderData['line_items']);
 
         $myxfinProductIds = $this->getMyxfinProductIds($woocommerceProductIds);
-        $this->processOrder($orderData, $myxfinProductIds);
+        $created_data = $this->processOrder($orderData, $myxfinProductIds);
 
 
-        return response()->json(['status' => 'success']);
+        return response()->json([
+            'status' => 'success',
+            'data' => $created_data,
+        ]);
     }
 
     public function getMyxfinProductIds($woocommerceProductIds)
@@ -52,7 +52,7 @@ class WooCommerceWebhookController extends Controller
 
     public function processOrder($orderData, $myxfinProductIds)
     {
-        DB::transaction(function () use ($orderData, $myxfinProductIds) {
+        $created_data = DB::transaction(function () use ($orderData, $myxfinProductIds) {
             $SOCtranno = $this->generateSOCtranno();
             $customerCode = $this->getCustomerCode($orderData);
             $salesOrder = SalesOrder::create([
@@ -82,35 +82,43 @@ class WooCommerceWebhookController extends Controller
             ]);
 
             //TODO: Create Sales Order Items
-            foreach ($orderData['line_items'] as $item){
-                $productMapping = ProductMapping::where('woocommerce_product_id', $item['product_id'])
-                    ->first();
+            $SOItemsCidentity = $this->generateSOItemsCidentity($SOCtranno);
+            // foreach ($orderData['line_items'] as $item){
+            //     $productMapping = ProductMapping::where('woocommerce_product_id', $item['product_id'])
+            //         ->first();
 
-                if($productMapping){
-                    $myxfinProductId = $productMapping->myxfin_product_id;
-                    $salesOrder->sales_order_items()->create([
-                        'compcode' => $this->company_code,
-                        'ctranno' => $SOCtranno,
-                        'citemcode' => $myxfinProductId,
-                        'citemdesc' => $item['name'],
-                        'nquantity' => $item['quantity'],
-                        'nprice' => $item['price'],
-                        'nbaseprice' => $item['price'],
-                        'namount' => $item['total'],
-                        'nbaseamount' => $item['total'],
-                        'ccurrencycode' => $orderData['currency'],
-                        'ccurrencydesc' => $orderData['currency_symbol'],
-                        'nexchangerate' => 1, // Set your exchange rate
-                        'cremarks' => 'from_woocommerce',
-                    ]);
-                } else {
-                    throw new \Exception('No mapping found for WooCommerce product ID: ' . $item['product_id']);
-                }
-            }
+            //     if($productMapping){
+            //         $myxfinProductId = $productMapping->myxfin_product_id;
+            //         $salesOrder->sales_order_items()->create([
+            //             'compcode' => $this->company_code,
+            //             'cidentity' => $SOItemsCidentity,
+            //             'ctranno' => $SOCtranno,
+            //             'creference' => $orderData['order_key'],
+            //             'nident' => $nident,
+            //             'nrefident' => $nident,
+            //             'citemno' => $product->cpartno,
+            //             'nqty' => $item['quantity'],
+            //             'cunit' => $product->cunit,
+            //             'nprice' => $item['total'],
+            //             'namount' => $item['price'],
+            //             'nbaseamount' => $item['price'],
+            //             'cmainunit' => $product->cunit,
+            //             'nfactor' => 1,
+            //             'nbase' => 0,
+            //             'ndisc' => 0,
+            //             'nnet' => 0,
+            //             'ctaxcode' => 'NT',
+            //             'nrate' => 0,
+            //         ]);
+            //     } else {
+            //         throw new \Exception('No mapping found for WooCommerce product ID: ' . $item['product_id']);
+            //     }
+            // }
             //Create DR
+            $drCtranno = $this->generateDRCtranno();
             DeliveryReceipt::create([
                 'compcode' => $this->company_code,
-                'ctranno' => $this->generateDRCtranno(),
+                'ctranno' => $drCtranno,
                 'ccode' => $customerCode,
                 'cremarks' => 'from_woocommerce',
                 'ddate' => $orderData['date_created'],
@@ -132,10 +140,13 @@ class WooCommerceWebhookController extends Controller
                 'cterms' => '30DY',
 
             ]);
+            return [
+                'sales_order_ctranno' => $SOCtranno,
+                'delivery_receipt_ctranno' => $drCtranno,
+            ];
+    
         });
-        //TODO: Create DR_t with ref to the sales order
-
-
+        return $created_data;
     }
 
     private function generateSOCtranno()
@@ -160,6 +171,28 @@ class WooCommerceWebhookController extends Controller
 
         return $prefix . $month . $year . $formattedNumber;
     }
+
+    private function generateSOItemsCidentity($salesOrderId){
+
+        $pattern = $salesOrderId . 'P%';
+        $latestItem = SalesOrderItem::where('cidentity', 'like', $pattern)
+            ->orderBy('cidentity', 'desc')
+            ->first();
+
+        $nextNumber = 0; // Default if no previous items are found
+        if ($latestItem) {
+
+            $currentNumber = substr($latestItem->cidentity, strrpos($latestItem->cidentity, 'P') + 1);
+
+            $nextNumber = intval($currentNumber) + 1;
+        }
+
+
+        $newCidentity = $salesOrderId . 'P' . $nextNumber;
+
+        return $newCidentity;
+    }
+
 
     private function generateDRCtranno()
     {
