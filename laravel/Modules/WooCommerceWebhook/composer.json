@@ -1,0 +1,30 @@
+{
+    "name": "nwidart/woocommercewebhook",
+    "description": "",
+    "authors": [
+        {
+            "name": "Nicolas Widart",
+            "email": "n.widart@gmail.com"
+        }
+    ],
+    "extra": {
+        "laravel": {
+            "providers": [],
+            "aliases": {
+
+            }
+        }
+    },
+    "autoload": {
+        "psr-4": {
+            "Modules\\WooCommerceWebhook\\": "app/",
+            "Modules\\WooCommerceWebhook\\Database\\Factories\\": "database/factories/",
+            "Modules\\WooCommerceWebhook\\Database\\Seeders\\": "database/seeders/"
+        }
+    },
+    "autoload-dev": {
+        "psr-4": {
+            "Modules\\WooCommerceWebhook\\Tests\\": "tests/"
+        }
+    }
+}

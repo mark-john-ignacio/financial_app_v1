@@ -1,0 +1,11 @@
+{
+    "name": "WooCommerceWebhook",
+    "alias": "woocommercewebhook",
+    "description": "",
+    "keywords": [],
+    "priority": 0,
+    "providers": [
+        "Modules\\WooCommerceWebhook\\Providers\\WooCommerceWebhookServiceProvider"
+    ],
+    "files": []
+}
