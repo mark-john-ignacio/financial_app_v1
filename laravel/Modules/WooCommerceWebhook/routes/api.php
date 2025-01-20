@@ -2,6 +2,7 @@
 
 use Illuminate\Support\Facades\Route;
 use Modules\WooCommerceWebhook\Http\Controllers\WooCommerceWebhookController;
+use Modules\WooCommerceWebhook\Http\Middleware\WooSecretKeyAuth;
 
 /*
  *--------------------------------------------------------------------------

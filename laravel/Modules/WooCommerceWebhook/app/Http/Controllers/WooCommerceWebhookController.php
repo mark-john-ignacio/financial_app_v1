@@ -17,6 +17,10 @@ class WooCommerceWebhookController extends Controller
     public function handle(Request $request)
     {
         $orderData = $request->all();
+        return [
+            'status' => 'success',
+            'data' => $orderData
+        ];
 
         $woocommerceProductIds = array_map(function($item){
             return $item['product_id'];
