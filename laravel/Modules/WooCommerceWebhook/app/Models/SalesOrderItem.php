@@ -15,12 +15,25 @@ class SalesOrderItem extends Model
 
     protected $fillable = [
         'compcode',
+        'cidentity',
         'ctranno',
-        'citemcode',
-        'citemdesc',
-        'nquantity',
+        'creference',
+        'nident',
+        'nrefident',
+        'citemno',
+        'nqty',
+        'cunit',
         'nprice',
-        'nbaseprice'
+        'namount',
+        'nbaseamount',
+        'cmainunit',
+        'nfactor',
+        'nbase',
+        'ndisc',
+        'nnet',
+        'ctaxcode',
+        'nrate',
+        'citemremarks'
         ];
 
     public function sales_order():BelongsTo

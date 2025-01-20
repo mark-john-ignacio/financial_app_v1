@@ -4,6 +4,7 @@ namespace Modules\WooCommerceWebhook\Http\Controllers;
 
 use Modules\WooCommerceWebhook\Models\Customer;
 use Modules\WooCommerceWebhook\Models\DeliveryReceipt;
+use Modules\WooCommerceWebhook\Models\Item;
 use Modules\WooCommerceWebhook\Models\SalesOrder;
 use Illuminate\Http\Request;
 use Modules\WooCommerceWebhook\Models\SalesOrderItem;
@@ -83,37 +84,40 @@ class WooCommerceWebhookController extends Controller
 
             //TODO: Create Sales Order Items
             $SOItemsCidentity = $this->generateSOItemsCidentity($SOCtranno);
-            // foreach ($orderData['line_items'] as $item){
-            //     $productMapping = ProductMapping::where('woocommerce_product_id', $item['product_id'])
-            //         ->first();
+            $nident = intval(substr($SOItemsCidentity, strrpos($SOItemsCidentity, 'P') + 1));
+             foreach ($orderData['line_items'] as $item){
+                 $productMapping = ProductMapping::where('woocommerce_product_id', $item['product_id'])
+                     ->first();
+                 $product = Item::find($productMapping->myxfin_product_id);
 
-            //     if($productMapping){
-            //         $myxfinProductId = $productMapping->myxfin_product_id;
-            //         $salesOrder->sales_order_items()->create([
-            //             'compcode' => $this->company_code,
-            //             'cidentity' => $SOItemsCidentity,
-            //             'ctranno' => $SOCtranno,
-            //             'creference' => $orderData['order_key'],
-            //             'nident' => $nident,
-            //             'nrefident' => $nident,
-            //             'citemno' => $product->cpartno,
-            //             'nqty' => $item['quantity'],
-            //             'cunit' => $product->cunit,
-            //             'nprice' => $item['total'],
-            //             'namount' => $item['price'],
-            //             'nbaseamount' => $item['price'],
-            //             'cmainunit' => $product->cunit,
-            //             'nfactor' => 1,
-            //             'nbase' => 0,
-            //             'ndisc' => 0,
-            //             'nnet' => 0,
-            //             'ctaxcode' => 'NT',
-            //             'nrate' => 0,
-            //         ]);
-            //     } else {
-            //         throw new \Exception('No mapping found for WooCommerce product ID: ' . $item['product_id']);
-            //     }
-            // }
+                 if($productMapping){
+                     $myxfinProductId = $productMapping->myxfin_product_id;
+                     $salesOrder->sales_order_items()->create([
+                         'compcode' => $this->company_code,
+                         'cidentity' => $SOItemsCidentity,
+                         'ctranno' => $SOCtranno,
+                         'creference' => $orderData['order_key'],
+                         'nident' => $nident,
+                         'nrefident' => $nident,
+                         'citemno' => $product->cpartno,
+                         'nqty' => $item['quantity'],
+                         'cunit' => $product->cunit,
+                         'nprice' => $item['total'],
+                         'namount' => $item['price'],
+                         'nbaseamount' => $item['price'],
+                         'cmainunit' => $product->cunit,
+                         'nfactor' => 1,
+                         'nbase' => 0,
+                         'ndisc' => 0,
+                         'nnet' => 0,
+                         'ctaxcode' => 'NT',
+                         'nrate' => 0,
+                         'citemremarks' => 'from_woocommerce',
+                     ]);
+                 } else {
+                     throw new \Exception('No mapping found for WooCommerce product ID: ' . $item['product_id']);
+                 }
+             }
             //Create DR
             $drCtranno = $this->generateDRCtranno();
             DeliveryReceipt::create([
@@ -144,7 +148,7 @@ class WooCommerceWebhookController extends Controller
                 'sales_order_ctranno' => $SOCtranno,
                 'delivery_receipt_ctranno' => $drCtranno,
             ];
-    
+
         });
         return $created_data;
     }
@@ -269,7 +273,7 @@ class WooCommerceWebhookController extends Controller
         DB::transaction(function () {
             $salesOrder = SalesOrder::where('cremarks', 'from_woocommerce')->delete();
             $deliveryReceipt = DeliveryReceipt::where('cremarks', 'from_woocommerce')->delete();
-//        $salesOrderItems = SalesOrderItems::where('cremarks', 'from_woocommerce')->get();
+            $salesOrderItems = SalesOrderItem::where('citemremarks', 'from_woocommerce')->delete();
 //        $deliveryReceiptItems = DeliveryReceiptItems::where('cremarks', 'from_woocommerce')->get();
 //        $salesInvoice = SalesInvoice::where('cremarks', 'from_woocommerce')->get();
 //        $salesInvoiceItems = SalesInvoiceItems::where('cremarks', 'from_woocommerce')->get();
