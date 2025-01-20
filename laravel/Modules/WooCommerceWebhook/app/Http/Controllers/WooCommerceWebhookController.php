@@ -274,6 +274,7 @@ class WooCommerceWebhookController extends Controller
             $salesOrder = SalesOrder::where('cremarks', 'from_woocommerce')->delete();
             $deliveryReceipt = DeliveryReceipt::where('cremarks', 'from_woocommerce')->delete();
             $salesOrderItems = SalesOrderItem::where('citemremarks', 'from_woocommerce')->delete();
+            $item = Item::where('cGroup1', 'from_woocommerce')->delete();
 //        $deliveryReceiptItems = DeliveryReceiptItems::where('cremarks', 'from_woocommerce')->get();
 //        $salesInvoice = SalesInvoice::where('cremarks', 'from_woocommerce')->get();
 //        $salesInvoiceItems = SalesInvoiceItems::where('cremarks', 'from_woocommerce')->get();

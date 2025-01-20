@@ -44,6 +44,7 @@ class WooCommerceWebhookDatabaseSeeder extends Seeder
                 "cacctcodedr" => null,
                 "cacctcoderet" => "100",
                 "cacctcodecog" => null,
+                'cGroup1' => 'from_woocommerce',
             ]);
         }
 
