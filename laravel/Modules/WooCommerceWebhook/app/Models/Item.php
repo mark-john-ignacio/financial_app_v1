@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Models;
+namespace Modules\WooCommerceWebhook\Models;
 
 use Illuminate\Database\Eloquent\Model;
 
