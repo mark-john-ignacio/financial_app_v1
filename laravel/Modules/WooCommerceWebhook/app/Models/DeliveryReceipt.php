@@ -39,7 +39,7 @@ class DeliveryReceipt extends Model
 
     public function delivery_receipt_items():hasMany
     {
-        return $this->hasMany(DeliveryReceiptItems::class, "ctranno", "ctranno");
+        return $this->hasMany(DeliveryReceiptItem::class, "ctranno", "ctranno");
     }
 
     public function sales_invoices():hasMany

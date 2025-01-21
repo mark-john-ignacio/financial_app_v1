@@ -23,6 +23,6 @@ class SalesOrder extends Model
 
     public function delivery_receipt_items():hasMany
     {
-        return $this->hasMany(DeliveryReceiptItems::class, "creference", "ctranno");
+        return $this->hasMany(DeliveryReceiptItem::class, "creference", "ctranno");
     }
 }

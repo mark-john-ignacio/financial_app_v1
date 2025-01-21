@@ -6,6 +6,7 @@ use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
 use Modules\WooCommerceWebhook\Models\Customer;
 use Modules\WooCommerceWebhook\Models\DeliveryReceipt;
+use Modules\WooCommerceWebhook\Models\DeliveryReceiptItem;
 use Modules\WooCommerceWebhook\Models\Item;
 use Modules\WooCommerceWebhook\Models\SalesOrder;
 use Modules\WooCommerceWebhook\Models\SalesOrderItem;
@@ -125,6 +126,33 @@ class OrderService
                 'cterms' => '30DY',
             ]);
 
+            //Create DR Items under the DR referencing the SO for each SO Items
+            foreach($salesOrder->sales_order_items as $soItem){
+                $drItemsCidentity = $this->generateDRItemsCidentity($drCtranno);
+                DeliveryReceiptItem::create([
+                    'compcode' => $this->company_code,
+                    'cidentity' => $drItemsCidentity,
+                    'nident' => 1,
+                    'ctranno' => $drCtranno,
+                    'creference' => $SOCtranno,
+                    'crefident' => 1,
+                    'citemno' => $soItem->citemno,
+                    'nqtyorig' => $soItem->nqty,
+                    'nqty' => $soItem->nqty,
+                    'nqtyscan' => $soItem->nqty,
+                    'cunit' => $soItem->cunit,
+                    'nprice' => $soItem->nprice,
+                    'namount' => $soItem->namount,
+                    'nbaseamount' => $soItem->nbaseamount,
+                    'cmainunit' => $soItem->cmainunit,
+                    'nfactor' => $soItem->nfactor,
+                    'nbase' => $soItem->nbase,
+                    'ndisc' => $soItem->ndisc,
+                    'nnet' => $soItem->nnet,
+                    'cacctcode' => 'from_woocommerce',
+                ]);
+            }
+
             return [
                 'sales_order_ctranno' => $SOCtranno,
                 'delivery_receipt_ctranno' => $drCtranno,
@@ -196,6 +224,24 @@ class OrderService
         $formattedNumber = str_pad($newNumber, 5, '0', STR_PAD_LEFT);
 
         return $prefix . $month . $year . $formattedNumber;
+    }
+
+    public function generateDRItemsCidentity($deliveryReceiptId)
+    {
+        $pattern = $deliveryReceiptId . 'P%';
+        $latestItem = DeliveryReceiptItem::where('cidentity', 'like', $pattern)
+            ->orderBy('cidentity', 'desc')
+            ->first();
+
+        $nextNumber = 0; // Default if no previous items are found
+        if ($latestItem) {
+            $currentNumber = substr($latestItem->cidentity, strrpos($latestItem->cidentity, 'P') + 1);
+            $nextNumber = intval($currentNumber) + 1;
+        }
+
+        $newCidentity = $deliveryReceiptId . 'P' . $nextNumber;
+
+        return $newCidentity;
     }
 
     private function getCustomerCode($data)
