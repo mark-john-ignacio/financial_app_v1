@@ -13,6 +13,29 @@ class DeliveryReceiptItem extends Model
 
     protected $table = "dr_t";
 
+    protected $fillable = [
+        'compcode',
+        'cidentity',
+        'nident',
+        'ctranno',
+        'creference',
+        'crefident',
+        'citemno',
+        'nqtyorig',
+        'nqty',
+        'nqtyscan',
+        'cunit',
+        'nprice',
+        'namount',
+        'nbaseamount',
+        'cmainunit',
+        'nfactor',
+        'nbase',
+        'ndisc',
+        'nnet',
+        'cacctcode',
+    ];
+
     public function delivery_receipt():belongsTo
     {
         return $this->belongsTo(DeliveryReceipt::class, "ctranno", "ctranno");

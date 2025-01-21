@@ -65,12 +65,13 @@ class OrderService
             ]);
 
             //TODO: Create Sales Order Items
-            $SOItemsCidentity = $this->generateSOItemsCidentity($SOCtranno);
-            $nident = intval(substr($SOItemsCidentity, strrpos($SOItemsCidentity, 'P') + 1));
+
              foreach ($orderData['line_items'] as $item){
                  $productMapping = ProductMapping::where('woocommerce_product_id', $item['product_id'])
                      ->first();
                  $product = Item::find($productMapping->myxfin_product_id);
+                 $SOItemsCidentity = $this->generateSOItemsCidentity($SOCtranno);
+                 $nident = intval(substr($SOItemsCidentity, strrpos($SOItemsCidentity, 'P') + 1));
 
                  if($product){
                      $myxfinProductId = $productMapping->myxfin_product_id;
