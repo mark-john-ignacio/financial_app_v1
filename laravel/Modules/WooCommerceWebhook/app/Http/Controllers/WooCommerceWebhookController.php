@@ -3,20 +3,21 @@
 
 namespace Modules\WooCommerceWebhook\Http\Controllers;
 
-use Modules\WooCommerceWebhook\App\Actions\HandleOrderAction;
-use Modules\WooCommerceWebhook\App\Actions\DeleteAllAction;
+use Modules\WooCommerceWebhook\Actions\DeleteAll;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
+use Modules\WooCommerceWebhook\Actions\HandleOrder;
+
 
 class WooCommerceWebhookController extends Controller
 {
     public function handle(Request $request)
     {
-        return HandleOrderAction::run($request);
+        return HandleOrder::run($request);
     }
 
     public function deleteAll()
     {
-        return DeleteAllAction::run();
+        return DeleteAll::run();
     }
 }

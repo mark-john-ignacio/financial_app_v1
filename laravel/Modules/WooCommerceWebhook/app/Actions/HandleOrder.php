@@ -1,16 +1,13 @@
 <?php
 
-namespace Modules\WooCommerceWebhook\App\Actions;
-
-use Lorisleiva\Actions\Concerns\AsAction;
+namespace Modules\WooCommerceWebhook\Actions;
 use Illuminate\Http\Request;
-use Modules\WooCommerceWebhook\App\Services\OrderService;
-use Modules\WooCommerceWebhook\Models\WoocommerceProductMapping as ProductMapping;
+use Lorisleiva\Actions\Concerns\AsAction;
+use Modules\WooCommerceWebhook\Services\OrderService;
 
-class HandleOrderAction
+class HandleOrder
 {
     use AsAction;
-
     protected $orderService;
 
     public function __construct(OrderService $orderService)

@@ -1,16 +1,16 @@
 <?php
 
-namespace Modules\WooCommerceWebhook\App\Actions;
+namespace Modules\WooCommerceWebhook\Actions;
 
-use Lorisleiva\Actions\Concerns\AsAction;
 use Illuminate\Support\Facades\DB;
+use Lorisleiva\Actions\Concerns\AsAction;
 use Modules\WooCommerceWebhook\Models\Customer;
 use Modules\WooCommerceWebhook\Models\DeliveryReceipt;
 use Modules\WooCommerceWebhook\Models\Item;
 use Modules\WooCommerceWebhook\Models\SalesOrder;
 use Modules\WooCommerceWebhook\Models\SalesOrderItem;
 
-class DeleteAllAction
+class DeleteAll
 {
     use AsAction;
 

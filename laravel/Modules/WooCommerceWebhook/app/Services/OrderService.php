@@ -1,15 +1,15 @@
 <?php
 
-namespace Modules\WooCommerceWebhook\App\Services;
+namespace Modules\WooCommerceWebhook\Services;
 
+use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Log;
 use Modules\WooCommerceWebhook\Models\Customer;
 use Modules\WooCommerceWebhook\Models\DeliveryReceipt;
 use Modules\WooCommerceWebhook\Models\Item;
 use Modules\WooCommerceWebhook\Models\SalesOrder;
 use Modules\WooCommerceWebhook\Models\SalesOrderItem;
 use Modules\WooCommerceWebhook\Models\WoocommerceProductMapping as ProductMapping;
-use Illuminate\Support\Facades\DB;
-use Illuminate\Support\Facades\Log;
 
 class OrderService
 {
@@ -70,7 +70,7 @@ class OrderService
                  $productMapping = ProductMapping::where('woocommerce_product_id', $item['product_id'])
                      ->first();
                  $product = Item::find($productMapping->myxfin_product_id);
-                 
+
                  if($product){
                      $myxfinProductId = $productMapping->myxfin_product_id;
                      $salesOrder->sales_order_items()->create([
