@@ -89,9 +89,8 @@ class WooCommerceWebhookController extends Controller
                  $productMapping = ProductMapping::where('woocommerce_product_id', $item['product_id'])
                      ->first();
                  $product = Item::find($productMapping->myxfin_product_id);
-
-                 // update
-                 if($productMapping){
+                 
+                 if($product){
                      $myxfinProductId = $productMapping->myxfin_product_id;
                      $salesOrder->sales_order_items()->create([
                          'compcode' => $this->company_code,
