@@ -12,14 +12,14 @@ return new class extends Migration
      */
     public function up(): void
     {
-        if(Schema::hasColumn('so_t', 'created_at')) {
+        if(Schema::hasColumn('sales', 'created_at')) {
             return;
         }
-        if(Schema::hasColumn('so_t', 'updated_at')) {
+        if(Schema::hasColumn('sales', 'updated_at')) {
             return;
         }
-        Schema::table('so_t', function (Blueprint $table) {
-            $table->timestamp('created_at')->default(DB::raw('CURRENT_TIMESTAMP'))->after('nrate');
+        Schema::table('sales', function (Blueprint $table) {
+            $table->timestamp('created_at')->default(DB::raw('CURRENT_TIMESTAMP'))->after('nordue');
             $table->timestamp('updated_at')->default(DB::raw('CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP'))->after('created_at');
         });
     }
@@ -29,10 +29,10 @@ return new class extends Migration
      */
     public function down(): void
     {
-        if (!Schema::hasColumn('so_t', 'created_at')) {
+        if (!Schema::hasColumn('sales', 'created_at')) {
             return;
         }
-        Schema::table('so_t', function (Blueprint $table) {
+        Schema::table('sales', function (Blueprint $table) {
             $table->dropColumn(['created_at', 'updated_at']);
         });
     }

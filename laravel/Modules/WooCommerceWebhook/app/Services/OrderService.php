@@ -8,6 +8,7 @@ use Modules\WooCommerceWebhook\Models\Customer;
 use Modules\WooCommerceWebhook\Models\DeliveryReceipt;
 use Modules\WooCommerceWebhook\Models\DeliveryReceiptItem;
 use Modules\WooCommerceWebhook\Models\Item;
+use Modules\WooCommerceWebhook\Models\SalesInvoice;
 use Modules\WooCommerceWebhook\Models\SalesOrder;
 use Modules\WooCommerceWebhook\Models\SalesOrderItem;
 use Modules\WooCommerceWebhook\Models\WoocommerceProductMapping as ProductMapping;
@@ -154,6 +155,32 @@ class OrderService
                 ]);
             }
 
+            //Create Sales Invoice referencing DR
+            $siCtranno = $this->generateSICtranno();
+            SalesInvoice::create([
+                'compcode' => $this->company_code,
+                'ctranno' => $siCtranno,
+                'ccode' => $customerCode,
+                'cremarks' => 'from_woocommerce',
+                'ddate' => $orderData['date_created'],
+                'dcutdate' => $orderData['date_created'],
+                'nexempt' => 0,
+                'nzerorated' => 0,
+                'nnet' => $orderData['total'],
+                'nvat' => 0,
+                'newt' => 0,
+                'cewtcode' => '',
+                'ngrossbefore' => $orderData['total'],
+                'ngrossdisc' => 0,
+                'ngross' => $orderData['total'],
+                'nbasegross' => $orderData['total'],
+                'ntotaldiscounts' => 0,
+                'ccurrencycode' => $orderData['currency'],
+                'ccurrencydesc' => $orderData['currency_symbol'],
+                'nexchangerate' => 1, // Set your exchange rate
+                'cpreparedby' => 'WooCommerce',
+            ]);
+
             return [
                 'sales_order_ctranno' => $SOCtranno,
                 'delivery_receipt_ctranno' => $drCtranno,
@@ -243,6 +270,28 @@ class OrderService
         $newCidentity = $deliveryReceiptId . 'P' . $nextNumber;
 
         return $newCidentity;
+    }
+
+    public function generateSICtranno(){
+        $prefix = 'SI';
+        $month = date('m');
+        $year = date('y');
+
+        $highestCtranno = SalesInvoice::where('ctranno', 'like', $prefix . $month . $year . '%')
+            ->orderBy('ctranno', 'desc')
+            ->first();
+
+        if ($highestCtranno) {
+            $numberPart = intval(substr($highestCtranno->ctranno, 6));
+        } else {
+            $numberPart = 0;
+        }
+
+        $newNumber = $numberPart + 1;
+
+        $formattedNumber = str_pad($newNumber, 5, '0', STR_PAD_LEFT);
+
+        return $prefix . $month . $year . $formattedNumber;
     }
 
     private function getCustomerCode($data)

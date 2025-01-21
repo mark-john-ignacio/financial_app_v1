@@ -14,6 +14,30 @@ class SalesInvoice extends Model
 
     protected $table = "sales";
 
+    protected $fillable = [
+        'compcode',
+        'ctranno',
+        'ccode',
+        'cremarks',
+        'ddate',
+        'dcutdate',
+        'nexempt',
+        'nzerorated',
+        'nnet',
+        'nvat',
+        'newt',
+        'cewtcode',
+        'ngrossbefore',
+        'ngrossdisc',
+        'ngross',
+        'nbasegross',
+        'ntotaldiscounts',
+        'ccurrencycode',
+        'ccurrencydesc',
+        'nexchangerate',
+        'cpreparedby',
+    ];
+
     public function sales_invoice_items():hasMany
     {
         return $this->hasMany(SalesInvoiceItems::class, "ctranno", "ctranno");
