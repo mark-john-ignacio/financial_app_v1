@@ -9,6 +9,7 @@ use Modules\WooCommerceWebhook\Models\DeliveryReceipt;
 use Modules\WooCommerceWebhook\Models\DeliveryReceiptItem;
 use Modules\WooCommerceWebhook\Models\Item;
 use Modules\WooCommerceWebhook\Models\SalesInvoice;
+use Modules\WooCommerceWebhook\Models\SalesInvoiceItem;
 use Modules\WooCommerceWebhook\Models\SalesOrder;
 use Modules\WooCommerceWebhook\Models\SalesOrderItem;
 use Modules\WooCommerceWebhook\Models\WoocommerceProductMapping as ProductMapping;
@@ -104,7 +105,7 @@ class OrderService
              }
             //Create DR
             $drCtranno = $this->generateDRCtranno();
-            DeliveryReceipt::create([
+            $deliveryReceipt = DeliveryReceipt::create([
                 'compcode' => $this->company_code,
                 'ctranno' => $drCtranno,
                 'ccode' => $customerCode,
@@ -195,9 +196,38 @@ class OrderService
                 "crefmodule" => "DR",
                 'crefmoduletran' => $drCtranno,
                 'nordue' => "0.0000",
-
-
             ]);
+
+            //Create SI Items under the SI referencing the DR for each DR Items
+            foreach($deliveryReceipt->delivery_receipt_items as $drItem){
+                $siItemsCidentity = $this->generateSIItemsCidentity($siCtranno);
+                SalesInvoiceItem::create([
+                    "compcode" => $this->company_code,
+                    "cidentity" => $siItemsCidentity,
+                    "ctranno" => $siCtranno,
+                    "creference" => $drCtranno,
+                    "nrefident" => 1,
+                    "nident" => 1,
+                    "citemno" => $drItem->citemno,
+                    "nqty" => $drItem->nqty,
+                    "nqtyreturned" => 0,
+                    "cunit" => $drItem->cunit,
+                    "nprice" => $drItem->nprice,
+                    "ndiscount" => 0,
+                    "namount" => $drItem->namount,
+                    "nbaseamount" => $drItem->nbaseamount,
+                    "nnetvat" => 0,
+                    "nlessvat" => 0,
+                    "cmainunit" => $drItem->cmainunit,
+                    "nfactor" => $drItem->nfactor,
+                    "cacctcode" => "from_woocommerce",
+                    "ctaxcode" => "NT",
+                    "nrate" => 0,
+                    "cewtcode" => "",
+                    "newtrate" => 0,
+
+                ]);
+            }
 
             return [
                 'sales_order_ctranno' => $soCtranno,
@@ -311,6 +341,24 @@ class OrderService
         $formattedNumber = str_pad($newNumber, 5, '0', STR_PAD_LEFT);
 
         return $prefix . $month . $year . $formattedNumber;
+    }
+
+    public function generateSIItemsCidentity($salesInvoiceId)
+    {
+        $pattern = $salesInvoiceId . 'P%';
+        $latestItem = SalesInvoiceItem::where('cidentity', 'like', $pattern)
+            ->orderBy('cidentity', 'desc')
+            ->first();
+
+        $nextNumber = 0; // Default if no previous items are found
+        if ($latestItem) {
+            $currentNumber = substr($latestItem->cidentity, strrpos($latestItem->cidentity, 'P') + 1);
+            $nextNumber = intval($currentNumber) + 1;
+        }
+
+        $newCidentity = $salesInvoiceId . 'P' . $nextNumber;
+
+        return $newCidentity;
     }
 
     private function getCustomerCode($data)
