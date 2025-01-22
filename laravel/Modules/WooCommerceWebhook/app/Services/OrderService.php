@@ -37,11 +37,11 @@ class OrderService
     public function processOrder($orderData, $myxfinProductIds)
     {
         $created_data = DB::transaction(function () use ($orderData, $myxfinProductIds) {
-            $SOCtranno = $this->generateSOCtranno();
+            $soCtranno = $this->generateSOCtranno();
             $customerCode = $this->getCustomerCode($orderData);
             $salesOrder = SalesOrder::create([
                 'compcode' => $this->company_code,
-                'ctranno' => $SOCtranno,
+                'ctranno' => $soCtranno,
                 'ccode' => $customerCode,
                 'ddate' => $orderData['date_created'],
                 'dcutdate' => $orderData['date_created'],
@@ -71,7 +71,7 @@ class OrderService
                  $productMapping = ProductMapping::where('woocommerce_product_id', $item['product_id'])
                      ->first();
                  $product = Item::find($productMapping->myxfin_product_id);
-                 $SOItemsCidentity = $this->generateSOItemsCidentity($SOCtranno);
+                 $SOItemsCidentity = $this->generateSOItemsCidentity($soCtranno);
                  $nident = intval(substr($SOItemsCidentity, strrpos($SOItemsCidentity, 'P') + 1));
 
                  if($product){
@@ -79,7 +79,7 @@ class OrderService
                      $salesOrder->sales_order_items()->create([
                          'compcode' => $this->company_code,
                          'cidentity' => $SOItemsCidentity,
-                         'ctranno' => $SOCtranno,
+                         'ctranno' => $soCtranno,
                          'creference' => $orderData['order_key'],
                          'nident' => $nident,
                          'nrefident' => $nident,
@@ -136,7 +136,7 @@ class OrderService
                     'cidentity' => $drItemsCidentity,
                     'nident' => 1,
                     'ctranno' => $drCtranno,
-                    'creference' => $SOCtranno,
+                    'creference' => $soCtranno,
                     'crefident' => 1,
                     'citemno' => $soItem->citemno,
                     'nqtyorig' => $soItem->nqty,
@@ -192,16 +192,17 @@ class OrderService
                 'lstopreinvoice' => 0,
                 'cterms' => "",
                 'cpaytype' => "",
-                "crefmodule" => "",
-                'crefmoduletran' => "",
+                "crefmodule" => "DR",
+                'crefmoduletran' => $drCtranno,
                 'nordue' => "0.0000",
 
 
             ]);
 
             return [
-                'sales_order_ctranno' => $SOCtranno,
+                'sales_order_ctranno' => $soCtranno,
                 'delivery_receipt_ctranno' => $drCtranno,
+                'sales_invoice_ctranno' => $siCtranno,
             ];
         });
 
