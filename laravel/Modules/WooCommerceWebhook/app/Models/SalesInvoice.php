@@ -36,6 +36,22 @@ class SalesInvoice extends Model
         'ccurrencydesc',
         'nexchangerate',
         'cpreparedby',
+        'lapproved',
+        'lvoid',
+        'lcancelled',
+        'cacctcode',
+        'cvatcode',
+        'ncreditbal',
+        'npayed',
+        'csalestype',
+        'csiprintno',
+        'creinvoice',
+        'lstopreinvoice',
+        'cterms',
+        'cpaytype',
+        "crefmodule",
+        'crefmoduletran',
+        'nordue',
     ];
 
     public function sales_invoice_items():hasMany

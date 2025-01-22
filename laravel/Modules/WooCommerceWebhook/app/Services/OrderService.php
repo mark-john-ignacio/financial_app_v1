@@ -179,6 +179,24 @@ class OrderService
                 'ccurrencydesc' => $orderData['currency_symbol'],
                 'nexchangerate' => 1, // Set your exchange rate
                 'cpreparedby' => 'WooCommerce',
+                'lapproved' => 0,
+                'lvoid' => 0,
+                'lcancelled' => 0,
+                'cacctcode' => null,
+                'cvatcode' => null,
+                'ncreditbal' => "0.0000",
+                'npayed' => "0.0000",
+                'csalestype' => 'Goods',
+                'csiprintno' => null,
+                'creinvoice' => "NO",
+                'lstopreinvoice' => 0,
+                'cterms' => "",
+                'cpaytype' => "",
+                "crefmodule" => "",
+                'crefmoduletran' => "",
+                'nordue' => "0.0000",
+
+
             ]);
 
             return [
