@@ -41,7 +41,7 @@ class OrderService
         try {
             $created_data = DB::transaction(function () use ($orderData, $myxfinProductIds) {
                 $soCtranno = $this->generateSOCtranno();
-                $customerCode = Customer::where('cempid', 'CUSTWC_001')
+                $customerCode = Customer::where('cname', 'CASH SALES')->first()->cempid;
                 $salesOrder = SalesOrder::create([
                     'compcode' => $this->company_code,
                     'ctranno' => $soCtranno,
@@ -381,52 +381,5 @@ class OrderService
 
         return $newCidentity;
     }
-
-    private function getCustomerCode($data)
-    {
-        $customerName = strtoupper($data['billing']['first_name'] . ' ' . $data['billing']['last_name']);
-        $customer = Customer::where('cname', $customerName)->first();
-
-        if ($customer) {
-            return $customer->cempid;
-        } else {
-            $customer = Customer::create([
-                'compcode' => $this->company_code,
-                'cempid' => $this->generateCustomerCode(),
-                'cname' => $customerName,
-                'ctradename' => strtoupper($data['billing']['company']),
-                'chouseno' => $data['billing']['address_1'],
-                'ccity' => $data['billing']['city'],
-                'cstate' => $data['billing']['state'],
-                'ccountry' => $data['billing']['country'],
-                'czip' => $data['billing']['postcode'],
-                'cacctcodesales' => '14',
-                'cterms' => '30DY',
-                'cGroup1' => 'from_woocommerce',
-            ]);
-            return $customer->cempid;
-        }
-    }
-
-    private function generateCustomerCode()
-    {
-        $prefix = 'CUSTWC_';
-        $highestCode = Customer::where('compcode', $this->company_code)
-            ->where('cempid', 'like', $prefix . '%')
-            ->orderBy('cempid', 'desc')
-            ->first();
-
-        if ($highestCode) {
-            $numberPart = intval(substr($highestCode->cempid, 8));
-        } else {
-            $numberPart = 0;
-        }
-        $newNumber = $numberPart + 1;
-
-        $paddingLength = max(3, strlen((string)$numberPart));
-
-        $formattedNumber = str_pad($newNumber, $paddingLength, '0', STR_PAD_LEFT);
-
-        return $prefix . $formattedNumber;
-    }
+    
 }

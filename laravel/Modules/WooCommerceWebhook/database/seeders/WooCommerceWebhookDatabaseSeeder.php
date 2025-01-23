@@ -66,7 +66,12 @@ class WooCommerceWebhookDatabaseSeeder extends Seeder
             'cstate' => null,
             'ccountry' => null,
             'czip' => null,
-            'cacctcodesales' => '14',
+            'cacctcodesales' => '166',
+            'cacctcodetype' => 'single',
+            'ccustomertype' => 'TYP001',
+            'ccustomerclass' => 'CLS001',
+            'cpricever' => 'None',
+            'cvattype' => 'VT',
             'cterms' => '30DY',
             'cGroup1' => 'from_woocommerce',
         ]);
