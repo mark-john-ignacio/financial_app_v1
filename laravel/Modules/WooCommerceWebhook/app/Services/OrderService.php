@@ -41,7 +41,7 @@ class OrderService
         try {
             $created_data = DB::transaction(function () use ($orderData, $myxfinProductIds) {
                 $soCtranno = $this->generateSOCtranno();
-                $customerCode = $this->getCustomerCode($orderData);
+                $customerCode = Customer::where('cempid', 'CUSTWC_001')
                 $salesOrder = SalesOrder::create([
                     'compcode' => $this->company_code,
                     'ctranno' => $soCtranno,
