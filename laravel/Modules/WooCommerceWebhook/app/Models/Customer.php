@@ -3,7 +3,7 @@
 namespace Modules\WooCommerceWebhook\Models;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
- use Modules\WooCommerceWebhook\Database\Factories\CustomerFactory;
+use Modules\WooCommerceWebhook\Database\Factories\CustomerFactory;
 
 class Customer extends Model
 {

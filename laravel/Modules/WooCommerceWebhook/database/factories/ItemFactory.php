@@ -7,7 +7,7 @@ use Modules\WooCommerceWebhook\Models\Item;
 
 class ItemFactory extends Factory
 {
-    protected $model = Item::class;
+    protected $model = \Modules\WooCommerceWebhook\Models\Item::class;
 
     public function definition()
     {

@@ -3,6 +3,7 @@
 
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Facades\Http;
+use Illuminate\Support\Facades\Log;
 use Modules\WooCommerceWebhook\Actions\HandleOrder;
 use Modules\WooCommerceWebhook\Models\Customer;
 use Modules\WooCommerceWebhook\Models\DeliveryReceipt;
@@ -12,6 +13,8 @@ use Modules\WooCommerceWebhook\Models\SalesOrderItem;
 use Modules\WooCommerceWebhook\Models\WooCommerceAudit as Audit;
 use Modules\WooCommerceWebhook\Models\WoocommerceProductMapping as ProductMapping;
 
+uses(Tests\TestCase::class);
+uses(RefreshDatabase::class);
 beforeEach(function () {
     $this->orderData = [
         "id" => 11220,
@@ -146,9 +149,17 @@ beforeEach(function () {
     ];
 
     // Create necessary database records
-    Customer::factory()->create(['cname' => 'Leo Batumbakal', 'cempid' => 'CUST001']);
-    Item::factory()->create(['id' => 11123, 'cpartno' => 'ITEM001', 'cunit' => 'pcs']);
-    ProductMapping::factory()->create(['woocommerce_product_id' => 11123, 'myxfin_product_id' => 11123]);
+
+    Log::info('Creating necessary database records');
+    try {
+        // Create necessary database records
+        $customer = Customer::factory()->create(['cname' => 'Leo Batumbakal', 'cempid' => 'CUST001']);
+        Item::factory()->create(['id' => 11123, 'cpartno' => 'ITEM001', 'cunit' => 'pcs']);
+        ProductMapping::factory()->create(['woocommerce_product_id' => 11123, 'myxfin_product_id' => 11123]);
+    } catch (\Exception $e) {
+        Log::error('Error in beforeEach: ' . $e->getMessage());
+        throw $e;
+    }
 });
 
 it('handles orders successfully', function () {

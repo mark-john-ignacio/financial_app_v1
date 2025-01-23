@@ -18,7 +18,6 @@ class HandleOrder
     public function handle(Request $request)
     {
         $orderData = $request->all();
-
         $created_data = $this->orderService->processOrder($orderData);
 
         return response()->json([
