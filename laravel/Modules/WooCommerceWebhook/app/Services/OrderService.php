@@ -19,27 +19,11 @@ class OrderService
 {
     private $company_code = '001';
 
-    public function getMyxfinProductIds($woocommerceProductIds)
-    {
-        $myxfinProductIds = [];
-        foreach ($woocommerceProductIds as $woocommerceProductId){
-            $mapping = ProductMapping::where('woocommerce_product_id', $woocommerceProductId)
-                ->first();
 
-            if($mapping){
-                $myxfinProductIds[] = $mapping->myxfin_product_id;
-            } else {
-                Log::error('No mapping found for WooCommerce product ID: ' . $woocommerceProductId);
-            }
-        }
-
-        return $myxfinProductIds;
-    }
-
-    public function processOrder($orderData, $myxfinProductIds)
+    public function processOrder($orderData)
     {
         try {
-            $created_data = DB::transaction(function () use ($orderData, $myxfinProductIds) {
+            $created_data = DB::transaction(function () use ($orderData) {
                 $soCtranno = $this->generateSOCtranno();
                 $customerCode = Customer::where('cname', 'CASH SALES')->first()->cempid;
                 $salesOrder = SalesOrder::create([

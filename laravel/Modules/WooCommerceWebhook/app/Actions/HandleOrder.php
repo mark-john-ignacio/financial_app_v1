@@ -19,12 +19,7 @@ class HandleOrder
     {
         $orderData = $request->all();
 
-        $woocommerceProductIds = array_map(function($item){
-            return $item['product_id'];
-        }, $orderData['line_items']);
-
-        $myxfinProductIds = $this->orderService->getMyxfinProductIds($woocommerceProductIds);
-        $created_data = $this->orderService->processOrder($orderData, $myxfinProductIds);
+        $created_data = $this->orderService->processOrder($orderData);
 
         return response()->json([
             'status' => 'success',
