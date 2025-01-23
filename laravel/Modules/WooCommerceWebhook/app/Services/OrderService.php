@@ -12,6 +12,7 @@ use Modules\WooCommerceWebhook\Models\SalesInvoice;
 use Modules\WooCommerceWebhook\Models\SalesInvoiceItem;
 use Modules\WooCommerceWebhook\Models\SalesOrder;
 use Modules\WooCommerceWebhook\Models\SalesOrderItem;
+use Modules\WooCommerceWebhook\Models\WooCommerceAudit as Audit;
 use Modules\WooCommerceWebhook\Models\WoocommerceProductMapping as ProductMapping;
 
 class OrderService
@@ -37,206 +38,226 @@ class OrderService
 
     public function processOrder($orderData, $myxfinProductIds)
     {
-        $created_data = DB::transaction(function () use ($orderData, $myxfinProductIds) {
-            $soCtranno = $this->generateSOCtranno();
-            $customerCode = $this->getCustomerCode($orderData);
-            $salesOrder = SalesOrder::create([
-                'compcode' => $this->company_code,
-                'ctranno' => $soCtranno,
-                'ccode' => $customerCode,
-                'ddate' => $orderData['date_created'],
-                'dcutdate' => $orderData['date_created'],
-                'dpodate' => $orderData['date_created'],
-                'csalestype' => 'Goods',
-                'cpono' => $orderData['order_key'],
-                'ngross' => $orderData['total'],
-                'nbasegross' => $orderData['total'],
-                'ccurrencycode' => $orderData['currency'],
-                'ccurrencydesc' => $orderData['currency_symbol'],
-                'nexchangerate' => 1, // Set your exchange rate
-                'cremarks' => 'from_woocommerce',
-                'cspecins' => $orderData['customer_note'],
-                'cpreparedby' => 'WooCommerce',
-                'csalesman' => '', // Set the salesman field
-                'cdelcode' => $customerCode, // Delivery customer
-                'cdeladdno' => $orderData['shipping']['address_1'],
-                'cdeladdcity' => $orderData['shipping']['city'],
-                'cdeladdstate' => $orderData['shipping']['state'],
-                'cdeladdcountry' => $orderData['shipping']['country'],
-                'cdeladdzip' => $orderData['shipping']['postcode'],
-            ]);
-
-            //TODO: Create Sales Order Items
-
-             foreach ($orderData['line_items'] as $item){
-                 $productMapping = ProductMapping::where('woocommerce_product_id', $item['product_id'])
-                     ->first();
-                 $product = Item::find($productMapping->myxfin_product_id);
-                 $SOItemsCidentity = $this->generateSOItemsCidentity($soCtranno);
-                 $nident = intval(substr($SOItemsCidentity, strrpos($SOItemsCidentity, 'P') + 1));
-
-                 if($product){
-                     $myxfinProductId = $productMapping->myxfin_product_id;
-                     $salesOrder->sales_order_items()->create([
-                         'compcode' => $this->company_code,
-                         'cidentity' => $SOItemsCidentity,
-                         'ctranno' => $soCtranno,
-                         'creference' => $orderData['order_key'],
-                         'nident' => $nident,
-                         'nrefident' => $nident,
-                         'citemno' => $product->cpartno,
-                         'nqty' => $item['quantity'],
-                         'cunit' => $product->cunit,
-                         'nprice' => $item['total'],
-                         'namount' => $item['price'],
-                         'nbaseamount' => $item['price'],
-                         'cmainunit' => $product->cunit,
-                         'nfactor' => 1,
-                         'nbase' => 0,
-                         'ndisc' => 0,
-                         'nnet' => 0,
-                         'ctaxcode' => 'NT',
-                         'nrate' => 0,
-                         'citemremarks' => 'from_woocommerce',
-                     ]);
-                 } else {
-                     throw new \Exception('No mapping found for WooCommerce product ID: ' . $item['product_id']);
-                 }
-             }
-            //Create DR
-            $drCtranno = $this->generateDRCtranno();
-            $deliveryReceipt = DeliveryReceipt::create([
-                'compcode' => $this->company_code,
-                'ctranno' => $drCtranno,
-                'ccode' => $customerCode,
-                'cremarks' => 'from_woocommerce',
-                'ddate' => $orderData['date_created'],
-                'dcutdate' => $orderData['date_created'],
-                'ngross' => $orderData['total'],
-                'nbasegross' => $orderData['total'],
-                'ccurrencycode' => $orderData['currency'],
-                'ccurrencydesc' => $orderData['currency_symbol'],
-                'nexchangerate' => 1, // Set your exchange rate
-                'cpreparedby' => 'WooCommerce',
-                'cacctcode' => '14', // Set your account code
-                'csalesman' => '', // Set the salesman field
-                'cdelcode' => $customerCode, // Delivery customer
-                'cdeladdno' => $orderData['shipping']['address_1'],
-                'cdeladdcity' => $orderData['shipping']['city'],
-                'cdeladdstate' => $orderData['shipping']['state'],
-                'cdeladdcountry' => $orderData['shipping']['country'],
-                'cdeladdzip' => $orderData['shipping']['postcode'],
-                'cterms' => '30DY',
-            ]);
-
-            //Create DR Items under the DR referencing the SO for each SO Items
-            foreach($salesOrder->sales_order_items as $soItem){
-                $drItemsCidentity = $this->generateDRItemsCidentity($drCtranno);
-                DeliveryReceiptItem::create([
+        try {
+            $created_data = DB::transaction(function () use ($orderData, $myxfinProductIds) {
+                $soCtranno = $this->generateSOCtranno();
+                $customerCode = $this->getCustomerCode($orderData);
+                $salesOrder = SalesOrder::create([
                     'compcode' => $this->company_code,
-                    'cidentity' => $drItemsCidentity,
-                    'nident' => 1,
-                    'ctranno' => $drCtranno,
-                    'creference' => $soCtranno,
-                    'crefident' => 1,
-                    'citemno' => $soItem->citemno,
-                    'nqtyorig' => $soItem->nqty,
-                    'nqty' => $soItem->nqty,
-                    'nqtyscan' => $soItem->nqty,
-                    'cunit' => $soItem->cunit,
-                    'nprice' => $soItem->nprice,
-                    'namount' => $soItem->namount,
-                    'nbaseamount' => $soItem->nbaseamount,
-                    'cmainunit' => $soItem->cmainunit,
-                    'nfactor' => $soItem->nfactor,
-                    'nbase' => $soItem->nbase,
-                    'ndisc' => $soItem->ndisc,
-                    'nnet' => $soItem->nnet,
-                    'cacctcode' => 'from_woocommerce',
+                    'ctranno' => $soCtranno,
+                    'ccode' => $customerCode,
+                    'ddate' => $orderData['date_created'],
+                    'dcutdate' => $orderData['date_created'],
+                    'dpodate' => $orderData['date_created'],
+                    'csalestype' => 'Goods',
+                    'cpono' => $orderData['order_key'],
+                    'ngross' => $orderData['total'],
+                    'nbasegross' => $orderData['total'],
+                    'ccurrencycode' => $orderData['currency'],
+                    'ccurrencydesc' => $orderData['currency_symbol'],
+                    'nexchangerate' => 1, // Set your exchange rate
+                    'cremarks' => 'from_woocommerce',
+                    'cspecins' => $orderData['customer_note'],
+                    'cpreparedby' => 'WooCommerce',
+                    'csalesman' => '', // Set the salesman field
+                    'cdelcode' => $customerCode, // Delivery customer
+                    'cdeladdno' => $orderData['shipping']['address_1'],
+                    'cdeladdcity' => $orderData['shipping']['city'],
+                    'cdeladdstate' => $orderData['shipping']['state'],
+                    'cdeladdcountry' => $orderData['shipping']['country'],
+                    'cdeladdzip' => $orderData['shipping']['postcode'],
                 ]);
-            }
 
-            //Create Sales Invoice referencing DR
-            $siCtranno = $this->generateSICtranno();
-            SalesInvoice::create([
-                'compcode' => $this->company_code,
-                'ctranno' => $siCtranno,
-                'ccode' => $customerCode,
-                'cremarks' => 'from_woocommerce',
-                'ddate' => $orderData['date_created'],
-                'dcutdate' => $orderData['date_created'],
-                'nexempt' => 0,
-                'nzerorated' => 0,
-                'nnet' => $orderData['total'],
-                'nvat' => 0,
-                'newt' => 0,
-                'cewtcode' => '',
-                'ngrossbefore' => $orderData['total'],
-                'ngrossdisc' => 0,
-                'ngross' => $orderData['total'],
-                'nbasegross' => $orderData['total'],
-                'ntotaldiscounts' => 0,
-                'ccurrencycode' => $orderData['currency'],
-                'ccurrencydesc' => $orderData['currency_symbol'],
-                'nexchangerate' => 1, // Set your exchange rate
-                'cpreparedby' => 'WooCommerce',
-                'lapproved' => 0,
-                'lvoid' => 0,
-                'lcancelled' => 0,
-                'cacctcode' => null,
-                'cvatcode' => null,
-                'ncreditbal' => "0.0000",
-                'npayed' => "0.0000",
-                'csalestype' => 'Goods',
-                'csiprintno' => null,
-                'creinvoice' => "NO",
-                'lstopreinvoice' => 0,
-                'cterms' => "",
-                'cpaytype' => "",
-                "crefmodule" => "DR",
-                'crefmoduletran' => $drCtranno,
-                'nordue' => "0.0000",
+                //TODO: Create Sales Order Items
+
+                foreach ($orderData['line_items'] as $item) {
+                    $productMapping = ProductMapping::where('woocommerce_product_id', $item['product_id'])
+                        ->first();
+                    $product = Item::find($productMapping->myxfin_product_id);
+                    $SOItemsCidentity = $this->generateSOItemsCidentity($soCtranno);
+                    $nident = intval(substr($SOItemsCidentity, strrpos($SOItemsCidentity, 'P') + 1));
+
+                    if ($product) {
+                        $myxfinProductId = $productMapping->myxfin_product_id;
+                        $salesOrder->sales_order_items()->create([
+                            'compcode' => $this->company_code,
+                            'cidentity' => $SOItemsCidentity,
+                            'ctranno' => $soCtranno,
+                            'creference' => $orderData['order_key'],
+                            'nident' => $nident,
+                            'nrefident' => $nident,
+                            'citemno' => $product->cpartno,
+                            'nqty' => $item['quantity'],
+                            'cunit' => $product->cunit,
+                            'nprice' => $item['total'],
+                            'namount' => $item['price'],
+                            'nbaseamount' => $item['price'],
+                            'cmainunit' => $product->cunit,
+                            'nfactor' => 1,
+                            'nbase' => 0,
+                            'ndisc' => 0,
+                            'nnet' => 0,
+                            'ctaxcode' => 'NT',
+                            'nrate' => 0,
+                            'citemremarks' => 'from_woocommerce',
+                        ]);
+                    } else {
+                        throw new \Exception('No mapping found for WooCommerce product ID: ' . $item['product_id']);
+                    }
+                }
+                //Create DR
+                $drCtranno = $this->generateDRCtranno();
+                $deliveryReceipt = DeliveryReceipt::create([
+                    'compcode' => $this->company_code,
+                    'ctranno' => $drCtranno,
+                    'ccode' => $customerCode,
+                    'cremarks' => 'from_woocommerce',
+                    'ddate' => $orderData['date_created'],
+                    'dcutdate' => $orderData['date_created'],
+                    'ngross' => $orderData['total'],
+                    'nbasegross' => $orderData['total'],
+                    'ccurrencycode' => $orderData['currency'],
+                    'ccurrencydesc' => $orderData['currency_symbol'],
+                    'nexchangerate' => 1, // Set your exchange rate
+                    'cpreparedby' => 'WooCommerce',
+                    'cacctcode' => '14', // Set your account code
+                    'csalesman' => '', // Set the salesman field
+                    'cdelcode' => $customerCode, // Delivery customer
+                    'cdeladdno' => $orderData['shipping']['address_1'],
+                    'cdeladdcity' => $orderData['shipping']['city'],
+                    'cdeladdstate' => $orderData['shipping']['state'],
+                    'cdeladdcountry' => $orderData['shipping']['country'],
+                    'cdeladdzip' => $orderData['shipping']['postcode'],
+                    'cterms' => '30DY',
+                ]);
+
+                //Create DR Items under the DR referencing the SO for each SO Items
+                foreach ($salesOrder->sales_order_items as $soItem) {
+                    $drItemsCidentity = $this->generateDRItemsCidentity($drCtranno);
+                    DeliveryReceiptItem::create([
+                        'compcode' => $this->company_code,
+                        'cidentity' => $drItemsCidentity,
+                        'nident' => 1,
+                        'ctranno' => $drCtranno,
+                        'creference' => $soCtranno,
+                        'crefident' => 1,
+                        'citemno' => $soItem->citemno,
+                        'nqtyorig' => $soItem->nqty,
+                        'nqty' => $soItem->nqty,
+                        'nqtyscan' => $soItem->nqty,
+                        'cunit' => $soItem->cunit,
+                        'nprice' => $soItem->nprice,
+                        'namount' => $soItem->namount,
+                        'nbaseamount' => $soItem->nbaseamount,
+                        'cmainunit' => $soItem->cmainunit,
+                        'nfactor' => $soItem->nfactor,
+                        'nbase' => $soItem->nbase,
+                        'ndisc' => $soItem->ndisc,
+                        'nnet' => $soItem->nnet,
+                        'cacctcode' => 'from_woocommerce',
+                    ]);
+                }
+
+                //Create Sales Invoice referencing DR
+                $siCtranno = $this->generateSICtranno();
+                SalesInvoice::create([
+                    'compcode' => $this->company_code,
+                    'ctranno' => $siCtranno,
+                    'ccode' => $customerCode,
+                    'cremarks' => 'from_woocommerce',
+                    'ddate' => $orderData['date_created'],
+                    'dcutdate' => $orderData['date_created'],
+                    'nexempt' => 0,
+                    'nzerorated' => 0,
+                    'nnet' => $orderData['total'],
+                    'nvat' => 0,
+                    'newt' => 0,
+                    'cewtcode' => '',
+                    'ngrossbefore' => $orderData['total'],
+                    'ngrossdisc' => 0,
+                    'ngross' => $orderData['total'],
+                    'nbasegross' => $orderData['total'],
+                    'ntotaldiscounts' => 0,
+                    'ccurrencycode' => $orderData['currency'],
+                    'ccurrencydesc' => $orderData['currency_symbol'],
+                    'nexchangerate' => 1, // Set your exchange rate
+                    'cpreparedby' => 'WooCommerce',
+                    'lapproved' => 0,
+                    'lvoid' => 0,
+                    'lcancelled' => 0,
+                    'cacctcode' => null,
+                    'cvatcode' => null,
+                    'ncreditbal' => "0.0000",
+                    'npayed' => "0.0000",
+                    'csalestype' => 'Goods',
+                    'csiprintno' => null,
+                    'creinvoice' => "NO",
+                    'lstopreinvoice' => 0,
+                    'cterms' => "",
+                    'cpaytype' => "",
+                    "crefmodule" => "DR",
+                    'crefmoduletran' => $drCtranno,
+                    'nordue' => "0.0000",
+                ]);
+
+                //Create SI Items under the SI referencing the DR for each DR Items
+                foreach ($deliveryReceipt->delivery_receipt_items as $drItem) {
+                    $siItemsCidentity = $this->generateSIItemsCidentity($siCtranno);
+                    SalesInvoiceItem::create([
+                        "compcode" => $this->company_code,
+                        "cidentity" => $siItemsCidentity,
+                        "ctranno" => $siCtranno,
+                        "creference" => $drCtranno,
+                        "nrefident" => 1,
+                        "nident" => 1,
+                        "citemno" => $drItem->citemno,
+                        "nqty" => $drItem->nqty,
+                        "nqtyreturned" => 0,
+                        "cunit" => $drItem->cunit,
+                        "nprice" => $drItem->nprice,
+                        "ndiscount" => 0,
+                        "namount" => $drItem->namount,
+                        "nbaseamount" => $drItem->nbaseamount,
+                        "nnetvat" => 0,
+                        "nlessvat" => 0,
+                        "cmainunit" => $drItem->cmainunit,
+                        "nfactor" => $drItem->nfactor,
+                        "cacctcode" => "from_woocommerce",
+                        "ctaxcode" => "NT",
+                        "nrate" => 0,
+                        "cewtcode" => "",
+                        "newtrate" => 0,
+
+                    ]);
+                }
+
+                return [
+                    'sales_order_ctranno' => $soCtranno,
+                    'delivery_receipt_ctranno' => $drCtranno,
+                    'sales_invoice_ctranno' => $siCtranno,
+                ];
+            });
+
+            Audit::create([
+                'request_data' => $orderData,
+                'response_data' => $created_data,
+                'status' => 'success'
             ]);
 
-            //Create SI Items under the SI referencing the DR for each DR Items
-            foreach($deliveryReceipt->delivery_receipt_items as $drItem){
-                $siItemsCidentity = $this->generateSIItemsCidentity($siCtranno);
-                SalesInvoiceItem::create([
-                    "compcode" => $this->company_code,
-                    "cidentity" => $siItemsCidentity,
-                    "ctranno" => $siCtranno,
-                    "creference" => $drCtranno,
-                    "nrefident" => 1,
-                    "nident" => 1,
-                    "citemno" => $drItem->citemno,
-                    "nqty" => $drItem->nqty,
-                    "nqtyreturned" => 0,
-                    "cunit" => $drItem->cunit,
-                    "nprice" => $drItem->nprice,
-                    "ndiscount" => 0,
-                    "namount" => $drItem->namount,
-                    "nbaseamount" => $drItem->nbaseamount,
-                    "nnetvat" => 0,
-                    "nlessvat" => 0,
-                    "cmainunit" => $drItem->cmainunit,
-                    "nfactor" => $drItem->nfactor,
-                    "cacctcode" => "from_woocommerce",
-                    "ctaxcode" => "NT",
-                    "nrate" => 0,
-                    "cewtcode" => "",
-                    "newtrate" => 0,
 
-                ]);
-            }
+            return $created_data;
+        } catch (\Exception $e) {
+            Audit::create([
+                'request_data' => $orderData,
+                'status' => 'failed',
+                'error_message' => $e->getMessage()
+            ]);
 
-            return [
-                'sales_order_ctranno' => $soCtranno,
-                'delivery_receipt_ctranno' => $drCtranno,
-                'sales_invoice_ctranno' => $siCtranno,
-            ];
-        });
+            Log::error('Order processing failed:' . $e->getMessage());
 
-        return $created_data;
+            throw $e;
+
+        }
     }
 
     private function generateSOCtranno()
