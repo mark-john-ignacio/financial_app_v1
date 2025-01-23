@@ -17,7 +17,8 @@ class WooCommerceProductMappingFactory extends Factory
     public function definition(): array
     {
         return [
-            //
+            'woocommerce_product_id' => $this->faker->unique()->randomNumber(),
+            'myxfin_product_id' => $this->faker->unique()->randomNumber(),
         ];
     }
 }
