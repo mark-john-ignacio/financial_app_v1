@@ -16,14 +16,14 @@ return new class extends Migration
         if (app()->environment('testing')) {
             Schema::create('so', function (Blueprint $table) {
                 $table->id();
-                $table->string('compcode', 10);
+                $table->string('compcode', 10)->default('001');
                 $table->string('ctranno', 50);
                 $table->string('ccode', 10);
                 $table->dateTime('ddate');
                 $table->date('dcutdate');
+                $table->date('dpodate')->nullable();
                 $table->string('csalestype', 50)->nullable();
                 $table->string('cpono', 50)->nullable();
-                $table->string('cpmid', 50)->nullable();
                 $table->decimal('ngross', 18, 4);
                 $table->decimal('nbasegross', 18, 4)->default(0.0000);
                 $table->string('ccurrencycode', 5)->nullable();
@@ -39,10 +39,11 @@ return new class extends Migration
                 $table->string('cdeladdstate', 50);
                 $table->string('cdeladdcountry', 50);
                 $table->string('cdeladdzip', 5);
-                $table->boolean('lapproved')->default(false);
-                $table->boolean('lcancelled')->nullable()->default(false);
-                $table->boolean('lprintposted')->default(false);
-                $table->boolean('lvoid')->nullable()->default(false);
+                $table->boolean('lapproved')->default(0);
+                $table->boolean('lvoid')->default(0);
+                $table->boolean('lcancelled')->default(0);
+                $table->boolean('lsent')->default(0);
+                $table->boolean('lprintposted')->default(0);
                 $table->timestamps();
             });
         }

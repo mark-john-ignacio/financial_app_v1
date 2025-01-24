@@ -12,6 +12,7 @@ use Modules\WooCommerceWebhook\Models\SalesOrder;
 use Modules\WooCommerceWebhook\Models\SalesOrderItem;
 use Modules\WooCommerceWebhook\Models\WooCommerceAudit as Audit;
 use Modules\WooCommerceWebhook\Models\WoocommerceProductMapping as ProductMapping;
+use Illuminate\Testing\TestResponse;
 
 uses(Tests\TestCase::class);
 uses(RefreshDatabase::class);
@@ -153,8 +154,8 @@ beforeEach(function () {
     Log::info('Creating necessary database records');
     try {
         // Create necessary database records
-        $customer = Customer::factory()->create(['cname' => 'Leo Batumbakal', 'cempid' => 'CUST001']);
-        Item::factory()->create(['id' => 11123, 'cpartno' => 'ITEM001', 'cunit' => 'pcs']);
+        $customer = Customer::factory()->create(['cname' => 'CASH SALES', 'cempid' => 'CUST001']);
+        Item::factory()->create(['nid' => 11123, 'cpartno' => 'ITEM001', 'cunit' => 'pcs']);
         ProductMapping::factory()->create(['woocommerce_product_id' => 11123, 'myxfin_product_id' => 11123]);
     } catch (\Exception $e) {
         Log::error('Error in beforeEach: ' . $e->getMessage());
@@ -165,7 +166,9 @@ beforeEach(function () {
 it('handles orders successfully', function () {
     $response = HandleOrder::run(new \Illuminate\Http\Request($this->orderData));
 
-    $response->assertJson([
+    $testResponse = TestResponse::fromBaseResponse($response);
+
+    $testResponse->assertJson([
         'status' => 'success',
         'data' => [
             'sales_order_ctranno' => true,
@@ -173,8 +176,9 @@ it('handles orders successfully', function () {
         ],
     ]);
 
-    $this->assertDatabaseHas('sales_orders', ['cpono' => 'wc_order_fw67s1SgR5bJB']);
-    $this->assertDatabaseHas('delivery_receipts', ['cremarks' => 'from_woocommerce']);
+
+    $this->assertDatabaseHas('so', ['cpono' => 'wc_order_fw67s1SgR5bJB']);
+    $this->assertDatabaseHas('dr', ['cremarks' => 'from_woocommerce']);
 });
 
 it('logs an audit record for successful orders', function () {

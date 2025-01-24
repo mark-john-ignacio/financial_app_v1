@@ -97,6 +97,9 @@ class OrderService
     {
         foreach ($orderData['line_items'] as $item) {
             $productMapping = ProductMapping::where('woocommerce_product_id', $item['product_id'])->first();
+            if(!$productMapping) {
+                throw new \Exception('No mapping found for WooCommerce product ID: ' . $item['product_id']);
+            }
             $product = Item::find($productMapping->myxfin_product_id);
             $SOItemsCidentity = $this->generateSOItemsCidentity($soCtranno);
             $nident = intval(substr($SOItemsCidentity, strrpos($SOItemsCidentity, 'P') + 1));

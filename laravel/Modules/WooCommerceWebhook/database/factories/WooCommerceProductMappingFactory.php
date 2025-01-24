@@ -4,9 +4,6 @@ namespace Modules\WooCommerceWebhook\Database\Factories;
 
 use Illuminate\Database\Eloquent\Factories\Factory;
 
-/**
- * @extends \Illuminate\Database\Eloquent\Factories\Factory<\App\Models\WooCommerceProductMapping>
- */
 class WooCommerceProductMappingFactory extends Factory
 {
     /**
@@ -14,6 +11,8 @@ class WooCommerceProductMappingFactory extends Factory
      *
      * @return array<string, mixed>
      */
+
+    protected $model = \Modules\WooCommerceWebhook\Models\WooCommerceProductMapping::class;
     public function definition(): array
     {
         return [

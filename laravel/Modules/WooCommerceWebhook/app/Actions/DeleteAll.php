@@ -26,7 +26,7 @@ class DeleteAll
             DeliveryReceiptItem::where('cacctcode', 'from_woocommerce')->delete();
             SalesInvoice::where('cremarks', 'from_woocommerce')->delete();
             SalesInvoiceItem::where('cacctcode', 'from_woocommerce')->delete();
-//            Item::where('cGroup1', 'from_woocommerce')->delete();
+            Item::where('cGroup1', 'from_woocommerce')->delete();
             Customer::where('cGroup1', 'from_woocommerce')->delete();
         });
 
