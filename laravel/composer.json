@@ -12,6 +12,7 @@
         "laravel/tinker": "^2.9",
         "livewire/livewire": "^3.5",
         "lorisleiva/laravel-actions": "^2.8",
+        "mhmiton/laravel-modules-livewire": "^4.3",
         "nwidart/laravel-modules": "*"
     },
     "require-dev": {
