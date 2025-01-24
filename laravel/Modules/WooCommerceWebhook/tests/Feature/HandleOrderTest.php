@@ -173,18 +173,20 @@ it('handles orders successfully', function () {
         'data' => [
             'sales_order_ctranno' => true,
             'delivery_receipt_ctranno' => true,
+            'sales_invoice_ctranno' => true,
         ],
     ]);
 
 
     $this->assertDatabaseHas('so', ['cpono' => 'wc_order_fw67s1SgR5bJB']);
     $this->assertDatabaseHas('dr', ['cremarks' => 'from_woocommerce']);
+    $this->assertDatabaseHas('sales', ['cremarks' => 'from_woocommerce']);
 });
 
 it('logs an audit record for successful orders', function () {
     HandleOrder::run(new \Illuminate\Http\Request($this->orderData));
 
-    $this->assertDatabaseHas('audits', [
+    $this->assertDatabaseHas('woocommerce_audits', [
         'request_data' => json_encode($this->orderData),
         'status' => 'success',
     ]);
@@ -200,7 +202,7 @@ it('logs an audit record for failed orders', function () {
         // Expected exception
     }
 
-    $this->assertDatabaseHas('audits', [
+    $this->assertDatabaseHas('woocommerce_audits', [
         'request_data' => json_encode($this->orderData),
         'status' => 'failed',
     ]);
