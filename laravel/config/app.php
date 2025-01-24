@@ -1,8 +1,6 @@
 <?php
 require __DIR__ . '/../../Connection/connection_string.php';
 
-$base_url = str_replace("Components/assets/", "", $AttachUrlBase) . "laravel/public/";
-
 return [
 
     /*
@@ -55,7 +53,7 @@ return [
     |
     */
 
-    'url' => env('APP_URL', $base_url),
+    'url' => env('APP_URL', $base_url_laravel),
 
     /*
     |--------------------------------------------------------------------------
