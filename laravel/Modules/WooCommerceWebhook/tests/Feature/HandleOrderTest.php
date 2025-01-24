@@ -150,8 +150,6 @@ beforeEach(function () {
     ];
 
     // Create necessary database records
-
-    Log::info('Creating necessary database records');
     try {
         // Create necessary database records
         $customer = Customer::factory()->create(['cname' => 'CASH SALES', 'cempid' => 'CUST001']);
