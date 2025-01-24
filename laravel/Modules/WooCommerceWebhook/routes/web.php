@@ -2,6 +2,7 @@
 
 use Illuminate\Support\Facades\Route;
 use Modules\WooCommerceWebhook\Http\Controllers\WooCommerceWebhookController;
+use Modules\WooCommerceWebhook\Livewire\Counter;
 
 /*
 |--------------------------------------------------------------------------
@@ -17,3 +18,4 @@ use Modules\WooCommerceWebhook\Http\Controllers\WooCommerceWebhookController;
 // Route::group([], function () {
 //     Route::resource('woocommercewebhook', WooCommerceWebhookController::class)->names('woocommercewebhook');
 // });
+Route::get('/counter-2', Counter::class);

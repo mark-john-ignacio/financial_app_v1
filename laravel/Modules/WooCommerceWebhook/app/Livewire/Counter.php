@@ -6,12 +6,20 @@ use Livewire\Component;
 
 class Counter extends Component
 {
+    public $count = 1;
+
+    public function increment()
+    {
+        $this->count++;
+    }
+
+    public function decrement()
+    {
+        $this->count--;
+    }
+
     public function render()
     {
-        return <<<'blade'
-            <div>
-                <h3>The <code>Counter</code> livewire component is loaded from the <code>WooCommerceWebhook</code> module.</h3>
-            </div>
-        blade;
+        return view('woocommercewebhook::livewire.counter')->layout('woocommercewebhook::layouts.app');
     }
 }
