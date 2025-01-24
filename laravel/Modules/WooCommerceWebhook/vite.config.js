@@ -1,4 +1,5 @@
 import { defineConfig } from 'vite';
+import tailwindcss from '@tailwindcss/vite'
 import laravel from 'laravel-vite-plugin';
 import { readdirSync, statSync } from 'fs';
 import { join,relative,dirname } from 'path';
@@ -20,6 +21,7 @@ export default defineConfig({
             ],
             refresh: true,
         }),
+        tailwindcss(),
     ],
 });
 // Scen all resources for assets file. Return array
