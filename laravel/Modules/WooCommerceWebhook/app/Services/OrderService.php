@@ -34,13 +34,16 @@ class OrderService
                 $this->createDeliveryReceiptItems($salesOrder, $deliveryReceipt, $drCtranno, $soCtranno);
 
                 $siCtranno = $this->generateSICtranno();
-                $this->createSalesInvoice($orderData, $siCtranno, $customerCode, $drCtranno);
+                $salesInvoice = $this->createSalesInvoice($orderData, $siCtranno, $customerCode, $drCtranno);
                 $this->createSalesInvoiceItems($deliveryReceipt, $siCtranno, $drCtranno);
 
                 return [
-                    'sales_order_ctranno' => $soCtranno,
-                    'delivery_receipt_ctranno' => $drCtranno,
-                    'sales_invoice_ctranno' => $siCtranno,
+                    'sales_order_ctranno' => $salesOrder->ctranno,
+                    'sales_order_items' => $salesOrder->sales_order_items->pluck('cidentity'),
+                    'delivery_receipt_ctranno' => $deliveryReceipt->ctranno,
+                    'delivery_receipt_items' => $deliveryReceipt->delivery_receipt_items->pluck('cidentity'),
+                    'sales_invoice_ctranno' => $salesInvoice->ctranno,
+                    'sales_invoice_items' => $salesInvoice->sales_invoice_items->pluck('cidentity'),
                 ];
             });
 
@@ -191,7 +194,7 @@ class OrderService
 
     private function createSalesInvoice($orderData, $siCtranno, $customerCode, $drCtranno)
     {
-        SalesInvoice::create([
+        return SalesInvoice::create([
             'compcode' => $this->company_code,
             'ctranno' => $siCtranno,
             'ccode' => $customerCode,

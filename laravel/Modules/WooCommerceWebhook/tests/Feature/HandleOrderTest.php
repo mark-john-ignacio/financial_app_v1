@@ -170,8 +170,11 @@ it('handles orders successfully', function () {
         'status' => 'success',
         'data' => [
             'sales_order_ctranno' => true,
+            'sales_order_items' => true,
             'delivery_receipt_ctranno' => true,
+            'delivery_receipt_items' => true,
             'sales_invoice_ctranno' => true,
+            'sales_invoice_items' => true,
         ],
     ]);
 
