@@ -17,7 +17,7 @@
             </thead>
         </table>
     </div>
-    
+
     <!-- Edit Modal -->
     <div wire:ignore.self class="modal fade" id="editModal" tabindex="-1" aria-labelledby="editModalLabel">
         <div class="modal-dialog">
@@ -32,9 +32,18 @@
                             <label for="myxfin_product_id" class="form-label">Myxfin Product ID</label>
                             <input type="text" wire:model.defer="myxfin_product_id" class="form-control">
                         </div>
-                        <div class="mb-3">  
+                        <div class="mb-3">
                             <label for="woocommerce_product_id" class="form-label">WooCommerce Product ID</label>
-                            <input type="text" wire:model.defer="woocommerce_product_id" class="form-control">
+                            <input type="text" wire:model.live="woocommerce_product_id" class="form-control">
+                            @if($wooProductName)
+                                <div class="text-sm text-success mt-1">
+                                    Product {{ $woocommerce_product_id }}: {{ $wooProductName }}
+                                </div>
+                            @elseif($woocommerce_product_id)
+                                <div class="text-sm text-danger mt-1">
+                                    Product {{ $woocommerce_product_id }} not found
+                                </div>
+                            @endif
                         </div>
                         <button type="submit" class="btn btn-primary">Save changes</button>
                     </form>

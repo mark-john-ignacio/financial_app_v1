@@ -25,13 +25,13 @@ class WooCommerceService
     public function getProductName($productId)
     {
         $cacheKey = "woo_product_{$productId}";
-        
+
         return Cache::remember($cacheKey, 3600, function () use ($productId) {
             try {
                 $product = $this->woocommerce->get("products/{$productId}");
-                return $product->name ?? 'Product Not Found';
+                return $product->name ?? null;
             } catch (\Exception $e) {
-                return 'Product Not Found';
+                return null;
             }
         });
     }

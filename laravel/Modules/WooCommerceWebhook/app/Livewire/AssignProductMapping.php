@@ -12,6 +12,7 @@ class AssignProductMapping extends Component
     public $myxfin_product_id;
     public $woocommerce_product_id;
     public $editId;
+    public $wooProductName = '';
     protected $wooService;
 
     public function __construct()
@@ -24,13 +25,13 @@ class AssignProductMapping extends Component
     public function editRow($params)
     {
         $id = is_array($params) ? ($params['id'] ?? null) : $params;
-        
+
         if (!$id) {
             return;
         }
 
         $mapping = WooCommerceProductMapping::find($id);
-        
+
         if (!$mapping) {
             return;
         }
@@ -38,8 +39,17 @@ class AssignProductMapping extends Component
         $this->editId = $id;
         $this->myxfin_product_id = $mapping->myxfin_product_id;
         $this->woocommerce_product_id = $mapping->woocommerce_product_id;
-        
+
         $this->dispatch('showModal');
+    }
+
+    public function updatedWooCommerceProductId($value)
+    {
+       if(!empty($value)) {
+        $this->wooProductName = $this->wooService->getProductName($value);
+       } else {
+           $this->wooProductName = "";
+       }
     }
 
     public function update()
@@ -51,7 +61,7 @@ class AssignProductMapping extends Component
 
         $this->dispatch('hideModal');
         $this->dispatch('refreshTable');
-        
+
         $this->reset(['myxfin_product_id', 'woocommerce_product_id', 'editId']);
     }
 
