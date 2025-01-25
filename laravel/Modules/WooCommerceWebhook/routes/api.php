@@ -3,6 +3,7 @@
 use Illuminate\Support\Facades\Route;
 use Modules\WooCommerceWebhook\Http\Controllers\WooCommerceWebhookController;
 use Modules\WooCommerceWebhook\Http\Middleware\WooSecretKeyAuth;
+use Modules\WooCommerceWebhook\Livewire\AssignProductMapping;
 
 /*
  *--------------------------------------------------------------------------
@@ -24,4 +25,5 @@ Route::post('/woocommerce/webhook', [WooCommerceWebhookController::class, 'handl
 
 Route::delete('/woocommerce/webhook/delete-all', [WooCommerceWebhookController::class, 'deleteAll']);
 
-Route::get('/woocommerce/mapping/data', [\Modules\WooCommerceWebhook\Livewire\AssignProductMapping::class, 'getData']);
+Route::get('/woocommerce/mapping/data', [AssignProductMapping::class, 'getData'])
+    ->name('woocommerce.mapping.data');

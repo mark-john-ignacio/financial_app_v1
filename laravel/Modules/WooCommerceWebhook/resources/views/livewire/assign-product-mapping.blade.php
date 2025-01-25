@@ -7,12 +7,38 @@
         <thead>
         <tr>
             <th>Myx ID</th>
+            <th>Myx Product Code</th>
             <th>Myx Product Name</th>
             <th>Woo Product ID</th>
             <th>Woo Product Name</th>
+            <th>Action</th>
         </tr>
         </thead>
     </table>
+    <!-- Add Modal -->
+    <div class="modal fade" id="editModal" tabindex="-1" aria-labelledby="editModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="editModalLabel">Edit Product Mapping</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <form wire:submit="update">
+                        <div class="mb-3">
+                            <label for="myxfin_product_id" class="form-label">Myxfin Product ID</label>
+                            <input type="text" wire:model="myxfin_product_id" class="form-control">
+                        </div>
+                        <div class="mb-3">  
+                            <label for="woocommerce_product_id" class="form-label">WooCommerce Product ID</label>
+                            <input type="text" wire:model="woocommerce_product_id" class="form-control">
+                        </div>
+                        <button type="submit" class="btn btn-primary">Save changes</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
     <div x-data x-init="
         @if(session()->has('conversion_success'))
             setTimeout(() => {
@@ -31,25 +57,36 @@
         <script>
             $(document).ready(function () {
                 $('#product-mapping-table').DataTable({
-                    processing: true,
                     serverSide: true,
                     ajax: {
-                        url: '{{ route("inventory-conversion.data") }}',
+                        url: '{{ route("api.woocommerce.mapping.data") }}',
                         type: 'GET'
                     },
                     columns: [
+                        {data: 'myxfin_product_id', name: 'myxfin_product_id'},
+                        {data: 'myxfin_product_code', name: 'myxfin_product_code'},
+                        {data: 'myx_product_name', name: 'myx_product_name'},
+                        {data: 'woocommerce_product_id', name: 'woocommerce_product_id'},
+                        {data: 'woo_product_name', name: 'woo_product_name'},
                         {
-                            data: 'reference_no',
-                            name: 'reference_no',
+                            data: null,
                             render: function(data, type, row) {
-                                return `<a href="{{ url('inventory-conversion') }}/${row.id}">${data}</a>`;
+                                return `<button wire:click="edit(${row.id})" class="btn btn-sm btn-primary" data-bs-toggle="modal" data-bs-target="#editModal">Edit</button>`;
                             }
-                        },
-                        { data: 'created_at', name: 'created_at' },
-                        { data: 'details_count', name: 'details_count' },
+                        }
                     ],
-                    order: [[1, 'desc']],
+                    order: [[0, 'asc']],
                     pageLength: 10
+                });
+
+                document.addEventListener('livewire:initialized', function() {
+                    Livewire.on('refreshTable', () => {
+                        table.ajax.reload();
+                    });
+
+                    Livewire.on('closeModal', () => {
+                        $('#editModal').modal('hide');
+                    });
                 });
             });
         </script>
