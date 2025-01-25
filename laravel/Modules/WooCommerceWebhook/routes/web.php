@@ -1,7 +1,6 @@
 <?php
 
 use Illuminate\Support\Facades\Route;
-use Modules\WooCommerceWebhook\Http\Controllers\WooCommerceWebhookController;
 use Modules\WooCommerceWebhook\Livewire\AssignProductMapping;
 use Modules\WooCommerceWebhook\Livewire\Counter;
 
