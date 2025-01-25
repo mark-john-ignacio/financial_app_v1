@@ -15,6 +15,11 @@ class WooCommerceProductMapping extends Model
         return WooCommerceProductMappingFactory::new();
     }
 
+    public function item()
+    {
+        return $this->belongsTo(Item::class, 'myxfin_product_id', 'nid');
+    }
+
     protected $table = 'woocommerce_product_mappings';
     protected $fillable = [
         'woocommerce_product_id',

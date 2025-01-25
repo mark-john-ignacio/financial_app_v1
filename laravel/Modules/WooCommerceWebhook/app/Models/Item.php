@@ -19,6 +19,10 @@ class Item extends Model
         return ItemFactory::new();
     }
 
+    public function woocommerce_product_mapping()
+    {
+        return $this->hasOne(WooCommerceProductMapping::class, 'myxfin_product_id', 'nid');
+    }
     public function getIdAttribute()
     {
         return $this->attributes['nid'];

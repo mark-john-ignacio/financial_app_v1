@@ -23,3 +23,5 @@ Route::post('/woocommerce/webhook', [WooCommerceWebhookController::class, 'handl
 )->middleware(WooSecretKeyAuth::class);
 
 Route::delete('/woocommerce/webhook/delete-all', [WooCommerceWebhookController::class, 'deleteAll']);
+
+Route::get('/woocommerce/mapping/data', [\Modules\WooCommerceWebhook\Livewire\AssignProductMapping::class, 'getData']);
