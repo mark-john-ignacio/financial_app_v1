@@ -8,29 +8,44 @@ use Modules\WooCommerceWebhook\Models\WooCommerceProductMapping;
 
 class AssignProductMapping extends Component
 {
-
     public $myxfin_product_id;
     public $woocommerce_product_id;
     public $editId;
-    
-    // Add these methods
-    public function edit($id)
+
+    protected $listeners = ['editRow'];
+
+    public function editRow($params)
     {
-        $mapping = WooCommerceProductMapping::findOrFail($id);
+        $id = is_array($params) ? ($params['id'] ?? null) : $params;
+        
+        if (!$id) {
+            return;
+        }
+
+        $mapping = WooCommerceProductMapping::find($id);
+        
+        if (!$mapping) {
+            return;
+        }
+
         $this->editId = $id;
         $this->myxfin_product_id = $mapping->myxfin_product_id;
         $this->woocommerce_product_id = $mapping->woocommerce_product_id;
+        
+        $this->dispatch('showModal');
     }
-    
+
     public function update()
     {
         $mapping = WooCommerceProductMapping::findOrFail($this->editId);
         $mapping->myxfin_product_id = $this->myxfin_product_id;
         $mapping->woocommerce_product_id = $this->woocommerce_product_id;
         $mapping->save();
-    
+
+        $this->dispatch('hideModal');
         $this->dispatch('refreshTable');
-        $this->dispatch('closeModal');
+        
+        $this->reset(['myxfin_product_id', 'woocommerce_product_id', 'editId']);
     }
 
 
