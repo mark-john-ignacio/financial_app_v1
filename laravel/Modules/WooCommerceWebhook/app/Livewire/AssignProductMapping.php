@@ -5,12 +5,19 @@ namespace Modules\WooCommerceWebhook\Livewire;
 use Illuminate\Http\Request;
 use Livewire\Component;
 use Modules\WooCommerceWebhook\Models\WooCommerceProductMapping;
+use Modules\WooCommerceWebhook\Services\WooCommerceService;
 
 class AssignProductMapping extends Component
 {
     public $myxfin_product_id;
     public $woocommerce_product_id;
     public $editId;
+    protected $wooService;
+
+    public function __construct()
+    {
+        $this->wooService = new WooCommerceService();
+    }
 
     protected $listeners = ['editRow'];
 
@@ -91,13 +98,14 @@ class AssignProductMapping extends Component
 
         return response()->json([
             'data' => $mappings->map(function($mapping) {
+                $wooProductName = $mapping->woocommerce_product_id ? $this->wooService->getProductName($mapping->woocommerce_product_id) : 'Not Assigned';
                 return [
                     'id' => $mapping->id,
                     'myxfin_product_id' => $mapping->myxfin_product_id,
                     'myxfin_product_code' => $mapping->item->cpartno,
                     'myx_product_name' => $mapping->item->citemdesc,
                     'woocommerce_product_id' => $mapping->woocommerce_product_id,
-                    'woo_product_name' => $mapping->woocommerce_product_id ? 'Product Name' : 'Not Assigned',
+                    'woo_product_name' => $wooProductName,
                 ];
             }),
             'draw' => $request->input('draw'),
