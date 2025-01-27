@@ -3,6 +3,7 @@
 use Illuminate\Support\Facades\Route;
 use Modules\WooCommerceWebhook\Livewire\AssignProductMapping;
 use Modules\WooCommerceWebhook\Livewire\Counter;
+use Modules\WooCommerceWebhook\Livewire\Settings;
 
 /*
 |--------------------------------------------------------------------------
@@ -21,3 +22,5 @@ use Modules\WooCommerceWebhook\Livewire\Counter;
 Route::get('/counter-2', Counter::class);
 
 Route::get('woocommerce/assign-product-mapping', AssignProductMapping::class);
+
+Route::get('woocommerce/settings', Settings::class);

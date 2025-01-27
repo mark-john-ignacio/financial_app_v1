@@ -26,7 +26,7 @@ class WooCommerceService
     {
         $cacheKey = "woo_product_{$productId}";
 
-        return Cache::remember($cacheKey, 3600, function () use ($productId) {
+        return Cache::remember($cacheKey, 3600, function () use ($productId, $cacheKey) {
             try {
                 $product = $this->woocommerce->get("products/{$productId}");
                 // Store actual product name or special "not_found" marker

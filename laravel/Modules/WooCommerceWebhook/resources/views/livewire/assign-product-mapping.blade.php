@@ -33,6 +33,8 @@
                 <div class="modal-body">
                     <form wire:submit.prevent="update">
                         <div class="mb-3">
+                            <label for="myxfin_product_id" class="form-label">Myxfin Product ID</label>
+                            <input type="text" wire:model.defer="myxfin_product_id" class="form-control">
                             <label class="form-label">WooCommerce Product ID</label>
                             <div class="input-group">
                                 <input type="text" wire:model="woocommerce_product_id" class="form-control">
