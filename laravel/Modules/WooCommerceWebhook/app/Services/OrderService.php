@@ -14,6 +14,7 @@ use Modules\WooCommerceWebhook\Models\SalesOrder;
 use Modules\WooCommerceWebhook\Models\SalesOrderItem;
 use Modules\WooCommerceWebhook\Models\WooCommerceAudit as Audit;
 use Modules\WooCommerceWebhook\Models\WoocommerceProductMapping as ProductMapping;
+use Modules\WooCommerceWebhook\Models\WooCommerceSetting;
 
 class OrderService
 {
@@ -24,7 +25,8 @@ class OrderService
         try {
             $created_data = DB::transaction(function () use ($orderData) {
                 $soCtranno = $this->generateSOCtranno();
-                $customerCode = Customer::where('cname', 'CASH SALES')->first()->cempid;
+                $customerCode = WooCommerceSetting::where('key', 'default_customer_id')->first()?->value()
+                    ?? Customer::where('cname', 'CASH SALES')->first()->cempid;
 
                 $salesOrder = $this->createSalesOrder($orderData, $soCtranno, $customerCode);
                 $this->createSalesOrderItems($orderData, $salesOrder, $soCtranno);
