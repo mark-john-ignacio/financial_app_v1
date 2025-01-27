@@ -42,14 +42,17 @@
                                     <span wire:loading.remove wire:target="checkProductName">Check Product</span>
                                     <span wire:loading wire:target="checkProductName">Checking...</span>
                                 </button>
+                                @error('woocommerce_product_id')
+                                    <span class="text-danger">{{ $message }}</span>
+                                @enderror
                             </div>
-                            @if($wooProductName)
-                                <div class="text-sm text-success mt-1">
-                                    Product: {{ $wooProductName }}
+                            @if($wooProductName == '__NOT_FOUND__' || $wooProductName == null)
+                                <div class="text-sm text-danger mt-1">
+                                    Product not found for ID: {{ $woocommerce_product_id }}
                                 </div>
                             @elseif($woocommerce_product_id)
-                                <div class="text-sm text-danger mt-1">
-                                    Product not found
+                                <div class="text-sm text-success mt-1">
+                                    Product: {{ $wooProductName }}
                                 </div>
                             @endif
                         </div>

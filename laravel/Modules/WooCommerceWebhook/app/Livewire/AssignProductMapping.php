@@ -42,6 +42,7 @@ class AssignProductMapping extends Component
         $this->editId = $id;
         $this->myxfin_product_id = $mapping->myxfin_product_id;
         $this->woocommerce_product_id = $mapping->woocommerce_product_id;
+        $this->wooProductName = $this->wooService->getProductName($this->woocommerce_product_id);
 
         $this->dispatch('showModal');
     }
@@ -70,6 +71,21 @@ class AssignProductMapping extends Component
 
     public function update()
     {
+        $this->validate([
+            'woocommerce_product_id' => [
+                'required',
+                'numeric',
+                function ($attribute, $value, $fail){
+                    $exists = WooCommerceProductMapping::where('woocommerce_product_id', $value)
+                        ->where('id','!=', $this->editId)
+                        ->exists();
+
+                    if($exists){
+                        $fail('This WooCommerce Product ID is already assigned to another item.');
+                    }
+                }
+            ]
+        ]);
         $mapping = WooCommerceProductMapping::findOrFail($this->editId);
         $mapping->myxfin_product_id = $this->myxfin_product_id;
         $mapping->woocommerce_product_id = $this->woocommerce_product_id;
@@ -128,8 +144,8 @@ class AssignProductMapping extends Component
         ->values()
         ->toArray();
 
-        $productNames = !empty($productIds) ? 
-        $this->wooService->getProductNames($productIds) : 
+        $productNames = !empty($productIds) ?
+        $this->wooService->getProductNames($productIds) :
         [];
 
         return response()->json([
@@ -140,8 +156,8 @@ class AssignProductMapping extends Component
                     'myxfin_product_code' => $mapping->item->cpartno,
                     'myx_product_name' => $mapping->item->citemdesc,
                     'woocommerce_product_id' => $mapping->woocommerce_product_id,
-                    'woo_product_name' => $mapping->woocommerce_product_id ? 
-                        ($productNames[$mapping->woocommerce_product_id] ?? 'Not Found') : 
+                    'woo_product_name' => $mapping->woocommerce_product_id ?
+                        ($productNames[$mapping->woocommerce_product_id] ?? 'Not Found') :
                         'Not Assigned',
                 ];
             }),
