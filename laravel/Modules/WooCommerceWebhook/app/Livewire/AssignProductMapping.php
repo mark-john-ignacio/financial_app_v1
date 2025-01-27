@@ -3,6 +3,7 @@
 namespace Modules\WooCommerceWebhook\Livewire;
 
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Cache;
 use Livewire\Component;
 use Modules\WooCommerceWebhook\Models\WooCommerceProductMapping;
 use Modules\WooCommerceWebhook\Services\WooCommerceService;
@@ -13,6 +14,8 @@ class AssignProductMapping extends Component
     public $woocommerce_product_id;
     public $editId;
     public $wooProductName = '';
+    public $isCheckingProduct = false;
+    public $isRefreshingNames = false;
     protected $wooService;
 
     public function __construct()
@@ -43,13 +46,26 @@ class AssignProductMapping extends Component
         $this->dispatch('showModal');
     }
 
-    public function updatedWooCommerceProductId($value)
+    public function checkProductName()
     {
-       if(!empty($value)) {
-        $this->wooProductName = $this->wooService->getProductName($value);
-       } else {
-           $this->wooProductName = "";
-       }
+        $this->isCheckingProduct = true;
+        if(!empty($this->woocommerce_product_id)) {
+            $this->wooProductName = $this->wooService->getProductName($this->woocommerce_product_id);
+        }
+        $this->isCheckingProduct = false;
+    }
+
+    public function refreshAllProductNames()
+    {
+        $this->isRefreshingNames = true;
+        $mappings = WooCommerceProductMapping::all();
+        foreach($mappings as $mapping) {
+            if($mapping->woocommerce_product_id) {
+                Cache::forget("woo_product_{$mapping->woocommerce_product_id}");
+            }
+        }
+        $this->isRefreshingNames = false;
+        $this->dispatch('refreshTable');
     }
 
     public function update()
@@ -106,16 +122,27 @@ class AssignProductMapping extends Component
         $total = $query->count();
         $mappings = $query->skip($start)->take($length)->get();
 
+        $productIds = $mappings->pluck('woocommerce_product_id')
+        ->filter()
+        ->unique()
+        ->values()
+        ->toArray();
+
+        $productNames = !empty($productIds) ? 
+        $this->wooService->getProductNames($productIds) : 
+        [];
+
         return response()->json([
-            'data' => $mappings->map(function($mapping) {
-                $wooProductName = $mapping->woocommerce_product_id ? $this->wooService->getProductName($mapping->woocommerce_product_id) : 'Not Assigned';
+            'data' => $mappings->map(function($mapping) use ($productNames) {
                 return [
                     'id' => $mapping->id,
                     'myxfin_product_id' => $mapping->myxfin_product_id,
                     'myxfin_product_code' => $mapping->item->cpartno,
                     'myx_product_name' => $mapping->item->citemdesc,
                     'woocommerce_product_id' => $mapping->woocommerce_product_id,
-                    'woo_product_name' => $wooProductName,
+                    'woo_product_name' => $mapping->woocommerce_product_id ? 
+                        ($productNames[$mapping->woocommerce_product_id] ?? 'Not Found') : 
+                        'Not Assigned',
                 ];
             }),
             'draw' => $request->input('draw'),

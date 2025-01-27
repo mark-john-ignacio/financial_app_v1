@@ -1,6 +1,10 @@
 <div>
     <div class="flex justify-between mb-4">
         <h2 class="text-xl">Assign Product Mapping</h2>
+        <button wire:click="refreshAllProductNames" wire:loading.attr="disabled" class="btn btn-secondary">
+            <span wire:loading.remove wire:target="refreshAllProductNames">Refresh Product Names</span>
+            <span wire:loading wire:target="refreshAllProductNames">Refreshing...</span>
+        </button>
     </div>
 
     <div wire:ignore>
@@ -29,19 +33,21 @@
                 <div class="modal-body">
                     <form wire:submit.prevent="update">
                         <div class="mb-3">
-                            <label for="myxfin_product_id" class="form-label">Myxfin Product ID</label>
-                            <input type="text" wire:model.defer="myxfin_product_id" class="form-control">
-                        </div>
-                        <div class="mb-3">
-                            <label for="woocommerce_product_id" class="form-label">WooCommerce Product ID</label>
-                            <input type="text" wire:model.live="woocommerce_product_id" class="form-control">
+                            <label class="form-label">WooCommerce Product ID</label>
+                            <div class="input-group">
+                                <input type="text" wire:model="woocommerce_product_id" class="form-control">
+                                <button type="button" wire:click="checkProductName" wire:loading.attr="disabled" class="btn btn-secondary">
+                                    <span wire:loading.remove wire:target="checkProductName">Check Product</span>
+                                    <span wire:loading wire:target="checkProductName">Checking...</span>
+                                </button>
+                            </div>
                             @if($wooProductName)
                                 <div class="text-sm text-success mt-1">
-                                    Product {{ $woocommerce_product_id }}: {{ $wooProductName }}
+                                    Product: {{ $wooProductName }}
                                 </div>
                             @elseif($woocommerce_product_id)
                                 <div class="text-sm text-danger mt-1">
-                                    Product {{ $woocommerce_product_id }} not found
+                                    Product not found
                                 </div>
                             @endif
                         </div>

@@ -35,4 +35,38 @@ class WooCommerceService
             }
         });
     }
+
+    public function getProductNames(array $productIds)
+    {
+       $names = [];
+       $uncachedIds = [];
+
+       foreach ($productIds as $id) {
+        $cached = Cache::get("woo_product_{$id}");
+        if ($cached) {
+            $names[$id] = $cached;
+        } else{
+            $uncachedIds[] = $id;
+        }
+       }
+
+       if(!empty($uncachedIds)){
+        try {
+            $chunks = array_chunk($uncachedIds, 100);
+            foreach ($chunks as $chunk){
+                $products = $this->woocommerce->get('products', [
+                   'include' => implode(',', $chunk)
+                ]);
+
+                foreach ($products as $product){
+                    $names[$product->id] = $product->name;
+                    Cache::put("woo_product_{$product->id}", $product->name, 3600);
+                }
+            }
+        } catch (\Exception $e){
+            Log::error($e->getMessage());
+        }
+       }
+
+    }
 }
