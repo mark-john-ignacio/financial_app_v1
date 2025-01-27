@@ -29,9 +29,12 @@ class WooCommerceService
         return Cache::remember($cacheKey, 3600, function () use ($productId) {
             try {
                 $product = $this->woocommerce->get("products/{$productId}");
-                return $product->name ?? null;
+                // Store actual product name or special "not_found" marker
+                return $product->name ?? '__NOT_FOUND__';
             } catch (\Exception $e) {
-                return null;
+                // Cache negative result for 5 minutes only
+                Cache::put($cacheKey, '__NOT_FOUND__', 300);
+                return '__NOT_FOUND__';
             }
         });
     }
@@ -62,11 +65,19 @@ class WooCommerceService
                     $names[$product->id] = $product->name;
                     Cache::put("woo_product_{$product->id}", $product->name, 3600);
                 }
+
+                $foundIds = collect($products)->pluck('id')->toArray();
+                $notFoundIds = array_diff($chunk, $foundIds);
+                foreach ($notFoundIds as $id){
+                    Cache::put("woo_product_{$id}", '__NOT_FOUND__', 3600);
+                }
             }
         } catch (\Exception $e){
             Log::error($e->getMessage());
         }
        }
+
+       return $names;
 
     }
 }
