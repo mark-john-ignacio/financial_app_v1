@@ -5,6 +5,7 @@ namespace Modules\WooCommerceWebhook\Livewire;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Cache;
 use Livewire\Component;
+use Modules\WooCommerceWebhook\Models\Item;
 use Modules\WooCommerceWebhook\Models\WooCommerceProductMapping;
 use Modules\WooCommerceWebhook\Services\WooCommerceService;
 
@@ -16,6 +17,7 @@ class AssignProductMapping extends Component
     public $wooProductName = '';
     public $isCheckingProduct = false;
     public $isRefreshingNames = false;
+    public $isSyncing = false;
     protected $wooService;
 
     public function __construct()
@@ -24,28 +26,6 @@ class AssignProductMapping extends Component
     }
 
     protected $listeners = ['editRow'];
-
-    public function editRow($params)
-    {
-        $id = is_array($params) ? ($params['id'] ?? null) : $params;
-
-        if (!$id) {
-            return;
-        }
-
-        $mapping = WooCommerceProductMapping::find($id);
-
-        if (!$mapping) {
-            return;
-        }
-
-        $this->editId = $id;
-        $this->myxfin_product_id = $mapping->myxfin_product_id;
-        $this->woocommerce_product_id = $mapping->woocommerce_product_id;
-        $this->wooProductName = $this->wooService->getProductName($this->woocommerce_product_id);
-
-        $this->dispatch('showModal');
-    }
 
     public function checkProductName()
     {
@@ -67,6 +47,46 @@ class AssignProductMapping extends Component
         }
         $this->isRefreshingNames = false;
         $this->dispatch('refreshTable');
+        session()->flash('message', 'All product names have been refreshed.');
+    }
+
+    public function syncNewItems()
+    {
+        $this->isSyncing = true;
+        $unmappedItems = Item::whereNotIn('nid', WooCommerceProductMapping::pluck('myxfin_product_id'))
+            ->get();
+
+        foreach($unmappedItems as $item){
+            WooCommerceProductMapping::create([
+                'myxfin_product_id' => $item->cempid,
+                'woocommerce_product_id' => null,
+            ]);
+        }
+        $this->isSyncing = false;
+        $this->dispatch('refreshTable');
+        session()->flash('message', count($unmappedItems) . ' new items have been added to mapping table.');
+    }
+
+    public function editRow($params)
+    {
+        $id = is_array($params) ? ($params['id'] ?? null) : $params;
+
+        if (!$id) {
+            return;
+        }
+
+        $mapping = WooCommerceProductMapping::find($id);
+
+        if (!$mapping) {
+            return;
+        }
+
+        $this->editId = $id;
+        $this->myxfin_product_id = $mapping->myxfin_product_id;
+        $this->woocommerce_product_id = $mapping->woocommerce_product_id;
+        $this->wooProductName = $this->wooService->getProductName($this->woocommerce_product_id);
+
+        $this->dispatch('showModal');
     }
 
     public function update()
@@ -153,8 +173,8 @@ class AssignProductMapping extends Component
                 return [
                     'id' => $mapping->id,
                     'myxfin_product_id' => $mapping->myxfin_product_id,
-                    'myxfin_product_code' => $mapping->item->cpartno,
-                    'myx_product_name' => $mapping->item->citemdesc,
+                    'myxfin_product_code' => $mapping->item?->cpartno ?? 'Not Found',
+                    'myx_product_name' => $mapping->item?->citemdesc ?? 'Not Found',
                     'woocommerce_product_id' => $mapping->woocommerce_product_id,
                     'woo_product_name' => $mapping->woocommerce_product_id ?
                         ($productNames[$mapping->woocommerce_product_id] ?? 'Not Found') :

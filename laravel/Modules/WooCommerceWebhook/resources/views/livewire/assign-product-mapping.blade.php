@@ -1,11 +1,25 @@
 <div>
     <div class="flex justify-between mb-4">
         <h2 class="text-xl">Assign Product Mapping</h2>
+        <button wire:click="syncNewItems" wire:loading.attr="disabled" class="btn btn-primary me-2">
+            <span wire:loading.remove wire:target="syncNewItems">Sync New Items</span>
+            <span wire:loading wire:target="syncNewItems">Syncing...</span>
+        </button>
         <button wire:click="refreshAllProductNames" wire:loading.attr="disabled" class="btn btn-secondary">
             <span wire:loading.remove wire:target="refreshAllProductNames">Refresh Product Names</span>
             <span wire:loading wire:target="refreshAllProductNames">Refreshing...</span>
         </button>
     </div>
+    @if (session()->has('message'))
+        <div class="row g-3">
+            <div class="col-md-6">
+                <div class="alert alert-success alert-dismissible fade show" role="alert">
+                    {{ session('message') }}
+                    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                </div>
+            </div>
+        </div>
+    @endif
 
     <div wire:ignore>
         <table id="product-mapping-table" class="table table-bordered table-striped">
