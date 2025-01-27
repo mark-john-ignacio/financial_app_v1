@@ -25,7 +25,7 @@ class OrderService
         try {
             $created_data = DB::transaction(function () use ($orderData) {
                 $soCtranno = $this->generateSOCtranno();
-                $customerCode = WooCommerceSetting::where('key', 'default_customer_id')->first()?->value()
+                $customerCode = WooCommerceSetting::where('key', 'default_customer_id')->first()?->value
                     ?? Customer::where('cname', 'CASH SALES')->first()->cempid;
 
                 $salesOrder = $this->createSalesOrder($orderData, $soCtranno, $customerCode);
