@@ -22,9 +22,8 @@ class AssignProductMapping extends Component
 
     public function __construct()
     {
-        $this->wooService = new WooCommerceService();
+        $this->wooService = app()->make(WooCommerceService::class);
     }
-
     protected $listeners = ['editRow'];
 
     public function checkProductName()

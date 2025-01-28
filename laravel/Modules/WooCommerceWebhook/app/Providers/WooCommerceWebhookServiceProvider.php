@@ -2,6 +2,7 @@
 
 namespace Modules\WooCommerceWebhook\Providers;
 
+use Automattic\WooCommerce\Client;
 use Illuminate\Support\Facades\Blade;
 use Illuminate\Support\ServiceProvider;
 use Nwidart\Modules\Traits\PathNamespace;
@@ -36,6 +37,18 @@ class WooCommerceWebhookServiceProvider extends ServiceProvider
     {
         $this->app->register(EventServiceProvider::class);
         $this->app->register(RouteServiceProvider::class);
+
+        $this->app->singleton(Client::class, function ($app) {
+            return new Client(
+                config('woocommercewebhook.store_url'),
+                config('woocommercewebhook.consumer_key'),
+                config('woocommercewebhook.consumer_secret'),
+                [
+                    'version' => 'wc/v3',
+                    'verify_ssl' => false
+                ]
+            );
+        });
     }
 
     /**

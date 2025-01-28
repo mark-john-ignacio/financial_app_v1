@@ -4,22 +4,15 @@ namespace Modules\WooCommerceWebhook\Services;
 
 use Automattic\WooCommerce\Client;
 use Illuminate\Support\Facades\Cache;
+use Illuminate\Support\Facades\Log;
 
 class WooCommerceService
 {
     protected $woocommerce;
 
-    public function __construct()
+    public function __construct(Client $woocommerce)
     {
-        $this->woocommerce = new Client(
-            config('woocommercewebhook.store_url'),
-            config('woocommercewebhook.consumer_key'),
-            config('woocommercewebhook.consumer_secret'),
-            [
-                'version' => 'wc/v3',
-                'verify_ssl' => false
-            ]
-        );
+        $this->woocommerce = $woocommerce;
     }
 
     public function getProductName($productId)
