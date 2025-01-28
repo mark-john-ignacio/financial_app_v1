@@ -9,17 +9,31 @@ use Modules\WooCommerceWebhook\Models\WooCommerceSetting;
 
 class Settings extends Component
 {
-    public $defaultCustomerId;
+    public $defaultCustomerCode;
     public $selectedCustomerText;
 
     public function mount()
     {
-        $setting = WooCommerceSetting::where('key', 'default_customer_id')->first();
-        if ($setting) {
-            $this->defaultCustomerId = $setting->value;
-            $customer = Customer::find($this->defaultCustomerId);
-            $this->selectedCustomerText = $customer ? "{$customer->cempid} - {$customer->cname}" : '';
+        $setting = WooCommerceSetting::where('key', 'default_customer_code')->first();
+        if ($setting && $setting->value) {
+            $this->defaultCustomerCode = $setting->value;
+            $customer = Customer::where('cempid', $this->defaultCustomerCode)->first();
+            if ($customer) {
+                $this->selectedCustomerText = "{$customer->cempid} - {$customer->cname}";
+            }
         }
+    }
+
+    public function updateDefaultCustomer()
+    {
+        if ($this->defaultCustomerCode) {
+            WooCommerceSetting::updateOrCreate(
+                ['key' => 'default_customer_code'],
+                ['value' => $this->defaultCustomerCode]
+            );
+            session()->flash('message', 'Default customer updated successfully');
+        }
+        $this->dispatch('updateDefaultCustomer');
     }
 
     public function apiCustomersSearch(Request $request)
@@ -42,16 +56,6 @@ class Settings extends Component
         ]);
     }
 
-    public function updateDefaultCustomer()
-    {
-        WooCommerceSetting::updateOrCreate(
-            ['key' => 'default_customer_id'],
-            ['value' => $this->defaultCustomerId]
-        );
-
-        $this->dispatch('updateDefaultCustomer');
-        session()->flash('message', 'Default customer updated successfully');
-    }
     public function render()
     {
         return view('woocommercewebhook::livewire.settings')
