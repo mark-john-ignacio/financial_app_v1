@@ -58,7 +58,7 @@ class AssignProductMapping extends Component
 
         foreach($unmappedItems as $item){
             WooCommerceProductMapping::create([
-                'myxfin_product_id' => $item->cempid,
+                'myxfin_product_id' => $item->nid,
                 'woocommerce_product_id' => null,
             ]);
         }
