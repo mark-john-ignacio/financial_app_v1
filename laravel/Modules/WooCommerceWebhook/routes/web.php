@@ -2,6 +2,7 @@
 
 use Illuminate\Support\Facades\Route;
 use Modules\WooCommerceWebhook\Livewire\AssignProductMapping;
+use Modules\WooCommerceWebhook\Livewire\AuditList;
 use Modules\WooCommerceWebhook\Livewire\Counter;
 use Modules\WooCommerceWebhook\Livewire\Settings;
 
@@ -24,3 +25,5 @@ Route::get('/counter-2', Counter::class);
 Route::get('woocommerce/assign-product-mapping', AssignProductMapping::class);
 
 Route::get('woocommerce/settings', Settings::class);
+
+Route::get('woocommerce/audits', AuditList::class)->name('woocommerce.audits');

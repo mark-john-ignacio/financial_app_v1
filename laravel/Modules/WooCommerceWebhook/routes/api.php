@@ -4,6 +4,7 @@ use Illuminate\Support\Facades\Route;
 use Modules\WooCommerceWebhook\Http\Controllers\WooCommerceWebhookController;
 use Modules\WooCommerceWebhook\Http\Middleware\WooSecretKeyAuth;
 use Modules\WooCommerceWebhook\Livewire\AssignProductMapping;
+use Modules\WooCommerceWebhook\Livewire\AuditList;
 use Modules\WooCommerceWebhook\Livewire\Settings;
 
 /*
@@ -31,3 +32,6 @@ Route::get('/woocommerce/mapping/data', [AssignProductMapping::class, 'getData']
 
 Route::get('/customers/search', [Settings::class, 'apiCustomersSearch'])
     ->name('customers.search');
+
+Route::get('/woocommerce/audits/data', [AuditList::class, 'getData'])
+    ->name('woocommerce.audits.data');
