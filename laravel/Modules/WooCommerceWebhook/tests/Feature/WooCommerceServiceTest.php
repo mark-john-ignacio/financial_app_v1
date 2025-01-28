@@ -49,9 +49,23 @@ test('it can get multiple product names in batch', function () {
         (object)['id' => 124, 'name' => 'Product 2']
     ];
 
+    Cache::shouldReceive('get')
+        ->with('woo_product_123')
+        ->andReturn(null);
+    
+    Cache::shouldReceive('get')
+        ->with('woo_product_124')
+        ->andReturn(null);
+
+    Cache::shouldReceive('put')
+        ->twice();
+
     $this->mockWooClient
         ->shouldReceive('get')
-        ->with('products', ['include' => '123,124', 'per_page' => 100])
+        ->with('products', [
+            'include' => '123,124',
+            'per_page' => 100
+        ])
         ->once()
         ->andReturn($mockProducts);
 

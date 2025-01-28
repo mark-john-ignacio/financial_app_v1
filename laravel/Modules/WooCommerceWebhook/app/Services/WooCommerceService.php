@@ -34,27 +34,32 @@ class WooCommerceService
 
     public function getProductNames(array $productIds)
     {
-       $names = [];
-       $uncachedIds = [];
-
-       foreach ($productIds as $id) {
-        $cached = Cache::get("woo_product_{$id}");
-        if ($cached) {
-            $names[$id] = $cached;
-        } else{
-            $uncachedIds[] = $id;
+        if (empty($productIds)) {
+            return [];
         }
-       }
-
-       if(!empty($uncachedIds)){
-        try {
-            $chunks = array_chunk($uncachedIds, 100);
-            foreach ($chunks as $chunk){
+    
+        $names = [];
+        $uncachedIds = [];
+    
+        // Check cache first
+        foreach ($productIds as $id) {
+            $cached = Cache::get("woo_product_{$id}");
+            if ($cached && $cached !== '__NOT_FOUND__') {
+                $names[$id] = $cached;
+            } else {
+                $uncachedIds[] = $id;
+            }
+        }
+    
+        // Fetch uncached products
+        if (!empty($uncachedIds)) {
+            try {
                 $products = $this->woocommerce->get('products', [
-                   'include' => implode(',', $chunk)
+                    'include' => implode(',', $uncachedIds),
+                    'per_page' => 100
                 ]);
-
-                foreach ($products as $product){
+    
+                foreach ($products as $product) {
                     $names[$product->id] = $product->name;
                     Cache::put("woo_product_{$product->id}", $product->name, 3600);
                 }
@@ -64,13 +69,12 @@ class WooCommerceService
                 foreach ($notFoundIds as $id){
                     Cache::put("woo_product_{$id}", '__NOT_FOUND__', 3600);
                 }
+                
+            } catch (\Exception $e) {
+                Log::error($e->getMessage());
             }
-        } catch (\Exception $e){
-            Log::error($e->getMessage());
         }
-       }
-
-       return $names;
-
+    
+        return $names;
     }
 }
