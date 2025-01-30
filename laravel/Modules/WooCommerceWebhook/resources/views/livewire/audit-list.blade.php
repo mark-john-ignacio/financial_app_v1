@@ -44,65 +44,72 @@
         </div>
     </div>
 
+
     @push('scripts')
-        <script>
-            function truncateJson(data) {
-                const str = JSON.stringify(data);
+    <script>
+        function truncateJson(data) {
+            try {
+                const str = typeof data === 'string' ? data : JSON.stringify(data);
                 return str.length > 50 ? str.substring(0, 50) + '...' : str;
+            } catch (e) {
+                return 'Invalid JSON';
             }
+        }
 
-            function showAuditDetail(rowData) {
-                try {
-                    const requestData = JSON.stringify(JSON.parse(rowData.request_data), null, 2);
-                    const responseData = JSON.stringify(JSON.parse(rowData.response_data), null, 2);
-                    
-                    document.getElementById('modalRequestData').textContent = requestData;
-                    document.getElementById('modalResponseData').textContent = responseData;
-                    
-                    new bootstrap.Modal(document.getElementById('auditDetailModal')).show();
-                } catch (e) {
-                    console.error('Error parsing JSON:', e);
-                }
-            }
+        function showAuditDetail(element) {
+            const row = JSON.parse(element.dataset.audit);
+            document.getElementById('modalRequestData').textContent =
+                JSON.stringify(row.request_data, null, 2);
+            document.getElementById('modalResponseData').textContent =
+                JSON.stringify(row.response_data, null, 2);
+            new bootstrap.Modal(document.getElementById('auditDetailModal')).show();
+        }
 
-            $(document).ready(function() {
-                $('#audit-table').DataTable({
-                    serverSide: true,
-                    ajax: '{{ route("api.woocommerce.audits.data") }}',
-                    columns: [
-                        {data: 'id'},
-                        {data: 'status'},
-                        {data: 'error_message'},
-                        {
-                            data: 'request_data',
-                            render: function(data) {
-                                return `<pre class="text-truncate" style="max-width: 200px;">${truncateJson(data)}</pre>`;
-                            }
-                        },
-                        {
-                            data: 'response_data',
-                            render: function(data) {
-                                return `<pre class="text-truncate" style="max-width: 200px;">${truncateJson(data)}</pre>`;
-                            }
-                        },
-                        {
-                            data: 'created_at',
-                            render: function(data) {
-                                return moment(data).format('YYYY-MM-DD HH:mm:ss');
-                            }
-                        },
-                        {
-                            data: null,
-                            render: function(data, type, row) {
-                                return `<button onclick='showAuditDetail(${JSON.stringify(row)})' 
-                                        class="btn btn-sm btn-primary">
-                                        View Details
-                                        </button>`;
-                            }
+        $(document).ready(function() {
+            $('#audit-table').DataTable({
+                serverSide: true,
+                ajax: '{{ route("api.woocommerce.audits.data") }}',
+                columns: [
+                    {data: 'id'},
+                    {data: 'status'},
+                    {data: 'error_message'},
+                    {
+                        data: 'request_data',
+                        render: function(data) {
+                            return `<pre class="text-truncate" style="max-width: 200px;">${truncateJson(data)}</pre>`;
                         }
-                    ]
-                });
+                    },
+                    {
+                        data: 'response_data',
+                        render: function(data) {
+                            return `<pre class="text-truncate" style="max-width: 200px;">${truncateJson(data)}</pre>`;
+                        }
+                    },
+                    {
+                        data: 'created_at',
+                        render: function(data) {
+                            return moment(data).format('YYYY-MM-DD HH:mm:ss');
+                        }
+                    },
+                    {
+                        data: null,
+                        render: function(data, type, row) {
+                            const auditData = JSON.stringify(row).replace(/"/g, '&quot;');
+                            return `<button type="button"
+                                    class="btn btn-sm btn-primary view-audit"
+                                    data-audit="${auditData}">
+                                    View Details
+                                    </button>`;
+                        }
+                    }
+                ],
+                order: [[0, 'desc']]
             });
-        </script>
-@endpush
+
+            $(document).on('click', '.view-audit', function() {
+                showAuditDetail(this);
+            });
+        });
+    </script>
+    @endpush
 </div>
