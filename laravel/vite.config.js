@@ -1,13 +1,23 @@
-import { defineConfig } from 'vite';
-import tailwindcss from '@tailwindcss/vite'
+import {defineConfig} from 'vite';
 import laravel from 'laravel-vite-plugin';
+import collectModuleAssetsPaths from './vite-module-loader.js';
 
-export default defineConfig({
-    plugins: [
-        tailwindcss(),
-        laravel({
-            input: ['resources/css/app.css', 'resources/js/app.js'],
-            refresh: true,
-        }),
-    ],
-});
+async function getConfig() {
+    const paths = [
+        'resources/css/app.css',
+        'resources/js/app.js',
+    ];
+    const allPaths = await collectModuleAssetsPaths(paths, 'Modules');
+
+    return defineConfig({
+        plugins: [
+            laravel({
+                input: allPaths,
+                refresh: true,
+            })
+        ],
+        base: '/laravel/public/',
+    });
+}
+
+export default getConfig();
