@@ -1,4 +1,4 @@
-import {defineConfig} from 'vite';
+import { defineConfig } from 'vite';
 import laravel from 'laravel-vite-plugin';
 import collectModuleAssetsPaths from './vite-module-loader.js';
 
@@ -14,9 +14,15 @@ async function getConfig() {
             laravel({
                 input: allPaths,
                 refresh: true,
-            })
+            }),
         ],
-        base: '/laravel/public/',
+        build: {
+            outDir: 'public/build',
+            manifest: true,
+            rollupOptions: {
+                input: allPaths
+            }
+        }
     });
 }
 
