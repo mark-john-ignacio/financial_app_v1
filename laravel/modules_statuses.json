@@ -1,3 +1,6 @@
 {
-    "WooCommerceWebhook": true
+    "WooCommerceWebhook": true,
+    "Auth": true,
+    "Base": true,
+    "Profile": true
 }
