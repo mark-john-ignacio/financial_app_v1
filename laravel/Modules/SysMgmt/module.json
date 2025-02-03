@@ -1,0 +1,11 @@
+{
+    "name": "SysMgmt",
+    "alias": "sysmgmt",
+    "description": "",
+    "keywords": [],
+    "priority": 0,
+    "providers": [
+        "Modules\\SysMgmt\\Providers\\SysMgmtServiceProvider"
+    ],
+    "files": []
+}

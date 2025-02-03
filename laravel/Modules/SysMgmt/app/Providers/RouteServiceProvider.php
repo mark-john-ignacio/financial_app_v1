@@ -1,13 +1,13 @@
 <?php
 
-namespace Modules\WooCommerceWebhook\Providers;
+namespace Modules\SysMgmt\Providers;
 
 use Illuminate\Support\Facades\Route;
 use Illuminate\Foundation\Support\Providers\RouteServiceProvider as ServiceProvider;
 
 class RouteServiceProvider extends ServiceProvider
 {
-    protected string $name = 'WooCommerceWebhook';
+    protected string $name = 'SysMgmt';
 
     /**
      * Called before routes are registered.

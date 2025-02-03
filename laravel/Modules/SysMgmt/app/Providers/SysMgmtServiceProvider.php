@@ -1,21 +1,20 @@
 <?php
 
-namespace Modules\SystemManagement\Providers;
+namespace Modules\SysMgmt\Providers;
 
-use Automattic\WooCommerce\Client;
 use Illuminate\Support\Facades\Blade;
 use Illuminate\Support\ServiceProvider;
 use Nwidart\Modules\Traits\PathNamespace;
 use RecursiveDirectoryIterator;
 use RecursiveIteratorIterator;
 
-class SystemManagementServiceProvider extends ServiceProvider
+class SysMgmtServiceProvider extends ServiceProvider
 {
     use PathNamespace;
 
-    protected string $name = 'SystemManagement';
+    protected string $name = 'SysMgmt';
 
-    protected string $nameLower = 'systemmanagement';
+    protected string $nameLower = 'sysmgmt';
 
     /**
      * Boot the application events.
@@ -37,18 +36,6 @@ class SystemManagementServiceProvider extends ServiceProvider
     {
         $this->app->register(EventServiceProvider::class);
         $this->app->register(RouteServiceProvider::class);
-
-        $this->app->singleton(Client::class, function ($app) {
-            return new Client(
-                config('systemmanagement.store_url'),
-                config('systemmanagement.consumer_key'),
-                config('systemmanagement.consumer_secret'),
-                [
-                    'version' => 'wc/v3',
-                    'verify_ssl' => false
-                ]
-            );
-        });
     }
 
     /**

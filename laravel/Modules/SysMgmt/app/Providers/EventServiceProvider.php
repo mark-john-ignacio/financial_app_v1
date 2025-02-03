@@ -1,6 +1,6 @@
 <?php
 
-namespace Modules\WooCommerceWebhook\Providers;
+namespace Modules\SysMgmt\Providers;
 
 use Illuminate\Foundation\Support\Providers\EventServiceProvider as ServiceProvider;
 
