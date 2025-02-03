@@ -2,7 +2,7 @@
 
 use Illuminate\Support\Facades\Route;
 use Modules\SysMgmt\Http\Controllers\SysMgmtController;
-use Modules\SysMgmt\Http\Controllers\BirFormController;
+use Modules\SysMgmt\Livewire\FormTable;
 
 /*
 |--------------------------------------------------------------------------
@@ -17,7 +17,10 @@ use Modules\SysMgmt\Http\Controllers\BirFormController;
 
 Route::group([], function () {
     // Route::resource('sysmgmt', SysMgmtController::class)->names('sysmgmt');
-    Route::resource('bir-forms', BirFormController::class);
+
+    Route::get('bir-forms', FormTable::class)->name('bir-forms.index');
+    Route::get('bir-forms/data', [FormTable::class, 'getData'])->name('bir-forms.data');
+
 });
 
 
