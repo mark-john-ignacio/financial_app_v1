@@ -10,12 +10,10 @@ $containerClasses = ($active ?? false)
     : 'relative h-full border-b-2 border-transparent hover:border-gray-300 dark:hover:border-gray-700';
 @endphp
 
-<div class="{{ $containerClasses }}">
+<div class="{{ $containerClasses }}" x-data="{ open: false }" @click.away="open = false">
     <button type="button" 
         {{ $attributes->merge(['class' => $classes]) }}
-        x-data="{ open: false }" 
-        @click="open = !open"
-        @click.away="open = false">
+        @click="open = !open">
         {{ $trigger }}
     </button>
 
