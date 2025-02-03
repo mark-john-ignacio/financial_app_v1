@@ -13,6 +13,14 @@
 
     <!-- Scripts -->
     @vite(\Nwidart\Modules\Module::getAssets())
+
+    <link href="https://cdn.datatables.net/v/dt/jq-3.7.0/moment-2.29.4/dt-2.2.1/datatables.min.css" rel="stylesheet">
+    <script src="https://unpkg.com/@tailwindcss/browser@4"></script>
+    <link href="https://cdn.datatables.net/2.2.1/css/dataTables.tailwindcss.css" rel="stylesheet">
+
+
+    <script src="https://cdn.datatables.net/v/dt/jq-3.7.0/moment-2.29.4/dt-2.2.1/datatables.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 </head>
 <body class="font-sans antialiased">
 <div class="min-h-screen bg-gray-100 dark:bg-gray-900">
@@ -32,5 +40,6 @@
         {{ $slot }}
     </main>
 </div>
+@stack('scripts')
 </body>
 </html>
