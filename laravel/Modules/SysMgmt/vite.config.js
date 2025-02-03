@@ -1,27 +1,27 @@
-import { defineConfig } from 'vite';
-import laravel from 'laravel-vite-plugin';
-import { readdirSync, statSync } from 'fs';
-import { join,relative,dirname } from 'path';
-import { fileURLToPath } from 'url';
+// import { defineConfig } from 'vite';
+// import laravel from 'laravel-vite-plugin';
+// import { readdirSync, statSync } from 'fs';
+// import { join,relative,dirname } from 'path';
+// import { fileURLToPath } from 'url';
 
-export default defineConfig({
-    build: {
-        outDir: '../../public/build-sysmgmt',
-        emptyOutDir: true,
-        manifest: true,
-    },
-    plugins: [
-        laravel({
-            publicDirectory: '../../public',
-            buildDirectory: 'build-sysmgmt',
-            input: [
-                __dirname + '/resources/assets/sass/app.scss',
-                __dirname + '/resources/assets/js/app.js'
-            ],
-            refresh: true,
-        }),
-    ],
-});
+// export default defineConfig({
+//     build: {
+//         outDir: '../../public/build-sysmgmt',
+//         emptyOutDir: true,
+//         manifest: true,
+//     },
+//     plugins: [
+//         laravel({
+//             publicDirectory: '../../public',
+//             buildDirectory: 'build-sysmgmt',
+//             input: [
+//                 __dirname + '/resources/assets/sass/app.scss',
+//                 __dirname + '/resources/assets/js/app.js'
+//             ],
+//             refresh: true,
+//         }),
+//     ],
+// });
 // Scen all resources for assets file. Return array
 //function getFilePaths(dir) {
 //    const filePaths = [];
@@ -51,7 +51,7 @@ export default defineConfig({
 //export const paths = getFilePaths(assetsDir);
 
 
-//export const paths = [
-//    'Modules/SysMgmt/resources/assets/sass/app.scss',
-//    'Modules/SysMgmt/resources/assets/js/app.js',
-//];
+export const paths = [
+   'Modules/SysMgmt/resources/assets/sass/app.scss',
+   'Modules/SysMgmt/resources/assets/js/app.js',
+];

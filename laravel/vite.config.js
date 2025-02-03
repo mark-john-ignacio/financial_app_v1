@@ -1,36 +1,22 @@
-import { defineConfig } from 'vite';
+import {defineConfig} from 'vite';
 import laravel from 'laravel-vite-plugin';
-import { resolve } from 'path';
+import collectModuleAssetsPaths from './vite-module-loader.js';
 
-export default defineConfig({
-    plugins: [
-        laravel({
-            input: [
-                'resources/css/app.css',
-                'resources/js/app.js'
-            ],
-            refresh: true,
-            buildDirectory: 'build'
-        }),
-    ],
-    build: {
-        outDir: resolve(__dirname, 'public/build'),
-        emptyOutDir: true,
-        manifest: 'manifest.json',
-        assetsDir: 'assets',
-        rollupOptions: {
-            output: {
-                manualChunks: undefined,
-                assetFileNames: (assetInfo) => {
-                    let extType = assetInfo.name.split('.').at(1);
-                    if (/png|jpe?g|svg|gif|tiff|bmp|ico/i.test(extType)) {
-                        extType = 'img';
-                    }
-                    return `assets/${extType}/[name]-[hash][extname]`;
-                },
-                chunkFileNames: 'assets/js/[name]-[hash].js',
-                entryFileNames: 'assets/js/[name]-[hash].js',
-            }
-        }
-    }
-});
+async function getConfig() {
+    const paths = [
+        'resources/css/app.css',
+        'resources/js/app.js',
+    ];
+    const allPaths = await collectModuleAssetsPaths(paths, 'Modules');
+
+    return defineConfig({
+        plugins: [
+            laravel({
+                input: allPaths,
+                refresh: true,
+            })
+        ]
+    });
+}
+
+export default getConfig();
