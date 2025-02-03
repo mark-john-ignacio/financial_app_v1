@@ -15,5 +15,5 @@ use Modules\SysMgmt\Http\Controllers\SysMgmtController;
 */
 
 Route::middleware(['auth:sanctum'])->prefix('v1')->group(function () {
-    Route::apiResource('sysmgmt', SysMgmtController::class)->names('sysmgmt');
+    // Route::apiResource('sysmgmt', SysMgmtController::class)->names('sysmgmt');
 });

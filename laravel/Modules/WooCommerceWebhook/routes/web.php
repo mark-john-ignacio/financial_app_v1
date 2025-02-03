@@ -20,7 +20,7 @@ use Modules\WooCommerceWebhook\Livewire\Settings;
 // Route::group([], function () {
 //     Route::resource('woocommercewebhook', WooCommerceWebhookController::class)->names('woocommercewebhook');
 // });
-Route::get('/counter-2', Counter::class);
+// Route::get('/counter-2', Counter::class);
 
 Route::get('woocommerce/assign-product-mapping', AssignProductMapping::class);
 

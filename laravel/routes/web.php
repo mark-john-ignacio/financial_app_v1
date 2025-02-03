@@ -7,4 +7,4 @@ Route::get('/', function () {
     return ['Laravel' => app()->version()];
 });
 
-Route::get('/counter', Counter::class);
+// Route::get('/counter', Counter::class);

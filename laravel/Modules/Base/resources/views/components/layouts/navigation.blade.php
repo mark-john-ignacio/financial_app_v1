@@ -31,7 +31,7 @@
                             <x-base::dropdown-link href="{{ route('dashboard') }}">
                                 {{ __('Year Form') }}
                             </x-base::dropdown-link>
-                            <x-base::dropdown-link href="{{ route('dashboard') }}">
+                            <x-base::dropdown-link href="{{ route('bir-forms.index') }}">
                                 {{ __('Form') }}
                             </x-base::dropdown-link>
                             <x-base::dropdown-link href="{{ route('dashboard') }}">

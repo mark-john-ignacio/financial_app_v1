@@ -2,6 +2,7 @@
 
 use Illuminate\Support\Facades\Route;
 use Modules\SysMgmt\Http\Controllers\SysMgmtController;
+use Modules\SysMgmt\Http\Controllers\BirFormController;
 
 /*
 |--------------------------------------------------------------------------
@@ -15,5 +16,8 @@ use Modules\SysMgmt\Http\Controllers\SysMgmtController;
 */
 
 Route::group([], function () {
-    Route::resource('sysmgmt', SysMgmtController::class)->names('sysmgmt');
+    // Route::resource('sysmgmt', SysMgmtController::class)->names('sysmgmt');
+    Route::resource('bir-forms', BirFormController::class);
 });
+
+

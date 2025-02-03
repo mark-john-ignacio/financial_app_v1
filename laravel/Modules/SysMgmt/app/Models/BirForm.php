@@ -9,6 +9,7 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 class BirForm extends Model
 {
     use HasFactory;
+    protected $table = 'nav_menu_forms';
 
     /**
      * The attributes that are mass assignable.
@@ -26,4 +27,9 @@ class BirForm extends Model
     // {
     //     // return BirFormFactory::new();
     // }
+    public function yearForms()
+    {
+        return $this->hasMany(BirYearForm::class, 'form_id');
+    }
+
 }
