@@ -1,18 +1,4 @@
 <?php return array (
-  'blade-ui-kit/blade-heroicons' => 
-  array (
-    'providers' => 
-    array (
-      0 => 'BladeUI\\Heroicons\\BladeHeroiconsServiceProvider',
-    ),
-  ),
-  'blade-ui-kit/blade-icons' => 
-  array (
-    'providers' => 
-    array (
-      0 => 'BladeUI\\Icons\\BladeIconsServiceProvider',
-    ),
-  ),
   'laravel/breeze' => 
   array (
     'providers' => 
@@ -125,13 +111,6 @@
     'providers' => 
     array (
       0 => 'Pest\\Laravel\\PestServiceProvider',
-    ),
-  ),
-  'rappasoft/laravel-livewire-tables' => 
-  array (
-    'providers' => 
-    array (
-      0 => 'Rappasoft\\LaravelLivewireTables\\LaravelLivewireTablesServiceProvider',
     ),
   ),
 );

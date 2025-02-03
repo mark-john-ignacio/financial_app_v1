@@ -28,6 +28,5 @@
         }
     },
     "require": {
-        "rappasoft/laravel-livewire-tables": "^3.6"
     }
 }
