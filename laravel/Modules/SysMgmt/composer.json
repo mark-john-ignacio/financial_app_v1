@@ -26,5 +26,8 @@
         "psr-4": {
             "Modules\\SysMgmt\\Tests\\": "tests/"
         }
+    },
+    "require": {
+        "rappasoft/laravel-livewire-tables": "^3.6"
     }
 }
