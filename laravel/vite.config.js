@@ -1,6 +1,7 @@
 import {defineConfig} from 'vite';
 import laravel from 'laravel-vite-plugin';
 import collectModuleAssetsPaths from './vite-module-loader.js';
+import tailwindcss from '@tailwindcss/vite';
 
 async function getConfig() {
     const paths = [
@@ -14,7 +15,8 @@ async function getConfig() {
             laravel({
                 input: allPaths,
                 refresh: true,
-            })
+            }),
+            tailwindcss(),
         ]
     });
 }

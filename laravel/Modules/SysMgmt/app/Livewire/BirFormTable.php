@@ -49,6 +49,6 @@ class BirFormTable extends Component implements Tables\Contracts\HasTable, HasFo
     public function render()
     {
         return view('sysmgmt::livewire.form-table')
-        ->layout('sysmgmt::layouts.app');
+        ->layout('base::components.layouts.app', ['title' => 'BIR Forms']);
     }
 }
