@@ -15,7 +15,7 @@
     <!-- @vite(\Nwidart\Modules\Module::getAssets()) -->
     <script src="https://unpkg.com/@tailwindcss/browser@4"></script>
 
-    @livewireStyles
+    <!-- @livewireStyles -->
     @filamentStyles
 </head>
 <body class="font-sans antialiased">
@@ -36,7 +36,7 @@
         {{ $slot }}
     </main>
 </div>
-@livewireScripts
+<!-- @livewireScripts -->
 @filamentScripts
 @stack('scripts')
 </body>
