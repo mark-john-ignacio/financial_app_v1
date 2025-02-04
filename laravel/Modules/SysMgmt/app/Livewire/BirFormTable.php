@@ -7,10 +7,13 @@ use Filament\Tables\Table;
 use Modules\SysMgmt\Models\BirForm;
 use Livewire\Component;
 use Filament\Support\Contracts\TranslatableContentDriver;
+use Filament\Forms\Concerns\InteractsWithForms;
+use Filament\Forms\Contracts\HasForms;
 
-class BirFormTable extends Component implements Tables\Contracts\HasTable
+class BirFormTable extends Component implements Tables\Contracts\HasTable, HasForms
 {
     use Tables\Concerns\InteractsWithTable;
+    use InteractsWithForms;
 
     public function table(Table $table): Table
     {
@@ -45,6 +48,7 @@ class BirFormTable extends Component implements Tables\Contracts\HasTable
 
     public function render()
     {
-        return view('sysmgmt::livewire.form-table');
+        return view('sysmgmt::livewire.form-table')
+        ->layout('base::components.layouts.app', ['title' => 'Test']);
     }
 }
