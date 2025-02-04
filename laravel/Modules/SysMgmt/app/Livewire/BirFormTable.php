@@ -2,79 +2,49 @@
 
 namespace Modules\SysMgmt\Livewire;
 
+use Filament\Tables;
+use Filament\Tables\Table;
 use Modules\SysMgmt\Models\BirForm;
 use Livewire\Component;
-use Illuminate\Http\Request;
+use Filament\Support\Contracts\TranslatableContentDriver;
 
-class BirFormTable extends Component
+class BirFormTable extends Component implements Tables\Contracts\HasTable
 {
-    public $forms;
+    use Tables\Concerns\InteractsWithTable;
 
-    protected $listeners = ['refreshTable' => '$refresh'];
-
-    public function mount()
+    public function table(Table $table): Table
     {
-
-    }
-
-    public function getData(Request $request)
-    {
-        $query = BirForm::query();
-    
-        // Apply search if provided
-        if ($request->has('search')) {
-            $searchValue = $request->search;
-            $query->where(function ($query) use ($searchValue) {
-                $query->where('form_code', 'like', '%' . $searchValue . '%')
-                    ->orWhere('form_name', 'like', '%' . $searchValue . '%')
-                    ->orWhere('filter', 'like', '%' . $searchValue . '%');
-            });
-        }
-    
-        // Apply sorting
-        $sortColumn = $request->input('sort', 'form_code');
-        $sortDirection = $request->input('order', 'asc');
-        $query->orderBy($sortColumn, $sortDirection);
-    
-        // Get all records for Simple-DataTables
-        $birForms = $query->get();
-    
-        return response()->json([
-            'data' => $birForms->map(function($form) {
-                return [
-                    'id' => $form->id,	
-                    'form_code' => $form->form_code,
-                    'form_name' => $form->form_name,
-                    'filter' => $form->filter,
-                    'cstatus' => $form->cstatus,
-                    'actions' => '' // Will be populated by frontend
-                ];
-            })
-        ]);
-    }
-
-    public function delete($id)
-    {
-        $form = BirForm::find($id);
-        if ($form->yearForms()->exists()) {
-            $this->dispatchBrowserEvent('swal:error', [
-                'title' => 'Error!',
-                'text' => 'Cannot delete form referenced in Year-Form.'
+        return $table
+            ->query(BirForm::query())
+            ->columns([
+                Tables\Columns\TextColumn::make('form_code')
+                    ->searchable()
+                    ->sortable(),
+                Tables\Columns\TextColumn::make('form_name')
+                    ->searchable()
+                    ->sortable(),
+                Tables\Columns\TextColumn::make('filter')
+                    ->searchable(),
+                Tables\Columns\TextColumn::make('cstatus')
+                    ->label('Status'),
+            ])
+            ->filters([
+                // Add filters if needed
+            ])
+            ->actions([
+                Tables\Actions\ViewAction::make(),
+                Tables\Actions\EditAction::make(),
+                Tables\Actions\DeleteAction::make(),
             ]);
-            return;
-        }
+    }
 
-        $form->delete();
-        $this->dispatchBrowserEvent('swal:success', [
-            'title' => 'Success!',
-            'text' => 'Form deleted successfully.'
-        ]);
-        $this->emit('refreshTable');
+    public function makeFilamentTranslatableContentDriver(): ?TranslatableContentDriver
+    {
+        return null;
     }
 
     public function render()
     {
-        return view('sysmgmt::livewire.form-table')
-            ->layout('base::components.layouts.app', ['title' => 'Test']);
+        return view('sysmgmt::livewire.form-table');
     }
 }
