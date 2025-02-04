@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="{{ str_replace('_', '-', app()->getLocale()) }}">
+<html lang="{{ str_replace('_', '-', app()->getLocale()) }}" class="dark">
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
@@ -11,9 +11,13 @@
     <link rel="preconnect" href="https://fonts.bunny.net">
     <link href="https://fonts.bunny.net/css?family=figtree:400,500,600&display=swap" rel="stylesheet"/>
 
-    <!-- Scripts -->
+    <!-- Tailwind CSS -->
     <script src="https://unpkg.com/@tailwindcss/browser@4"></script>
-    @filamentStyles
+
+    <link href="https://cdn.datatables.net/v/dt/jq-3.7.0/dt-2.2.1/datatables.min.css" rel="stylesheet">
+ 
+<script src="https://cdn.datatables.net/v/dt/jq-3.7.0/dt-2.2.1/datatables.min.js"></script>
+
 </head>
 <body class="font-sans antialiased">
 <div class="min-h-screen bg-gray-100 dark:bg-gray-900">
