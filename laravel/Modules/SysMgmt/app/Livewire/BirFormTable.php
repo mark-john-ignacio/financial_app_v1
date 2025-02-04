@@ -35,8 +35,32 @@ class BirFormTable extends Component implements Tables\Contracts\HasTable, HasFo
                 // Add filters if needed
             ])
             ->actions([
-                Tables\Actions\ViewAction::make(),
-                Tables\Actions\EditAction::make(),
+                // View action with a modal displaying details
+                Tables\Actions\ViewAction::make()
+                ->modalHeading('View Bir Form')
+                ->modalContent(function (BirForm $record): \Illuminate\Contracts\View\View {
+                    // Return the view instance directly
+                    return view('sysmgmt::livewire.view-bir-form', ['record' => $record]);
+                }),
+                // Edit action with a modal form for editing
+                Tables\Actions\EditAction::make()
+                    ->modalHeading('Edit Bir Form')
+                    ->form([
+                        \Filament\Forms\Components\TextInput::make('form_code')
+                            ->required()
+                            ->label('Form Code'),
+                        \Filament\Forms\Components\TextInput::make('form_name')
+                            ->required()
+                            ->label('Form Name'),
+                        \Filament\Forms\Components\TextInput::make('filter')
+                            ->label('Filter'),
+                        \Filament\Forms\Components\Select::make('cstatus')
+                            ->label('Status')
+                            ->options([
+                                'active'   => 'Active',
+                                'inactive' => 'Inactive',
+                            ]),
+                    ]),
                 Tables\Actions\DeleteAction::make(),
             ]);
     }
