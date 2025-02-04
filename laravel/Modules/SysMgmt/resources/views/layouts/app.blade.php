@@ -1,15 +1,20 @@
 <!DOCTYPE html>
 <html lang="{{ str_replace('_', '-', app()->getLocale()) }}">
-    <head>
-        <meta charset="utf-8">
-        <meta name="viewport" content="width=device-width, initial-scale=1.0">
-        <title>{{ $title ?? 'Page Title' }}</title>
-    </head>
-    <body style="height:750px">
-    <div class="container-fluid mt-1">
-        {{ $slot }}
-    </div>
-    {{-- Include the stacked scripts --}}
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="csrf-token" content="{{ csrf_token() }}">
+
+    <title>{{ config('app.name', 'Myxfin') }}</title>
+
+    <script src="https://unpkg.com/@tailwindcss/browser@4"></script>
+    @livewireStyles
+    @filamentStyles
+</head>
+<body class="font-sans antialiased">
+    {{ $slot }}
+    @livewireScripts
+    @filamentScripts
     @stack('scripts')
-    </body>
+</body>
 </html>

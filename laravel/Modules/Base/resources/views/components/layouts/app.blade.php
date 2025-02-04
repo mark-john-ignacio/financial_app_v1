@@ -12,7 +12,8 @@
     <link href="https://fonts.bunny.net/css?family=figtree:400,500,600&display=swap" rel="stylesheet"/>
 
     <!-- Scripts -->
-    @vite(\Nwidart\Modules\Module::getAssets())
+    <!-- @vite(\Nwidart\Modules\Module::getAssets()) -->
+    <script src="https://unpkg.com/@tailwindcss/browser@4"></script>
     
 
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
