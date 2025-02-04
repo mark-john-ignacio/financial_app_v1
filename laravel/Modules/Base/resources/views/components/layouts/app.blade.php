@@ -19,7 +19,9 @@
     <link href="https://cdn.datatables.net/2.2.1/css/dataTables.tailwindcss.css" rel="stylesheet">
 
 
-    <script src="https://cdn.datatables.net/v/dt/jq-3.7.0/moment-2.29.4/dt-2.2.1/datatables.min.js"></script>
+    <link href="https://cdn.jsdelivr.net/npm/simple-datatables@latest/dist/style.css" rel="stylesheet" type="text/css">
+    <script src="https://cdn.jsdelivr.net/npm/simple-datatables@9.0.3"></script>
+
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 </head>
 <body class="font-sans antialiased">

@@ -19,40 +19,37 @@ class BirFormTable extends Component
 
     public function getData(Request $request)
     {
-        $columns = [
-            'form_code',
-            'form_name',
-            'filter',
-            'cstatus',
-        ];
-        $length = $request->input('length');
-        $start = $request->input('start');
-        $column = $request->input('order.0.column');
-        $dir = $request->input('order.0.dir') ?: 'desc';
-        $searchValue = $request->input('search')['value'] ?? '';
-        if (!isset($columns[$column])) {
-            $column = 0;
-        }
-
-        $query = BirForm::query()
-            ->orderBy($columns[$column], $dir);
-
-        if ($searchValue) {
+        $query = BirForm::query();
+    
+        // Apply search if provided
+        if ($request->has('search')) {
+            $searchValue = $request->search;
             $query->where(function ($query) use ($searchValue) {
                 $query->where('form_code', 'like', '%' . $searchValue . '%')
                     ->orWhere('form_name', 'like', '%' . $searchValue . '%')
                     ->orWhere('filter', 'like', '%' . $searchValue . '%');
             });
         }
-
-        $total = $query->count();
-        $birForms = $query->skip($start)->take($length)->get();
-
+    
+        // Apply sorting
+        $sortColumn = $request->input('sort', 'form_code');
+        $sortDirection = $request->input('order', 'asc');
+        $query->orderBy($sortColumn, $sortDirection);
+    
+        // Get all records for Simple-DataTables
+        $birForms = $query->get();
+    
         return response()->json([
-            'draw' => $request->input('draw'),
-            'recordsTotal' => $total,
-            'recordsFiltered' => $total,
-            'data' => $birForms
+            'data' => $birForms->map(function($form) {
+                return [
+                    'id' => $form->id,	
+                    'form_code' => $form->form_code,
+                    'form_name' => $form->form_name,
+                    'filter' => $form->filter,
+                    'cstatus' => $form->cstatus,
+                    'actions' => '' // Will be populated by frontend
+                ];
+            })
         ]);
     }
 
