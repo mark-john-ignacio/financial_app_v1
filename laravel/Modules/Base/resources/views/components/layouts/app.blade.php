@@ -12,10 +12,7 @@
     <link href="https://fonts.bunny.net/css?family=figtree:400,500,600&display=swap" rel="stylesheet"/>
 
     <!-- Scripts -->
-    <!-- @vite(\Nwidart\Modules\Module::getAssets()) -->
     <script src="https://unpkg.com/@tailwindcss/browser@4"></script>
-
-    <!-- @livewireStyles -->
     @filamentStyles
 </head>
 <body class="font-sans antialiased">
@@ -36,8 +33,6 @@
         {{ $slot }}
     </main>
 </div>
-<!-- @livewireScripts -->
-@filamentScripts
 @stack('scripts')
 </body>
 </html>

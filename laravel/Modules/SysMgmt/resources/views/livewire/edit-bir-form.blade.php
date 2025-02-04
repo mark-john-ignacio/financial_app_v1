@@ -1,5 +1,4 @@
 <div class="p-4">
-    <h2 class="text-2xl font-semibold mb-4">Edit Bir Form</h2>
     <form wire:submit.prevent="submitEdit">
         <div class="space-y-4">
             <div>

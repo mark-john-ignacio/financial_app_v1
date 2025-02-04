@@ -2,7 +2,10 @@
 
 namespace Modules\SysMgmt\Livewire;
 
+use Filament\Forms\Components\Select;
+use Filament\Forms\Components\TextInput;
 use Filament\Tables;
+use Filament\Tables\Actions\Action;
 use Filament\Tables\Table;
 use Modules\SysMgmt\Models\BirForm;
 use Livewire\Component;
@@ -44,23 +47,23 @@ class BirFormTable extends Component implements Tables\Contracts\HasTable, HasFo
                 }),
                 // Edit action with a modal form for editing
                 Tables\Actions\EditAction::make()
-                    ->modalHeading('Edit Bir Form')
-                    ->form([
-                        \Filament\Forms\Components\TextInput::make('form_code')
-                            ->required()
-                            ->label('Form Code'),
-                        \Filament\Forms\Components\TextInput::make('form_name')
-                            ->required()
-                            ->label('Form Name'),
-                        \Filament\Forms\Components\TextInput::make('filter')
-                            ->label('Filter'),
-                        \Filament\Forms\Components\Select::make('cstatus')
-                            ->label('Status')
-                            ->options([
-                                'active'   => 'Active',
-                                'inactive' => 'Inactive',
-                            ]),
-                    ]),
+                ->modalHeading('Edit Bir Form')
+                ->form([
+                    TextInput::make('form_code')
+                        ->required()
+                        ->label('Form Code'),
+                    TextInput::make('form_name')
+                        ->required()
+                        ->label('Form Name'),
+                    TextInput::make('filter')
+                        ->label('Filter'),
+                    Select::make('cstatus')
+                        ->label('Status')
+                        ->options([
+                            'Active'   => 'Active',
+                            'Inactive' => 'Inactive',
+                        ]),
+                ]),
                 Tables\Actions\DeleteAction::make(),
             ]);
     }
