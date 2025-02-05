@@ -9,7 +9,12 @@
 
     $company = $_SESSION['companyid'];
 
-    $table = $_REQUEST['table'] != null ? $_REQUEST['table'] : null;
+    if(isset($_REQUEST['table'])){
+        $table = $_REQUEST['table'] != null ? $_REQUEST['table'] : null;
+    }else{
+        $table = null;
+    }
+   
     $orderType = $_REQUEST['type'] != null ? $_REQUEST['type'] : null;
     $tranno = $_REQUEST['tranno'];
     $dates = date('Y-m-d h:i:s');

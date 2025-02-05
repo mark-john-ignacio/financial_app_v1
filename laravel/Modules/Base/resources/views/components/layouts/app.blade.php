@@ -16,7 +16,7 @@
 
     <link href="https://cdn.datatables.net/v/dt/jq-3.7.0/dt-2.2.1/datatables.min.css" rel="stylesheet">
  
-<script src="https://cdn.datatables.net/v/dt/jq-3.7.0/dt-2.2.1/datatables.min.js"></script>
+    <script src="https://cdn.datatables.net/v/dt/jq-3.7.0/dt-2.2.1/datatables.min.js"></script>
 
 </head>
 <body class="font-sans antialiased">

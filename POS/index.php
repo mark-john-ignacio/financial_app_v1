@@ -3,13 +3,12 @@
         session_start();
     }
     //$_SESSION['pageid'] = "POS_View.php";
+    $company = $_SESSION['companyid'];
+    $employee_cashier_name = $_SESSION['employeeid'];
 
     include('../Connection/connection_string.php');
     //include('../include/denied.php');
     //include('../include/access2.php');
-
-    $company = $_SESSION['companyid'];
-    $employee_cashier_name = $_SESSION['employeeid'];
 
     $category = [];
     $items = [];
@@ -45,8 +44,6 @@
                 ) c on a.cpartno=c.citemno
             WHERE a.compcode='$company' and a.cstatus = 'ACTIVE' and a.ctradetype='Trade' order by a.cclass, a.citemdesc";
 
-            //echo $sql;
-
     $query = mysqli_query($con, $sql);
     if(mysqli_num_rows($query) != 0) {
         while($row = $query -> fetch_assoc()){
@@ -80,6 +77,24 @@
         while($row = $query -> fetch_assoc()){
             $serviceFee = $row['cvalue'];
             $isCheck = $row['nallow'];
+        }
+    }
+
+    $sql1 = "SELECT * FROM parameters WHERE compcode = '$company' AND ccode = 'WAITING_TIME'";
+    $query1 = mysqli_query($con, $sql1);
+    $isCheckWaitingTime = 0;
+    if(mysqli_num_rows($query1) != 0){
+        while($row1 = $query1 -> fetch_assoc()){
+            $isCheckWaitingTime = $row1['nallow'];
+        }
+    }
+
+    $sql2 = "SELECT * FROM parameters WHERE compcode = '$company' AND ccode = 'MANUAL_RECEIPT'";
+    $query2 = mysqli_query($con, $sql2);
+    $isCheckManualReceipt = 0;
+    if(mysqli_num_rows($query2) != 0){
+        while($row2 = $query2 -> fetch_assoc()){
+            $isCheckManualReceipt = $row2['nallow'];
         }
     }
 ?>
@@ -210,16 +225,16 @@
                         </tr>
                         <tr>
                             <td colspan="2" style='padding-top: 20px'>
-                                <div style='height: 3.3in; max-height: 3.6in; overflow: auto;'>
+                                <div style='height: 52vh; max-height: 60vh; overflow: auto;'>
                                     <table class='table' id='listItem' style="width: 100%; ">
                                         <thead style='background-color: #019aca'>
                                             <tr>
                                                 <th style="width: 60%;">Item</th>
                                                 <th style="text-align: center;">UOM</th>
                                                 <th style="text-align: center;">Quantity</th>
-                                                <th style="text-align: center;">Price</th>
-                                                <th style="text-align: center;">Discount</th>         
-                                                <th style="text-align: center;">Amount</th>
+                                                <th style="text-align: right;">Price</th>
+                                                <th style="text-align: right;">Discount</th>         
+                                                <th style="text-align: right;">Amount</th>
                                             </tr>
                                         </thead>
                                         <tbody></tbody>
@@ -276,10 +291,10 @@
                                         <?php endforeach; ?>
                                     </select>
                                 </div>
-                                <div class='input-group'>
+                                <div class='input-group' id = "WaitingTimeContainer" style="display: none;">
                                     <input class='form-control input-sm' type="number" name='waiting_time' id='waiting_time' min="0" placeholder="Waiting Time (Mins)">
                                 </div>
-                                <div class="input-group">
+                                <div class="input-group" id = "KitchenContainer"  style="display: none;">
                                     <select name="kitchen_receipt" id="kitchen_receipt" class="form-control input-sm" style="display: none;">
                                         <option value="" disabled selected>Kitchen Receipt ?</option>
                                         <option value="Yes">YES</option>
@@ -293,6 +308,23 @@
                                     document.getElementById('kitchenReceiptButton').addEventListener('click', function() {
                                         var selectElement = document.getElementById('kitchen_receipt');
                                         selectElement.value = "Yes";
+                                    });
+
+                                    document.addEventListener('DOMContentLoaded', function() {
+                                        var isCheckWaitingTime = <?php echo $isCheckWaitingTime; ?>;
+                                        var isCheckManualReceipt = <?php echo $isCheckManualReceipt; ?>;
+
+                                        if (isCheckWaitingTime == 1) {
+                                            document.getElementById('WaitingTimeContainer').style.display = 'block';
+                                        } else {
+                                            document.getElementById('WaitingTimeContainer').style.display = 'none';
+                                        }
+
+                                        if (isCheckManualReceipt == 1) {
+                                            document.getElementById('KitchenContainer').style.display = 'block';
+                                        } else {
+                                            document.getElementById('KitchenContainer').style.display = 'none';
+                                        }
                                     });
                                 </script>
                         </div>
@@ -321,13 +353,12 @@
                         </div>
                         
 
-                        <div style='height: 350px; overflow: auto;'>
+                        <div style='height: 69vh; overflow: auto;'>
                             <div id='item-wrapper'>
-                                <?php 
-                                foreach($items as $list):
+                                <?php foreach($items as $list):
                                     if($list['isInvetory'] != 1) {?>
                                     
-                                        <div class='itmslist' id="itemlist" style="height:100px;                     
+                                        <div class='itmslist' id="itemlist" style="margin: 2px; height:130px;                     
                                             background-color:#019aca; 
                                             background-image:url('<?=$list["cuserpic"];?>');
                                             background-repeat:no-repeat;
@@ -338,10 +369,10 @@
                                             <div style='position: absolute; text-align: right; width: 100%; color: #fff; min-height: 20px;'>
                                                 <?= !empty($list['quantity']) && $list['quantity'] >= 0? "Remaining: <span id='remain'>" . number_format($list['quantity']) ."</span>" : "Sold Out" ?>
                                             </div>
-                                            <div id='items' name="<?= $list['cscancode'] ?>" class='items' data-itemlist="<?= $list['cclass'] ?>" style='position: absolute; bottom: 0; width: 100%; background-color: rgba(0,0,0,.5); color: #fff; min-height: 20px; text-align:center;'><font size='-2'><?php echo $list["citemdesc"]; ?></font></div>
+                                            <div id='items' name="<?= $list['cscancode'] ?>" class='items' data-itemlist="<?= $list['cclass'] ?>" style='position: absolute; bottom: 0; width: 100%; background-color: rgba(0,0,0,.5); color: #fff; min-height: 20px; text-align:center; display: block; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;'><font size='-2'><?php echo $list["citemdesc"]; ?></font></div>
                                         </div>
                                 <?php } else { ?>
-                                    <div class='itmslist' id="itemlist" style="height:100px;                     
+                                    <div class='itmslist' id="itemlist" style="height:130px;                     
                                             background-color:#019aca; 
                                             background-image:url('<?=$list["cuserpic"];?>');
                                             background-repeat:no-repeat;
@@ -709,6 +740,8 @@
     var matrix = 'PM1';
     var amtTotal = 0;
     var count = 0;
+    var isCheckWaitingTime = <?php echo $isCheckWaitingTime; ?>;
+    var isCheckManualReceipt = <?php echo $isCheckManualReceipt; ?>;
     
     
     $(document).ready(function(){
@@ -959,9 +992,9 @@
 
 
         $('#btnVoid').click(function(){
-           // if(!checkAccess("POS_Void.php")){
-          //      return;
-          //  }
+            /*if(!checkAccess("POS_Void.php")){
+                return;
+            }*/
             if(itemStored.length === 0) {
                 return alert('Transaction is empty!')
             }
@@ -1031,28 +1064,30 @@
             let kitchen_receipt = $("#kitchen_receipt").val();
 
             let waitingTime = $("#waiting_time").val();
-            if (!waitingTime && kitchen_receipt == "Yes") {
+            if (!waitingTime && kitchen_receipt == "Yes" && isCheckManualReceipt == 1) {
                 
             }
             else if(!waitingTime && kitchen_receipt == null){
-                this.disabled = false;
-                return alert('Waiting time is required!');
+                if(isCheckWaitingTime == 1){
+                    this.disabled = false;
+                    return alert('Waiting time is required!');
+                }
             }
             else if(!waitingTime && kitchen_receipt == "No"){
-                this.disabled = false;
-                return alert('Waiting time is required!');
+                if(isCheckWaitingTime == 1){
+                    this.disabled = false;
+                    return alert('Waiting time is required!');
+                }
             }
 
-            if (!kitchen_receipt) {
+            if (!kitchen_receipt && isCheckManualReceipt == 1) {
                 this.disabled = false;
                 if(kitchen_receipt == null){
                     kitchen_receipt = "No";
                 }
             }
 
-           // if(!checkAccess("POS_Hold.php")){
-           //     return;
-         //   }
+
 
             let tranno, msg, print, date;
             var isSuccess = false;
@@ -1129,10 +1164,14 @@
                 $("#kitchenPrintModal").modal('hide');
                 alert(msg);
                 $("#kitchenPrintModal").modal('show');
-                $("#mykprintframe").attr("src", "PendingOrders/kitchen_print.php?tranno="+ tranno + "&transaction_type=Hold&date=" + date);
-                setInterval(() => {
-                    location.reload()  
-                }, 3000);
+                $("#mykprintframe").attr("src", "PendingOrders/kitchen_print.php?tranno=" + tranno + "&transaction_type=Hold&date=" + date);
+
+                console.log();
+
+                // Reload the page when the modal is closed
+                $('#kitchenPrintModal').on('hidden.bs.modal', function () {
+                    location.reload();
+                });
             } else {
                 alert(msg);
             }
@@ -1145,22 +1184,34 @@
 
         $('#btnPay').click(function(){
 
-           // if(!checkAccess("POS_Payment.php")){
-           //     return;
-          //  }
+            
             let kitchen_receipt = $("#kitchen_receipt").val();
 
             let waitingTime = $("#waiting_time").val();
-            if (!waitingTime && kitchen_receipt == "Yes") {
+            if (!waitingTime && kitchen_receipt == "Yes" && isCheckManualReceipt == 1) {
                 
             }
             else if(!waitingTime && kitchen_receipt == null){
-                this.disabled = false;
-                return alert('Waiting time is required!');
+                if(isCheckWaitingTime == 1){
+                    if(retriveStatus == 1){
+                        
+                    }
+                    else{
+                        this.disabled = false;
+                        return alert('Waiting time is required!');
+                    }
+                }
             }
             else if(!waitingTime && kitchen_receipt == "No"){
-                this.disabled = false;
-                return alert('Waiting time is required!');
+                if(isCheckWaitingTime == 1){
+                    if(retriveStatus == 1){
+                        
+                    }
+                    else{
+                        this.disabled = false;
+                        return alert('Waiting time is required!');
+                    }
+                }
             }
 
             if(itemStored.length === 0){
@@ -1198,11 +1249,11 @@
          * Retrive Hold transaction
          */
 
+         var retriveStatus = 0;
+
          $(document).ready(function() {
             $('#btnRetrieve').click(function() {
-               // if (!checkAccess("POS_Retrieve.php")) {
-               //     return;
-              //  }
+                
 
                 $.ajax({
                     url: 'Function/th_gethold.php',
@@ -1229,6 +1280,7 @@
                                     $("#tranno").val(item.transaction);
                                     // Additional code to handle the display of the selected data can be added here
                                     console.log("Row clicked:", item.transaction);
+                                    retriveStatus = 1;
                                 });
                             });
                         } else {
@@ -1560,24 +1612,26 @@
                     $("#kitchenPrintModal").modal('show');
                     $("#mykprintframe").attr("src", "PendingOrders/kitchen_print.php?tranno=" + tranno + "&transaction_type=Payment");
 
-                    setTimeout(() => {
-                        $("#kitchenPrintModal").modal('hide');
-                    }, 3000);
+                    // When kitchenPrintModal is closed
+                    $("#kitchenPrintModal").on('hidden.bs.modal', function () {
+                        // Show PrintModal
+                        $("#PrintModal").modal('show');
+                        $("#myprintframe").attr("src", "pos_print.php?tranno=" + tranno);
 
-                    $("#PrintModal").modal('show');
-                    $("#myprintframe").attr("src", "pos_print.php?tranno=" + tranno);
-
-                    setTimeout(() => {
-                        location.reload();
-                    }, 6000);
+                        $("#PrintModal").on('hidden.bs.modal', function () {
+                            location.reload();
+                            retriveStatus = 0;
+                        });
+                    });
                 } else {
                     $("#PrintModal").modal('show');
                     $("#myprintframe").attr("src", "pos_print.php?tranno=" + tranno);
 
-
-                    setTimeout(() => {
+                    // Reload the page when the modal is closed
+                    $('#PrintModal').on('hidden.bs.modal', function () {
                         location.reload();
-                    }, 3000);
+                        retriveStatus = 0;
+                    });
                 }
             }
 
@@ -1854,9 +1908,9 @@
                 $("<td>").text(item.name),
                 $("<td>").text(item.unit),
                 $("<td align='center'>").html("<input type='number' id='qty' name='qty[]' class='form-control input-sm' style='width:60px' value='"+item.quantity+"' data-val='"+ item.partno +"'/>"),
-                $("<td>").text(parseFloat(item.price).toFixed(2)),
-                $("<td>").text(parseFloat(item.discount).toFixed(2)),
-                $("<td>").text(parseFloat(item.amount).toFixed(2)),
+                $("<td style='text-align: right'>").text(parseFloat(item.price).toFixed(2)),
+                $("<td style='text-align: right'>").text(parseFloat(item.discount).toFixed(2)),
+                $("<td style='text-align: right'>").text(parseFloat(item.amount).toFixed(2)),
             ).appendTo("#listItem > tbody")
 
 
@@ -2068,6 +2122,7 @@
             data: { employeeCashierName: employeeCashierName },
             success: function(response){
                 console.log("Data deleted successfully!");
+                retriveStatus = 0;
             },
             error: function(xhr, status, error){
                 console.error("Error deleting data:", error);

@@ -148,30 +148,13 @@
 
     @push('scripts')
     <script>
-    $(document).ready(function() {
-        $('#birFormsTable').DataTable({
-            responsive: true,
-            pageLength: 10,
-            order: [[0, 'asc']],
-            pagingType: 'full_numbers', // Enable full number pagination
-            language: {
-                search: "Search:",
-                lengthMenu: "Show _MENU_ entries per page",
-                info: "Showing _START_ to _END_ of _TOTAL_ entries",
-                paginate: {
-                    first: '«',
-                    previous: '‹',
-                    next: '›',
-                    last: '»'
-                }
-            },
-            drawCallback: function() {
-                if (document.documentElement.classList.contains('dark')) {
-                    document.querySelector('.dataTables_wrapper').classList.add('dark');
-                }
-            }
+        $(document).ready(function() {
+            $('#birFormsTable').DataTable({
+                responsive: true,
+                pageLength: 10,
+                order: [[0, 'asc']],
+            });
         });
-    });
-</script>
-@endpush
+    </script>
+    @endpush
 </x-base::layouts.app>

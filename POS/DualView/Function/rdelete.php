@@ -5,7 +5,7 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
     if (isset($_POST["employeeCashierName"])) {
         $employee_cashier_name = $_POST["employeeCashierName"];
 
-        $sql = "DELETE FROM pos_cart WHERE employee_name = ?";
+        $sql = "DELETE FROM pos_cart WHERE employee_id = ?";
         
         $stmt = $con->prepare($sql);
         if (!$stmt) {

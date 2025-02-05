@@ -17,7 +17,7 @@
     $data = [];
     if(mysqli_num_rows($query) != 0){ 
         // Delete existing entries for this employee
-        mysqli_query($con, "DELETE FROM pos_cart WHERE employee_name = '$prepared'");
+        mysqli_query($con, "DELETE FROM pos_cart WHERE employee_id = '$prepared'");
         
         while($row = $query -> fetch_assoc()){
             array_push($data, $row);
@@ -26,7 +26,7 @@
             $item_id = $itemorder['partno'];
             $item_trannp = $itemorder['transaction'];
             $item_quantity = $itemorder['quantity'];
-            $insert_sql = "INSERT INTO pos_cart (item, quantity, employee_name) VALUES ('$item_id', '$item_quantity', '$prepared')";
+            $insert_sql = "INSERT INTO pos_cart (item_id, qty, employee_id) VALUES ('$item_id', '$item_quantity', '$prepared')";
             mysqli_query($con, $insert_sql);
         }
 
@@ -36,7 +36,7 @@
         ]);
     } else {
         // No records found, delete existing entries for this employee
-        mysqli_query($con, "DELETE FROM pos_cart WHERE employee_name = '$prepared'");
+        mysqli_query($con, "DELETE FROM pos_cart WHERE employee_id = '$prepared'");
         
         echo json_encode([
             'valid' => false,
