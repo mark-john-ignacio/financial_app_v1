@@ -75,7 +75,7 @@
                 margin: 0 !important
             }
             * {
-                font-size: 10px;
+                font-size: 12px;
                 font-family: 'Helvetica';
             }
 
@@ -114,8 +114,8 @@
             }
 
             .ticket {
-                width: 2.19in;
-                max-width: 2.19in;
+                width: 2.8in;
+                max-width: 2.8in;
             }
 
             img {
@@ -125,11 +125,11 @@
 
             @media print {
                 @page {
-                size: 58mm auto;
+                size: 80mm auto;
                 margin: 5mm;
                 }
                 body {
-                    width: 58mm;
+                    width: 80mm;
                     margin: 0;
                 }
                 .hidden-print,
