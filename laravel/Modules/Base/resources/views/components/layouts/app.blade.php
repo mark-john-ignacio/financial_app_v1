@@ -12,7 +12,10 @@
     <link href="https://fonts.bunny.net/css?family=figtree:400,500,600&display=swap" rel="stylesheet"/>
 
     <!-- Tailwind CSS -->
-    <script src="https://unpkg.com/@tailwindcss/browser@4"></script>
+    <!-- <script src="https://cdn.tailwindcss.com"></script> -->
+
+    <!-- Scripts -->
+    @vite(\Nwidart\Modules\Module::getAssets())
 
     <link href="https://cdn.datatables.net/v/dt/jq-3.7.0/dt-2.2.1/datatables.min.css" rel="stylesheet">
  
