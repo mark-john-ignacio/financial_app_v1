@@ -12,11 +12,16 @@
             box-sizing: border-box;
             font-family: sans-serif;
         }
-        .pcard-container{
-            display: flex;
-            justify-content: center;
-            flex-wrap: wrap;
-            margin: 10px;
+        .pcard-container {
+            display: flex !important;
+            justify-content: center !important;
+            flex-wrap: wrap !important;
+            margin: 10px !important;
+            min-height: 100vh !important;
+        }
+        .pcard {
+            display: block !important;
+            visibility: visible !important;
         }
         .pcard{
             width: 325px;
@@ -188,44 +193,45 @@
     }
 
     function loadOrders() {
-    $.ajax({
-        url: 'Function/orderlist.php',
-        method: 'GET',
-        dataType: 'json',
-        success: function(data) {
-            // Validate data object
-            if (!data || !Array.isArray(data.transactions)) {
-                console.error('Invalid data format:', data);
-                return;
-            }
-            
-
-            const container = $('.pcard-container');
-            container.empty();
-
-            // Sort transactions by date
-            const orders = data.transactions.sort((a, b) => new Date(a.ddate) - new Date(b.ddate));
-
-            orders.forEach(order => {
-                if (order && order.receipt === "No") {
-                    const card = createCard(order);
-                    if (card) {
-                        container.append(card);
-                        const timerElement = card.find('.timer');
-                        const cardHeader = card.find('.pcard-header');
-                        const orderDate = new Date(order.ddate).getTime();
-                        const waiting_time = 30; // minutes
-                        const endTime = orderDate + (waiting_time * 60 * 1000);
-                        startTimerWithEndTime(timerElement, card, cardHeader, endTime, waiting_time);
-                    }
+        const container = $('.pcard-container');
+        $('#debug-info').text('Loading orders...');
+        
+        $.ajax({
+            url: 'Function/orderlist.php',
+            method: 'GET',
+            dataType: 'json',
+            success: function(data) {
+                container.find('.pcard').remove(); // Clear only cards
+                $('#debug-info').text('Orders loaded: ' + (data.transactions?.length || 0));
+                
+                if (!data?.transactions?.length) {
+                    $('#debug-info').text('No orders found');
+                    return;
                 }
-            });
-        },
-        error: function(err) {
-            console.error("Error fetching transaction data:", err);
-        }
-    });
-}
+
+                data.transactions.forEach(order => {
+                    if (order?.receipt === "No") {
+                        const card = createCard(order);
+                        if (card) {
+                            // Force display and append
+                            $(card).css({
+                                'display': 'block',
+                                'visibility': 'visible',
+                                'opacity': '1'
+                            }).appendTo(container);
+                            
+                            // Verify append
+                            console.log('Card HTML:', card[0].outerHTML);
+                            console.log('Container children:', container.children().length);
+                        }
+                    }
+                });
+            },
+            error: function(err) {
+                $('#debug-info').text('Error: ' + err.message);
+            }
+        });
+    }
 
     function createCard(transaction) {
         
@@ -387,7 +393,7 @@
         return false;
     });
     pcardButtons.append(doneButtonPayment);
-}
+    }
 
 
         cardFooter.append(pcardButtons);
@@ -463,7 +469,7 @@
     </script>
 </head>
 <body>
-    <div stlye="min-height: 100vh; position: relative; ">
+    <header class='row nopadwtop' id='header'>
         <div class='row nopadwtop' id='header' style="background-color: #000; width:100%; height:55px; margin-bottom: 5px !important">
             <div  style="float: left;display: block;width: 235px;height: 57px;padding-left: 20px;padding-right: 20px;">
                 <img src="././images/LOGOTOP.png" alt="logo" class="logo-default" width="150" height="48" />
@@ -477,10 +483,10 @@
                 </div>
             </div>
         </div>
-    </div>
+    </header>
 
-    <div class="pcard-container">
-       
+    <div class="pcard-container" style="border: 1px solid red;">
+        <div id="debug-info"></div>
     </div>
 </body>
 </html>
