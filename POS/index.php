@@ -298,7 +298,7 @@
                                 <div class='input-group' id = "WaitingTimeContainer" style="display: none;">
                                     <input class='form-control input-sm' type="number" name='waiting_time' id='waiting_time' min="0" placeholder="Waiting Time (Mins)">
                                 </div>
-                                <div class="input-group" id = "KitchenContainer"  style="display: none;">
+                                <div class="input-group" id = "KitchenContainer"  >
                                     <select name="kitchen_receipt" id="kitchen_receipt" class="form-control input-sm" style="display: none;">
                                         <option value="" disabled selected>Kitchen Receipt ?</option>
                                         <option value="Yes">YES</option>
