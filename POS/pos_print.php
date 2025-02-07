@@ -30,7 +30,10 @@
     $phone = explode(";",$detail['cpnum']);
 
 
-    $sql = "SELECT a.quantity, a.gross, a.uom, b.ddate, b.orderType, d.cname, b.exchange, b.tendered, b.coupon, a.amount, b.gross as total, b.net, b.vat, b.preparedby, b.subtotal, b.serviceFee, b.discount, c.citemdesc, d.chouseno, d.ccity, d.ctin, d.cempid, b.payment_method FROM pos_t a
+
+    $sql = "SELECT a.quantity, a.gross, a.uom, b.ddate, b.orderType, d.cname, b.exchange, b.tendered, b.coupon, 
+    b.cust_name, b.cust_address, b.cust_tin, b.customer,
+    a.amount, b.gross as total, b.net, b.vat, b.preparedby, b.subtotal, b.serviceFee, b.discount, c.citemdesc, d.chouseno, d.ccity, d.ctin, d.cempid, b.payment_method FROM pos_t a
         LEFT JOIN pos b on a.compcode = b.compcode AND a.tranno = b.tranno
         LEFT JOIN items c on a.compcode = c.compcode AND a.item = c.cpartno
         LEFT JOIN customers d on a.compcode  = d.compcode AND b.customer = d.cempid
@@ -57,8 +60,13 @@
         $subtotal = $row['subtotal'];
         $total = $row['total'];
         $pay_meth = ($row['payment_method']=="DEBIT" || $row['payment_method']=="CREDIT") ? $row['payment_method']." CARD" : $row['payment_method'];
+
+        $customer_name = $row['cust_name']; 
+        $customer_address = $row['cust_address'];
+        $customer_tin = $row['cust_tin'];
         
     }
+
     $cash = $tender + $coupon;
 ?>
 
@@ -263,13 +271,28 @@
                     </tr>
 
                     <tr>
-                        <td colspan='2'><div style="float: left; width: 10%;">Name:</div><div style="float:right; border-bottom: 1px solid #000; width: 80%">&nbsp;</div></td>
+                        <td colspan='2'>
+                            <div style="float: left; width: 10%;">Name:</div>
+                            <div style="float:right; border-bottom: 1px solid #000; width: 80%">
+                                <?= $customer_name ?>
+                            </div>
+                        </td>
                     </tr>
                     <tr>
-                        <td colspan='2'><div style="float: left; width: 15%;">Address:</div><div style="float:right; border-bottom: 1px solid #000; width: 75%">&nbsp;</div></td>
+                        <td colspan='2'>
+                            <div style="float: left; width: 15%;">Address:</div>
+                            <div style="float:right; border-bottom: 1px solid #000; width: 75%">
+                                <?= $customer_address ?>
+                            </div>
+                        </td>
                     </tr>
                     <tr>
-                        <td colspan='2'><div style="float: left; width: 10%;">TIN:</div><div style="float:right; border-bottom: 1px solid #000; width: 85%">&nbsp;</div></td>
+                        <td colspan='2'>
+                            <div style="float: left; width: 10%;">TIN:</div>
+                            <div style="float:right; border-bottom: 1px solid #000; width: 85%">
+                            <?= $customer_tin ?>
+                            </div>
+                        </td>
                     </tr>
                    
 

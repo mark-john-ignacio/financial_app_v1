@@ -62,6 +62,10 @@
     
     $h_tranno = mysqli_real_escape_string($con, $_POST['holdtranno']);
 
+    $customerName = mysqli_real_escape_string($con, $_POST['customerName']);
+    $customerAddress = mysqli_real_escape_string($con, $_POST['customerAddress']);
+    $customerTIN     = mysqli_real_escape_string($con, $_POST['customerTin']);
+
 
     if(!empty($tranno)){
         mysqli_query($con, "DELETE FROM pos_hold WHERE `compcode` = '$company' AND `transaction` = '$tranno'");
@@ -72,8 +76,8 @@
     /**
      * Query for Inserting into database
      */
-    $sql = "INSERT INTO pos (`compcode`, `tranno`, `preparedby`, `ddate`, `amount`, `net`, `vat`, `gross`, `discount`, `tendered`, `exchange`, `customer`, `orderType`, `table`, `coupon`, `serviceFee`, `subtotal`, `payment_method`, `payment_reference`)
-            VALUES ('$company', '$code', '$prepared', '$date', '$amount', '$net', '$vat', '$gross', '$discount', '$tendered', '$exchange', '$customer', '$type', '$table', '$coupon', '$service', '$subtotal', '$pay_method', '$reference')";
+    $sql = "INSERT INTO pos (`compcode`, `tranno`, `preparedby`, `ddate`, `amount`, `net`, `vat`, `gross`, `discount`, `tendered`, `exchange`, `customer`, `orderType`, `table`, `coupon`, `serviceFee`, `subtotal`, `payment_method`, `payment_reference`, `cust_name`, `cust_address`, `cust_tin`)
+            VALUES ('$company', '$code', '$prepared', '$date', '$amount', '$net', '$vat', '$gross', '$discount', '$tendered', '$exchange', '$customer', '$type', '$table', '$coupon', '$service', '$subtotal', '$pay_method', '$reference', '$customerName', '$customerAddress', '$customerTIN')";
 
     if(mysqli_query($con, $sql)){
 

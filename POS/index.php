@@ -526,6 +526,24 @@
 
                                         <label for="ExchangeAmt">Change Amount</label>
                                         <input type="text" id='ExchangeAmt' class='form-control' readonly/><br>
+
+                                        <!-- Optional inputs toggle -->
+                                        <label>
+                                            <input type="checkbox" id="optInputsCheck" />
+                                            Enter Name, Address, TIN
+                                        </label>
+
+                                        <!-- Optional inputs, hidden by default -->
+                                        <div id="optionalFields" style="display:none; margin-top:10px;">
+                                            <label>Name: </label>
+                                            <input type="text" id="cust_name" class='form-control'/><br/>
+
+                                            <label>Address: </label>
+                                            <input type="text" id="cust_address" class='form-control'/><br/>
+
+                                            <label>TIN: </label>
+                                            <input type="text" id="cust_tin" class='form-control'/>
+                                        </div>
                                         
                                     </div>
 
@@ -1497,6 +1515,9 @@
             let reference = $("#paymethod_txt").val();
             let tranno = '';
             let flag_update = '';
+            let cName = $('#cust_name').val();
+            let cAddr = $('#cust_address').val();
+            let cTin = $('#cust_tin').val();
 
             let kitchen_receipt = $("#kitchen_receipt").val();
             if (!kitchen_receipt) {
@@ -1531,7 +1552,11 @@
                         exchange: parseFloat(exchange),
                         discount: getDiscount(itemStored),
                         coupon: getCoupon(coupon),
-                        service: parseFloat(servicefee)
+                        service: parseFloat(servicefee),
+
+                        customerName: cName,
+                        customerAddress: cAddr,
+                        customerTin: cTin
                     },
                     dataType: 'json',
                     async: false,
@@ -1690,6 +1715,10 @@
                 }
             })
         })
+
+        $('#optInputsCheck').on('change', function() {
+            $('#optionalFields').toggle(this.checked);
+        });
     })
 
 
