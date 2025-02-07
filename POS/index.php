@@ -178,6 +178,10 @@
             pointer-events: none;
             opacity: 1;
         }
+
+        .font-large {
+            font-size: 20px; /* Adjust as needed */
+        }
     </style>
 </head>
 <body style='margin: 0; padding: 0;'> 
@@ -1933,7 +1937,7 @@
         console.log(items)
 
         items.map((item, index) => {
-            $("<tr>").append(
+            $("<tr class='font-large'>").append(
                 $("<td>").text(item.name),
                 $("<td>").text(item.unit),
                 $("<td align='center'>").html("<input type='number' id='qty' name='qty[]' class='form-control input-sm' style='width:60px' value='"+item.quantity+"' data-val='"+ item.partno +"'/>"),
