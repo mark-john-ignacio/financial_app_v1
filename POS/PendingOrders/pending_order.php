@@ -156,7 +156,7 @@
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
     <script>
         $(document).ready(function() {
-    const reloadInterval = 1000;
+    const reloadInterval = 3000;
 
     function startTimerWithEndTime(timerElement, card, cardHeader, endTime, waiting_time) {
         let timerInterval;
@@ -485,8 +485,8 @@
         </div>
     </header>
 
-    <div class="pcard-container" style="border: 1px solid red;">
-        <div id="debug-info"></div>
+    <div class="pcard-container">
+        <!-- <div id="debug-info"></div> -->
     </div>
 </body>
 </html>
