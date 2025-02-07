@@ -188,53 +188,69 @@
     }
 
     function loadOrders() {
-        $.ajax({
-            url: 'Function/orderlist.php',
-            method: 'GET',
-            dataType: 'json',
-            success: function(data) {
-                const container = $('.pcard-container');
-                container.empty();
-
-                const allOrders = data.transactions.concat(data.holds);
-                allOrders.sort((a, b) => new Date(a.ddate) - new Date(b.ddate));
-
-                allOrders.forEach(order => {
-                    const card = createCard(order);
-
-                    if(order.receipt == "No"){
-                        if (card) {
-                            container.append(card);
-
-                            const timerElement = card.find('.timer');
-                            const cardHeader = card.find('.pcard-header');
-                            const endTimeKey = `order_${order.tranno}_${new Date(order.ddate).getTime()}_endtime`;
-                            let savedEndTime = localStorage.getItem(endTimeKey);
-
-                            if (!savedEndTime || isNaN(savedEndTime)) {
-                                const newEndTime = new Date().getTime() + (order.waiting_time * 60 * 1000);
-                                localStorage.setItem(endTimeKey, newEndTime.toString());
-                                savedEndTime = newEndTime;
-                            }
-
-                            const endTime = parseInt(savedEndTime, 10);
-                            startTimerWithEndTime(timerElement, card, cardHeader, endTime, order.waiting_time);
-                        }
-                    }
-                });
-            },
-            error: function(err) {
-                console.error("Error fetching transaction data:", err);
+    $.ajax({
+        url: 'Function/orderlist.php',
+        method: 'GET',
+        dataType: 'json',
+        success: function(data) {
+            // Validate data object
+            if (!data || !Array.isArray(data.transactions)) {
+                console.error('Invalid data format:', data);
+                return;
             }
-        });
-    }
+            
+
+            const container = $('.pcard-container');
+            container.empty();
+
+            // Sort transactions by date
+            const orders = data.transactions.sort((a, b) => new Date(a.ddate) - new Date(b.ddate));
+
+            orders.forEach(order => {
+                if (order && order.receipt === "No") {
+                    const card = createCard(order);
+                    if (card) {
+                        container.append(card);
+                        const timerElement = card.find('.timer');
+                        const cardHeader = card.find('.pcard-header');
+                        const orderDate = new Date(order.ddate).getTime();
+                        const waiting_time = 30; // minutes
+                        const endTime = orderDate + (waiting_time * 60 * 1000);
+                        startTimerWithEndTime(timerElement, card, cardHeader, endTime, waiting_time);
+                    }
+                }
+            });
+        },
+        error: function(err) {
+            console.error("Error fetching transaction data:", err);
+        }
+    });
+}
 
     function createCard(transaction) {
+        
+        // Validate transaction object
+        if (!transaction || typeof transaction !== 'object') {
+            console.error('Invalid transaction object:', transaction);
+            return null;
+        }
+
+        // Ensure items array exists with default empty array
+        transaction.items = transaction.items || [];
         const allDone = transaction.items.every(item => item.status === 'Done');
 
         if (allDone) {
             return null;                                              
         }
+
+        transaction.transaction_type = transaction.transaction_type || 'Payment';
+        transaction.tranno = transaction.tranno || '';
+        transaction.payment_transaction = transaction.payment_transaction || '';
+        transaction.ddate = transaction.ddate || new Date().toISOString();
+        transaction.preparedby = transaction.preparedby || '';
+        transaction.customer = transaction.customer || '';
+        transaction.orderType = transaction.orderType || '';
+        transaction.table = transaction.table || '';
 
         const card = $('<div class="pcard"></div>'); 
         const cardContent = $('<div class="pcard-content"></div>'); 

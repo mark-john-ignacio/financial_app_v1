@@ -1,79 +1,63 @@
 <?php
 include('../../../Connection/connection_string.php');
 
-// Queries for transactions and holds
-$sql_transactions = "SELECT 'transaction' AS type, pt.tranno, pt.payment_transaction, pt.items, pt.quantity, pt.waiting_time, pt.transaction_type, pt.pstatus, pt.order_adding, pt.receipt, it.citemdesc, tpos.customer, tpos.orderType, tpos.table, tpos.preparedby
-    FROM pendingorder_status pt
-    JOIN items it ON pt.items = it.cpartno
-    JOIN pos tpos ON pt.tranno = tpos.tranno
-    WHERE pt.transaction_type = 'Payment'
+// Query for pending orders
+$sql = "SELECT 
+    ps.tranno,
+    ps.payment_transaction,
+    ps.items,
+    ps.quantity,
+    ps.waiting_time,
+    ps.transaction_type,
+    ps.pstatus,
+    ps.order_adding as ddate,
+    ps.receipt,
+    i.citemdesc,
+    p.customer,
+    p.orderType,
+    p.table,
+    p.preparedby
+FROM pendingorder_status ps
+LEFT JOIN items i ON ps.items = i.cpartno
+LEFT JOIN pos p ON ps.tranno = p.tranno
+WHERE ps.receipt = 'No'
+ORDER BY ps.order_adding DESC";
 
-    UNION ALL
-
-    SELECT 'hold' AS type, ph.tranno, ph.payment_transaction, ph.items, ph.quantity, ph.waiting_time, ph.transaction_type, ph.pstatus, ph.order_adding, ph.receipt, it.citemdesc, 'Hold' AS customer, tpos.ordertype, tpos.table, 'System' AS preparedby
-    FROM pendingorder_status ph
-    JOIN items it ON ph.items = it.cpartno
-    JOIN pos_hold tpos ON ph.tranno = tpos.transaction
-    WHERE ph.transaction_type = 'Hold'
-
-    ORDER BY order_adding";
-
-// Arrays to hold transaction data separately
+$result = mysqli_query($con, $sql);
 $transactions = array();
 
-// Fetch regular transactions and add status for each item
-$result_transactions = $con->query($sql_transactions);
-if ($result_transactions->num_rows > 0) {
-    while ($row = $result_transactions->fetch_assoc()) {
-        $transactionKey = "{$row['type']}-{$row['tranno']}-{$row['order_adding']}-{$row['customer']}-{$row['preparedby']}";
-
-        if (!isset($transactions[$transactionKey])) {
-            $transactions[$transactionKey] = array(
-                'tranno' => $row['tranno'],
-                'payment_transaction' => $row['payment_transaction'],
-                'ddate' => $row['order_adding'],
-                'transaction_type' => $row['transaction_type'],
-                'waiting_time' => $row['waiting_time'],
-                'receipt' => $row['receipt'],
-                'customer' => $row['customer'],
-                'orderType' => $row['orderType'],
-                'table' => $row['table'],
-                'preparedby' => $row['preparedby'],
-                'items' => array()
-            );
-        }
-
-        // Check if the item already exists in the current transaction's items array
-        $itemFound = false;
-        foreach ($transactions[$transactionKey]['items'] as &$existingItem) {
-            if ($existingItem['item'] === $row['items']) {
-                $existingItem['quantity'] += $row['quantity'];
-                $itemFound = true;
-                break;
-            }
-        }
-
-        // If the item does not exist, add it to the array
-        if (!$itemFound) {
-            $transactions[$transactionKey]['items'][] = array(
-                'item' => $row['items'],
-                'quantity' => $row['quantity'],
-                'citemdesc' => $row['citemdesc'],
-                'status' => $row['pstatus'],
-            );
-        }
+// Group items by transaction
+while($row = mysqli_fetch_assoc($result)) {
+    $transactionKey = $row['tranno'];
+    
+    if (!isset($transactions[$transactionKey])) {
+        $transactions[$transactionKey] = array(
+            'tranno' => $row['tranno'],
+            'payment_transaction' => $row['payment_transaction'],
+            'transaction_type' => $row['transaction_type'],
+            'ddate' => $row['ddate'],
+            'receipt' => $row['receipt'],
+            'waiting_time' => $row['waiting_time'],
+            'customer' => $row['customer'],
+            'orderType' => $row['orderType'],
+            'table' => $row['table'],
+            'preparedby' => $row['preparedby'],
+            'items' => array()
+        );
     }
+    
+    $transactions[$transactionKey]['items'][] = array(
+        'item' => $row['items'],
+        'quantity' => $row['quantity'],
+        'citemdesc' => $row['citemdesc'],
+        'status' => $row['pstatus']
+    );
 }
 
-// Convert items arrays to values arrays for each transaction
-foreach ($transactions as $key => $transaction) {
-    $transactions[$key]['items'] = array_values($transaction['items']);
-}
+// Format response
+$output = array('transactions' => array_values($transactions));
 
-// Output both types of transactions with item status
-echo json_encode(array(
-    'transactions' => array_values($transactions)
-));
-
-$con->close();
+// Return JSON
+header('Content-Type: application/json');
+echo json_encode($output);
 ?>

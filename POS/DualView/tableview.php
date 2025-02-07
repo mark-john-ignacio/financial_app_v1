@@ -23,118 +23,136 @@
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
     <title>Customer Monitor</title>
     <style>
-        *{
+        :root {
+            --primary-color: #000;
+            --border-color: lightgray;
+        }
+
+        * {
             margin: 0;
             padding: 0;
             box-sizing: border-box;
-            font-family: sans-serif;
+            font-family: system-ui, -apple-system, sans-serif;
         }
-        .container{
-            width: 350px;
-            height:85vh;
-            border: 1px solid lightgray;
-            margin: 30px auto 0px auto;
+
+        body {
+            min-height: 100vh;
+        }
+
+        #header {
+            background-color: var(--primary-color);
+            width: 100%;
+            padding: 0.5rem;
+        }
+
+        #header div {
+            max-width: 235px;
+            padding: 0 1rem;
+        }
+
+        #header img {
+            max-width: 100%;
+            height: auto;
+        }
+
+        .container {
+            width: min(90%, 450px);
+            height: 85vh;
+            margin: 2vh auto;
+            border: 1px solid var(--border-color);
             border-radius: 10px;
-            box-shadow: 0px 2px 4px rgba(0, 0, 0, 0.5);
-            padding:4px;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+            display: flex;
+            flex-direction: column;
         }
-        .container .navigation{
-            width: auto;
-            height: 8vh;
-            background-color: lightgray;
-            border-radius: 10px 10px 0px 0px;
+
+        .navigation {
+            padding: 1rem;
+            background-color: var(--border-color);
+            border-radius: 10px 10px 0 0;
         }
-        .container .nav-title{
-            color: black;
-            font-size: 20px;
+
+        .nav-title {
+            font-size: clamp(1rem, 2.5vw, 1.25rem);
             font-weight: 600;
-            font-family: Arial;
-            transform: translate(0px, 20px);
             text-align: center;
         }
-        .body-container{
-            width: auto;
-            height: 63.8vh;
-            padding: 7px;
-            margin-top: 5px;
-            overflow: auto;
+
+        .body-container {
+            flex: 1;
+            overflow-y: auto;
+            padding: 1rem;
         }
-        .body-container .card{
-            width: auto;
-            height: 11vh;
+
+        .card {
+            display: grid;
+            grid-template-columns: 80px 1fr;
+            gap: 1rem;
+            padding: 0.75rem;
+            border: 1px solid var(--border-color);
             border-radius: 5px;
-            border: 1px solid gray;
-            display: flex;
-            justify-content: space-between;
-            margin-bottom: 8px;
+            margin-bottom: 0.75rem;
         }
-        .body-container .card .card-picture{
-            background-color: black;
-            width: 80px;
-            height: auto;
-            border-radius: 5px 0px 0px 5px;
-        }
-        .body-container .card .card-title{
-            width: 225px;
-            height: auto;
+
+        .card-picture {
+            background-color: var(--primary-color);
+            aspect-ratio: 1;
             border-radius: 5px;
+        }
+
+        .card-title {
             display: flex;
             flex-direction: column;
-            justify-content: space-evenly;
+            justify-content: space-between;
         }
-        .body-container .card .card-title h3{
-            font-size: 14px;
+
+        .card-title h3 {
+            font-size: clamp(0.875rem, 2vw, 1rem);
         }
-        .body-container .card .card-title .qty-item{
-            font-size: 13px;
+
+        .qty-item {
+            font-size: clamp(0.75rem, 1.8vw, 0.875rem);
             color: lightslategray;
         }
-        .body-container .card .card-title .qty-item .quantity{
-            font-weight: bold;
-            color: lightslategray;
-        }
-        .body-container .card .card-title .p-text{
+
+        .p-text {
             display: flex;
             justify-content: space-between;
-            padding: 0px 12px 0px 0px;
+            align-items: center;
         }
-        .body-container .card .card-title .p1-text{
-            color: lightslategray;
-            font-size: 12px;
-            transform: translateY(3px);
+
+        .footer-container {
+            background-color: var(--border-color);
+            padding: 1rem;
+            border-radius: 0 0 10px 10px;
         }
-        .body-container .card .card-title .p2-text{
-            color: black;
-            font-size: 15px;
-            font-weight: bold;
-            transform: translateY(3px);
-        }
-        .footer-container{
-            width: auto;
-            height: 10vh;
-            margin: 10px auto;
-            background-color: lightgray;
-            border-radius: 0px 0px 10px 10px;
-            padding: 18px;
-            display: flex;
-            flex-direction: column;
-            justify-content: space-evenly;
-        }
-        .footer-container .nov-net{
+
+        .nov-net {
             display: flex;
             justify-content: space-between;
-            margin: 0px 50px;
+            padding: 0 1rem;
         }
-        .footer-container .nov-net .nov{
-            color: black;
-            font-size: 15px;
+
+        .nov, .nov-price {
+            font-size: clamp(0.875rem, 2vw, 1rem);
             text-transform: uppercase;
         }
-        .footer-container .nov-net .nov-price{
-            color: black;
-            font-size: 15px;
+
+        .nov-price {
             font-weight: bold;
-            text-transform: uppercase;
+        }
+
+        @media (max-width: 480px) {
+            .container {
+                width: 95%;
+                height: 90vh;
+                margin: 1vh auto;
+            }
+
+            .card {
+                grid-template-columns: 60px 1fr;
+                gap: 0.5rem;
+            }
         }
     </style>
 </head>
