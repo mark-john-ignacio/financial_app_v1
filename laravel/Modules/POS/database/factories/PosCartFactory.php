@@ -25,7 +25,7 @@ class PosCartFactory extends Factory
             'special_discount' => $this->faker->randomFloat(2, 0, 10),
             'coupon' => $this->faker->randomFloat(2, 0, 10),
             'status' => $this->faker->randomElement(['Pending', 'Completed', 'Cancelled']),
-            'item' => 'ITEM001',
+            'item' => 'ITEM0155', //Must exist on both Items and items_pm_t
             'quantity' => $this->faker->numberBetween(1, 10),
             'item_specialDisc' => $this->faker->randomFloat(2, 0, 10),
             'item_coupon' => $this->faker->randomFloat(2, 0, 10),
