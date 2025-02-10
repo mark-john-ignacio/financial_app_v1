@@ -144,4 +144,42 @@ export class POSUI {
             $('#tendered').trigger('keyup');
         });
     }
+
+    modalshow(modal) {
+        $('.modal-body').css('display', 'none');
+        $('#footer button').css('display', 'none');
+
+        switch(modal) {
+            case 'void':
+                $('#VoidList').css('display', 'block');
+                $('#VoidSubmit').css('display', 'inline-block');
+                break;
+            case 'hold':
+                $('#HoldList').css('display', 'block');
+                $('#HoldSubmit').css('display', 'inline-block');
+                break;
+            case 'retrieve':
+                $('#RetrieveList').css('display', 'block');
+                $('#RetrieveSubmit').css('display', 'inline-block');
+                break;
+        }
+        
+        $('#mymodal').modal("show");
+    }
+
+    setupRetrieveHandlers() {
+        $("#RetrieveList tbody")
+            .on("mouseenter", "tr", function() {
+                $(this).css("background-color", "#ccc");
+            })
+            .on("mouseleave", "tr", function() {
+                $(this).css("background-color", "transparent");
+            })
+            .on("click", "tr", function() {
+                $(this).find('input[type="checkbox"]').prop('checked', 
+                    function(i, val) {
+                        return !val;
+                    });
+            });
+    }
 }

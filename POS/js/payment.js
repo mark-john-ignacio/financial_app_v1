@@ -86,4 +86,28 @@ export class POSPayment {
             dataType: 'json'
         });
     }
+
+    setupPaymentMethod() {
+        $("#paymethod").change(function() {
+            const method = $(this).val();
+            $('#paymethod_txt')
+                .val('')
+                .prop('required', method !== 'Cash')
+                .prop('disabled', method === 'Cash');
+        });
+    }
+
+    gatherPaymentData() {
+        return {
+            tranno: $("#tranno").val(),
+            method: $("#paymethod").find(":selected").val(),
+            reference: $("#paymethod_txt").val(),
+            amount: $('#totalAmt').val().replace(/,/g,''),
+            exchange: $('#ExchangeAmt').val().replace(/,/g,''),
+            tender: $('#tendered').val().replace(/,/g,''),
+            coupon: $('#couponinput').val().replace(/,/g,''),
+            discount: $('#discountInput').val(),
+            service: $('#ServiceInput').val()
+        };
+    }
 }

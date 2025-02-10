@@ -33,5 +33,17 @@ export const POSConfig = {
         discount: "DualView/Function/dv_discount.php",
         quantity: "DualView/Function/uctable.php",
         delete: "DualView/Function/rdelete.php"
+    },
+
+    transactionUrls: {
+        hold: "Function/th_holdtransaction.php",
+        retrieve: "Function/th_getholdtransaction.php",
+        void: "Function/th_void.php",
+        specialDiscount: "Function/th_specialdiscount.php"
+    },
+    
+    modalTimeouts: {
+        alert: 5000,
+        refresh: 1000
     }
 };

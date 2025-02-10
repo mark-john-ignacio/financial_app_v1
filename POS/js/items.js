@@ -148,4 +148,51 @@ export class POSItems {
             data: { coupon: couponValue }
         });
     }
+
+    duplicate(data, qty = 1) {
+        const price = this.getItemPrice(data.partno, data.unit, this.state.matrix, new Date());
+        const disc = this.getItemDiscount(data.partno, data.unit, new Date());
+        let discvalue = 0;
+        
+        const existingItem = this.findExistingItem(data.partno);
+        if (existingItem) {
+            existingItem.quantity += qty;
+            return this.items;
+        }
+
+        switch (disc.type) {
+            case 'Percentage':
+                discvalue = price * (disc.value / 100);
+                break;
+            case 'Amount':
+                discvalue = disc.value;
+                break;
+        }
+
+        this.items.push({
+            partno: data.partno,
+            name: data.name || data.item,
+            unit: data.unit,
+            quantity: qty,
+            price: parseFloat(price).toFixed(2),
+            discount: parseFloat(discvalue).toFixed(2),
+            specialDisc: 0
+        });
+
+        return this.items;
+    }
+
+    insert_item(partno) {
+        return $.ajax({
+            url: this.config.urls.itemList,
+            data: { code: partno },
+            dataType: 'json'
+        }).then(res => {
+            if (res.valid) {
+                this.duplicate(res.data);
+                return true;
+            }
+            return false;
+        });
+    }
 }

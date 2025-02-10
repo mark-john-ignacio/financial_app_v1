@@ -150,4 +150,35 @@ export class POSCore {
             }
         });
     }
+
+    setupEmployeeHandlers() {
+        this.setupEmployeeDelete();
+        this.setupEmployeeLogin();
+    }
+
+    setupEmployeeDelete() {
+        $(window).on('unload', () => {
+            $.ajax({
+                type: "POST",
+                url: this.config.dualView.delete,
+                data: { 
+                    employeeCashierName: this.state.employeeCashierName 
+                },
+                async: false
+            });
+        });
+    }
+
+    setupEmployeeLogin() {
+        $("#login").click(() => {
+            const user = $("#loginid").val();
+            const password = $("#loginpass").val();
+
+            return $.ajax({
+                url: "Function/th_void.php",
+                data: { user, password },
+                dataType: 'json'
+            });
+        });
+    }
 }
