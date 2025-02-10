@@ -4,50 +4,92 @@ namespace App\Database\Migrations;
 
 use CodeIgniter\Database\Migration;
 
-class AddColumnsToPosCartTable extends Migration
+class RecreatePosCartTable extends Migration
 {
     public function up()
     {
-        $this->forge->addColumn('pos_cart', [
+        // Drop the existing pos_cart table
+        $this->forge->dropTable('pos_cart', true);
+
+        // Recreate the pos_cart table with the new structure
+        $this->forge->addField([
+            'id' => [
+                'type' => 'INT',
+                'constraint' => 11,
+                'unsigned' => true,
+                'auto_increment' => true
+            ],
+            'employee_id' => [
+                'type' => 'INT',
+                'constraint' => 11,
+                'null' => false
+            ],
+            'item_id' => [
+                'type' => 'INT',
+                'constraint' => 11,
+                'null' => false
+            ],
+            'item_option_id' => [
+                'type' => 'VARCHAR',
+                'constraint' => 255,
+                'null' => false
+            ],
+            'qty' => [
+                'type' => 'INT',
+                'constraint' => 11,
+                'null' => false
+            ],
+            'price' => [
+                'type' => 'FLOAT',
+                'null' => false
+            ],
+            'special_discount' => [
+                'type' => 'FLOAT',
+                'null' => false
+            ],
+            'coupon' => [
+                'type' => 'FLOAT',
+                'null' => false
+            ],
+            'status' => [
+                'type' => 'VARCHAR',
+                'constraint' => 255,
+                'null' => false
+            ],
             'item' => [
                 'type' => 'VARCHAR',
                 'constraint' => 255,
-                'null' => true,
-                'after' => 'status'
+                'null' => true
             ],
             'quantity' => [
                 'type' => 'INT',
                 'constraint' => 11,
-                'null' => true,
-                'after' => 'item'
+                'null' => true
             ],
             'item_specialDisc' => [
                 'type' => 'DECIMAL',
                 'constraint' => '10,2',
-                'null' => true,
-                'after' => 'quantity'
+                'null' => true
             ],
             'item_coupon' => [
                 'type' => 'DECIMAL',
                 'constraint' => '10,2',
-                'null' => true,
-                'after' => 'item_specialDisc'
+                'null' => true
             ],
             'employee_name' => [
                 'type' => 'VARCHAR',
                 'constraint' => 255,
-                'null' => true,
-                'after' => 'item_coupon'
+                'null' => true
             ]
         ]);
+
+        $this->forge->addKey('id', true);
+        $this->forge->createTable('pos_cart');
     }
 
     public function down()
     {
-        $this->forge->dropColumn('pos_cart', 'item');
-        $this->forge->dropColumn('pos_cart', 'quantity');
-        $this->forge->dropColumn('pos_cart', 'item_specialDisc');
-        $this->forge->dropColumn('pos_cart', 'item_coupon');
-        $this->forge->dropColumn('pos_cart', 'employee_name');
+        // Drop the pos_cart table
+        $this->forge->dropTable('pos_cart', true);
     }
 }

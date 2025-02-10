@@ -3,5 +3,6 @@
     "Auth": true,
     "Base": true,
     "Profile": true,
-    "SysMgmt": true
+    "SysMgmt": true,
+    "POS": true
 }
