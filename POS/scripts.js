@@ -1399,7 +1399,7 @@
     }
 
     $(document).ready(function(){
-        var employeeCashierName = "<?php echo $employee_cashier_name; ?>";
+        var employeeCashierName = employeeCashierName
         // AJAX call to delete data when the page is reloaded
         $.ajax({
             type: "POST",
