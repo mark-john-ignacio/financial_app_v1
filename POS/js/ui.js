@@ -70,5 +70,40 @@ export class POSUI {
         setTimeout(() => location.reload(), 5000);
     }
 
-    // ... existing methods ...
+    initClock() {
+        const updateClock = () => {
+            const date = new Date();
+            const h = this.formatTwelveHour(date.getHours());
+            const m = this.padZero(date.getMinutes());
+            const s = this.padZero(date.getSeconds());
+            $('.digital-clock').text(`${h}:${m}:${s}`);
+        };
+
+        updateClock();
+        this.clockTimer = setInterval(updateClock, 1000);
+    }
+
+    formatTwelveHour(hours) {
+        return hours > 12 ? this.padZero(hours - 12) : this.padZero(hours);
+    }
+
+    padZero(num) {
+        return num < 10 ? `0${num}` : num;
+    }
+
+    showVoidModal() {
+        if (this.items.length === 0) {
+            alert('No items to void');
+            return;
+        }
+        $('#voidlogin').modal('show');
+    }
+
+    showHoldModal() {
+        $("#HoldModal").modal("show");
+    }
+
+    showRetrieveModal() {
+        $("#RetrieveModal").modal("show");
+    }
 }

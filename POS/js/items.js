@@ -64,77 +64,64 @@ export class POSItems {
         }
         return this.items;
     }
-export class POSUI {
-    constructor() {
-        this.clockTimer = null;
-    }
-
-    init() {
-        this.initClock();
-        this.initSlick();
-        this.setupModalHandlers();
-        this.setupUIElements();
-    }
-
-    setupUIElements() {
-        $('#optInputsCheck').on('change', function() {
-            $('#optionalFields').toggle(this.checked);
+    getItemPrice(item) {
+        let price = 0;
+        $.ajax({
+            url: this.config.urls.priceCheck,
+            data: {
+                itm: item.partno,
+                cust: this.matrix,
+                cunit: item.unit,
+                dte: this.utils.formatDate(new Date())
+            },
+            async: false,
+            success: (data) => price = parseFloat(data)
         });
-
-        $('.itmslist, .itmclass').hover(function() {
-            $(this).css('cursor', 'pointer');
-        });
+        return price;
     }
 
-    setupModalHandlers() {
-        $('#btnVoid').click(() => this.showVoidModal());
-        $('#btnHold').click(() => this.showHoldModal());
-        $('#btnRetrieve').click(() => this.showRetrieveModal());
-    }
-
-    updateTables(items) {
-        $('#listItem > tbody').empty();
-        $('#VoidList > tbody').empty();
-        $('#paymentList > tbody').empty();
-
-        items.forEach(item => {
-            this.addItemToMainList(item);
-            this.addItemToVoidList(item);
-            this.addItemToPaymentList(item);
-        });
-
-        this.updateTotals(items);
-    }
-
-    updateTotals(items) {
-        const totals = this.calculateTotals(items);
+    getItemDiscount(item) {
+        let discount = {
+            value: 0,
+            type: ""
+        };
         
-        $('#vat').text(totals.vat.toFixed(2));
-        $('#net').text(totals.net.toFixed(2));
-        $('#gross').text(totals.gross.toFixed(2));
-        $('#subtotal').val(totals.gross.toFixed(2));
+        $.ajax({
+            url: this.config.urls.discount,
+            data: { 
+                item: item.partno, 
+                unit: item.unit, 
+                date: this.utils.formatDate(new Date()) 
+            },
+            dataType: "json",
+            async: false,
+            success: (res) => {
+                if(res.valid) {
+                    discount.value = res.data.amount;
+                    discount.type = res.data.type;
+                }
+            }
+        });
+        return discount;
     }
 
-    calculateTotals(items) {
-        return items.reduce((acc, item) => {
-            const price = parseFloat(item.price);
-            const quantity = parseFloat(item.quantity);
-            const net = price / 1.12; // VAT rate 12%
+    getCouponTotal(coupons) {
+        if(!coupons.length) return 0;
+        let amount = 0;
 
-            acc.net += net * quantity;
-            acc.vat += net * 0.12 * quantity;
-            acc.gross += price * quantity;
-            acc.discount += parseFloat(item.discount);
-
-            return acc;
-        }, { net: 0, vat: 0, gross: 0, discount: 0 });
+        coupons.forEach(coupon => {
+            $.ajax({
+                url: "../MasterFiles/Items/th_couponlist.php",
+                data: { coupon },
+                dataType: 'json',
+                async: false,
+                success: (res) => {
+                    if(res.valid) {
+                        amount += parseFloat(res.data.amount);
+                    }
+                }
+            });
+        });
+        return amount;
     }
-
-    showAlert(message, color = "#008000") {
-        $("#AlertModal").modal("show");
-        $("#AlertMsg").html(message);
-        setTimeout(() => location.reload(), 5000);
-    }
-
-    // ... existing methods ...
 }

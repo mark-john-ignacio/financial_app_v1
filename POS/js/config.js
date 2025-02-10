@@ -20,5 +20,19 @@ export const POSConfig = {
         specialDisc: [],
         matrix: 'PM1',
         amtTotal: 0
+    },
+
+    customerUrls: {
+        add: "Function/add_customer.php",
+        search: "Function/th_customer.php",
+        access: "Function/th_useraccess.php"
+    },
+    
+    dualView: {
+        coupon: "DualView/Function/dv_coupon.php",
+        discount: "DualView/Function/dv_discount.php",
+        quantity: "DualView/Function/uctable.php",
+        delete: "DualView/Function/rdelete.php"
     }
+};
 };

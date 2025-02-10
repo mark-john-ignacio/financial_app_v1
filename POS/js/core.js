@@ -60,4 +60,44 @@ export class POSCore {
             }
         });
     }
+
+    setupCustomerHandling() {
+        $('#customer').typeahead({
+            autoSelect: true,
+            source: (request, response) => {
+                $.ajax({
+                    url: "Function/th_customer.php",
+                    dataType: "json",
+                    data: { query: $("#customer").val() },
+                    success: (res) => {
+                        if(res.valid) response(res.data);
+                    }
+                });
+            },
+            displayText: (item) => {
+                return `<div style="border-top:1px solid gray; width: 300px">
+                    <span>${item.id}</span><br>
+                    <small>${item.value}</small>
+                </div>`;
+            },
+            highlighter: Object,
+            afterSelect: (item) => this.handleCustomerSelect(item)
+        });
+    }
+
+    handleCustomerSelect(item) {
+        this.state.matrix = item.matrix;
+        $('#customer').val(item.value).change();
+        $('#customer').attr("data-val", item.id).change();
+        this.clearTables();
+    }
+
+    createNewCustomer(customerData) {
+        return $.ajax({
+            url: "Function/add_customer.php",
+            type: "post",
+            data: customerData,
+            dataType: "json"
+        });
+    }
 }
