@@ -206,9 +206,9 @@
 
                             // Calculate total gross amount
                             totalGrossAmount += parseFloat(item.quantity) * parseFloat(item.price);
-                            discountMatrix += parseFloat(item.discount);
-                            specialdiscount += parseFloat(item.specialDisc);
-                            coupon += parseFloat(item.coupon);
+                            discountMatrix += parseFloat(item.discount || 0);
+                            specialdiscount += parseFloat(item.specialDisc || 0);
+                            coupon += parseFloat(item.coupon || 0);
                         });
 
                         // Calculate VAT and Net of VAT
@@ -217,7 +217,6 @@
                         var vatAmount = netOfVat * vatRate;
                         var grossamount = netOfVat + vatAmount;
                         var total = parseFloat(grossamount) - parseFloat(specialdiscount) - parseFloat(coupon) - parseFloat(discountMatrix);
-                        console.log('Total: ' + discountMatrix);
 
                         $('.footer-container .nov-net .nov-price').text('₱ ' + parseFloat(total).toFixed(2));
                     } else {
