@@ -1039,28 +1039,21 @@
      * for duplication item
      */
 
-    function duplicate(data, qty = 1,) {
+    function duplicate(data, qty = 1) {
         if (!Array.isArray(itemStored)) {
             itemStored = [];
         }
-
-        const price = chkprice(data.partno, data.unit, matrix, "<?= date('m/d/Y') ?>")
-        const disc = discountprice(data.partno, data.unit, "<?= date('m/d/Y') ?>")
+    
+        const price = chkprice(data.partno, data.unit, matrix, "<?= date('m/d/Y') ?>");
+        const disc = discountprice(data.partno, data.unit, "<?= date('m/d/Y') ?>");
         var discvalue = 0;
         let found = false;
-        
+    
         for (let i = 0; i < itemStored.length; i++) {
-            let remain = parseFloat(data.quantity)
-            let quantity = itemStored[i].quantity; 
-
-             
-            
-            
-
             if (itemStored[i].partno === data.partno) {
                 itemStored[i].quantity += parseFloat(qty);
-
-                switch(disc.type){
+    
+                switch(disc.type) {
                     case "PRICE":
                         discvalue = parseFloat(itemStored[i].discount) + parseFloat(disc.value);
                         break;
@@ -1068,15 +1061,15 @@
                         discvalue = parseFloat(itemStored[i].price) * (parseInt(disc.value) / 100);
                         break;
                 }
-
+    
                 itemStored[i].discount = parseFloat(discvalue);
                 itemStored[i].amount = (parseFloat(itemStored[i].price) * parseFloat(itemStored[i].quantity)) - parseFloat(itemStored[i].discount);
                 found = true;
                 break;
             }
         }
-
-        switch(disc.type){
+    
+        switch(disc.type) {
             case "PRICE":
                 discvalue = discvalue + parseFloat(disc.value);
                 break;
@@ -1084,7 +1077,7 @@
                 discvalue = parseFloat(price) * (parseInt(disc.value) / 100);
                 break;
         }
-
+    
         if (!found) {
             itemStored.push({
                 partno: data.partno,
@@ -1094,43 +1087,41 @@
                 price: parseFloat(price).toFixed(2),
                 discount: parseFloat(discvalue).toFixed(2),
                 specialDisc: 0,
-                amount: parseFloat(price) - parseFloat(discvalue)
+                amount: (parseFloat(price) * qty - parseFloat(discvalue)).toFixed(2)
             });
         }
-
     }
 
     /**
      * Computation for payments
      */
 
-    function PaymentCompute(){
-        let tender = $('#tendered').val().replace(/,/g,'');
-        let coupon = $("#couponinput").val().replace(/,/g,'');
-        let exchange =$('#ExchangeAmt').val().replace(/,/g,'');
-        let amt = $('#subtotal').val().replace(/,/g,'');
-        let ServiceFee = serviceFee;
-
-        let service = parseFloat(amt) * parseFloat(ServiceFee)
-        let totaltender = parseFloat(tender) + parseFloat(coupon)
-
-        let total = parseFloat(amt) + service
-
+    function PaymentCompute() {
+        let tender = $('#tendered').val().replace(/,/g, '');
+        let coupon = $("#couponinput").val().replace(/,/g, '');
+        let exchange = $('#ExchangeAmt').val().replace(/,/g, '');
+        let amt = $('#subtotal').val().replace(/,/g, '');
+    
+        let service = parseFloat(amt) * parseFloat(serviceFee);
+        let totaltender = parseFloat(tender) + parseFloat(coupon);
+        let total = parseFloat(amt) + service;
         let change = parseFloat(total) - totaltender;
-
-        let hold_tranno = $("#h_tranno").val();
-
-        if(change > 0){
-            return $('#ExchangeAmt').val("0.00")
+    
+        if (change > 0) {
+            $('#ExchangeAmt').val("0.00");
+        } else {
+            $('#ExchangeAmt').val(Math.abs(change));
         }
-        $("#discountInput").val(getSpecialDisc(specialDisc)).change()
-        $("#ServiceInput").val(service)
-        $("#h_tranno").val()
-        $("#totalTender").val(totaltender)
-        $("#totalAmt").val(total)
-        $('#ExchangeAmt').val(Math.abs(change))
+    
         $('#ExchangeAmt').autoNumeric('destroy');
-        $('#ExchangeAmt').autoNumeric('init',{mDec:2});
+        $('#ExchangeAmt').autoNumeric('init', { mDec: 2 });
+    
+        // Ensure these fields are updated
+        $("#discountInput").val(getSpecialDisc(specialDisc)).change();
+        $("#ServiceInput").val(service);
+        $("#h_tranno").val();
+        $("#totalTender").val(totaltender);
+        $("#totalAmt").val(total);
     }
 
     //price checking
@@ -1180,43 +1171,42 @@
     /**
      * Table tbody Listing an items
      */
-    function table_store(items){
+    function table_store(items) {
         $('#listItem > tbody').empty();
         $('#VoidList > tbody').empty();
         $('#paymentList > tbody').empty();
-        console.log(items)
-
+        console.log(items);
+    
         items.map((item, index) => {
             $("<tr class='font-large'>").append(
                 $("<td>").text(item.name),
                 $("<td>").text(item.unit),
-                $("<td align='center'>").html("<input type='number' id='qty' name='qty[]' class='form-control input-sm' style='width:60px' value='"+item.quantity+"' data-val='"+ item.partno +"'/>"),
+                $("<td align='center'>").html("<input type='number' id='qty' name='qty[]' class='form-control input-sm' style='width:60px' value='" + item.quantity + "' data-val='" + item.partno + "'/>"),
                 $("<td style='text-align: right'>").text(parseFloat(item.price).toFixed(2)),
                 $("<td style='text-align: right'>").text(parseFloat(item.discount).toFixed(2)),
-                $("<td style='text-align: right'>").text(parseFloat(item.amount).toFixed(2)),
-            ).appendTo("#listItem > tbody")
-
-
+                $("<td style='text-align: right'>").text((parseFloat(item.price) * parseFloat(item.quantity) - parseFloat(item.discount)).toFixed(2))
+            ).appendTo("#listItem > tbody");
+    
             $("<tr>").append(
-                $("<td align='center'>").html("<input type='checkbox' name='itemcheck' value='"+item.name+"' data-name1='"+ item.partno +"'/>"),
+                $("<td align='center'>").html("<input type='checkbox' name='itemcheck' value='" + item.name + "' data-name1='" + item.partno + "'/>"),
                 $("<td>").text(item.name),
                 $("<td>").text(item.unit),
                 $("<td align='center'>").text(item.quantity),
                 $("<td>").text(parseFloat(item.price).toFixed(2)),
                 $("<td>").text(parseFloat(item.discount).toFixed(2)),
-                $("<td>").text(parseFloat(item.amount).toFixed(2)),
-            ).appendTo("#VoidList > tbody")
-
+                $("<td>").text((parseFloat(item.price) * parseFloat(item.quantity) - parseFloat(item.discount)).toFixed(2))
+            ).appendTo("#VoidList > tbody");
+    
             $("<tr>").append(
-                $("<td>").html("<input type='checkbox' name='discounted[]' id='discounted' dataval='"+item.partno+"' value='"+parseFloat(item.amount)+"'/>"),
+                $("<td>").html("<input type='checkbox' name='discounted[]' id='discounted' dataval='" + item.partno + "' value='" + (parseFloat(item.price) * parseFloat(item.quantity) - parseFloat(item.discount)).toFixed(2) + "'/>"),
                 $("<td>").text(item.name),
                 $("<td align='center'>").text(item.unit),
                 $("<td align='center'>").text(item.quantity),
                 $("<td align='center'>").text(parseFloat(item.price).toFixed(2)),
                 $("<td align='center'>").text(parseFloat(item.discount).toFixed(2)),
-                $("<td>").text(parseFloat(item.amount).toFixed(2)),
-            ).appendTo("#paymentList > tbody")
-        })
+                $("<td>").text((parseFloat(item.price) * parseFloat(item.quantity) - parseFloat(item.discount)).toFixed(2))
+            ).appendTo("#paymentList > tbody");
+        });
         computation(items);
     }
 
@@ -1224,23 +1214,23 @@
      * Computation for net, vat, discount and gross
      */
     
-    function computation(data){
-        const itemAmounts = {discount: 0, net: 0, vat: 0, gross: 0}
-
-        data.map((item, index) =>{
-            price = parseFloat(item.amount);
-            net = price / parseFloat(1 + (12/100));
-            itemAmounts['net'] += price / parseFloat(1 + (12/100));
-            itemAmounts['vat'] = (itemAmounts.net * (12/100));
-            itemAmounts['discount'] += discountprice(item.partno, item.unit, "<?= date('m/d/Y') ?>");
-            itemAmounts['gross'] += price;
-        })
-
-        $('#vat').text(parseFloat(itemAmounts.vat).toFixed(2));
-        $('#net').text(parseFloat(itemAmounts.net).toFixed(2));
-        $('#gross').text(parseFloat(itemAmounts.gross).toFixed(2));
-        $('#subtotal').val(parseFloat(itemAmounts.gross).toFixed(2));
-        amtTotal = parseFloat(itemAmounts['gross']);
+    function computation(data) {
+        const itemAmounts = { discount: 0, net: 0, vat: 0, gross: 0 };
+    
+        data.map((item, index) => {
+            let price = parseFloat(item.price);
+            let net = price / parseFloat(1 + (12 / 100));
+            itemAmounts.net += net;
+            itemAmounts.vat += net * (12 / 100);
+            itemAmounts.discount += parseFloat(item.discount);
+            itemAmounts.gross += price * parseFloat(item.quantity);
+        });
+    
+        $('#vat').text(itemAmounts.vat.toFixed(2));
+        $('#net').text(itemAmounts.net.toFixed(2));
+        $('#gross').text(itemAmounts.gross.toFixed(2));
+        $('#subtotal').val(itemAmounts.gross.toFixed(2));
+        amtTotal = itemAmounts.gross;
     }
 
     function clockUpdate() {
