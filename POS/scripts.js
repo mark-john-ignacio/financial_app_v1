@@ -12,10 +12,6 @@
     
     
     $(document).ready(function(){
-        console.log("isCheckWaitingTime:", isCheckWaitingTime);
-        console.log("isCheckManualReceipt:", isCheckManualReceipt);
-        console.log("ServiceFee:", serviceFee);
-        console.log("Employee Cashier Name:", employeeCashierName);
         clockUpdate();
         setInterval(clockUpdate, 1000);
         $(".regular").slick({
@@ -1003,10 +999,9 @@
      * Item List to insert in the table
      */
 
-    function insert_item(partno){
-        console.log("Item Inserted: ", partno)
-        
-
+    function insert_item(partno) {
+        console.log("Item Inserted: ", partno);
+    
         $.ajax({
             url: 'Function/ItemList.php',
             data: {
@@ -1015,22 +1010,20 @@
             dataType: 'json',
             async: false,
             success: function(res) {
-                if(res.valid){
+                if (res.valid) {
                     var quantity = 1;
                     res.data.map((item, index) => {
-                        duplicate(item)
-                    })
-                    // console.log(itemStored)
+                        duplicate(item);
+                    });
                     table_store(itemStored);
                 } else {
                     alert(res.msg);
                 }
-                
             },
-            error: function(res){
-                console.log(res)
+            error: function(res) {
+                console.log(res);
             }
-        })
+        });
     }
 
     /**
@@ -1044,8 +1037,8 @@
             itemStored = [];
         }
     
-        const price = chkprice(data.partno, data.unit, matrix, "<?= date('m/d/Y') ?>");
-        const disc = discountprice(data.partno, data.unit, "<?= date('m/d/Y') ?>");
+        const price = chkprice(data.partno, data.unit, matrix, new Date());
+        const disc = discountprice(data.partno, data.unit, new Date());
         var discvalue = 0;
         let found = false;
     
@@ -1053,7 +1046,7 @@
             if (itemStored[i].partno === data.partno) {
                 itemStored[i].quantity += parseFloat(qty);
     
-                switch(disc.type) {
+                switch (disc.type) {
                     case "PRICE":
                         discvalue = parseFloat(itemStored[i].discount) + parseFloat(disc.value);
                         break;
@@ -1069,9 +1062,9 @@
             }
         }
     
-        switch(disc.type) {
+        switch (disc.type) {
             case "PRICE":
-                discvalue = discvalue + parseFloat(disc.value);
+                discvalue = parseFloat(disc.value);
                 break;
             case "PERCENT":
                 discvalue = parseFloat(price) * (parseInt(disc.value) / 100);
@@ -1125,42 +1118,61 @@
     }
 
     //price checking
-    function chkprice(partno,unit,code,date){
-        var value;
-		$.ajax ({ 
-			url: "../Sales/th_checkitmprice.php",
-			data: { itm: partno, cust: code, cunit: unit, dte: date },
-			async: false,
-			success: function( data ) {
-                value = data;
-			}
-		});
-        return value
-	}
+    function chkprice(partno, unit, code, date) {
+        var value = 0;
+        $.ajax({
+            url: "../Sales/th_checkitmprice.php",
+            data: { itm: partno, cust: code, cunit: unit, dte: formatDate(date) },
+            async: false,
+            success: function(data) {
+                value = parseFloat(data);
+                console.log("Price: ", data);
+            },
+            error: function(xhr, status, error) {
+                console.error('Error fetching price:', error);
+            }
+        });
+        return value;
+    }
+    
+    function formatDate(date) {
+        var d = new Date(date);
+        var month = '' + (d.getMonth() + 1);
+        var day = '' + d.getDate();
+        var year = d.getFullYear();
+    
+        if (month.length < 2) 
+            month = '0' + month;
+        if (day.length < 2) 
+            day = '0' + day;
+    
+        return [month, day, year].join('/');
+    }
+
 
     /**
      * Return a discount Price
      */
 
-    function discountprice(item, unit, date){
+    function discountprice(item, unit, date) {
         var value = 0;
         var type = "";
-
+    
         $.ajax({
             url: "Function/th_discount.php",
-            data: { item: item, unit: unit, date: date},
+            data: { item: item, unit: unit, date: date },
             dataType: "json",
             async: false,
-            success: function(res){
-                let discount = parseFloat(res.data)
+            success: function(res) {
+                let discount = parseFloat(res.data);
                 value = discount;
                 type = res.type;
-                console.log(res)
-            }, 
-            error: function(res){
-                console.log(res)
+                console.log(res);
+            },
+            error: function(res) {
+                console.log(res);
             }
-        })
+        });
         return {
             value: value,
             type: type
