@@ -1,3 +1,69 @@
+export class POSItems {
+    constructor(config) {
+        this.config = config;
+        this.items = [];
+    }
+
+    addItem(item, quantity = 1) {
+        const price = this.getItemPrice(item);
+        const discount = this.getItemDiscount(item);
+        
+        const existingItem = this.findExistingItem(item.partno);
+        
+        if (existingItem) {
+            this.updateExistingItem(existingItem, quantity);
+        } else {
+            this.addNewItem(item, price, discount, quantity);
+        }
+
+        return this.items;
+    }
+
+    findExistingItem(partno) {
+        return this.items.find(item => item.partno === partno);
+    }
+
+    updateExistingItem(item, additionalQuantity) {
+        item.quantity += additionalQuantity;
+        item.amount = this.calculateAmount(item);
+        return item;
+    }
+
+    addNewItem(item, price, discount, quantity) {
+        this.items.push({
+            partno: item.partno,
+            name: item.name || item.item,
+            unit: item.unit,
+            quantity: quantity,
+            price: parseFloat(price).toFixed(2),
+            discount: parseFloat(discount).toFixed(2),
+            specialDisc: 0,
+            amount: this.calculateAmount({
+                price: price,
+                quantity: quantity,
+                discount: discount
+            })
+        });
+    }
+
+    calculateAmount(item) {
+        return (parseFloat(item.price) * parseFloat(item.quantity) - 
+                parseFloat(item.discount)).toFixed(2);
+    }
+
+    removeItem(partno) {
+        this.items = this.items.filter(item => item.partno !== partno);
+        return this.items;
+    }
+
+    updateQuantity(partno, quantity) {
+        const item = this.findExistingItem(partno);
+        if (item) {
+            item.quantity = parseFloat(quantity);
+            item.amount = this.calculateAmount(item);
+        }
+        return this.items;
+    }
 export class POSUI {
     constructor() {
         this.clockTimer = null;
