@@ -1,4 +1,3 @@
-
 <?php 
     if(!isset($_SESSION)){
         session_start();
@@ -206,10 +205,10 @@
                             orderContainer.append(card);
 
                             // Calculate total gross amount
-                            totalGrossAmount += item.quantity * item.price;
-                            discountMatrix = item.discount;
-                            specialdiscount = item.specialDisc;
-                            coupon = item.coupon;
+                            totalGrossAmount += parseFloat(item.quantity) * parseFloat(item.price);
+                            discountMatrix += parseFloat(item.discount);
+                            specialdiscount += parseFloat(item.specialDisc);
+                            coupon += parseFloat(item.coupon);
                         });
 
                         // Calculate VAT and Net of VAT
@@ -217,12 +216,12 @@
                         var netOfVat = totalGrossAmount / 1.12;
                         var vatAmount = netOfVat * vatRate;
                         var grossamount = netOfVat + vatAmount;
-                        var itemdiscount = discountMatrix;
-                        var total = parseFloat(grossamount) - parseFloat(specialdiscount) - parseFloat(coupon) - parseFloat(itemdiscount);
+                        var total = parseFloat(grossamount) - parseFloat(specialdiscount) - parseFloat(coupon) - parseFloat(discountMatrix);
+                        console.log('Total: ' + discountMatrix);
 
-                        $('.footer-container .nov-net:nth-child(1) .nov-price').text('₱ ' + parseFloat(total).toFixed(2));
+                        $('.footer-container .nov-net .nov-price').text('₱ ' + parseFloat(total).toFixed(2));
                     } else {
-                        $('.footer-container .nov-net:nth-child(1) .nov-price').text('₱ 0.00');
+                        $('.footer-container .nov-net .nov-price').text('₱ 0.00');
                     }
                 },
                 error: function () {

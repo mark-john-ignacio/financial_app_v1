@@ -1755,6 +1755,7 @@
      */
 
     function insert_item(partno){
+        console.log("Item Inserted: ", partno)
         
 
         $.ajax({
