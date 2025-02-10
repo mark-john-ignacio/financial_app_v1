@@ -20,4 +20,24 @@ export class POSUtils {
         
         return `${hours}:${minutes}:${seconds}`;
     }
+
+    static checkAccess(id) {
+        return new Promise((resolve, reject) => {
+            $.ajax({
+                url: "Function/th_useraccess.php",
+                data: { id },
+                dataType: 'json',
+                success: res => resolve(res.valid),
+                error: err => reject(err)
+            });
+        });
+    }
+
+    static parseAmount(value) {
+        return parseFloat(value.replace(/,/g, '') || 0);
+    }
+
+    static delay(ms) {
+        return new Promise(resolve => setTimeout(resolve, ms));
+    }
 }

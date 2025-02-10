@@ -100,4 +100,54 @@ export class POSCore {
             dataType: "json"
         });
     }
+
+    handleHoldTransaction() {
+        const waitingTime = $("#waiting_time").val();
+        const kitchenReceipt = $("#kitchen_receipt").val();
+        
+        // Disable hold button to prevent double submission
+        $('#btnHold').prop('disabled', true);
+        
+        return $.ajax({
+            url: 'Function/th_holdtransaction.php',
+            data: {
+                items: this.state.itemStored,
+                waitingTime,
+                kitchenReceipt
+            },
+            dataType: 'json'
+        });
+    }
+
+    handleRetrieveTransaction(selectedItems) {
+        return $.ajax({
+            url: 'Function/th_getholdtransaction.php',
+            data: { items: selectedItems },
+            dataType: 'json',
+            success: (res) => {
+                if (res.valid) {
+                    res.data.forEach(item => {
+                        this.items.addItem(item, parseInt(item.quantity));
+                        this.updateOrderTypeAndTable(item);
+                    });
+                    this.ui.updateTables(this.state.itemStored);
+                    this.ui.showAlert("Items Retrieved");
+                }
+            }
+        });
+    }
+
+    updateOrderTypeAndTable(item) {
+        $("#orderType option").each(function() {
+            if(item.ordertype === $(this).val()) {
+                $(this).prop('selected', true);
+            }
+        });
+        
+        $("#table option").each(function() {
+            if(item.table === $(this).val()) {
+                $(this).prop('selected', true);
+            }
+        });
+    }
 }

@@ -124,4 +124,28 @@ export class POSItems {
         });
         return amount;
     }
+
+    handleCoupon(couponCode) {
+        const subtotal = this.parseAmount('#subtotal');
+        const totalTender = this.parseAmount('#totalTender');
+
+        if (parseFloat(subtotal) < parseFloat(totalTender)) {
+            this.ui.showAlert("Total tender exceeds subtotal amount");
+            return false;
+        }
+
+        return $.ajax({
+            url: "Function/th_coupon.php",
+            data: { coupon: couponCode },
+            dataType: 'json'
+        });
+    }
+
+    updateCouponToDatabase(couponValue) {
+        return $.ajax({
+            url: this.config.dualView.coupon,
+            method: 'POST',
+            data: { coupon: couponValue }
+        });
+    }
 }

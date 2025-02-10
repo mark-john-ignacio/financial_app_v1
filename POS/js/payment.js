@@ -60,4 +60,30 @@ export class POSPayment {
         }
         return true;
     }
+
+    handleSpecialDiscount(data) {
+        const subtotal = this.parseAmount('#subtotal');
+        
+        if (subtotal <= 0) {
+            this.ui.showAlert("No items in cart");
+            return false;
+        }
+
+        if (!data.person.trim() || !data.id.trim()) {
+            this.ui.showAlert("Please input customer name and ID");
+            return false;
+        }
+
+        return $.ajax({
+            url: 'Function/th_specialdiscount.php',
+            data: {
+                amount: data.amount,
+                type: data.type,
+                name: data.name,
+                person: data.person,
+                id: data.id
+            },
+            dataType: 'json'
+        });
+    }
 }

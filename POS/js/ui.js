@@ -106,4 +106,42 @@ export class POSUI {
     showRetrieveModal() {
         $("#RetrieveModal").modal("show");
     }
+
+    setupSpecialDiscountHandlers() {
+        $("#spcdBtn").click(() => {
+            $("#paymentcol").hide();
+            $("#specialdiscountcol").show();
+        });
+
+        $("#spcBack").click(() => {
+            $("#paymentcol").show();
+            $("#specialdiscountcol").hide();
+        });
+    }
+
+    setupCouponHandlers() {
+        $("#couponBtn").click(() => {
+            $("#couponmodal").show();
+            $("#paymentcol").hide();
+        });
+
+        $("#couponback").click(() => {
+            $("#couponmodal").hide();
+            $("#paymentcol").show();
+        });
+    }
+
+    setupNumPad() {
+        $('.btnpad').click(function() {
+            const currentVal = $('#tendered').val();
+            const btnVal = $(this).val();
+            
+            if (btnVal === 'C') {
+                $('#tendered').val('');
+            } else {
+                $('#tendered').val(currentVal + btnVal);
+            }
+            $('#tendered').trigger('keyup');
+        });
+    }
 }

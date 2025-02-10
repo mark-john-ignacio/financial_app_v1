@@ -35,4 +35,3 @@ export const POSConfig = {
         delete: "DualView/Function/rdelete.php"
     }
 };
-};
