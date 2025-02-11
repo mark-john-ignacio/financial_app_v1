@@ -154,23 +154,24 @@ export class POSItems {
     }
 
     duplicate(data, qty = 1) {
-        const price = this.getItemPrice(data.partno, data.unit, this.state.matrix, new Date());
+        const price = this.getItemPrice(data.partno, data.unit, this.matrix, new Date());
         const disc = this.getItemDiscount(data.partno, data.unit, new Date());
         let discvalue = 0;
         
-        const existingItem = this.findExistingItem(data.partno);
-        if (existingItem) {
-            existingItem.quantity += qty;
-            return this.items;
+        switch (disc.type) {
+            case "PRICE":
+                discvalue = parseFloat(disc.value);
+                break;
+            case "PERCENT":
+                discvalue = parseFloat(price) * (parseInt(disc.value) / 100);
+                break;
         }
 
-        switch (disc.type) {
-            case 'Percentage':
-                discvalue = price * (disc.value / 100);
-                break;
-            case 'Amount':
-                discvalue = disc.value;
-                break;
+        const existingItem = this.findExistingItem(data.partno);
+        if (existingItem) {
+            existingItem.quantity += parseFloat(qty);
+            existingItem.amount = this.calculateAmount(existingItem);
+            return this.items;
         }
 
         this.items.push({
@@ -180,7 +181,12 @@ export class POSItems {
             quantity: qty,
             price: parseFloat(price).toFixed(2),
             discount: parseFloat(discvalue).toFixed(2),
-            specialDisc: 0
+            specialDisc: 0,
+            amount: this.calculateAmount({
+                price: price,
+                quantity: qty,
+                discount: discvalue
+            })
         });
 
         return this.items;
@@ -252,7 +258,8 @@ export class POSItems {
 
     table_store(items) {
         this.ui.updateTables(items);
-        this.computation(items);
+        const computedAmounts = this.computeAmounts(items);
+        this.ui.updateAmounts(computedAmounts);
     }
 
     computation(data) {
@@ -327,12 +334,34 @@ export class POSItems {
             });
         });
     }
-    
+
     getDiscount(data) {
         let discount = 0;
         data.forEach(item => {
             discount += parseFloat(item.amount);
         });
         return discount;
+    }
+
+    computeAmounts(data) {
+        const amounts = {
+            discount: 0,
+            net: 0,
+            vat: 0,
+            gross: 0
+        };
+
+        data.forEach(item => {
+            const price = parseFloat(item.price);
+            const qty = parseFloat(item.quantity);
+            const net = price / (1 + this.config.constants.VAT_RATE);
+            
+            amounts.net += net * qty;
+            amounts.vat += net * this.config.constants.VAT_RATE * qty;
+            amounts.discount += parseFloat(item.discount);
+            amounts.gross += price * qty;
+        });
+
+        return amounts;
     }
 }

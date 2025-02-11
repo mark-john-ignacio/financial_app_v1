@@ -290,4 +290,37 @@ export class POSCore {
             this.ui.updateTables(this.items.getItems());
         });
     }
+
+    setupPaymentHandlers() {
+        $('#PaySubmit').click(() => {
+            const proceed = true;
+            const total = parseFloat($('#totalAmt').val().replace(/,/g,''));
+            const totalTender = parseFloat($('#totalTender').val().replace(/,/g,''));
+
+            if (parseFloat(total) <= parseFloat(totalTender)) {
+                this.payment.processPayment();
+            } else {
+                alert("Insufficient payment amount");
+            }
+        });
+    }
+
+    setupItemQuantityHandlers() {
+        $("#listItem tbody").on('change', '#qty', function() {
+            const qty = $(this).val();
+            const partno = $(this).attr("data-val");
+            
+            $.ajax({
+                url: "Function/ItemList.php",
+                data: { code: partno },
+                dataType: 'json',
+                async: false,
+                success: function(res) {
+                    if (res.valid) {
+                        this.items.updateQuantity(partno, qty);
+                    }
+                }
+            });
+        });
+    }
 }
