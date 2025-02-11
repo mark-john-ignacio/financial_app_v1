@@ -5,21 +5,32 @@ export class POSCore {
         this.items = options.items;
         this.config = options.config;
         
-        this.state = { ...this.config.initialState };
-
-        this.state.retriveStatus = 0;
-        this.state.count = 0;
+        this.state = {
+            ...this.config.initialState,
+            retriveStatus: 0,
+            count: 0,
+            employeeCashierName: null,
+            currentTransaction: null
+        };
     }
 
-    init() {
-        this.ui.init();
-        this.setupEventListeners();
-        this.loadBaseCustomer();
+    async init() {
+        try {
+            await this.ui.init();
+            await this.setupEventListeners();
+            await this.loadBaseCustomer();
+            this.setupHandlers();
+        } catch (error) {
+            console.error('Initialization failed:', error);
+            this.ui.showAlert('System initialization failed');
+        }
+    }
+
+    // Consolidate setup methods
+    setupHandlers() {
         this.setupEmployeeHandlers();
-        this.setupOptionalInputs();
-        this.setupCustomerTypeahead();
-        this.setupPaymentHandlers();
         this.setupItemHandlers();
+        this.setupPaymentHandlers();
         this.setupVoidHandlers();
         this.setupHoldHandlers();
         this.setupRetrieveHandlers();
@@ -99,9 +110,13 @@ export class POSCore {
     }
 
     handleCustomerSelect(item) {
-        this.state.matrix = item.matrix;
-        $('#customer').val(item.value).change();
-        $('#customer').attr("data-val", item.id).change();
+        this.updateState({
+            matrix: item.matrix,
+            currentCustomer: {
+                value: item.value,
+                id: item.id
+            }
+        });
         this.clearTables();
     }
 
@@ -114,22 +129,30 @@ export class POSCore {
         });
     }
 
-    handleHoldTransaction() {
-        const waitingTime = $("#waiting_time").val();
-        const kitchenReceipt = $("#kitchen_receipt").val();
-        
-        // Disable hold button to prevent double submission
-        $('#btnHold').prop('disabled', true);
-        
-        return $.ajax({
-            url: 'Function/th_holdtransaction.php',
-            data: {
-                items: this.state.itemStored,
-                waitingTime,
-                kitchenReceipt
-            },
-            dataType: 'json'
-        });
+    async handleHoldTransaction(kitchenReceipt, waitingTime) {
+        try {
+            const response = await $.ajax({
+                url: this.config.transactionUrls.hold,
+                data: {
+                    items: this.state.itemStored,
+                    kitchenReceipt,
+                    waitingTime
+                },
+                dataType: 'json'
+            });
+            
+            if (response.valid) {
+                this.ui.showAlert("Transaction held successfully");
+                return true;
+            }
+            
+            this.ui.showAlert(response.msg || "Error holding transaction");
+            return false;
+        } catch (error) {
+            console.error('Error holding transaction:', error);
+            this.ui.showAlert("Error holding transaction");
+            return false;
+        }
     }
 
     handleRetrieveTransaction(selectedItems) {
@@ -343,4 +366,42 @@ export class POSCore {
             });
         });
     }
+
+    create_new_customer() {
+        const customerData = {
+            customer: $("#customer_name").val(),
+            tin: $("#tin_number").val(),
+            houseno: $("#customer_house").val(),
+            city: $("#customer_city").val(),
+            state: $("#customer_state").val(),
+            country: $("#customer_country").val(),
+            zip: $("#customer_zip").val()
+        };
+
+        $.ajax({
+            url: this.config.customerUrls.add,
+            type: "post",
+            data: customerData,
+            dataType: "json",
+            async: false,
+            success: (res) => {
+                if(res.valid) {
+                    this.ui.showAlert(res.msg);
+                } else {
+                    this.ui.showAlert(res.msg);
+                }
+                location.reload();
+            },
+            error: (msg) => console.log(msg)
+        });
+    }
+
+    updateState(changes) {
+        this.state = {
+            ...this.state,
+            ...changes
+        };
+        this.ui.updateTables(this.state.itemStored);
+    }
+
 }

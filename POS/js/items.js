@@ -61,13 +61,24 @@ export class POSItems {
     }
 
     updateQuantity(partno, quantity) {
-        const item = this.findExistingItem(partno);
-        if (item) {
-            item.quantity = parseFloat(quantity);
-            item.amount = this.calculateAmount(item);
+        try {
+            const item = this.findExistingItem(partno);
+            if (item) {
+                item.quantity = parseFloat(quantity);
+                item.amount = this.calculateAmount(item);
+                
+                return $.ajax({
+                    url: this.config.dualView.quantity,
+                    method: 'POST',
+                    data: { partNo: partno, quantity: quantity }
+                });
+            }
+        } catch (error) {
+            console.error('Error updating quantity:', error);
         }
-        return this.items;
+        return Promise.reject('Item not found');
     }
+
     getItemPrice(item) {
         let price = 0;
         $.ajax({
@@ -204,7 +215,8 @@ export class POSItems {
                     this.duplicate(res.data);
                     this.table_store(this.items);
                 }
-            }
+            },
+            error: (res) => console.log(res)
         });
     }
 
@@ -257,9 +269,14 @@ export class POSItems {
     }
 
     table_store(items) {
+        if (!items || !Array.isArray(items)) {
+            console.error('Invalid items array');
+            return;
+        }
+        
+        console.log('Storing items:', items);
         this.ui.updateTables(items);
-        const computedAmounts = this.computeAmounts(items);
-        this.ui.updateAmounts(computedAmounts);
+        this.computation(items);
     }
 
     computation(data) {
@@ -366,20 +383,25 @@ export class POSItems {
     }
 
     chkprice(partno, unit, code, date) {
-        let value = 0;
-        $.ajax({
-            url: "../Sales/th_checkitmprice.php",
-            data: { 
-                itm: partno, 
-                cust: code, 
-                cunit: unit, 
-                dte: this.utils.formatDate(date) 
-            },
-            async: false,
-            success: data => value = parseFloat(data),
-            error: (xhr, status, error) => console.error('Error checking price:', error)
-        });
-        return value;
+        try {
+            let value = 0;
+            $.ajax({
+                url: this.config.urls.priceCheck,
+                data: { 
+                    itm: partno, 
+                    cust: code, 
+                    cunit: unit, 
+                    dte: POSUtils.formatDate(date) 
+                },
+                async: false,
+                success: data => value = parseFloat(data),
+                error: xhr => console.error('Price check failed:', xhr)
+            });
+            return value;
+        } catch (error) {
+            console.error('Price check error:', error);
+            return 0;
+        }
     }
 
     discountprice(item, unit, date) {
@@ -387,8 +409,8 @@ export class POSItems {
         let type = "";
         
         $.ajax({
-            url: "Function/th_discount.php",
-            data: { item, unit, date },
+            url: this.config.urls.discount,
+            data: { item, unit, date: POSUtils.formatDate(date) },
             dataType: "json",
             async: false,
             success: res => {
@@ -420,5 +442,18 @@ export class POSItems {
     
         this.updateAutoNumeric();
         this.updateHiddenInputs(service, totaltender, total);
+    }
+
+    handleDelete() {
+        const employeeCashierName = this.state.employeeCashierName;
+        return $.ajax({
+            type: "POST",
+            url: this.config.dualView.delete,
+            data: { employeeCashierName },
+            success: () => {
+                console.log("Data deleted successfully!");
+                this.state.retriveStatus = 0;
+            }
+        });
     }
 }

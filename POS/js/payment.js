@@ -3,19 +3,29 @@ export class POSPayment {
         this.config = config;
     }
 
-    processPayment(state) {
-        const paymentData = this.gatherPaymentData();
-        
-        if (!this.validatePayment(paymentData)) {
+    async processPayment(state) {
+        try {
+            const paymentData = this.gatherPaymentData();
+            this.validatePaymentData(paymentData);
+            
+            const response = await $.ajax({
+                url: this.config.urls.payment,
+                type: 'POST',
+                data: paymentData,
+                dataType: 'json'
+            });
+
+            if (response.valid) {
+                $("#myprintframe").attr("src", response.data);
+                return true;
+            }
+            
+            throw new Error(response.msg || 'Payment processing failed');
+        } catch (error) {
+            console.error('Payment processing error:', error);
+            this.ui.showAlert(error.message);
             return false;
         }
-
-        return $.ajax({
-            url: this.config.urls.payment,
-            type: 'POST',
-            data: paymentData,
-            dataType: 'json'
-        });
     }
 
     computePayment() {
@@ -221,6 +231,50 @@ export class POSPayment {
             this.updateHiddenFields();
             $("#totalTender").val(totaltender);
             $("#totalAmt").val(total);
+        });
+    }
+
+    setupPaymentMethodHandlers() {
+        $("#paymethod").change(function() {
+            const method = $(this).val();
+            if(method === 'Cash') {
+                $('#paymethod_txt').val('').prop('disabled', true);
+            } else {
+                $('#paymethod_txt').prop('disabled', false);
+            }
+        });
+
+        $('.btnpad').click((e) => {
+            const btn = $(e.target).val();
+            const current = $('#tendered').val();
+            $('#tendered').val(btn === 'C' ? '' : current + btn).trigger('keyup');
+        });
+    }
+
+    validatePaymentData(data) {
+        const requiredFields = ['tranno', 'method', 'amount'];
+        const missingFields = requiredFields.filter(field => !data[field]);
+        
+        if (missingFields.length) {
+            throw new Error(`Missing required fields: ${missingFields.join(', ')}`);
+        }
+        
+        if (parseFloat(data.amount) <= 0) {
+            throw new Error('Invalid payment amount');
+        }
+        
+        return true;
+    }
+
+    setupCouponHandlers() {
+        $('#couponinput').on('change', () => {
+            this.handleCouponUpdate();
+            this.computePayment();
+        });
+
+        $('#discountInput').on('change', () => {
+            this.handleDiscountUpdate();
+            this.computePayment();
         });
     }
 }

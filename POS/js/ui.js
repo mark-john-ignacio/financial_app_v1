@@ -238,23 +238,6 @@ export class POSUI {
         });
     }
 
-    clockUpdate() {
-        const date = new Date();
-        const h = this.addZeroPrefix(this.twelveHourFormat(date.getHours()));
-        const m = this.addZeroPrefix(date.getMinutes());
-        const s = this.addZeroPrefix(date.getSeconds());
-        
-        $('.digital-clock').text(`${h}:${m}:${s}`);
-    }
-
-    addZeroPrefix(x) {
-        return x < 10 ? "0" + x : x;
-    }
-
-    twelveHourFormat(x) {
-        return ((x + 11) % 12 + 1);
-    }
-
     AlertMsg(msg, color = "#008000") {
         $("#AlertModal").modal("show");
         $("#AlertMsg").html(msg);
