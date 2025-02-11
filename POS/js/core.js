@@ -181,4 +181,60 @@ export class POSCore {
             });
         });
     }
+
+    setupSpecialDiscountHandlers() {
+        $('#SpecialDiscountBtn').click(() => {
+            const data = {
+                disc: $("#discountAmt").val(),
+                type: $("#discountAmt").find(":selected").attr("dataval"),
+                name: $("#discountAmt").find(":selected").text(),
+                person: $("#discountCust").val(),
+                id: $("#discountID").val()
+            };
+
+            this.payment.handleSpecialDiscount(data);
+        });
+
+        $("#discountAmt").change(function() {
+            const disc = $(this).val();
+            $("#dc")[disc !== '0' ? 'show' : 'hide']();
+        });
+    }
+
+    setupQuantityHandlers() {
+        $("#listItem tbody").on('change', '#qty', (e) => {
+            const $row = $(e.currentTarget).closest('tr');
+            const partno = $row.find('td:first').text();
+            const quantity = $(e.currentTarget).val();
+            
+            this.items.updateQuantity(partno, quantity);
+            this.ui.updateTables(this.items.getItems());
+        });
+    }
+
+    updateToDatabase(type, value) {
+        return $.ajax({
+            url: this.config.dualView[type],
+            method: 'POST',
+            data: { [type]: value }
+        });
+    }
+
+    setupDatabaseSync() {
+        $('#couponinput').change(() => {
+            this.updateToDatabase('coupon', $('#couponinput').val());
+        });
+
+        $('#discountInput').change(() => {
+            this.updateToDatabase('discount', $('#discountInput').val());
+        });
+
+        $('input[name="qty[]"]').change((e) => {
+            const $input = $(e.currentTarget);
+            this.updateToDatabase('quantity', {
+                partNo: $input.data('val'),
+                quantity: $input.val()
+            });
+        });
+    }
 }

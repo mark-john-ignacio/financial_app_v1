@@ -110,4 +110,42 @@ export class POSPayment {
             service: $('#ServiceInput').val()
         };
     }
+
+    setupPaymentHandlers() {
+        $('#tendered').on('keyup', () => this.computePayment());
+        
+        $('#PaySubmit').click(() => {
+            const paymentData = this.gatherPaymentData();
+            
+            $.ajax({
+                url: this.config.urls.payment,
+                type: 'post',
+                data: paymentData,
+                dataType: 'json',
+                success: (res) => {
+                    if (res.valid) {
+                        $("#myprintframe").attr("src", res.data);
+                        location.reload();
+                    } else {
+                        alert(res.msg);
+                    }
+                }
+            });
+        });
+
+        $('#CouponSubmit').click(() => {
+            const coupons = $("#coupontxt").val();
+            this.handleCoupon(coupons);
+        });
+    }
+
+    handleNumPad(btn) {
+        const currentVal = $('#tendered').val();
+        if (btn === 'C') {
+            $('#tendered').val('');
+        } else {
+            $('#tendered').val(currentVal + btn);
+        }
+        $('#tendered').trigger('keyup');
+    }
 }

@@ -195,4 +195,30 @@ export class POSItems {
             return false;
         });
     }
+
+    setupItemListHandlers() {
+        $('.itmclass').on('click', (e) => {
+            const ClassID = $(e.currentTarget).attr('data-clscode');
+            
+            $('.itmslist').each(function() {
+                const id = $(this).attr('data-clscode');
+                $(this).toggle(id === ClassID);
+            });
+        });
+
+        $('#item-wrapper').on('click', '#itemlist', (e) => {
+            const name = $(e.currentTarget).attr('name');
+            this.insert_item(name);
+        });
+    }
+
+    handleVoid() {
+        $("input:checkbox[name=itemcheck]:checked").each((i, el) => {
+            const index = $(el).val();
+            if (index > -1) {
+                this.items.splice(index, 1);
+            }
+        });
+        this.ui.updateTables(this.items);
+    }
 }
