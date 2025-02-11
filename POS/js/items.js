@@ -364,4 +364,61 @@ export class POSItems {
 
         return amounts;
     }
+
+    chkprice(partno, unit, code, date) {
+        let value = 0;
+        $.ajax({
+            url: "../Sales/th_checkitmprice.php",
+            data: { 
+                itm: partno, 
+                cust: code, 
+                cunit: unit, 
+                dte: this.utils.formatDate(date) 
+            },
+            async: false,
+            success: data => value = parseFloat(data),
+            error: (xhr, status, error) => console.error('Error checking price:', error)
+        });
+        return value;
+    }
+
+    discountprice(item, unit, date) {
+        let value = 0;
+        let type = "";
+        
+        $.ajax({
+            url: "Function/th_discount.php",
+            data: { item, unit, date },
+            dataType: "json",
+            async: false,
+            success: res => {
+                if(res.valid) {
+                    value = res.data.amount;
+                    type = res.data.type;
+                }
+            }
+        });
+        return { value, type };
+    }
+
+    PaymentCompute() {
+        const tender = this.utils.parseAmount($('#tendered').val());
+        const coupon = this.utils.parseAmount($("#couponinput").val());
+        const exchange = this.utils.parseAmount($('#ExchangeAmt').val());
+        const amt = this.utils.parseAmount($('#subtotal').val());
+    
+        const service = amt * this.config.constants.SERVICE_FEE;
+        const totaltender = tender + coupon;
+        const total = amt + service;
+        const change = total - totaltender;
+    
+        if (change > 0) {
+            $('#ExchangeAmt').val("0.00");
+        } else {
+            $('#ExchangeAmt').val(Math.abs(change).toFixed(2));
+        }
+    
+        this.updateAutoNumeric();
+        this.updateHiddenInputs(service, totaltender, total);
+    }
 }

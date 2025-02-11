@@ -45,5 +45,16 @@ export const POSConfig = {
     modalTimeouts: {
         alert: 5000,
         refresh: 1000
+    },
+
+    defaults: {
+        serviceFee: 0.10,
+        vatRate: 0.12,
+        matrix: 'PM1'
+    },
+    
+    timeouts: {
+        alertDuration: 5000,
+        clockUpdate: 1000
     }
 };

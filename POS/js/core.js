@@ -15,6 +15,16 @@ export class POSCore {
         this.ui.init();
         this.setupEventListeners();
         this.loadBaseCustomer();
+        this.setupEmployeeHandlers();
+        this.setupOptionalInputs();
+        this.setupCustomerTypeahead();
+        this.setupPaymentHandlers();
+        this.setupItemHandlers();
+        this.setupVoidHandlers();
+        this.setupHoldHandlers();
+        this.setupRetrieveHandlers();
+        this.setupQuantityHandlers();
+        this.setupDatabaseSync();
     }
 
     setupEventListeners() {
@@ -320,6 +330,16 @@ export class POSCore {
                         this.items.updateQuantity(partno, qty);
                     }
                 }
+            });
+        });
+    }
+
+    setupItemClassHandlers() {
+        $(".itmclass").on("click", function() {
+            const ClassID = $(this).attr("data-clscode");
+            $('.itmslist').each(function() {
+                const id = $(this).attr('data-clscode');
+                $(this).toggle(id === ClassID);
             });
         });
     }

@@ -198,4 +198,29 @@ export class POSPayment {
             data: { discount: discountValue }
         });
     }
+
+    setupPaymentCalculation() {
+        $('#tendered').on('keyup', () => {
+            let tender = $('#tendered').val().replace(/,/g, '');
+            let coupon = $("#couponinput").val().replace(/,/g, '');
+            let exchange = $('#ExchangeAmt').val().replace(/,/g, '');
+            let amt = $('#subtotal').val().replace(/,/g, '');
+        
+            let service = parseFloat(amt) * parseFloat(this.config.constants.SERVICE_FEE);
+            let totaltender = parseFloat(tender) + parseFloat(coupon);
+            let total = parseFloat(amt) + service;
+            let change = parseFloat(total) - totaltender;
+        
+            if (change > 0) {
+                $('#ExchangeAmt').val("0.00");
+            } else {
+                $('#ExchangeAmt').val(Math.abs(change).toFixed(2));
+            }
+        
+            this.setupAutoNumeric();
+            this.updateHiddenFields();
+            $("#totalTender").val(totaltender);
+            $("#totalAmt").val(total);
+        });
+    }
 }
