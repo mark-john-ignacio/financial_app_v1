@@ -187,16 +187,18 @@ export class POSItems {
     }
 
     insert_item(partno) {
+        console.log("Item Inserted: ", partno);
         return $.ajax({
             url: this.config.urls.itemList,
             data: { code: partno },
-            dataType: 'json'
-        }).then(res => {
-            if (res.valid) {
-                this.duplicate(res.data);
-                return true;
+            dataType: 'json',
+            async: false,
+            success: (res) => {
+                if (res.valid) {
+                    this.duplicate(res.data);
+                    this.table_store(this.items);
+                }
             }
-            return false;
         });
     }
 
@@ -324,5 +326,13 @@ export class POSItems {
                 $(this).toggle(id === ClassID);
             });
         });
+    }
+    
+    getDiscount(data) {
+        let discount = 0;
+        data.forEach(item => {
+            discount += parseFloat(item.amount);
+        });
+        return discount;
     }
 }

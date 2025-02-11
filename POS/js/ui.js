@@ -215,4 +215,26 @@ export class POSUI {
         </tr>`;
         $('#VoidList > tbody').append(row);
     }
+
+    addItemToPaymentList(item, index) {
+        const row = `<tr>
+            <td>${item.partno}</td>
+            <td>${item.name}</td>
+            <td>${item.unit}</td>
+            <td>${item.quantity}</td>
+            <td>${parseFloat(item.price).toFixed(2)}</td>
+            <td>${parseFloat(item.discount).toFixed(2)}</td>
+            <td>${parseFloat(item.amount).toFixed(2)}</td>
+        </tr>`;
+        $('#paymentList > tbody').append(row);
+    }
+
+    initSlick() {
+        $(".regular").slick({
+            dots: false,
+            infinite: true,
+            slidesToShow: 4,
+            slidesToScroll: 4
+        });
+    }
 }

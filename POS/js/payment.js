@@ -180,4 +180,22 @@ export class POSPayment {
             return total + parseFloat(item.amount);
         }, 0);
     }
+
+    handleCouponUpdate() {
+        const couponValue = $("#couponinput").val();
+        return $.ajax({
+            url: this.config.dualView.coupon,
+            method: 'POST',
+            data: { coupon: couponValue }
+        });
+    }
+
+    handleDiscountUpdate() {
+        const discountValue = $("#discountInput").val();
+        return $.ajax({
+            url: this.config.dualView.discount,
+            method: 'POST',
+            data: { discount: discountValue }
+        });
+    }
 }
