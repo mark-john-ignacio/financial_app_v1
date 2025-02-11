@@ -4,6 +4,10 @@ export class POSItems {
         this.items = [];
     }
 
+    getItems() {
+        return this.items;
+    }
+
     addItem(item, quantity = 1) {
         const price = this.getItemPrice(item);
         const discount = this.getItemDiscount(item);
@@ -220,5 +224,105 @@ export class POSItems {
             }
         });
         this.ui.updateTables(this.items);
+    }
+
+    handleBarcodeScanned(items) {
+        $.ajax({
+            url: "DualView/Function/ibarcode.php", 
+            dataType: "json",
+            data: { selected_item: items.partno },
+            success: (response) => {
+                this.duplicate(items);
+                this.table_store(this.items);
+            }
+        });
+    }
+
+    handleVoidSubmit() {
+        $("input:checkbox[name=itemcheck]:checked").each((i, el) => {
+            const index = $(el).val();
+            if (index > -1) {
+                this.items.splice(index, 1);
+            }
+        });
+        this.updateTables();
+    }
+
+    table_store(items) {
+        this.ui.updateTables(items);
+        this.computation(items);
+    }
+
+    computation(data) {
+        const itemAmounts = { 
+            discount: 0, 
+            net: 0, 
+            vat: 0, 
+            gross: 0 
+        };
+
+        data.forEach(item => {
+            const price = parseFloat(item.price);
+            const qty = parseFloat(item.quantity);
+            const net = price / 1.12;
+            
+            itemAmounts.net += net * qty;
+            itemAmounts.vat += (net * 0.12) * qty;
+            itemAmounts.gross += price * qty;
+            itemAmounts.discount += parseFloat(item.discount);
+        });
+
+        this.ui.updateAmounts(itemAmounts);
+        this.state.amtTotal = itemAmounts.gross;
+    }
+
+    addItemToPaymentList(item) {
+        const row = `<tr>
+            <td>${item.partno}</td>
+            <td>${item.name}</td>
+            <td>${item.unit}</td>
+            <td>${item.quantity}</td>
+            <td>${parseFloat(item.price).toFixed(2)}</td>
+            <td>${parseFloat(item.discount).toFixed(2)}</td>
+            <td>${parseFloat(item.amount).toFixed(2)}</td>
+        </tr>`;
+        $('#paymentList > tbody').append(row);
+    }
+
+    getCouponTotal(coupons) {
+        if(!coupons.length) return 0;
+        let amount = 0;
+
+        coupons.forEach(coupon => {
+            $.ajax({
+                url: "../MasterFiles/Items/th_couponlist.php",
+                dataType: 'json',
+                async: false,
+                success: (res) => {
+                    if(res.valid) {
+                        amount += parseFloat(res.data.amount);
+                    }
+                }
+            });
+        });
+        return amount;
+    }
+
+    getSpecialDisc(data) {
+        let discount = 0;
+        data.forEach(item => {
+            discount += parseFloat(item.amount);
+        });
+        return discount;
+    }
+
+    setupItemListHandlers() {
+        $(".itmclass").on("click", (e) => {
+            const ClassID = $(e.currentTarget).attr("data-clscode");
+            $('.itmslist').each(function() {
+                const id = $(this).attr('data-clscode');
+                $(this).toggle(id === ClassID);
+            });
+        });
     }
 }

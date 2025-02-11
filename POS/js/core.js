@@ -6,6 +6,9 @@ export class POSCore {
         this.config = options.config;
         
         this.state = { ...this.config.initialState };
+
+        this.state.retriveStatus = 0;
+        this.state.count = 0;
     }
 
     init() {
@@ -235,6 +238,56 @@ export class POSCore {
                 partNo: $input.data('val'),
                 quantity: $input.val()
             });
+        });
+    }
+
+    clearTables() {
+        $("#paymentList > tbody").empty();
+        $("#VoidList > tbody").empty();
+        $("#listItem > tbody").empty();
+        $("#gross").text(parseFloat(0).toFixed(2));
+        $("#vat").text(parseFloat(0).toFixed(2));
+        $("#net").text(parseFloat(0).toFixed(2));
+    }
+
+    setupHoldHandlers() {
+        $('#btnHold').on('click', function() {
+            this.disabled = true;
+            const kitchen_receipt = $("#kitchen_receipt").val();
+            const waitingTime = $("#waiting_time").val();
+            
+            this.handleHoldTransaction(kitchen_receipt, waitingTime);
+        });
+    }
+
+    setupRetrieveHandlers() {
+        $("#RetrieveSubmit").click(() => {
+            const itemRetrieve = [];
+            $("input:checkbox[name=chkretrieve]:checked").each(function() {
+                itemRetrieve.push($(this).val());
+            });
+            this.handleRetrieveTransaction(itemRetrieve);
+        });
+    }
+
+    handleCustomerModal() {
+        $("#AddCustomerModal").modal("show");
+    }
+
+    setupItemHandlers() {
+        $('#item-wrapper').on('click', '#itemlist', (e) => {
+            const name = $(e.currentTarget).attr("name");
+            this.items.insert_item(name);
+        });
+    }
+    
+    setupVoidHandlers() {
+        $('#VoidSubmit').click(() => {
+            $("input:checkbox[name=itemcheck]:checked").each((i, el) => {
+                const index = $(el).val();
+                this.items.removeItems([index]);
+            });
+            this.ui.updateTables(this.items.getItems());
         });
     }
 }

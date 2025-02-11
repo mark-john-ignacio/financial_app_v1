@@ -182,4 +182,37 @@ export class POSUI {
                     });
             });
     }
+
+    updateAmounts(amounts) {
+        $('#vat').text(amounts.vat.toFixed(2));
+        $('#net').text(amounts.net.toFixed(2));
+        $('#gross').text(amounts.gross.toFixed(2));
+        $('#subtotal').val(amounts.gross.toFixed(2));
+    }
+
+    addItemToMainList(item, index) {
+        const row = `<tr>
+            <td>${item.partno}</td>
+            <td>${item.name}</td>
+            <td>${item.unit}</td>
+            <td><input type="number" id="qty" value="${item.quantity}"></td>
+            <td>${parseFloat(item.price).toFixed(2)}</td>
+            <td>${parseFloat(item.discount).toFixed(2)}</td>
+            <td>${parseFloat(item.amount).toFixed(2)}</td>
+        </tr>`;
+        $('#listItem > tbody').append(row);
+    }
+
+    addItemToVoidList(item, index) {
+        const row = `<tr>
+            <td><input type="checkbox" name="itemcheck" value="${index}"></td>
+            <td>${item.partno}</td>
+            <td>${item.name}</td>
+            <td>${item.unit}</td>
+            <td>${item.quantity}</td>
+            <td>${parseFloat(item.price).toFixed(2)}</td>
+            <td>${parseFloat(item.amount).toFixed(2)}</td>
+        </tr>`;
+        $('#VoidList > tbody').append(row);
+    }
 }

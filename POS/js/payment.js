@@ -148,4 +148,36 @@ export class POSPayment {
         }
         $('#tendered').trigger('keyup');
     }
+
+    setupAutoNumeric() {
+        $('#ExchangeAmt').autoNumeric('destroy');
+        $('#ExchangeAmt').autoNumeric('init', { mDec: 2 });
+    }
+
+    updateHiddenFields() {
+        $("#discountInput").val(this.getSpecialDisc(this.state.specialDisc)).change();
+        $("#h_tranno").val();
+    }
+
+    handleCoupon(coupons) {
+        const subtotal = this.parseAmount('#subtotal');
+        const totalTender = this.parseAmount('#totalTender');
+
+        if(parseFloat(subtotal) < parseFloat(totalTender)) {
+            alert("Total tender exceeds subtotal amount");
+            return false;
+        }
+
+        return $.ajax({
+            url: "Function/th_coupon.php",
+            data: { coupon: coupons },
+            dataType: 'json'
+        });
+    }
+
+    getSpecialDisc(specialDisc) {
+        return specialDisc.reduce((total, item) => {
+            return total + parseFloat(item.amount);
+        }, 0);
+    }
 }

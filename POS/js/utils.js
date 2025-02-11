@@ -40,4 +40,16 @@ export class POSUtils {
     static delay(ms) {
         return new Promise(resolve => setTimeout(resolve, ms));
     }
+
+    static closeModal(modalId) {
+        $(`#${modalId}`).modal("hide");
+    }
+
+    static addZeroPrefix(x) {
+        return (x < 10 ? "0" : "") + x;
+    }
+
+    static twelveHourFormat(x) {
+        return ((x + 11) % 12 + 1);
+    }
 }
