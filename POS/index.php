@@ -101,19 +101,16 @@ $discount = $discounts;
                         <tr>
                             <td colspan="2" style='padding-top: 20px'>
                                 <div style='height: 52vh; max-height: 60vh; overflow: auto;'>
-                                    <table class='table' id='listItem' style="width: 100%; ">
-                                        <thead style='background-color: #019aca'>
-                                            <tr>
-                                                <th style="width: 60%;">Item</th>
-                                                <th style="text-align: center;">UOM</th>
-                                                <th style="text-align: center;">Quantity</th>
-                                                <th style="text-align: right;">Price</th>
-                                                <th style="text-align: right;">Discount</th>         
-                                                <th style="text-align: right;">Amount</th>
-                                            </tr>
-                                        </thead>
-                                        <tbody></tbody>
-                                    </table>
+                                <table class='table' id='listItem' style="width: 100%; ">
+                                    <thead style='background-color: #019aca'>
+                                        <tr>
+                                            <th style="width: 60%;">Product</th>
+                                            <th style="text-align: center;">Quantity</th>
+                                            <th style="text-align: right;">Total</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody></tbody>
+                                </table>
                                 </div>
                             </td>
                         </tr>

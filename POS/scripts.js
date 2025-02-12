@@ -1190,15 +1190,22 @@
         console.log(items);
     
         items.map((item, index) => {
+            // Calculate total for each item including discounts
+            const total = (parseFloat(item.price) * parseFloat(item.quantity) - parseFloat(item.discount)).toFixed(2);
+            
+            // Create the price and discount info string
+            const priceInfo = `Price: ${parseFloat(item.price).toFixed(2)}${item.discount > 0 ? ' | Discount: ' + parseFloat(item.discount).toFixed(2) : ''}`;
+    
             $("<tr class='font-large'>").append(
-                $("<td>").text(item.name),
-                $("<td>").text(item.unit),
+                $("<td>").html(`
+                    ${item.name}<br>
+                    <small class="text-muted">${priceInfo}</small>
+                `),
                 $("<td align='center'>").html("<input type='number' id='qty' name='qty[]' class='form-control input-sm' style='width:60px' value='" + item.quantity + "' data-val='" + item.partno + "'/>"),
-                $("<td style='text-align: right'>").text(parseFloat(item.price).toFixed(2)),
-                $("<td style='text-align: right'>").text(parseFloat(item.discount).toFixed(2)),
-                $("<td style='text-align: right'>").text((parseFloat(item.price) * parseFloat(item.quantity) - parseFloat(item.discount)).toFixed(2))
+                $("<td style='text-align: right'>").text(total)
             ).appendTo("#listItem > tbody");
     
+            // Keep the existing void list structure
             $("<tr>").append(
                 $("<td align='center'>").html("<input type='checkbox' name='itemcheck' value='" + item.name + "' data-name1='" + item.partno + "'/>"),
                 $("<td>").text(item.name),
@@ -1206,17 +1213,18 @@
                 $("<td align='center'>").text(item.quantity),
                 $("<td>").text(parseFloat(item.price).toFixed(2)),
                 $("<td>").text(parseFloat(item.discount).toFixed(2)),
-                $("<td>").text((parseFloat(item.price) * parseFloat(item.quantity) - parseFloat(item.discount)).toFixed(2))
+                $("<td>").text(total)
             ).appendTo("#VoidList > tbody");
     
+            // Keep the existing payment list structure
             $("<tr>").append(
-                $("<td>").html("<input type='checkbox' name='discounted[]' id='discounted' dataval='" + item.partno + "' value='" + (parseFloat(item.price) * parseFloat(item.quantity) - parseFloat(item.discount)).toFixed(2) + "'/>"),
+                $("<td>").html("<input type='checkbox' name='discounted[]' id='discounted' dataval='" + item.partno + "' value='" + total + "'/>"),
                 $("<td>").text(item.name),
                 $("<td align='center'>").text(item.unit),
                 $("<td align='center'>").text(item.quantity),
                 $("<td align='center'>").text(parseFloat(item.price).toFixed(2)),
                 $("<td align='center'>").text(parseFloat(item.discount).toFixed(2)),
-                $("<td>").text((parseFloat(item.price) * parseFloat(item.quantity) - parseFloat(item.discount)).toFixed(2))
+                $("<td>").text(total)
             ).appendTo("#paymentList > tbody");
         });
         computation(items);
