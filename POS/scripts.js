@@ -1083,6 +1083,9 @@
                 amount: (parseFloat(price) * qty - parseFloat(discvalue)).toFixed(2)
             });
         }
+    
+        // Call computation to update net and vat
+        computation(itemStored);
     }
 
     /**
@@ -1239,11 +1242,16 @@
     
         data.map((item, index) => {
             let price = parseFloat(item.price);
-            let net = price / parseFloat(1 + (12 / 100));
+            let quantity = parseFloat(item.quantity);
+            let discount = parseFloat(item.discount);
+            let gross = price * quantity;
+            let net = (gross - discount) / 1.12; // Assuming VAT is 12%
+            let vat = (gross - discount) - net;
+    
             itemAmounts.net += net;
-            itemAmounts.vat += net * (12 / 100);
-            itemAmounts.discount += parseFloat(item.discount);
-            itemAmounts.gross += price * parseFloat(item.quantity);
+            itemAmounts.vat += vat;
+            itemAmounts.discount += discount;
+            itemAmounts.gross += gross;
         });
     
         $('#vat').text(itemAmounts.vat.toFixed(2));
