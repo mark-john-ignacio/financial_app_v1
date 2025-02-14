@@ -87,6 +87,6 @@ class CreatePosSystemTable extends Migration
 
     public function down()
     {
-        // $this->forge->dropTable('pos_system');
+        $this->forge->dropTable('pos_system');
     }
 }

@@ -383,13 +383,38 @@ function getcostfromin($getcitmno, $getnqty){
 
 		$wither = 0;
 		$section = 0;
-		$sql = "SELECT * FROM `parameters` WHERE ccode='DEF_WHOUT' AND compcode='$company'";
-		$query = mysqli_query($con, $sql);
-	
-		if(mysqli_num_rows($query) != 0){
-			$data = $query -> fetch_assoc();
-			$section = $data['cvalue'];
+
+		$employeeid = $_SESSION['employeeid'];
+		
+		function getSection($con, $company, $employeeid) {
+			$sql = "SELECT cdepartment FROM users WHERE Userid='$employeeid'";
+			$query = mysqli_query($con, $sql);
+			if (mysqli_num_rows($query) != 0) {
+				$data = $query->fetch_assoc();
+				$cdepartment = $data['cdepartment'];
+		
+				$sql = "SELECT nid FROM locations WHERE ccode='$cdepartment'";
+				$query = mysqli_query($con, $sql);
+				if (mysqli_num_rows($query) != 0) {
+					$data = $query->fetch_assoc();
+					return $data['nid'];
+				}
+			}
+			return getDefaultSection($con, $company);
 		}
+		
+		function getDefaultSection($con, $company) {
+			$sql = "SELECT * FROM `parameters` WHERE ccode='DEF_WHOUT' AND compcode='$company'";
+			$query = mysqli_query($con, $sql);
+			if (mysqli_num_rows($query) != 0) {
+				$data = $query->fetch_assoc();
+				return $data['cvalue'];
+			}
+			return null;
+		}
+		
+		$section = getSection($con, $company, $_SESSION['employeeid']);
+
 
 		$sql = "SELECT a.*, b.ddate FROM pos_t a
 		left join pos b on a.compcode = b.compcode AND a.tranno = b.tranno

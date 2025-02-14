@@ -8,23 +8,39 @@ class PosSystemSeeder extends Seeder
 {
     public function run()
     {
-        $data = [
-            'compcode'     => '001',
-            'cserialno'    => 'SN123456789',
-            'cmachine'     => 'POS-Machine-01',
-            'cpoweredname' => 'Myxfin Solutions Inc.',
-            'cpoweredadd'  => '1234 Elm Street, Manila, PH',
-            'cpoweredtin'  => 'TIN123456789',
-            'caccredno'    => 'ACC123456789',
-            'ddateissued'  => '2025-01-01',
-            'deffectdate'  => '2025-01-01',
-            'cptunum'      => 'PTU123456789',
-            'dptuissued'   => '2025-01-01',
-            'created_at'   => '2025-02-05 06:18:44',
-            'updated_at'   => '2025-02-05 06:18:44',
-        ];
+        // Get all companies
+        $companies = $this->db->table('company')->get()->getResultArray();
 
-        // Using Query Builder
-        $this->db->table('pos_system')->insert($data);
+        // Prepare data for each company
+        $data = [];
+        foreach ($companies as $company) {
+            // Check if compcode already exists in pos_system table
+            $exists = $this->db->table('pos_system')
+                               ->where('compcode', $company['compcode'])
+                               ->countAllResults();
+
+            if ($exists == 0) {
+                $data[] = [
+                    'compcode'     => $company['compcode'],
+                    'cserialno'    => 'SN' . rand(100000000, 999999999),
+                    'cmachine'     => 'POS-Machine-' . rand(1, 10),
+                    'cpoweredname' => $company['compname'],
+                    'cpoweredadd'  => $company['compadd'],
+                    'cpoweredtin'  => $company['comptin'],
+                    'caccredno'    => 'ACC' . rand(100000000, 999999999),
+                    'ddateissued'  => date('Y-m-d', strtotime('-1 year')),
+                    'deffectdate'  => date('Y-m-d'),
+                    'cptunum'      => 'PTU' . rand(100000000, 999999999),
+                    'dptuissued'   => date('Y-m-d'),
+                    'created_at'   => date('Y-m-d H:i:s'),
+                    'updated_at'   => date('Y-m-d H:i:s'),
+                ];
+            }
+        }
+
+        // Insert data into pos_system table
+        if (!empty($data)) {
+            $this->db->table('pos_system')->insertBatch($data);
+        }
     }
 }
